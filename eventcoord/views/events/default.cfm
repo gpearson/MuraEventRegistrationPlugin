@@ -24,6 +24,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<cfcase value="true">
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
+					<cfcase value="AttendedSent">
+						<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Select ShortTitle
+							From eEvents
+							Where TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+						<cfoutput>
+							<div class="alert-box success">
+								<p>Emails are being sent to everyone who attended the event titled <cfoutput>#GetSelectedEvent.ShortTitle#</cfoutput>.</p>
+							</div>
+						</cfoutput>
+					</cfcase>
 					<cfcase value="PostToFB">
 						<div class="alert-box success">
 							<p>Your have successfully posted a message regarding <cfoutput>#Session.UserSuppliedInfo.PickedEvent.ShortTitle#</cfoutput> to the Organization's Facebook Page.</p>

@@ -63,6 +63,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</div>
 						</cfoutput>
 					</cfcase>
+					<cfcase value="AttendedSent">
+						<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Select ShortTitle
+							From eEvents
+							Where TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+						<cfoutput>
+							<div class="alert-box success">
+								<p>Emails to everyone who attended the event titled <cfoutput>#GetSelectedEvent.ShortTitle#</cfoutput> is in process of being sent. </p>
+							</div>
+						</cfoutput>
+					</cfcase>
 					<cfcase value="AddedEvent">
 						<cfoutput>
 							<div class="alert-box success">

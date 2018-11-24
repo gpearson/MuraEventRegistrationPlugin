@@ -34,7 +34,7 @@
 		<cfquery name="getRegistration" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
 			Select RegistrationID, RegistrationDate, User_ID, EventID, RequestsMeal, IVCParticipant, AttendeePrice, RegisterByUserID, OnWaitingList, Comments, WebinarParticipant
 			From eRegistrations
-			Where RegistrationID = <cfqueryparam value="#Arguments.RegistrationRecordID#" cfsqltype="cf_sql_integer">
+			Where TContent_ID = <cfqueryparam value="#Arguments.RegistrationRecordID#" cfsqltype="cf_sql_integer">
 		</cfquery>
 
 		<cfquery name="getRegisteredUserInfo" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
@@ -60,7 +60,7 @@
 		<cfquery name="getEventLocation" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
 			Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, GeoCode_Latitude, GeoCode_Longitude
 			From eFacility
-			Where TContent_ID = #getEvent.LocationID#
+			Where TContent_ID = <cfqueryparam value="#getEvent.LocationID#" cfsqltype="cf_sql_integer">
 		</cfquery>
 
 		<cfif GetRegistration.User_ID EQ getRegistration.RegisterByUserID>
@@ -337,7 +337,7 @@
 		<cfquery name="GetRegisteredEvent" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
 			SELECT eEvents.ShortTitle, eEvents.EventDate, eRegistrations.AttendedEvent, eRegistrations.User_ID, eRegistrations.RegistrationID,  eRegistrations.OnWaitingList, eRegistrations.EventID, eEvents.PGPAvailable, eEvents.PGPPoints
 			FROM eRegistrations INNER JOIN eEvents ON eEvents.TContent_ID = eRegistrations.EventID
-			WHERE eRegistrations.TContent_ID = <cfqueryparam value="#Arguments.Info.RegistrationID#" cfsqltype="cf_sql_varchar">
+			WHERE eRegistrations.RegistrationID = <cfqueryparam value="#Arguments.Info.RegistrationID#" cfsqltype="cf_sql_varchar">
 		</cfquery>
 
 		<cfquery name="getRegisteredUserInfo" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
@@ -527,6 +527,11 @@
 	<cffunction name="SendEventMessageToAllParticipants" returntype="Any" Output="false">
 		<cfargument name="ParticipantInfo" type="struct" Required="True">
 		<cfinclude template="EmailTemplates/SendEventMessageToParticipantsFromFacilitator.cfm">
+	</cffunction>
+
+	<cffunction name="SendEventMessageToAllAttendedParticipants" returntype="Any" Output="false">
+		<cfargument name="ParticipantInfo" type="struct" Required="True">
+		<cfinclude template="EmailTemplates/SendEventMessageToAttendedParticipantsFromFacilitator.cfm">
 	</cffunction>
 
 	<cffunction name="SendEventWaitingListToSingleParticipant" returntype="Any" Output="false">

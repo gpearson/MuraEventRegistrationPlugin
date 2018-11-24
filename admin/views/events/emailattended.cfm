@@ -22,10 +22,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfoutput>
 	<div class="art-block clearfix">
 		<div class="art-blockheader">
-			<h3 class="t">Sending an Email to Workshop/Event Registered Participants:<br>#Session.UserSuppliedInfo.ShortTitle#</h3>
+			<h3 class="t">Sending an Email to Workshop/Event Attended Participants:<br>#Session.UserSuppliedInfo.ShortTitle#</h3>
 		</div>
 		<div class="art-blockcontent">
-			<div class="alert-box notice">Please complete this form to send a message to those who have registered for this event.<br><Strong>Number of Registrations Currently: #Session.EventNumberRegistrations#</Strong></div>
+			<div class="alert-box notice">Please complete this form to send a message to those who attended  this event.<br><Strong>Number of Attended Participants: #Session.EventNumberAttended#</Strong></div>
 			<hr>
 			<uForm:form action="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events.emailattended&compactDisplay=false&EventID=#URL.EventID#&EventStatus=EmailParticipants" method="Post" id="EmailEventParticipants" errors="#Session.FormErrors#" errorMessagePlacement="both"
 				commonassetsPath="/plugins/EventRegistration/library/uniForm/" showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton"
@@ -59,38 +59,38 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</uform:field>
 				</uForm:fieldset>
 				<uForm:fieldset legend="Participant Materials">
-					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameOne)>
+					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameSix)>
 						<input type="Hidden" Name="FirstDocumentToSend" Value="">
-						<uform:field label="First Document" name="FirstDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameOne#" type="text" isDisabled="true" />
+						<uform:field label="First Document" name="FirstDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameSix#" type="text" isDisabled="true" />
 					<cfelse>
-						<uform:field label="First Document" name="FirstDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameOne#" />
+						<uform:field label="First Document" name="FirstDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameSix#" />
 					</cfif>
-					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameTwo)>
+					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameSeven)>
 						<input type="Hidden" Name="SecondDocumentToSend" Value="">
-						<uform:field label="Second Document, if needed" name="SecondDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameTwo#" type="text" isDisabled="true" />
+						<uform:field label="Second Document, if needed" name="SecondDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameSeven#" type="text" isDisabled="true" />
 					<cfelse>
-						<uform:field label="Second Document, if needed" name="SecondDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameTwo#" />
+						<uform:field label="Second Document, if needed" name="SecondDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameSeven#" />
 					</cfif>
-					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameThree)>
+					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameEight)>
 						<input type="Hidden" Name="ThirdDocumentToSend" Value="">
-						<uform:field label="Third Document, if needed" name="ThirdDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameThree#" type="text" isDisabled="true" />
+						<uform:field label="Third Document, if needed" name="ThirdDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameEight#" type="text" isDisabled="true" />
 					<cfelse>
-						<uform:field label="Third Document, if needed" name="ThirdDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameThree#" />
+						<uform:field label="Third Document, if needed" name="ThirdDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameEight#" />
 					</cfif>
-					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameFour)>
+					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameNine)>
 						<input type="Hidden" Name="FourthDocumentToSend" Value="">
-						<uform:field label="Fourth Document, if needed" name="FourthDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameFour#" type="text" isDisabled="true" />
+						<uform:field label="Fourth Document, if needed" name="FourthDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameNine#" type="text" isDisabled="true" />
 					<cfelse>
-						<uform:field label="Fourth Document, if needed" name="FourthDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameFour#" />
+						<uform:field label="Fourth Document, if needed" name="FourthDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameNine#" />
 					</cfif>
-					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameFive)>
+					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameTen)>
 						<input type="Hidden" Name="FifthDocumentToSend" Value="">
-						<uform:field label="Fifth Document, if needed" name="FifthDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameFifth#" type="text" isDisabled="true" />
+						<uform:field label="Fifth Document, if needed" name="FifthDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameTen#" type="text" isDisabled="true" />
 					<cfelse>
-						<uform:field label="Fifth Document, if needed" name="FifthDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameFive#" />
+						<uform:field label="Fifth Document, if needed" name="FifthDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameTen#" />
 					</cfif>
 				</uForm:fieldset>
-				<cfif Session.EventNumberRegistrations GT 0>
+				<cfif Session.EventNumberAttended GT 0>
 					<uForm:fieldset legend="Send Email?">
 						<uform:field label="Send Email Message" name="SendEmail" isDisabled="false" type="select" hint="Are you ready to send this email to participants?">
 							<uform:option display="Yes, Send It" value="True" isSelected="true" />
@@ -104,5 +104,4 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</uForm:form>
 		</div>
 	</div>
-	<cfdump var="#Session.UserSuppliedInfo#">
 </cfoutput>

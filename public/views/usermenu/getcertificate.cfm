@@ -3,10 +3,11 @@
 	<cfquery name="GetCertificateForSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 		SELECT eEvents.ShortTitle, eEvents.EventDate, eRegistrations.RequestsMeal, eRegistrations.IVCParticipant, eRegistrations.AttendeePrice, tusers.Fname,
 			tusers.Lname, tusers.Email,  tusers.Company,eEvents.TContent_ID, eEvents.PGPAvailable, eEvents.PGPPoints, eRegistrations.WebinarParticipant
-		FROM eRegistrations INNER JOIN eEvents ON eEvents.TContent_ID = eRegistrations.EventID INNER JOIN tusers ON tusers.UserID = eRegistrations.UserID
+		FROM eRegistrations INNER JOIN eEvents ON eEvents.TContent_ID = eRegistrations.EventID INNER JOIN tusers ON tusers.UserID = eRegistrations.User_ID
 		WHERE eRegistrations.Site_ID = <cfqueryparam value="#Session.Mura.SiteID#" cfsqltype="cf_sql_varchar"> AND
-			eEvents.TContent_ID = <cfqueryparam value="#URL.CertificateEventID#" cfsqltype="cf_sql_integer">
+			eRegistrations.TContent_ID = <cfqueryparam value="#URL.CertificateEventID#" cfsqltype="cf_sql_integer">
 	</cfquery>
+
 	<cfset CertificateTemplateDir = #Left(ExpandPath("*"), Find("*", ExpandPath("*")) - 1)#>
 	<cfset ParticipantName = #GetCertificateForSelectedEvent.FName# & " " & #GetCertificateForSelectedEvent.LName#>
 	<cfset ParticipantFilename = #Replace(Variables.ParticipantName, " ", "", "all")#>
@@ -29,7 +30,7 @@
 	</cfscript>
 	<cfoutput>
 		<div align="center"><h4>Viewing Requested Certificate</h4></div>
-		<div class="alert-box notice">Click <a href="" class="art-button">here</a> to return to the listing of events for a different certificate.</div>
+		<div class="alert-box notice">Click <a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.manageregistrations" class="art-button">here</a> to return to the listing of events for a different certificate.</div>
 		<hr>
 		<table class="art-article" border="0" align="center" width="100%" cellspacing="0" cellpadding="0">
 			<tbody>
