@@ -18,7 +18,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 	// !important: enter the plugin packageName here. must be the same as found in '{context}/plugin/config.xml.cfm'
 	variables.framework.package = 'EventRegistration';
-	variables.framework.packageVersion = '2.006.200';
+	variables.framework.packageVersion = '2.007.000';
 
 	// If true, then each subsystem is treated as its own, individual application, unaware of any other subsystem, and will not respond to requests for any other subsystem. For example, if a link in App2 points to 'buildURL('app3:main.form') as a 'href' tag and is clicked, then App2 will maintain its state and not respond. Only App3 will respond to that request. If false, then it is assumed that you will only have ONE display object on any page at any given time. If you have more than one, then as you interact with it, all of them will respond with the same view. You have been warned!
 	variables.framework.siloSubsystems = true;
@@ -54,7 +54,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 	variables.framework.baseURL = 'useRequestURI';
 	variables.framework.suppressImplicitService = true; // this used to be false in FW/1 1.x
 	variables.framework.suppressServiceQueue = true; // false restores the FW/1 2.2 behavior
-	variables.framework.enableGlobalRC = false; // true restores the FW/1 2.2 behavior
+	variables.framework.enableGlobalRC = true; // true restores the FW/1 2.2 behavior
 	variables.framework.unhandledExtensions = 'cfc';
 	variables.framework.unhandledPaths = '/flex2gateway';
 	variables.framework.maxNumContextsPreserved = 10;

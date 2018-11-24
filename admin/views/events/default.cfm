@@ -15,14 +15,25 @@ http://www.apache.org/licenses/LICENSE-2.0
 	From eEvents
 	Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 		EventDate >= <cfqueryparam value="#Variables.PriorDate#" cfsqltype="cf_sql_date"> and
-		Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-	Order by EventDate DESC
+		EventCancelled = 0
+		Order by EventDate DESC
 </cfquery>
+
 <cfif isDefined("URL.Successful")>
 	<cfswitch expression="#URL.Successful#">
 		<cfcase value="true">
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
+					<cfcase value="ParticipantsRegistered">
+						<cfoutput>
+							<div class="alert-box success">
+								<p>Your have successfully registered participants for the workshop or event titled #Session.UserSuppliedInfo.PickedEvent.ShortTitle#.</p>
+								<cfif Session.UserSuppliedInfo.EventRegistration.Step1.EmailConfirmations EQ 1>
+								<p>The system is in the process of emailing a confirmation page to each of the participants who you have registered for this workshop or event.</p>
+								</cfif>
+							</div>
+						</cfoutput>
+					</cfcase>
 					<cfcase value="RemoveParticipants">
 						<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 							Select ShortTitle
@@ -126,10 +137,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<td width="50%">#getAvailableEvents.ShortTitle#</td>
 								<td width="15%">#DateFormat(getAvailableEvents.EventDate, "mmm dd, yy")#</td>
 								<td>
-									<a href="#buildURL('admin:events.updateevent_review')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Update</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.cancelevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Cancel</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.emailregistered')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Email</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.copypriorevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Copy</a>&nbsp;&nbsp;<a href="" class="art-button">Info</a><br />
-									<a href="#buildURL('admin:events.registeruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Register</a>
+									<a href="#buildURL('admin:events.updateevent_review')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Update</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.cancelevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Cancel</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.emailregistered')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Email</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.copypriorevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Copy</a><br />
+									<a href="#buildURL('admin:events.geteventinfo')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Info</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.registeruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Register</a>
 									<cfif getRegistrationsForEvent.RecordCount>
-										&nbsp;&nbsp;<a href="#buildURL('admin:events.deregisteruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">De-Register</a>
+										&nbsp;&nbsp;<a href="#buildURL('admin:events.deregisteruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">De-Register</a><br />
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventsigninsheet')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Sheet</a>
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventsigninparticipant')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Participant</a>
 									</cfif>

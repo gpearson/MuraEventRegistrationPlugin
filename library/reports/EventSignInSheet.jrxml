@@ -162,11 +162,7 @@ If participants need to make changes to Name, Email they must update their accou
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</line>
-			<subreport>
-				<reportElement x="406" y="34" width="200" height="200" uuid="397c8e3b-a081-4c71-b7a7-1faddf50cfd7"/>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA["EventWalkInSheet.jasper"]]></subreportExpression>
-			</subreport>
+			
 		</band>
 	</detail>
 	<columnFooter>

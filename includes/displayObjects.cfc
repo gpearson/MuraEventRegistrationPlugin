@@ -19,11 +19,11 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	// ========================== Display Methods ==============================
 
 	public any function ViewAvailableEvents($) {
-		return getApplication().doAction('public:main.viewavailableevents');
+		return getApplication().doAction('public:events.viewavailableevents');
 	}
 
 	public any function GetEventInformation($) {
-		return getApplication().doAction('public:main.eventinfo');
+		return getApplication().doAction('public:events.eventinfo');
 	}
 
 	public any function RegisterForEvent($) {
