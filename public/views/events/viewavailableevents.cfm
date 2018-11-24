@@ -181,23 +181,63 @@
 	</cfquery>
 
 	<cfquery name="getNonFeaturedEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		Select ShortTitle, EventDate, TContent_ID, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, AcceptRegistrations, Registration_Deadline, MaxParticipants, PGPAvailable, AllowVideoConference, WebinarAvailable
+		Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, TContent_ID, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, AcceptRegistrations, Registration_Deadline, MaxParticipants, PGPAvailable, AllowVideoConference, WebinarAvailable
 		From eEvents
 		Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 			DateDiff(EventDate, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 			EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-			Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+			Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
+				Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				DateDiff(EventDate1, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
+				Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				DateDiff(EventDate2, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
+				Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				DateDiff(EventDate3, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
+				Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				DateDiff(EventDate4, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
+				Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				DateDiff(EventDate5, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+
 		Order By EventDate
 	</cfquery>
 
 	<cfquery name="getFeaturedEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		Select ShortTitle, EventDate, TContent_ID, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, AcceptRegistrations, Registration_Deadline, MaxParticipants, PGPAvailable, AllowVideoConference, WebinarAvailable
+		Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, TContent_ID, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, AcceptRegistrations, Registration_Deadline, MaxParticipants, PGPAvailable, AllowVideoConference, WebinarAvailable
 		From eEvents
 		Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-			DateDiff(Featured_StartDate, Now()) <= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-			DateDiff(Featured_EndDate, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+			DateDiff(EventDate, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 			EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
-			Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+			Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
+				Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				DateDiff(EventDate1, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
+				Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
+				Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				DateDiff(EventDate2, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
+				Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
+				Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				DateDiff(EventDate3, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
+				Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
+				Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				DateDiff(EventDate4, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
+				Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
+				Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				DateDiff(EventDate5, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+				EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
+				Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
 		Order By Featured_SortOrder ASC, EventDate ASC
 	</cfquery>
 
@@ -227,6 +267,19 @@
 			<cfelse>
 				<cfset temp = #QueryAddRow(getNonFeaturedEvents, 1)#>
 				<cfset temp = #QuerySetCell(getNonFeaturedEvents, "ShortTitle", getFeaturedEvents.ShortTitle)#>
+				<cfif DateDiff("d", Now(), getFeaturedEvents.EventDate) LT 0 and Len(getFeaturedEvents.EventDate) eq 0>
+					<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate)#>
+				<cfelseif DateDiff("d", Now(), getFeaturedEvents.EventDate) LT 0 and DateDiff("d", Now(), getFeaturedEvents.EventDate1) GT 0>
+					<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate1)#>
+				<cfelseif DateDiff("d", Now(), getFeaturedEvents.EventDate1) LT 0>
+					<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate2)#>
+				<cfelseif DateDiff("d", Now(), getFeaturedEvents.EventDate2) LT 0>
+					<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate3)#>
+				<cfelseif DateDiff("d", Now(), getFeaturedEvents.EventDate3) LT 0>
+					<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate4)#>
+				<cfelseif DateDiff("d", Now(), getFeaturedEvents.EventDate4) LT 0>
+					<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate5)#>
+				</cfif>
 				<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate)#>
 				<cfset temp = #QuerySetCell(getNonFeaturedEvents, "TContent_ID", getFeaturedEvents.TContent_ID)#>
 				<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventFeatured", getFeaturedEvents.EventFeatured)#>
@@ -339,7 +392,33 @@
 						<cfset EventSeatsLeft = #getNonFeaturedEvents.MaxParticipants# - #getCurrentRegistrationsbyEvent.CurrentNumberofRegistrations#>
 						<tr style="font-face: Arial; font-weight: bold; font-size: 14px;">
 							<td style="width: 50%;">#getNonFeaturedEvents.ShortTitle#</td>
-							<td style="width: 20%;">#DateFormat(getNonFeaturedEvents.EventDate, "mmm dd, yy")#</td>
+							<td style="width: 20%;">
+								<cfif DateDiff("d", Now(), getNonFeaturedEvents.EventDate) GT 0>
+									#DateFormat(getNonFeaturedEvents.EventDate, "mmm dd, yy")#
+								<cfelse>
+									<cfif #Len(getNonFeaturedEvents.EventDate1)#>
+										<cfif DateDiff("d", Now(), getNonFeaturedEvents.EventDate1) GTE 0 and isDate(getNonFeaturedEvents.EventDate2) eq False>
+											#DateFormat(getNonFeaturedEvents.EventDate1, "mmm dd, yy")#
+										</cfif>
+									<cfelseif #Len(getNonFeaturedEvents.EventDate2)#>
+										<cfif DateDiff("d", Now(), getNonFeaturedEvents.EventDate2) GTE 0 and isDate(getNonFeaturedEvents.EventDate3) eq False>
+											#DateFormat(getNonFeaturedEvents.EventDate2, "mmm dd, yy")#
+										</cfif>
+									<cfelseif #Len(getNonFeaturedEvents.EventDate3)#>
+										<cfif DateDiff("d", Now(), getNonFeaturedEvents.EventDate3) GTE 0 and isDate(getNonFeaturedEvents.EventDate4) eq False>
+											#DateFormat(getNonFeaturedEvents.EventDate3, "mmm dd, yy")#
+										</cfif>
+									<cfelseif #Len(getNonFeaturedEvents.EventDate4)#>
+										<cfif DateDiff("d", Now(), getNonFeaturedEvents.EventDate4) GTE 0 and isDate(getNonFeaturedEvents.EventDate5) eq False>
+											#DateFormat(getNonFeaturedEvents.EventDate4, "mmm dd, yy")#
+										</cfif>
+									<cfelseif #Len(getNonFeaturedEvents.EventDate5)#>
+										<cfif DateDiff("d", Now(), getNonFeaturedEvents.EventDate5) GTE 0>
+											#DateFormat(getNonFeaturedEvents.EventDate5, "mmm dd, yy")#
+										</cfif>
+									</cfif>
+								</cfif>
+							</td>
 							<td style="width: 20%;">
 								<cfif getNonFeaturedEvents.AcceptRegistrations EQ 1>
 									<cfif Variables.EventSeatsLeft GTE 1 and DateDiff("d", Now(), getNonFeaturedEvents.Registration_Deadline) GTE 0>

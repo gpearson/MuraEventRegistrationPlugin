@@ -267,9 +267,12 @@
 		--->
 
 		<cfinclude template="EmailTemplates/SendTemporaryPasswordToUser.cfm">
-
 	</cffunction>
 
+	<cffunction name="SendPGPCertificateToIndividual" returntype="Any" output="False">
+		<cfargument name="ParticipantInfo" type="struct" Required="True">
+		<cfinclude template="EmailTemplates/SendEventPGPCertificateToIndividual.cfm">
+	</cffunction>
 
 	<cffunction name="SendAccountActivationEmailConfirmation" returntype="Any" Output="false">
 		<cfargument name="UserID" type="String" Required="True">

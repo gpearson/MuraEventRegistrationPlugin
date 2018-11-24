@@ -36,11 +36,11 @@ Note: This email address is not valid and is not read by a human individual. Thi
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;"><cfif isDefined("Arguments.ParticipantInfo.DocLinksInEmail")><cfif Arguments.ParticipantInfo.DocLinksInEmail EQ 1>Here are the links to the Event Documents for your reference:
 			<br />
-			<cfif isDefined("Arguments.ParticipantInfo.EmailFileOne")>http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameOne#<br /></cfif>
-			<cfif isDefined("Arguments.ParticipantInfo.EmailFileTwo")>http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameTwo#<br /></cfif>
-			<cfif isDefined("Arguments.ParticipantInfo.EmailFileThree")>http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameThree#<br /></cfif>
-			<cfif isDefined("Arguments.ParticipantInfo.EmailFileFour")>http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFour#<br /></cfif>
-			<cfif isDefined("Arguments.ParticipantInfo.EmailFileFive")>http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFive#<br /></cfif>
+			<cfif isDefined("Arguments.ParticipantInfo.EmailFileOne")><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameOne#">http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameOne#</a><br /></cfif>
+			<cfif isDefined("Arguments.ParticipantInfo.EmailFileTwo")><A href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameTwo#">http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameTwo#</a><br /></cfif>
+			<cfif isDefined("Arguments.ParticipantInfo.EmailFileThree")><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameThree#">http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameThree#</a><br /></cfif>
+			<cfif isDefined("Arguments.ParticipantInfo.EmailFileFour")><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFour#">http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFour#</a><br /></cfif>
+			<cfif isDefined("Arguments.ParticipantInfo.EmailFileFive")><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFive#">http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFive#</a><br /></cfif>
 			</cfif></cfif>
 			</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>

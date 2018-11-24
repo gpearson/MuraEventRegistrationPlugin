@@ -99,7 +99,7 @@
 /* ------------------------------------------------------------------------------ */
 
       .uniForm .inlineLabels label,
-      .uniForm .inlineLabels .label{ float: left; margin: .3em 2% 0 0; padding: 0; line-height: 1; position: relative; width: 32%; }
+      .uniForm .inlineLabels .label{ font-family: Arial; font-size: 14px; float: left; margin: .3em 2% 0 0; padding: 0; line-height: 1; position: relative; width: 32%; }
       
       /* Float the input elements */
       .uniForm .inlineLabels .textInput,

@@ -154,5 +154,44 @@
 		<cfreturn Trim(variables.vcal)>
 	</cffunction>
 
+	<cffunction name="UpcomingEvents" ReturnType="Query" Access="Remote" Output="False"  hint="Returns Upcoming Events">
+		<cfargument name="DaysInFuture" required="true" type="Number">
+		<cfargument name="SiteID" required="true" type="String">
+
+		<cfset DateInFuture = #DateFormat(DateAdd("d", Now(), Arguments.DaysInFuture), "yyyy-mm-dd")#>
+		<cfset TodayDate = #DateFormat(Now(), "yyyy-mm-dd")#>
+
+		<cfquery name="getEvent" Datasource="NIESCEventRegistration" username="CFAppsMySQL" password="CFAppsMySQL">
+			Select eEvents.TContent_ID, eEvents.ShortTitle, eEvents.EventDate
+			From eEvents
+			Where eEvents.EventDate > <cfqueryparam value="#Variables.TodayDate#" cfsqltype="cf_sql_date"> and
+				eEvents.EventDate < <cfqueryparam value="#Variables.DateInFuture#" cfsqltype="cf_sql_date"> and
+				eEvents.Site_ID = <cfqueryparam value="#Arguments.SiteID#" cfsqltype="cf_sql_varchar"> and
+				eEvents.Active = 1
+			Order by EventDate ASC
+		</cfquery>
+		<cfreturn getEvent>
+
+		<cfif getEvent.RecordCount>
+			<cfsavecontent variable="xmlData">
+			<?xml version="1.0" encoding="UTF-8"?>
+			<cfoutput><UpComingEvents><cfloop query="getEvent"><Event ID="#getEvent.TContent_ID#">
+					<DateOfEvent>#DateFormat(getEvent.EventDate, "mm-dd-yyyy")#</DateOfEvent>
+					<EventTitle>#getEvent.ShortTitle#</EventTitle>
+					<EventMoreInfo>http://events.niesc.k12.in.us/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:events.eventinfo&EventID=#getEvent.TContent_ID#</EventMoreInfo>
+				</Event></cfloop></UpComingEvents></cfoutput>
+			</cfsavecontent>
+			<cfreturn RTrim(LTrim(Variables.xmlData))>
+		<cfelse>
+			<cfsavecontent variable="xmlData">
+			<?xml version="1.0" encoding="UTF-8"?>
+			<cfoutput><UpComingEvents>
+				<NumberEvents>0</NumberEvents>
+				<EventInfo></EventInfo>
+			</UpComingEvents></cfoutput>
+			</cfsavecontent>
+			<cfreturn RTrim(LTrim(Variables.xmlData))>
+		</cfif>
+	</cffunction>
 
 </cfcomponent>

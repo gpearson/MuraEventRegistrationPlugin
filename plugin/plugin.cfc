@@ -220,6 +220,35 @@ http://www.apache.org/licenses/LICENSE-2.0
 				 abort;
 				}
 			}
+
+			var dbCheckTableEventsMatrix = new query();
+			dbCheckTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
+			dbCheckTableEventsMatrix.setSQL("Show Tables LIKE 'eEventsMatrix'");
+			var dbCheckTableEventsMatrixResults = dbCheckTableEventsMatrix.execute();
+
+			if (dbCheckTableEventsMatrixResults.getResult().recordcount eq 0) {
+				// Since the Database Table does not exists, Lets Create it
+				var dbCreateTableEventsMatrix = new query();
+				dbCreateTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
+				dbCreateTableEventsMatrix.setSQL("CREATE TABLE `eEventsMatrix` ( `id` int(11) NOT NULL AUTO_INCREMENT, `Event_ID` int(11) NOT NULL, `EventID_AdditionalDates` int(11) NOT NULL, PRIMARY KEY (`id`) ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;");
+				var dbCreateTableEventsMatrixResults = dbCreateTableEventsMatrix.execute();
+			} else {
+				// Database Table Exists, We must Drop it to create it again
+				var dbDropTableEventsMatrix = new query();
+				dbDropTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
+				dbDropTableEventsMatrix.setSQL("DROP TABLE eEventsMatrix");
+				var dbDropTableEventsMatrixResults = dbDropTableEventsMatrix.execute();
+
+				if (len(dbDropTableEventsMatrixResults.getResult()) eq 0) {
+					var dbCreateTableEventsMatrix = new query();
+					dbCreateTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
+					dbCreateTableEventsMatrix.setSQL("CREATE TABLE `eEventsMatrix` ( `id` int(11) NOT NULL AUTO_INCREMENT, `Event_ID` int(11) NOT NULL, `EventID_AdditionalDates` int(11) NOT NULL, PRIMARY KEY (`id`) ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;");
+					var dbCreateTableEventsMatrixResults = dbCreateTableEventsMatrix.execute();
+				} else {
+				 writedump(dbCreateTableEventsMatrixResults.getResult());
+				 abort;
+				}
+			}
 		</cfscript>
 
 		<cfscript>

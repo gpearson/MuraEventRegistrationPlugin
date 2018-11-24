@@ -106,6 +106,7 @@
 				<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<input type="hidden" name="EventID" value="#URL.EventID#">
 				<input type="hidden" name="formSubmit" value="true">
+				<cfif isDefined("Session.FormData.RegisterAllDays")><input type="hidden" name="RegisterAllDays" value="#Session.FormData.RegisterAllDays#"><cfelse><input type="hidden" name="RegisterAllDays" value="0"></cfif>
 				<cfif isDefined("Session.FormData.WebinarParticipant")><input type="Hidden" Name="WebinarParticipant" Value="#Session.FormData.WebinarParticipant#"></cfif>
 				<table class="art-article" border="0" align="center" width="100%" cellspacing="0" cellpadding="0">
 					<tbody>

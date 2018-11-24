@@ -1,7 +1,7 @@
 <cfif not isDefined("Session.Mura")><cflocation url="http://www.niesc.k12.in.us" addtoken="false"></cfif>
 <cfif isDefined("URL.EventID") and isNumeric(URL.EventID) and Session.Mura.IsLoggedIn EQ "true">
 	<cfquery name="getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, EventFeatured, Featured_StartDate, Featured_EndDate, MemberCost, NonMemberCost,  EarlyBird_RegistrationAvailable, EarlyBird_RegistrationDeadline, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints, MealProvided, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationType, LocationID, LocationRoomID, Presenters, Facilitator, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
+		Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, EventFeatured, Featured_StartDate, Featured_EndDate, MemberCost, NonMemberCost,  EarlyBird_RegistrationAvailable, EarlyBird_RegistrationDeadline, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints, MealProvided, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationType, LocationID, LocationRoomID, Presenters, Facilitator, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
 		From eEvents
 		Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
 	</cfquery>
@@ -118,12 +118,13 @@
 				<input type="hidden" name="EventID" value="#URL.EventID#">
 				<input type="hidden" name="formSubmit" value="true">
 				<uForm:fieldset legend="Required Fields">
-					<uForm:field label="Participant's Name" name="ParticipantName" isRequired="false" isDisabled="True" value="#Session.Mura.FName# #Session.Mura.LName#" maxFieldLength="50" type="text" hint="Name of Participant" />
+					<uForm:field label="Participant's Name" style="font-family: Arial; font-size: 12px; font-weight:bold;" name="ParticipantName" isRequired="false" isDisabled="True" value="#Session.Mura.FName# #Session.Mura.LName#" maxFieldLength="50" type="text" hint="Name of Participant" />
 					<uForm:field label="Participant's Email Address" name="ParticipantEmail" isRequired="false" isDisabled="True" value="#Session.Mura.Email#" maxFieldLength="50" type="text" hint="Email Address of Participant" />
 					<cfif Session.UserRegistrationInfo.MealOptionAvailable EQ "True">
 						<uform:field label="Staying for Meal" name="WantsMeal" type="select" isRequired="True" hint="Will you be staying for the Provided Meal?">
+							<uform:option display="Please Select Option" value="" isSelected="true"/>
 							<uform:option display="Yes" value="1" />
-							<uform:option display="No" value="0" isSelected="true"/>
+							<uform:option display="No" value="0"/>
 						</uform:field>
 					</cfif>
 					<cfif Session.UserRegistrationInfo.PGPPointsAvailable EQ "True">
@@ -131,10 +132,18 @@
 					</cfif>
 					<cfif getActiveMembership.RecordCount EQ 1><cfset UserActiveMembership = True><cfelse><cfset UserActiveMembership = False></cfif>
 					<uForm:field label="Active Membership" name="ActiveMembership" isRequired="false" isDisabled="True" value="#Variables.UserActiveMembership#" maxFieldLength="50" type="text" hint="Active Membership based on Current Email Address" />
-					<uform:field label="Register Additional Participants" name="RegisterAdditionalParticipants" type="select" isRequired="True" hint="Will you also be registering additional participants for this event?">
+					<uform:field label="Register Additional Individuals" name="RegisterAdditionalParticipants" type="select" isRequired="True" hint="Will you also be registering additional participants for this event?">
+						<uform:option display="Please Select Option" value="" isSelected="true"/>
+						<uform:option display="Yes" value="1" />
+						<uform:option display="No" value="0"/>
+					</uform:field>
+					<cfif isDate(getSelectedEvent.EventDate1) or isDate(getSelectedEvent.EventDate2) or isDate(getSelectedEvent.EventDate3) or isDate(getSelectedEvent.EventDate4) or isDate(getSelectedEvent.EventDate5)>
+						<uform:field label="Register for All Event Dates" name="RegisterAllDays" type="select" isRequired="True" hint="Do you want to register for all of the event dates at this time?">
+							<uform:option display="Please Select Option" value="" isSelected="true"/>
 							<uform:option display="Yes" value="1" />
-							<uform:option display="No" value="0" isSelected="true"/>
+							<uform:option display="No" value="0"/>
 						</uform:field>
+					</cfif>
 				</uForm:fieldset>
 				<cfif getSelectedEvent.WebinarAvailable EQ 1>
 					<uForm:fieldset legend="Webinar Option">
@@ -148,18 +157,20 @@
 						<uForm:field label="Video Conference Information" name="IVCEventInfo" isRequired="false" isDisabled="True" value="#getSelectedEvent.VideoConferenceInfo#" type="textarea" hint="Information about Event's Video Conference Option" />
 						<uForm:field label="Cost to Participate" name="IVCEventCost" isRequired="false" isDisabled="True" value="#DollarFormat(getSelectedEvent.VideoConferenceCost)#" maxFieldLength="50" type="text" hint="Event Cost to Participate with Video Conference Equipment for this event" />
 						<uform:field label="Participate via Video Conference" name="IVCParticipant" type="select" isRequired="True" hint="Will you be participating through Video Conferencing for this event?">
+							<uform:option display="Please Select Option" value="" isSelected="true"/>
 							<uform:option display="Yes" value="1" />
-							<uform:option display="No" value="0" isSelected="true"/>
+							<uform:option display="No" value="0"/>
 						</uform:field>
 					</uForm:fieldset>
 				</cfif>
+
 				<cfif getSelectedEvent.WebinarAvailable EQ 0>
-					<uForm:fieldset legend="Cost to physically attend Event">
+					<uForm:fieldset legend="Cost to attend Event">
 						<cfif Session.UserRegistrationInfo.SpecialPricingAvailable EQ "True">
-							<cfif UserRegistrationInfo.SpecialPricingAvailable EQ "True"><cfset SpecialPriceAvailable = "Yes"><cfelse><cfset SpecialPriceAvailable = "No"></cfif>
+							<cfif Session.UserRegistrationInfo.SpecialPricingAvailable EQ "True"><cfset SpecialPriceAvailable = "Yes"><cfelse><cfset SpecialPriceAvailable = "No"></cfif>
 							<uForm:field label="Special Price Available" name="SpecialPriceAvailable" isRequired="false" isDisabled="True" value="#Variables.SpecialPriceAvailable#" maxFieldLength="50" type="text" hint="Does Event allow for Special Pricing if Requirements are met?" />
-							<uForm:field label="Special Price Requirements" name="SpecialPriceInfo" isRequired="false" isDisabled="True" value="#Session.UserRegistrationInfo.SpecialPriceRequirement#" type="textarea" hint="Requirements to must be met to receive this special price for attending this event." />
-							<uForm:field label="Special Price for Event" name="SpecialPriceInfo" isRequired="false" isDisabled="True" value="$ #DollarFormat(Session.UserRegistrationInfo.SpecialPriceEventCost)#" maxFieldLength="50" type="text" hint="Event Price if Special Requirements are met" />
+							<uForm:field label="Special Price Requirements" name="SpecialPriceInfo" isRequired="false" isDisabled="True" value="#Session.UserRegistrationInfo.SpecialPriceRequirements#" type="textarea" hint="Requirements to must be met to receive this special price for attending this event." />
+							<uForm:field label="Special Price for Event" name="SpecialPriceInfo" isRequired="false" isDisabled="True" value="#DollarFormat(Session.UserRegistrationInfo.SpecialPriceEventCost)#" maxFieldLength="50" type="text" hint="Event Price if Special Requirements are met" />
 						</cfif>
 						<cfif Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration EQ "True">
 							<uForm:field label="Cost to Participate" name="EventEarlyBirdPrice" isRequired="false" isDisabled="True" value="#DollarFormat(Session.UserRegistrationInfo.UserEventEarlyBirdPrice)#" maxFieldLength="50" type="text" hint="Event Cost to Physically Attend this event at the location where event is to be held" />
