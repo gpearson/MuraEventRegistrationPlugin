@@ -78,7 +78,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfif getAllCaterers.RecordCount>
 					<tfoot>
 						<tr>
-							<td colspan="6">Add new Catering Business not listed above by clicking <a href="#buildURL('admin:caterers.addcaterer')#" class="art-button">here</a></td>
+							<td colspan="6">Add new Catering Business not listed above by clicking <a href="#buildURL('eventcoord:caterers.addcaterer')#" class="art-button">here</a></td>
 						</tr>
 					</tfoot>
 					<tbody>
@@ -89,14 +89,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<td>#getAllCaterers.PhysicalCity#</td>
 							<td>#getAllCaterers.PhysicalState#</td>
 							<td>#getAllCaterers.PhysicalZipCode#</td>
-							<td><a href="#buildURL('admin:caterers.updatecaterer')#&PerformAction=Edit&RecNo=#getAllCaterers.TContent_ID#" class="btn btn-warning btn-small">U</a>&nbsp;<a href="#buildURL('admin:caterers.updatecaterer')#&PerformAction=Delete&RecNo=#getAllCaterers.TContent_ID#" class="btn btn-danger btn-small">D</a></td>
+							<td><a href="#buildURL('eventcoord:caterers.updatecaterer')#&PerformAction=Edit&RecNo=#getAllCaterers.TContent_ID#" class="btn btn-warning btn-small">U</a>&nbsp;<a href="#buildURL('eventcoord:caterers.updatecaterer')#&PerformAction=Delete&RecNo=#getAllCaterers.TContent_ID#" class="btn btn-danger btn-small">D</a></td>
 							</tr>
 						</cfloop>
 					</tbody>
 				<cfelse>
 					<tbody>
 						<tr>
-							<td colspan="6"><div align="center" class="alert-box notice">No Catering Business has been added to this website. Please click <a href="#buildURL('admin:caterers.addcaterer')#" class="art-button">here</a> to add a new catering business.</div></td>
+							<td colspan="6"><div align="center" class="alert-box notice">No Catering Business has been added to this website. Please click <a href="#buildURL('eventcoord:caterers.addcaterer')#" class="art-button">here</a> to add a new catering business.</div></td>
 						</tr>
 					</tbody>
 				</cfif>

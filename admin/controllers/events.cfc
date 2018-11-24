@@ -2770,7 +2770,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 												Select TContent_ID
 												From eRegistrations
 												Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-													User_ID = <cfqueryparam value="#i#" cfsqltype="cf_sql_varchar"> and
+													User_ID = <cfqueryparam value="#Variables.NewUserAccountID#" cfsqltype="cf_sql_varchar"> and
 													RegistrationID = "#Variables.RegistrationUUID#"
 											</cfquery>
 											<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(GetRegistrationRecordID.TContent_ID)#>
@@ -2786,7 +2786,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 												Select TContent_ID
 												From eRegistrations
 												Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-													User_ID = <cfqueryparam value="#i#" cfsqltype="cf_sql_varchar"> and
+													User_ID = <cfqueryparam value="#Variables.NewUserAccountID#" cfsqltype="cf_sql_varchar"> and
 													RegistrationID = "#Variables.RegistrationUUID#"
 											</cfquery>
 											<cfset temp = #Variables.SendEmailCFC.SendEventWaitingListToSingleParticipant(GetRegistrationRecordID.TContent_ID)#>

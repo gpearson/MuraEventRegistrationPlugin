@@ -469,6 +469,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfif getSelectedFacility.ContactEmail NEQ Form.ContactEmail><cfset UpdateInfo.ContactEmailUpdated = 1></cfif>
 
 						<cfset AddressGeoCoded = #GeoCodeAddress(Form.PhysicalAddress, FORM.PhysicalCity, FORM.PhysicalState, FORM.PhysicalZipCode)#>
+
 						<cfif AddressGeoCoded[1].ErrorMessage NEQ "OK">
 							<cflock timeout="60" scope="SESSION" type="Exclusive">
 								<cfscript>

@@ -112,9 +112,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</cfscript>
 
 					<cfif FBMsg CONTAINS "172096152818693_">
-						<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events.default&UserAction=PostToFB&Successful=True" addtoken="false">
+						<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default&UserAction=PostToFB&Successful=True" addtoken="false">
 					<cfelseif isNumeric(FBMsg)>
-						<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events.default&UserAction=PostToFB&Successful=True" addtoken="false">
+						<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default&UserAction=PostToFB&Successful=True" addtoken="false">
 					<cfelse>
 						<div class="alert-box error">An error has occurred in posting this event to the organization's Facebook Page.</div>
 					</cfif>
@@ -141,9 +141,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<div class="art-blockcontent">
 				<div class="alert-box notice">Please complete this form to send a message to those who have registered for this event.<br><Strong>Number of Registrations Currently: #Session.EventNumberRegistrations#</Strong></div>
 				<hr>
-				<uForm:form action="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events.publishtofb&compactDisplay=false&EventID=#URL.EventID#&AutomaticPost=true" method="Post" id="EmailEventParticipants" errors="#Session.FormErrors#" errorMessagePlacement="both"
+				<uForm:form action="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.publishtofb&compactDisplay=false&EventID=#URL.EventID#&AutomaticPost=true" method="Post" id="EmailEventParticipants" errors="#Session.FormErrors#" errorMessagePlacement="both"
 					commonassetsPath="/plugins/EventRegistration/library/uniForm/" showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton"
-					cancelAction="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events&compactDisplay=false"
+					cancelAction="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events&compactDisplay=false"
 					submitValue="Post Event to Facebook" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
 					<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 					<input type="hidden" name="formSubmit" value="true">

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
+<!-- 2015-07-24T13:29:03 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EventNameBadges" columnCount="2" printOrder="Horizontal" pageWidth="612" pageHeight="792" columnWidth="286" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="635a97ea-7ede-4ea4-b912-41676a9c689a">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="inch"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="inch"/>
+	<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="FName" class="java.lang.String">
+		<fieldDescription><![CDATA[First Name]]></fieldDescription>
+	</field>
+	<field name="LName" class="java.lang.String">
+		<fieldDescription><![CDATA[Last Name]]></fieldDescription>
+	</field>
+	<field name="NIESCLogoPath" class="java.lang.String"/>
+	<field name="RequestsMeal" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="250" splitType="Stretch">
+			<image evaluationTime="Report">
+				<reportElement mode="Opaque" x="17" y="19" width="252" height="200" forecolor="rgba(0, 0, 0, 0.0)" uuid="ceffa963-64c0-47d7-b524-59b6388b6e62"/>
+				<imageExpression><![CDATA[$F{NIESCLogoPath}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="20" y="50" width="240" height="37" uuid="1ca8691d-7dea-4391-a288-5d1f2ae259ec"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="20" y="97" width="240" height="33" uuid="77b66362-5707-4837-b3dc-3765c506a826"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="215" width="50" height="30" uuid="5db4b280-6389-455b-b463-26fff486d1e2"/>
+				<textFieldExpression><![CDATA[$F{RequestsMeal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

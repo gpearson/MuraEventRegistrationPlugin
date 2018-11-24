@@ -89,13 +89,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<cfscript>
 									GeoCodeResultStreetNumber = GeoCodeResultAddressComponent[1].XmlChildren;
 									GeoCodeResultStreetName = GeoCodeResultAddressComponent[2].XmlChildren;
-									GeoCodeResultNeighborhoodName = GeoCodeResultAddressComponent[3].XmlChildren;
-									GeoCodeResultCityName = GeoCodeResultAddressComponent[4].XmlChildren;
-									GeoCodeResultTownshipName = GeoCodeResultAddressComponent[5].XmlChildren;
-									GeoCodeResultCountyName = GeoCodeResultAddressComponent[6].XmlChildren;
-									GeoCodeResultStateName = GeoCodeResultAddressComponent[7].XmlChildren;
-									GeoCodeResultCountryName = GeoCodeResultAddressComponent[8].XmlChildren;
-									GeoCodeResultZipCode = GeoCodeResultAddressComponent[9].XmlChildren;
+									GeoCodeResultNeighborhoodName = GeoCodeResultAddressComponent[4].XmlChildren;
+									GeoCodeResultCityName = GeoCodeResultAddressComponent[3].XmlChildren;
+									// GeoCodeResultTownshipName = GeoCodeResultAddressComponent[5].XmlChildren;
+									GeoCodeResultCountyName = GeoCodeResultAddressComponent[5].XmlChildren;
+									GeoCodeResultStateName = GeoCodeResultAddressComponent[6].XmlChildren;
+									GeoCodeResultCountryName = GeoCodeResultAddressComponent[7].XmlChildren;
+									GeoCodeResultZipCode = GeoCodeResultAddressComponent[8].XmlChildren;
+									GeoCodeResultZipCodeSuffix = GeoCodeResultAddressComponent[9].XmlChildren;
 									GeoCodeAddressLocation = GeoCodeResultGeometryComponent[1].XmlChildren;
 									GeoCodeFormattedAddress = GeoCodeResultFormattedAddress[1].XmlText;
 								</cfscript>
@@ -115,8 +116,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<cfset Temp.AddressLocation = #GeoCodeAddressLocation[1].XMLChildren#>
 								<cfset Temp.AddressLatitude = #Temp.AddressLocation[1].XMLText#>
 								<cfset Temp.AddressLongitude = #Temp.AddressLocation[2].XMLText#>
-								<cfset Temp.AddressTownshipNameLong = #GeoCodeResultTownshipName[1].XMLText#>
-								<cfset Temp.AddressTownshipNameShort = #GeoCodeResultTownshipName[1].XMLText#>
+								<!--- <cfset Temp.AddressTownshipNameLong = #GeoCodeResultTownshipName[1].XMLText#>
+								<cfset Temp.AddressTownshipNameShort = #GeoCodeResultTownshipName[1].XMLText#> --->
 								<cfset Temp.NeighborhoodNameLong = #GeoCodeResultNeighborhoodName[1].XMLText#>
 								<cfset Temp.NeighborhoodNameShort = #GeoCodeResultNeighborhoodName[2].XMLText#>
 								<cfset #arrayAppend(GeoCodeAddress, Temp)#>

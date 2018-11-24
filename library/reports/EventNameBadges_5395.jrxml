@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
+<!-- 2015-07-25T09:22:32 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="avery_5390" columnCount="2" pageWidth="612" pageHeight="792" columnWidth="243" columnSpacing="18" leftMargin="54" rightMargin="54" topMargin="43" bottomMargin="20" uuid="c7c8d058-3e37-4d64-95c1-59e199972a72">
+	<property name="ireport.scriptlethandling" value="2"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="inch"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<queryString>
+		<![CDATA[SELECT
+     Students."LastName" AS Students_LastName,
+     Students."FirstName" AS Students_FirstName,
+     Students."MiddleName" AS Students_MiddleName,
+     Students."GradeLevel" AS Students_GradeLevel,
+     Students."Locker1" AS Students_Locker1,
+     Students."Combination1" AS Students_Combination1
+FROM
+     "dbo"."Students" Students
+WHERE
+     Students."Status" LIKE 'Enrolled'
+ORDER BY
+     Students."GradeLevel" ASC,
+     Students."LastName" ASC,
+     Students."FirstName" ASC,
+     Students."MiddleName" ASC]]>
+	</queryString>
+	<field name="NIESCLogoPath" class="java.lang.String"/>
+	<field name="FName" class="java.lang.String"/>
+	<field name="LName" class="java.lang.String"/>
+	<field name="RequestsMeal" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="181" splitType="Stretch">
+			<image>
+				<reportElement x="5" y="3" width="236" height="161" uuid="1fe71dd5-639e-409f-9611-bae5c488a91c"/>
+				<imageExpression><![CDATA[$F{NIESCLogoPath}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="23" width="241" height="30" uuid="1c35350d-83ca-49a5-8a57-edc45467ec1e"/>
+				<textElement textAlignment="Center">
+					<font size="22"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="61" width="241" height="37" uuid="710daaa0-6785-484d-b27a-78d103654572"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="6" y="144" width="52" height="20" uuid="9f077385-9e0a-4d75-8b25-3d45d51c7d5a"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RequestsMeal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

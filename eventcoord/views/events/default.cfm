@@ -26,7 +26,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfswitch expression="#URL.UserAction#">
 					<cfcase value="PostToFB">
 						<div class="alert-box success">
-							<p>Your have successfully posted a message regarding <cfoutput>#Session.UserSuppliedInfo.ShortTitle#</cfoutput> to the Organization's Facebook Page.</p>
+							<p>Your have successfully posted a message regarding <cfoutput>#Session.UserSuppliedInfo.PickedEvent.ShortTitle#</cfoutput> to the Organization's Facebook Page.</p>
 						</div>
 					</cfcase>
 					<cfcase value="ParticipantsRegistered">
@@ -148,6 +148,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 										&nbsp;&nbsp;<a href="#buildURL('eventcoord:events.deregisteruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">De-Register</a><br />
 										&nbsp;&nbsp;<a href="#buildURL('eventcoord:events.eventsigninsheet')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Sheet</a>
 										&nbsp;&nbsp;<a href="#buildURL('eventcoord:events.eventsigninparticipant')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Participant</a><br />
+										&nbsp;&nbsp;<a href="#buildURL('eventcoord:events.eventnamebadges')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Participant Name Badges</a><br />
 									</cfif>
 									<a href="#buildURL('eventcoord:events.publishtofb')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Post to Facebook</a>
 								</td>

@@ -74,17 +74,41 @@ http://www.apache.org/licenses/LICENSE-2.0
 			FROM eRegistrations INNER JOIN tusers ON tusers.UserID = eRegistrations.User_ID INNER JOIN eEvents ON eEvents.TContent_ID = eRegistrations.EventID
 			WHERE eRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
 				eRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-			ORDER BY tusers.Lname ASC, tusers.Fname ASC
+			ORDER BY Domain ASC, tusers.Lname ASC, tusers.Fname ASC
 		</cfquery>
+		<cfset getParticipants = #StructCopy(getRegisteredParticipants)#>
+		<cfset StructClear(getParticipants)>
+		<cfloop query="getRegisteredParticipants">
+			<cfset temp = QueryAddRow(getParticipants)>
+			<cfset temp = QuerySetCell(getParticipants, "Fname", getRegisteredparticipants.Fname)>
+			<cfset temp = QuerySetCell(getParticipants, "Lname", getRegisteredparticipants.Lname)>
+			<cfset temp = QuerySetCell(getParticipants, "Email", getRegisteredparticipants.Email)>
+			<cfset temp = QuerySetCell(getParticipants, "Domain", getRegisteredparticipants.Domain)>
+			<cfset temp = QuerySetCell(getParticipants, "ShortTitle", getRegisteredparticipants.ShortTitle)>
+			<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", getRegisteredparticipants.EventDateFormat)>
+			<cfif getRegisteredParticipants.RequestsMeal EQ 1>
+				<cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")>
+			<cfelse>
+				<cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")>
+			</cfif>
+
+			<cfif getRegisteredParticipants.IVCParticipant EQ 1>
+				<cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "Yes")>
+			<cfelse>
+				<cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "No")>
+			</cfif>
+		</cfloop>
+
+<!--- 877-395-5535 --->
 		<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
 		<cfset LogoPath = ArrayNew(1)>
 		<cfloop from="1" to="#getRegisteredParticipants.RecordCount#" step="1" index="i">
 			<cfset LogoPath[i] = #ExpandPath("/plugins/EventRegistration/library/images/NIESC_Logo.png")#>
 		</cfloop>
-		<cfset temp = QueryAddColumn(getRegisteredParticipants, "NIESCLogoPath", "VarChar", Variables.LogoPath)>
+		<cfset temp = QueryAddColumn(getParticipants, "NIESCLogoPath", "VarChar", Variables.LogoPath)>
 		<cfset ReportDirectory = #ExpandPath("/plugins/EventRegistration/library/reports/")# >
 		<cfset ReportExportLoc = #ExpandPath("/plugins/EventRegistration/library/ReportExports/")# & #URL.EventID# & "EventSignInSheet.pdf" >
-		<jr:jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" query="#getRegisteredParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
+		<jr:jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
 		<!---
 			<cf_jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" filename="#ReportExportLoc#" exporttype="pdf" query="#getRegisteredParticipants#" />
 		--->

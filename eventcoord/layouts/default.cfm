@@ -179,7 +179,7 @@
 
 								</li>
 							<cfelseif Session.Mura.EventCoordinatorRole EQ "true" and Session.Mura.EventPresenterRole EQ "false">
-								<li><a href="" class="active">Event Administration</a>
+							<li><a href="/plugins/EventRegistration/" class="active">Event Administration</a>
 									<ul>
 										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:caterers.default" class="active">Manage Catering</a></li>
 										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:events.default" class="active">Manage Events</a></li>
@@ -189,23 +189,12 @@
 										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:users.default" class="active">Manage Users</a></li>
 									</ul>
 								</li>
-							<cfelseif Session.Mura.EventCoordinatorRole EQ "false" and Session.Mura.EventPresenterRole EQ "true">
-								<li><a href="" class="active">Presenter Administration</a>
-									<!--- <ul>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:caterers.default" class="active">Manage Catering</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:events.default" class="active">Manage Events</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:facilities.default" class="active">Manage Facilities</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:membership.default" class="active">Manage Membership</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:presenters.default" class="active">Manage Presenters</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:users.default" class="active">Manage Users</a></li>
-									</ul> --->
-								</li>
 							<cfelseif Session.Mura.EventCoordinatorRole EQ "false" and Session.Mura.EventPresenterRole EQ "false">
-								<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.default" class="active">User Administration</a>
+								<li><a href="/plugins/EventRegistration/" class="active">User Administration</a>
 									<ul>
-											<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.manageregistrations" class="active">Manage Registrations</a></li>
-											<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.getcertificate" class="active">Print Certificates</a></li>
-										</ul>
+										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usernmenu.manageregistrations" class="active">Manage Registrations</a></li>
+										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.getcertificate" class="active">Print Certificataes</a></li>
+									</ul>
 								</li>
 							</cfif>
 						</cfif>

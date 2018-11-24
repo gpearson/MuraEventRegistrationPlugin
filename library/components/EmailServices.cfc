@@ -27,14 +27,14 @@
 	</cffunction>
 
 	<cffunction name="SendEventRegistrationToSingleParticipant" returntype="Any" Output="false">
-		<cfargument name="RegistrationRecordID" type="numeric" Required="True">
+		<cfargument name="RegistrationRecordID" type="String" Required="True">
 
 		<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(Session.FormData.PluginInfo.PackageName)#/library/components/EventServices")>
 
 		<cfquery name="getRegistration" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
 			Select RegistrationID, RegistrationDate, User_ID, EventID, RequestsMeal, IVCParticipant, AttendeePrice, RegisterByUserID, OnWaitingList, Comments, WebinarParticipant
 			From eRegistrations
-			Where TContent_ID = <cfqueryparam value="#Arguments.RegistrationRecordID#" cfsqltype="cf_sql_integer">
+			Where RegistrationID = <cfqueryparam value="#Arguments.RegistrationRecordID#" cfsqltype="cf_sql_integer">
 		</cfquery>
 
 		<cfquery name="getRegisteredUserInfo" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">

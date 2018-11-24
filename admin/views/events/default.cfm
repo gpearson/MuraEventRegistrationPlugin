@@ -148,6 +148,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.deregisteruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">De-Register</a><br />
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventsigninsheet')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Sheet</a>
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventsigninparticipant')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Participant</a><br />
+										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventnamebadges')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Participant Name Badges</a><br />
 									</cfif>
 									<a href="#buildURL('admin:events.publishtofb')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Post to Facebook</a>
 								</td>

@@ -2770,7 +2770,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 												Select TContent_ID
 												From eRegistrations
 												Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-													User_ID = <cfqueryparam value="#i#" cfsqltype="cf_sql_varchar"> and
+													User_ID = <cfqueryparam value="#Variables.NewUserAccountID#" cfsqltype="cf_sql_varchar"> and
 													RegistrationID = "#Variables.RegistrationUUID#"
 											</cfquery>
 											<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(GetRegistrationRecordID.TContent_ID)#>
@@ -2786,7 +2786,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 												Select TContent_ID
 												From eRegistrations
 												Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-													User_ID = <cfqueryparam value="#i#" cfsqltype="cf_sql_varchar"> and
+													User_ID = <cfqueryparam value="#Variables.NewUserAccountID#" cfsqltype="cf_sql_varchar"> and
 													RegistrationID = "#Variables.RegistrationUUID#"
 											</cfquery>
 											<cfset temp = #Variables.SendEmailCFC.SendEventWaitingListToSingleParticipant(GetRegistrationRecordID.TContent_ID)#>
@@ -4290,7 +4290,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 		<cfif isDefined("URL.EventID") and isDefined("URL.AutomaticPost")>
 			<cfif URL.AutomaticPost EQ "True">
-
 				<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription,
 						Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime,
@@ -4311,7 +4310,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					WHERE eFacility.Active = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> AND eFacility.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
 						AND eFacilityRooms.TContent_ID = <cfqueryparam value="#GetSelectedEvent.LocationRoomID#" cfsqltype="cf_sql_integer">
 				</cfquery>
-				<cfset Session.UserSuppliedInfo.EventInfo = #StructCopy(GetSelectedEvent)#>
+
 				<cfset Session.UserSuppliedInfo.FacilityInfo = #StructCopy(GetFacilityInformation)#>
 			</cfif>
 		<cfelseif not isDefined("Form.PerformAction") and isDefined("URL.EventID") and not isDefined("URL.PerformAction") and isDefined("URL.EventID")>
@@ -4418,7 +4417,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</cfswitch>
 		</cfif>
 	</cffunction>
-
 
 	<cffunction name="emailattended" returntype="any" output="true">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
@@ -4736,4 +4734,5 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</cfif>
 		</cfif>
 	</cffunction>
+
 </cfcomponent>

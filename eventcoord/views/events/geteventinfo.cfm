@@ -247,7 +247,7 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="4">Return to the listing of all available events by clicking <a href="#buildURL('admin:events.default')#" class="art-button">here</a></td>
+							<td colspan="4">Return to the listing of all available events by clicking <a href="#buildURL('eventcoord:events.default')#" class="art-button">here</a></td>
 						</tr>
 					</tfoot>
 				</table>

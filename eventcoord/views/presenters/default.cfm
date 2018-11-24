@@ -150,7 +150,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<cfif getAllPresenters.RecordCount>
 			<tfoot>
 				<tr>
-					<td colspan="6">Add new Membership Organization not listed above by clicking <a href="#buildURL('admin:membership.addorganization')#" class="art-button">here</a></td>
+					<td colspan="6">Add new Membership Organization not listed above by clicking <a href="#buildURL('eventcoord:membership.addorganization')#" class="art-button">here</a></td>
 				</tr>
 			</tfoot>
 			<tbody>
@@ -161,14 +161,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<td>#getAllPresenters.UserName#</td>
 					<td>#getAllPresenters.Email#</td>
 					<td>#getAllPresenters.Company#</td>
-					<td><a href="#buildURL('admin:presenters.updateuser')#&PerformAction=Edit&RecNo=#getAllPresenters.UserID#" class="art-button">U</a>&nbsp;<a href="#buildURL('admin:presenters.updateuser')#&PerformAction=Delete&RecNo=#getAllPresenters.UserID#" class="art-button">D</a></td>
+					<td><a href="#buildURL('eventcoord:presenters.updateuser')#&PerformAction=Edit&RecNo=#getAllPresenters.UserID#" class="art-button">U</a>&nbsp;<a href="#buildURL('eventcoord:presenters.updateuser')#&PerformAction=Delete&RecNo=#getAllPresenters.UserID#" class="art-button">D</a></td>
 					</tr>
 				</cfloop>
 			</tbody>
 		<cfelse>
 			<tbody>
 				<tr>
-					<td colspan="6" align="Center"><h4>No Presenters have been entered into this application. Please click <a class="art-button" href="#buildURL('admin:users.adduser')#">here</a> to add a presenter to this system.</h4></td>
+					<td colspan="6" align="Center"><h4>No Presenters have been entered into this application. Please click <a class="art-button" href="#buildURL('eventcoord:users.adduser')#">here</a> to add a presenter to this system.</h4></td>
 				</tr>
 			</tbody>
 		</cfif>

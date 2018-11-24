@@ -35,7 +35,7 @@
 							<td>#getAllFacilities.PhysicalCity#</td>
 							<td>#getAllFacilities.PhysicalState#</td>
 							<td>#getAllFacilities.PhysicalZipCode#</td>
-							<td width="110"><a href="#buildURL('admin:caterers.updatecaterer')#&PerformAction=Edit&RecNo=#getAllFacilities.TContent_ID#" class="btn btn-small">Edit</a>&nbsp;<a href="#buildURL('admin:caterers.updatecaterer')#&PerformAction=Delete&RecNo=#getAllFacilities.TContent_ID#" class="btn btn-small">Delete</a></td>
+							<td width="110"><a href="#buildURL('eventcoord:caterers.updatecaterer')#&PerformAction=Edit&RecNo=#getAllFacilities.TContent_ID#" class="btn btn-small">Edit</a>&nbsp;<a href="#buildURL('eventcoord:caterers.updatecaterer')#&PerformAction=Delete&RecNo=#getAllFacilities.TContent_ID#" class="btn btn-small">Delete</a></td>
 							</tr>
 						</cfloop>
 					</tbody>
