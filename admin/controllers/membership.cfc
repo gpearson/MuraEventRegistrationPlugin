@@ -77,7 +77,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 		<cfif not isDefined("FORM.formSubmit") and not isDefined("FORM.PerformAction") and isDefined("URL.OrgID")>
 			<cfquery name="getSelectedOrganization" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select TContent_ID, Site_ID, OrganizationName, OrganizationDomainName, Active, dateCreated, lastUpdateBy, lastUpdated
+				Select TContent_ID, Site_ID, OrganizationName, OrganizationDomainName, Active, dateCreated, lastUpdateBy, lastUpdated. Mailing_Address, Mailing_city, Mailing_State, Mailing_ZipCode, Primary_PhoneNumber, Primary_FaxNumber, Physical_Address, Physical_City, Physical_State, Physical_ZipCode, AccountsPayable_ContactName, AccountsPayable_EmailAddress
 				From eMembership
 				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 					TContent_ID = <cfqueryparam value="#URL.OrgID#" cfsqltype="cf_sql_integer">
@@ -91,6 +91,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfset Session.UserSuppliedInfo.MemberOrganization.dateCreated = #getSelectedOrganization.dateCreated#>
 					<cfset Session.UserSuppliedInfo.MemberOrganization.lastUpdateBy = #getSelectedOrganization.lastUpdateBy#>
 					<cfset Session.UserSuppliedInfo.MemberOrganization.lastUpdated = #getSelectedOrganization.lastUpdated#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_Address = #getSelectedOrganization.Mailing_Address#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_City = #getSelectedOrganization.Mailing_City#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_State = #getSelectedOrganization.Mailing_State#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_ZipCode = #getSelectedOrganization.Mailing_ZipCode#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Primary_PhoneNumber = #getSelectedOrganization.Primary_PhoneNumber#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Primary_FaxNumber = #getSelectedOrganization.Primary_FaxNumber#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_Address = #getSelectedOrganization.Physical_Address#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_City = #getSelectedOrganization.Physical_City#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_State = #getSelectedOrganization.Physical_State#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_ZipCode = #getSelectedOrganization.Physical_ZipCode#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_EmailAddress = #getSelectedOrganization.AccountsPayable_EmailAddress#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_ContactName = #getSelectedOrganization.AccountsPayable_ContactName#>
 				</cflock>
 			<cfelse>
 				<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:membership&SiteID=#rc.$.siteConfig('siteID')#" addtoken="false">
@@ -123,7 +135,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 		<cfif not isDefined("FORM.formSubmit") and not isDefined("FORM.PerformAction") and isDefined("URL.OrgID")>
 			<cfquery name="getSelectedOrganization" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select TContent_ID, Site_ID, OrganizationName, OrganizationDomainName, Active, dateCreated, lastUpdateBy, lastUpdated
+				Select TContent_ID, Site_ID, OrganizationName, OrganizationDomainName, Active, dateCreated, lastUpdateBy, lastUpdated. Mailing_Address, Mailing_city, Mailing_State, Mailing_ZipCode, Primary_PhoneNumber, Primary_FaxNumber, Physical_Address, Physical_City, Physical_State, Physical_ZipCode, AccountsPayable_ContactName, AccountsPayable_EmailAddress
 				From eMembership
 				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 					TContent_ID = <cfqueryparam value="#URL.OrgID#" cfsqltype="cf_sql_integer">
@@ -137,6 +149,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfset Session.UserSuppliedInfo.MemberOrganization.dateCreated = #getSelectedOrganization.dateCreated#>
 					<cfset Session.UserSuppliedInfo.MemberOrganization.lastUpdateBy = #getSelectedOrganization.lastUpdateBy#>
 					<cfset Session.UserSuppliedInfo.MemberOrganization.lastUpdated = #getSelectedOrganization.lastUpdated#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_Address = #getSelectedOrganization.Mailing_Address#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_City = #getSelectedOrganization.Mailing_City#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_State = #getSelectedOrganization.Mailing_State#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_ZipCode = #getSelectedOrganization.Mailing_ZipCode#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Primary_PhoneNumber = #getSelectedOrganization.Primary_PhoneNumber#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Primary_FaxNumber = #getSelectedOrganization.Primary_FaxNumber#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_Address = #getSelectedOrganization.Physical_Address#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_City = #getSelectedOrganization.Physical_City#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_State = #getSelectedOrganization.Physical_State#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_ZipCode = #getSelectedOrganization.Physical_ZipCode#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_EmailAddress = #getSelectedOrganization.AccountsPayable_EmailAddress#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_ContactName = #getSelectedOrganization.AccountsPayable_ContactName#>
 				</cflock>
 			<cfelse>
 				<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:membership&SiteID=#rc.$.siteConfig('siteID')#" addtoken="false">
@@ -169,7 +193,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 		<cfif not isDefined("FORM.formSubmit") and not isDefined("FORM.PerformAction") and isDefined("URL.OrgID")>
 			<cfquery name="getSelectedOrganization" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select TContent_ID, Site_ID, OrganizationName, OrganizationDomainName, Active, dateCreated, lastUpdateBy, lastUpdated, StateDOE_IDNUmber
+				Select TContent_ID, Site_ID, OrganizationName, OrganizationDomainName, Active, dateCreated, lastUpdateBy, lastUpdated. Mailing_Address, Mailing_city, Mailing_State, Mailing_ZipCode, Primary_PhoneNumber, Primary_FaxNumber, Physical_Address, Physical_City, Physical_State, Physical_ZipCode, AccountsPayable_ContactName, AccountsPayable_EmailAddress
 				From eMembership
 				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 					TContent_ID = <cfqueryparam value="#URL.OrgID#" cfsqltype="cf_sql_integer">
@@ -180,10 +204,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfset Session.UserSuppliedInfo.MemberOrganization.OrganizationName = #getSelectedOrganization.OrganizationName#>
 					<cfset Session.UserSuppliedInfo.MemberOrganization.OrganizationDomainName = #getSelectedOrganization.OrganizationDomainName#>
 					<cfset Session.UserSuppliedInfo.MemberOrganization.Active = #getSelectedOrganization.Active#>
-					<cfset Session.UserSuppliedInfo.MemberOrganization.StateDOE_IDNumber = #getSelectedOrganization.StateDOE_IDNUmber#>
 					<cfset Session.UserSuppliedInfo.MemberOrganization.dateCreated = #getSelectedOrganization.dateCreated#>
 					<cfset Session.UserSuppliedInfo.MemberOrganization.lastUpdateBy = #getSelectedOrganization.lastUpdateBy#>
 					<cfset Session.UserSuppliedInfo.MemberOrganization.lastUpdated = #getSelectedOrganization.lastUpdated#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_Address = #getSelectedOrganization.Mailing_Address#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_City = #getSelectedOrganization.Mailing_City#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_State = #getSelectedOrganization.Mailing_State#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Mailing_ZipCode = #getSelectedOrganization.Mailing_ZipCode#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Primary_PhoneNumber = #getSelectedOrganization.Primary_PhoneNumber#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Primary_FaxNumber = #getSelectedOrganization.Primary_FaxNumber#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_Address = #getSelectedOrganization.Physical_Address#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_City = #getSelectedOrganization.Physical_City#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_State = #getSelectedOrganization.Physical_State#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.Physical_ZipCode = #getSelectedOrganization.Physical_ZipCode#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_EmailAddress = #getSelectedOrganization.AccountsPayable_EmailAddress#>
+					<cfset Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_ContactName = #getSelectedOrganization.AccountsPayable_ContactName#>
 				</cflock>
 			<cfelse>
 				<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:membership&SiteID=#rc.$.siteConfig('siteID')#" addtoken="false">
@@ -198,6 +233,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfparam name="UpdateInfo.DomainNameUpdated" type="boolean" default="0">
 			<cfparam name="UpdateInfo.StateDOEIDNumberUpdated" type="boolean" default="0">
 			<cfparam name="UpdateInfo.ActiveUpdated" type="boolean" default="0">
+			<cfparam name="UpdateInfo.AccountsPayableContactName" type="boolean" default="0">
+			<cfparam name="UpdateInfo.AccountsPayableContactEmail" type="boolean" default="0">
+
 
 
 			<cflock timeout="60" scope="Session" type="Exclusive">
@@ -205,12 +243,32 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfif FORM.OrganizationDomainName NEQ Session.UserSuppliedInfo.MemberOrganization.OrganizationDomainName><cfset UpdateInfo.DomainNameUpdated = 1></cfif>
 				<cfif FORM.Active NEQ Session.UserSuppliedInfo.MemberOrganization.Active><cfset UpdateInfo.ActiveUpdated = 1></cfif>
 				<cfif FORM.StateDOE_IDNumber NEQ Session.UserSuppliedInfo.MemberOrganization.StateDOE_IDNumber><cfset UpdateInfo.StateDOEIDNumberUpdated = 1></cfif>
+				<cfif FORM.AccountsPayable_ContactName NEQ Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_ContactName><cfset UpdateInfo.AccountsPayableContactName = 1></cfif>
+				<cfif FORM.AccountsPayable_EmailAddress NEQ Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_EmailAddress><cfset UpdateInfo.AccountsPayableContactEmail = 1></cfif>
 			</cflock>
 
 			<cfif UpdateInfo.DomainNameUpdated EQ 1>
 				<cfif LEN(FORM.OrganizationDomainName) EQ 0>
 					<cfscript>
 						eventdate = {property="OrganizationDomainName",message="Please enter the domain name for this Member Organization. Enter everything after the @ sign in a member's organization email address.'"};
+						arrayAppend(Session.FormErrors, eventdate);
+					</cfscript>
+				</cfif>
+			</cfif>
+
+			<cfif UpdateInfo.AccountsPayableContactName EQ 1>
+				<cfif LEN(FORM.AccountsPayableContactName) EQ 0>
+					<cfscript>
+						eventdate = {property="AccountsPayableContactName",message="Please enter the Contact Name of the Accounts Payable Person at this District."};
+						arrayAppend(Session.FormErrors, eventdate);
+					</cfscript>
+				</cfif>
+			</cfif>
+
+			<cfif UpdateInfo.AccountsPayableContactEmail EQ 1>
+				<cfif not isEmail(FORM.AccountsPayableContactName)>
+					<cfscript>
+						eventdate = {property="AccountsPayableContactEmail",message="Please enter a valid Email Address for the Accounts Payable Person at this District."};
 						arrayAppend(Session.FormErrors, eventdate);
 					</cfscript>
 				</cfif>
@@ -236,7 +294,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 
 
-			<cfif UpdateInfo.NameUpdated EQ 0 and  UpdateInfo.DomainNameUpdated EQ 0 and UpdateInfo.ActiveUpdated EQ 0 and UpdateInfo.StateDOEIDNumberUpdated EQ 0>
+			<cfif UpdateInfo.AccountsPayableContactName EQ 0 and UpdateInfo.NameUpdated EQ 0 and  UpdateInfo.DomainNameUpdated EQ 0 and UpdateInfo.ActiveUpdated EQ 0 and UpdateInfo.StateDOEIDNumberUpdated EQ 0>
 				<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:membership&SiteID=#rc.$.siteConfig('siteID')#" addtoken="false">
 			<cfelse>
 				<cftry>
@@ -244,6 +302,28 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfquery name="updateOrganization" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 							Update eMembership
 							Set OrganizationName = <cfqueryparam value="#FORM.OrganizationName#" cfsqltype="cf_sql_varchar">,
+								lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+								lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+							Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+								TContent_ID = <cfqueryparam value="#URL.OrgID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+					</cfif>
+
+					<cfif UpdateInfo.AccountsPayableContactName EQ 1>
+						<cfquery name="updateOrganization" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update eMembership
+							Set AccountsPayable_ContactName = <cfqueryparam value="#FORM.AccountsPayable_ContactName#" cfsqltype="cf_sql_varchar">,
+								lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+								lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+							Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+								TContent_ID = <cfqueryparam value="#URL.OrgID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+					</cfif>
+
+					<cfif UpdateInfo.AccountsPayableContactEmail EQ 1>
+						<cfquery name="updateOrganization" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update eMembership
+							Set AccountsPayable_EmailAddress = <cfqueryparam value="#FORM.AccountsPayable_EmailAddress#" cfsqltype="cf_sql_varchar">,
 								lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
 								lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
 							Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and

@@ -2,7 +2,7 @@
 
 This file is part of MuraFW1
 
-Copyright 2010-2013 Stephen J. Withington, Jr.
+Copyright 2010-2015 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
@@ -38,6 +38,23 @@ http://www.apache.org/licenses/LICENSE-2.0
 }
 .container-murafw1 .navbar .nav > li > .dropdown-menu a, .mura #cPlugins .container-murafw1 .navbar .nav > li > .dropdown-menu a {
 	text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+}
+
+.mfw1-example {
+	position: relative;
+	border-color: #ddd;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 4px 4px 0 0;
+	box-shadow: none;
+	padding: 1em;
+	margin: 0 0 2em 0;
+}
+
+.mfw1-admin-links {
+	margin: 1em 0;
+	padding: 1em 0 0 0;
+	border-top: 1px solid #ddd;
 }
 
 /* MuraFW1 Sidenav

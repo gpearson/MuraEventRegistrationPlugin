@@ -41,7 +41,6 @@
 							</cfloop>
 						</uform:field>
 						<uForm:field label="Phone Number" name="mobilePhone" type="text" maxFieldLength="14" mask="(999) 999-9999" hint="Your contact number in case of cancellation of event" />
-						<uform:field name="HumanChecker" isRequired="true" label="Please enter the characters you see below" type="captcha" captchaWidth="800" captchaMinChars="5" captchaMaxChars="5" />
 					</uForm:fieldset>
 				</uForm:form>
 			</div>

@@ -30,16 +30,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfset Session.FormErrors = #ArrayNew()#>
 
 			<cfif FORM.formSubmit EQ "true">
-
-				<!--- Checks to make sure Captcha is entered correctly --->
-				<cfif #HASH(FORM.HumanChecker)# NEQ FORM.HumanCheckerhash>
-					<cfscript>
-						HumanChecker = {property="HumanChecker",message="The CAPTCHA Characters were not correct in the image. Please enter the correct sequence of characters and submit this form again."};
-						arrayAppend(Session.FormErrors, HumanChecker);
-					</cfscript>
-					<cflocation url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?EventRegistrationaction=public:registeruser.default&UserRegistrationSuccessfull=false" addtoken="false">
-				</cfif>
-
 				<cfquery name="GetOrganizationName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Select OrganizationName
 					From eMembership

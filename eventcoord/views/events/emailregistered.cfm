@@ -37,9 +37,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<uForm:fieldset legend="Message to Participants">
 					<uform:field label="Email Body Message" name="EmailMsg" isDisabled="false" type="textarea" hint="The Email Message Body for Participants" />
 					<uform:field label="Include File Links" name="IncludeFileLinks" type="select" hint="Include Links to Event Documents in Email Message?">
-						<uform:option display="Yes" value="1" isSelected="true" />
-						<uform:option display="No" value="0" />
+						<uform:option display="Yes" value="1" />
+						<uform:option display="No" value="0" isSelected="true" />
 					</uform:field>
+				</uForm:fieldset>
+				<uForm:fieldset legend="Participant Web Links">
+					<uform:field label="First Website Link" name="FirstWebLink" type="text" />
+					<uform:field label="Second Website Link" name="SecondWebLink" type="text" />
 				</uForm:fieldset>
 				<uForm:fieldset legend="Participant Materials">
 					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameOne)>

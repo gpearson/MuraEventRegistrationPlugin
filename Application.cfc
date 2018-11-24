@@ -2,7 +2,7 @@
 
 This file is part of MuraFW1
 
-Copyright 2010-2013 Stephen J. Withington, Jr.
+Copyright 2010-2015 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
@@ -15,7 +15,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 		on how to access these methods.
 
 */
-component persistent="false" accessors="true" output="false" extends="includes.fw1" {
+component persistent="false" accessors="true" output="false" extends="includes.framework.one" {
 
 	include 'includes/fw1config.cfm'; // framework variables
 	include '../../config/applicationSettings.cfm';
@@ -29,8 +29,18 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		var fwa = variables.framework.action;
 		var local = {};
 
+		clearFW1Request();
+
 		local.targetPath = getPageContext().getRequest().getRequestURI();
-		onApplicationStart();
+
+		setupFrameworkDefaults();
+		setupRequestDefaults();
+
+		if ( !isFrameworkInitialized() || isFrameworkReloadRequest() ) {
+			setupApplicationWrapper();
+		}
+
+		restoreFlashContext();
 
 		request.context[fwa] = StructKeyExists(form, fwa) 
 			? form[fwa] : StructKeyExists(url, fwa) 
@@ -47,7 +57,8 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 			& '_' & getItem(arguments.action)
 		);
 
-		local.response = getCachedView(local.viewKey);
+		local.response = variables.framework.siloSubsystems 
+			? getCachedView(local.viewKey) : '';
 
 		local.newViewRequired = !Len(local.response) 
 			? true : getSubSystem(arguments.action) == getSubSystem(request.context[fwa])
@@ -59,35 +70,44 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 				onRequest(local.targetPath);
 			};
 			clearFW1Request();
-			setCachedView(local.viewKey, local.response);
-		};
+
+			if ( variables.framework.siloSubsystems ) {
+				setCachedView(local.viewKey, local.response);
+			}
+		}
 
 		return local.response;
 	}
 
-	public any function setupApplication() {
+	// exposed for use by eventHandler.cfc:onApplicationLoad()
+	public void function setupApplicationWrapper() {
+		lock scope='application' type='exclusive' timeout=20 {
+			super.setupApplicationWrapper();
+		};
+	}
+
+	public void function setupApplication() {
 		var local = {};
 
 		if ( !StructKeyExists(application, 'pluginManager') ) {
 			location(url='/', addtoken=false);
+		}
+
+		lock scope='application' type='exclusive' timeout=20 {
+			getFw1App().pluginConfig = application.pluginManager.getConfig(ID=variables.framework.applicationKey);
 		};
 
-		lock scope='application' type='exclusive' timeout=50 {
-			application[variables.framework.applicationKey].pluginConfig = application.pluginManager.getConfig(ID=variables.framework.applicationKey);
-		};
+		// Bean Factory (uses DI/1)
+		// Be sure to pass in your comma-separated list of folders to scan for CFCs
+		local.beanFactory = new includes.framework.ioc('/#variables.framework.package#/app2/model,/#variables.framework.package#/app3/model');
 
-		// Bean Factory Options
+		local.beanFactory.addBean('fw', this);
 
-		// 1) Use DI/1
-		// just be sure to pass in your comma-separated list of folders to scan for CFCs
-		// local.beanFactory = new includes.factory.ioc('/#variables.framework.package#/app2/services,/#variables.framework.package#/app3/model');
-		// setBeanFactory( local.beanFactory );
+		// optionally set Mura to be the parent beanFactory
+		local.parentBeanFactory = application.serviceFactory;
+		local.beanFactory.setParent(local.parentBeanFactory);
 
-		// OR
-
-		// 2) Use Mura's
-		local.pc = application[variables.framework.applicationKey].pluginConfig;
-		setBeanFactory(local.pc.getApplication(purge=false));
+		setBeanFactory(local.beanFactory);
 	}
 
 	public void function setupRequest() {
@@ -99,7 +119,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 			lock scope='session' type='exclusive' timeout='10' {
 				session.siteid = 'default';
 			};
-		};
+		}
 
 		secureRequest();
 
@@ -108,7 +128,8 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		
 		if ( StructKeyExists(url, application.configBean.getAppReloadKey()) ) { 
 			setupApplication();
-		};
+			//setupApplicationWrapper();
+		}
 
 		if ( Len(Trim(request.context.siteid)) && ( session.siteid != request.context.siteid) ) {
 			local.siteCheck = application.settingsManager.getSites();
@@ -117,17 +138,17 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 					session.siteid = request.context.siteid;
 				};
 			};
-		};
+		}
 
 		if ( !StructKeyExists(request.context, '$') ) {
-			request.context.$ = application.serviceFactory.getBean('muraScope').init(session.siteid);
-		};
+			request.context.$ = StructKeyExists(request, 'muraScope') ? request.muraScope : application.serviceFactory.getBean('muraScope').init(session.siteid);
+		}
 
-		request.context.pc = application[variables.framework.applicationKey].pluginConfig;
-		request.context.pluginConfig = application[variables.framework.applicationKey].pluginConfig;
+		request.context.pc = getFw1App().pluginConfig;
+		request.context.pluginConfig = getFw1App().pluginConfig;
 		request.context.action = request.context[variables.framework.action];
 	}
-	
+
 	public void function setupView() {
 		var httpRequestData = GetHTTPRequestData();
 		if ( 
@@ -136,7 +157,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 			&& httpRequestData.headers['X-#variables.framework.package#-AJAX'] 
 		) {
 			setupResponse();
-		};
+		}
 	}
 	
 	public void function setupResponse() {
@@ -150,10 +171,18 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 			StructDelete(request.context, '$');
 			WriteOutput(SerializeJSON(request.context));
 			abort;
-		};
+		}
 	}
 
-	public string function buildURL(required string action, string path='#variables.framework.baseURL#', string queryString='') {
+	public void function setupSession() {
+		include '../../config/appcfc/onSessionStart_include.cfm';
+	}
+
+	public void function onSessionEnd() {
+		include '../../config/appcfc/onSessionEnd_include.cfm';
+	}
+
+	public string function buildURL(required string action, string path='#resolvePath()#', any queryString='') {
 		var regx = '&?compactDisplay=[true|false]';
 		arguments.action = getFullyQualifiedAction(arguments.action);
 		if (
@@ -164,136 +193,172 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		) {
 			var qs = 'compactDisplay=' & request.context.compactDisplay;
 			if ( !Find('?', arguments.action) ) {
-				arguments.queryString = ListAppend(arguments.queryString, qs, '&');
+				if ( isSimpleValue(arguments.queryString) ) {
+					arguments.queryString = ListAppend(arguments.queryString, qs, '&');
+				} else if ( isStruct(arguments.queryString) ) {
+					structAppend(arguments.queryString, {"compactDisplay"=request.context.compactDisplay} );
+				}
 			} else {
 				arguments.action = ListAppend(arguments.action, qs, '&');
-			};
-		};
+			}
+		}
+
 		return super.buildURL(argumentCollection=arguments);
 	}
 
+	public string function redirect(required string action, string preserve='none', string append='none', string path='#resolvePath()#', string queryString='', string statusCode='302') {
+		return super.redirect(argumentCollection=arguments);
+	}
+
+	public any function resolvePath(string path='#variables.framework.baseURL#') {
+		// don't modify a submitted path
+		if ( arguments.path != variables.framework.baseURL ) {
+			return arguments.path;
+		}
+
+		var uri =  getPageContext().getRequest().getRequestURI();
+		var arrURI = ListToArray(uri, '/');
+		var indexPos = ArrayFind(arrURI, 'index.cfm');
+		var useIndex = YesNoFormat(application.configBean.getValue('indexfileinurls'));
+		var useSiteID = YesNoFormat(application.configBean.getValue('siteidinurls'));
+
+		if ( !useIndex && indexPos ) {
+			ArrayDeleteAt(arrURI, indexPos);
+			uri = ArrayLen(arrURI)
+				? '/' & ArrayToList(arrURI, '/') & '/'
+				: '/';
+		}
+
+		return uri;
+	}
+
+	public any function isFrameworkInitialized() {
+		return super.isFrameworkInitialized() && StructKeyExists(getFw1App(), 'cache');
+	}
 	
-	// ========================== Errors & Missing Views ==============================
+	// ========================== Errors & Missing Views ==========================
 
-	public any function onError() output="true" {
-		// var scopes = 'application,arguments,cgi,client,cookie,form,local,request,server,session,url,variables';
-		// var scopes = 'application,arguments,cgi,form,local,request,server,session,url,variables';
-		var scopes = "arguments";
-		// var scopes = 'local,request,session,variables';
-		// var scopes = 'session';
-		var arrScopes = ListToArray(scopes);
-		var i = '';
-		var scope = '';
-		WriteOutput('<h2>' & variables.framework.package & ' ERROR</h2>');
-		if ( IsBoolean(variables.framework.debugMode) && variables.framework.debugMode ) {
-			for ( i=1; i <= ArrayLen(arrScopes); i++ ) {
-				scope = arrScopes[i];
-				WriteDump(var=Evaluate(scope),label=UCase(scope));
-			};
-		};
-		abort;
-	}
+		public any function onError() output="true" {
+			//var scopes = 'application,arguments,cgi,client,cookie,form,local,request,server,session,url,variables';
+			var scopes = 'local,request,session';
+			var arrScopes = ListToArray(scopes);
+			var i = '';
+			var scope = '';
+			WriteOutput('<h2>' & variables.framework.package & ' ERROR</h2>');
+			if ( IsBoolean(variables.framework.debugMode) && variables.framework.debugMode ) {
+				for ( i=1; i <= ArrayLen(arrScopes); i++ ) {
+					scope = arrScopes[i];
+					WriteDump(var=Evaluate(scope),label=UCase(scope));
+				};
+			}
+			abort;
+		}
 
-	public any function onMissingView(any rc) {
-		rc.errors = [];
-		rc.isMissingView = true;
-		// forward to appropriate error screen
-		if ( isFrontEndRequest() ) {
-			ArrayAppend(rc.errors, "The page you're looking for doesn't exist.");
-			redirect(action='public:main.error', preserve='errors,isMissingView');
-		} else {
-			ArrayAppend(rc.errors, "The page you're looking for <strong>#rc.action#</strong> doesn't exist.");
-			redirect(action='admin:main', preserve='errors,isMissingView');
-		};
-	}
+		public any function onMissingView(any rc) {
+			rc.errors = [];
+			rc.isMissingView = true;
+			// forward to appropriate error screen
+			if ( isFrontEndRequest() ) {
+				ArrayAppend(rc.errors, "The page you're looking for doesn't exist.");
+				redirect(action='app1:main.error', preserve='errors,isMissingView');
+			} else {
+				ArrayAppend(rc.errors, "The page you're looking for <strong>#rc.action#</strong> doesn't exist.");
+				redirect(action='admin:main', preserve='errors,isMissingView');
+			}
+		}
 
-	// ========================== Helper Methods ==============================
+	// ========================== Helper Methods ==================================
 
-	public any function secureRequest() {
-		if ( isAdminRequest() && !( IsDefined('session.mura') && ListFindNoCase(session.mura.memberships,'S2') ) ) {
-			if ( !StructKeyExists(session,'siteID') || !StructKeyExists(session,'mura') || !application.permUtility.getModulePerm(application[variables.framework.applicationKey].pluginConfig.getModuleID(),session.siteid) ) {
-				location(url='#application.configBean.getContext()#/admin/', addtoken=false);
-			};
-		};
-	}
+		public any function secureRequest() {
+			return !isAdminRequest() || (StructKeyExists(session, 'mura') && ListFindNoCase(session.mura.memberships,'S2')) ? true :
+					!StructKeyExists(session, 'mura') 
+					|| !StructKeyExists(session, 'siteid') 
+					|| !application.permUtility.getModulePerm(getFw1App().pluginConfig.getModuleID(), session.siteid) 
+						? goToLogin() : true;
+		}
 
-	public boolean function isAdminRequest() {
-		return StructKeyExists(request, 'context') && ListFirst(request.context[variables.framework.action], ':') == 'admin' ? true : false;
-	}
+		private void function goToLogin() {
+			location(url='#application.configBean.getContext()#/admin/index.cfm?muraAction=clogin.main&returnURL=#application.configBean.getContext()#/plugins/#variables.framework.package#/', addtoken=false);
+		}
 
-	public boolean function isFrontEndRequest() {
-		return StructKeyExists(request, 'murascope');
-	}
+		public boolean function isAdminRequest() {
+			return StructKeyExists(request, 'context') && ListFirst(request.context[variables.framework.action], ':') == 'admin' ? true : false;
+		}
 
-	// ==========================  STATE  ==============================
+		public boolean function isFrontEndRequest() {
+			return StructKeyExists(request, 'murascope');
+		}
 
-	public void function clearFW1Request() {
-		var arrFW1Keys = ListToArray(variables.fw1Keys);
-		var i = '';
-		if ( StructKeyExists(request, '_fw1') ) {
-			for ( i=1; i <= ArrayLen(arrFW1Keys); i++ ) {
-				StructDelete(request._fw1, arrFW1Keys[i]);
-			};
-			request._fw1.requestDefaultsInitialized = false;
+	// ========================== STATE ===========================================
+
+		public void function clearFW1Request() {
+			var arrFW1Keys = ListToArray(variables.fw1Keys);
+			var i = '';
+			if ( StructKeyExists(request, '_fw1') ) {
+				for ( i=1; i <= ArrayLen(arrFW1Keys); i++ ) {
+					StructDelete(request._fw1, arrFW1Keys[i]);
+				}
+			}
 			request._fw1 = {
 				cgiScriptName = CGI.SCRIPT_NAME
+				, cgiPathInfo = CGI.PATH_INFO
 				, cgiRequestMethod = CGI.REQUEST_METHOD
 				, controllers = []
 				, requestDefaultsInitialized = false
 				, services = []
+				, doTrace = variables.framework.trace
 				, trace = []
 			};
-		};
-	}
+		}
 
-	// ========================== PRIVATE ==============================
+	// ========================== PRIVATE =========================================
 
-	private any function getCachedView(required string viewKey) {
-		var view = '';
-		var cache = getSessionCache();
-		if ( StructKeyExists(cache, 'views') && StructKeyExists(cache.views, arguments.viewKey) ) {
-			view = cache.views[arguments.viewKey];
-		};
-		return view;
-	}
+		private any function getCachedView(required string viewKey) {
+			var view = '';
+			var cache = getSessionCache();
+			if ( StructKeyExists(cache, 'views') && StructKeyExists(cache.views, arguments.viewKey) ) {
+				view = cache.views[arguments.viewKey];
+			}
+			return view;
+		}
 
-	private void function setCachedView(required string viewKey, string viewValue='') {
-		lock scope='session' type='exclusive' timeout=10 {
-			session[variables.framework.package].views[arguments.viewKey] = arguments.viewValue;
-		};
-	}
-
-	private boolean function isCacheExpired() {
-		var p = variables.framework.package;
-		return !StructKeyExists(session, p) 
-				|| DateCompare(now(), session[p].expires, 's') == 1 
-				|| DateCompare(application.appInitializedTime, session[p].created, 's') == 1
-			? true : false;
-	}
-
-	private any function getSessionCache() {
-		var local = {};
-		if ( isCacheExpired() ) {
-			setSessionCache();
-		};
-		lock scope='session' type='readonly' timeout=10 {
-			local.cache = session[variables.framework.package];
-		};
-		return local.cache;
-	}
-
-	private void function setSessionCache() {
-		var p = variables.framework.package;
-		// Expires - s:seconds, n:minutes, h:hours, d:days
-		lock scope='session' type='exclusive' timeout=10 {
-			StructDelete(session, p);
-			session[p] = {
-				created = Now()
-				, expires = DateAdd('s', 5, Now())
-				, sessionid = Hash(CreateUUID())
-				, views = {}
+		private void function setCachedView(required string viewKey, string viewValue='') {
+			lock scope='session' type='exclusive' timeout=10 {
+				session[variables.framework.package].views[arguments.viewKey] = arguments.viewValue;
 			};
-		};
-	}
+		}
+
+		private boolean function isCacheExpired() {
+			var p = variables.framework.package;
+			return !StructKeyExists(session, p) 
+					|| DateCompare(now(), session[p].expires, 's') == 1 
+					|| DateCompare(application.appInitializedTime, session[p].created, 's') == 1
+				? true : false;
+		}
+
+		private any function getSessionCache() {
+			var local = {};
+			if ( isCacheExpired() ) {
+				setSessionCache();
+			}
+			lock scope='session' type='readonly' timeout=10 {
+				local.cache = session[variables.framework.package];
+			};
+			return local.cache;
+		}
+
+		private void function setSessionCache() {
+			var p = variables.framework.package;
+			// Expires - s:seconds, n:minutes, h:hours, d:days
+			lock scope='session' type='exclusive' timeout=10 {
+				StructDelete(session, p);
+				session[p] = {
+					created = Now()
+					, expires = DateAdd('h', 1, Now())
+					, sessionid = Hash(CreateUUID())
+					, views = {}
+				};
+			};
+		}
 
 }

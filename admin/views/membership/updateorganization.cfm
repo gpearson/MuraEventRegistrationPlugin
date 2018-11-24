@@ -60,6 +60,24 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</cfif>
 					</uform:field>
 				</uForm:fieldset>
+				<uForm:fieldset legend="Physical Address Information">
+
+				</uForm:fieldset>
+				<uForm:fieldset legend="Mailing Address Information">
+
+				</uForm:fieldset>
+				<uForm:fieldset legend="Accounts Payable Contact Information">
+					<cfif isDefined("Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_ContactName")>
+						<uform:field label="Contact Name" name="AccountsPayable_ContactName" isRequired="true" value="#Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_ContactName#" maxFieldLength="50" type="text" hint="Contact Name of Accounts Payable Person" />
+					<cfelse>
+						<uform:field label="Contact Name" name="AccountsPayable_ContactName" isRequired="true" maxFieldLength="50" type="text" hint="Contact Name of Accounts Payable Person" />
+					</cfif>
+					<cfif isDefined("Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_EmailAddress")>
+						<uform:field label="Contact Email Address" name="AccountsPayable_EmailAddress" isRequired="true" value="#Session.UserSuppliedInfo.MemberOrganization.AccountsPayable_EmailAddress#" maxFieldLength="50" type="text" hint="Email Address of Accounts Payable Person" />
+					<cfelse>
+						<uform:field label="Contact Email Address" name="AccountsPayable_EmailAddress" isRequired="true" maxFieldLength="50" type="text" hint="Email Address of Accounts Payable Person" />
+					</cfif>
+				</uForm:fieldset>
 			</uForm:form>
 		</div>
 	</div>

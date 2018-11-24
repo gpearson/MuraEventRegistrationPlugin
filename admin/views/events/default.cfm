@@ -200,8 +200,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 									<cfif getAttendedParticipantsForEvent.RecordCount and getAvailableEvents.PGPAvailable EQ 1>
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.sendpgpcertificates')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Send PGP Certificates</a><br />
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.enterexpenses')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Enter Event Expenses</a><br />
+										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventattendedsheet')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Attended Participant Sheet</a><br />
 									<cfelseif getAttendedParticipantsForEvent.RecordCount and getAvailableEvents.PGPAvailable EQ 0>
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.enterexpenses')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Enter Event Expenses</a><br />
+										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventattendedsheet')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Attended Participant Sheet</a><br />
 									</cfif>
 									<cfif getEventExpenses.RecordCount>
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.generateprofitlossreport')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Generate Profit/Loss Report</a><br />

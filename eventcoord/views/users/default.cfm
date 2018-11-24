@@ -60,6 +60,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<p>You have successfully deactivated the User Account in this system.</p>
 							</div>
 						</cfcase>
+						<cfcase value="ActivateAccount">
+							<div class="alert-box success">
+								<p>You have successfully activated the User Account in this system.</p>
+							</div>
+						</cfcase>
 					</cfswitch>
 				</cfif>
 			</cfcase>
@@ -114,7 +119,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<td>#rc.Query.Email#</td>
 					<td>#rc.Query.Company#</td>
 					<td><cfswitch expression="#rc.Query.InActive#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch></td>
-					<td><a href="#buildURL('eventcoord:users.updateuser')#&PerformAction=Edit&RecNo=#rc.Query.UserID#" class="art-button">U</a>&nbsp;<a href="#buildURL('eventcoord:users.updateuser')#&PerformAction=Delete&RecNo=#rc.Query.UserID#" class="art-button">D</a>&nbsp;<a href="#buildURL('eventcoord:users.updateuser')#&PerformAction=LoginUser&RecNo=#rc.Query.UserID#" class="art-button">L</a>&nbsp;<a href="#buildURL('eventcoord:users.updateuser')#&PerformAction=ChangePassword&RecNo=#rc.Query.UserID#" class="art-button">P</a></td>
+					<td><a href="#buildURL('eventcoord:users.updateuser')#&PerformAction=Edit&RecNo=#rc.Query.UserID#" class="art-button">Update</a>&nbsp;
+					<cfif rc.Query.InActive EQ 1>
+						<a href="#buildURL('eventcoord:users.updateuser')#&PerformAction=Activate&RecNo=#rc.Query.UserID#" class="art-button">Activate</a>
+					<cfelse>
+						<a href="#buildURL('eventcoord:users.updateuser')#&PerformAction=Delete&RecNo=#rc.Query.UserID#" class="art-button">DeActivate</a>
+					</cfif>
+					&nbsp;<a href="#buildURL('eventcoord:users.updateuser')#&PerformAction=LoginUser&RecNo=#rc.Query.UserID#" class="art-button">Login As</a>&nbsp;<a href="#buildURL('eventcoord:users.updateuser')#&PerformAction=ChangePassword&RecNo=#rc.Query.UserID#" class="art-button">Pwd Change</a></td>
 					</tr>
 				</cfloop>
 			</tbody>

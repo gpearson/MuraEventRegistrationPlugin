@@ -116,6 +116,7 @@
 				<input type="hidden" name="formSubmit" value="true">
 				<cfif isDefined("Session.FormData.RegisterAllDays")><input type="hidden" name="RegisterAllDays" value="#Session.FormData.RegisterAllDays#"><cfelse><input type="hidden" name="RegisterAllDays" value="0"></cfif>
 				<cfif isDefined("Session.FormData.WebinarParticipant")><input type="Hidden" Name="WebinarParticipant" Value="#Session.FormData.WebinarParticipant#"></cfif>
+				<input type="hidden" name="WantsMeal" value="#Session.FormData.WantsMeal#">
 				<table class="art-article" border="0" align="center" width="100%" cellspacing="0" cellpadding="0">
 					<tbody>
 						<tr>
@@ -124,7 +125,7 @@
 									<thead>
 										<tr>
 											<td colspan="4" style="border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; width: 100%; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;">
-												<strong>Registered User Accounts</strong> (Individuals in Green already Registered)
+												<strong>Registered User Accounts</strong> (Individuals in <span style="color: ##FF9999; font-weight: bold;">Red</span> already Registered)
 											</td>
 										</tr>
 									</thead>
@@ -138,15 +139,35 @@
 												EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
 										</cfquery>
 										<cfset CurrentModRow = #GetUsersWithinCorporation.CurrentRow# MOD 4>
+
 										<cfswitch expression="#Variables.CurrentModRow#">
 											<cfcase value="1">
-												<tr width="25%"><td <cfif CheckUserAlreadyRegistered.RecordCount>Style="style="border-width: 1px; padding: 1px; border-style: none; border-color: gray; background-color: white; -moz-border-radius: ; Color: ##009900;"</cfif>><cfoutput><input type="CheckBox" Name="additionalParticipants" Value="#GetUsersWithinCorporation.UserID#" <cfif CheckUserAlreadyRegistered.RecordCount>disabled </cfif><cfif GetUsersWithinCorporation.UserID EQ Session.Mura.UserID>checked</cfif>>&nbsp;&nbsp;#GetUsersWithinCorporation.Lname#, #GetUsersWithinCorporation.Fname#</cfoutput></td>
+												<tr width="25%">
+													<td width="25%" style="border-width: 1px; padding: 1px; border-color: gray;">
+													<cfif CheckUserAlreadyRegistered.RecordCount>
+														<cfoutput><input type="CheckBox" Name="additionalParticipants" Value="#GetUsersWithinCorporation.UserID#" checked disabled><span style="color: ##FF9999; font-weight: bold;">&nbsp;&nbsp;#GetUsersWithinCorporation.Lname#, #GetUsersWithinCorporation.Fname#</span></cfoutput>
+													<cfelse>
+														<cfoutput><input type="CheckBox" Name="additionalParticipants" Value="#GetUsersWithinCorporation.UserID#" <cfif GetUsersWithinCorporation.UserID EQ Session.Mura.UserID>checked</cfif>>&nbsp;&nbsp;#GetUsersWithinCorporation.Lname#, #GetUsersWithinCorporation.Fname#</cfoutput>
+													</cfif>
+												</td>
 											</cfcase>
 											<cfcase value="0">
-												<td width="25%" <cfif CheckUserAlreadyRegistered.RecordCount>Style="style="border-width: 1px; padding: 1px; border-style: none; border-color: gray; background-color: white; -moz-border-radius: ; Color: ##009900;"</cfif>><cfoutput><input type="CheckBox" Name="additionalParticipants" Value="#GetUsersWithinCorporation.UserID#" <cfif CheckUserAlreadyRegistered.RecordCount>disabled </cfif><cfif GetUsersWithinCorporation.UserID EQ Session.Mura.UserID>checked</cfif>>&nbsp;&nbsp;#GetUsersWithinCorporation.Lname#, #GetUsersWithinCorporation.Fname#</cfoutput></td></tr>
+												<td width="25%" style="border-width: 1px; padding: 1px; border-color: gray;">
+													<cfif CheckUserAlreadyRegistered.RecordCount>
+														<cfoutput><input type="CheckBox" Name="additionalParticipants" Value="#GetUsersWithinCorporation.UserID#" checked disabled><span style="color: ##FF9999; font-weight: bold;">&nbsp;&nbsp;#GetUsersWithinCorporation.Lname#, #GetUsersWithinCorporation.Fname#</span></cfoutput>
+													<cfelse>
+														<cfoutput><input type="CheckBox" Name="additionalParticipants" Value="#GetUsersWithinCorporation.UserID#" <cfif GetUsersWithinCorporation.UserID EQ Session.Mura.UserID>checked</cfif>>&nbsp;&nbsp;#GetUsersWithinCorporation.Lname#, #GetUsersWithinCorporation.Fname#</cfoutput>
+													</cfif>
+												</td></tr>
 											</cfcase>
 											<cfdefaultcase>
-												<td width="25%" <cfif CheckUserAlreadyRegistered.RecordCount>Style="style="border-width: 1px; padding: 1px; border-style: none; border-color: gray; background-color: white; -moz-border-radius: ; Color: ##009900;"</cfif>><cfoutput><input type="CheckBox" Name="additionalParticipants" Value="#GetUsersWithinCorporation.UserID#" <cfif CheckUserAlreadyRegistered.RecordCount>disabled </cfif><cfif GetUsersWithinCorporation.UserID EQ Session.Mura.UserID>checked</cfif>>&nbsp;&nbsp;#GetUsersWithinCorporation.Lname#, #GetUsersWithinCorporation.Fname#</cfoutput></td>
+												<td width="25%" style="border-width: 1px; padding: 1px; border-color: gray;">
+													<cfif CheckUserAlreadyRegistered.RecordCount>
+														<cfoutput><input type="CheckBox" Name="additionalParticipants" Value="#GetUsersWithinCorporation.UserID#" checked disabled><span style="color: ##FF9999; font-weight: bold;">&nbsp;&nbsp;#GetUsersWithinCorporation.Lname#, #GetUsersWithinCorporation.Fname#</span></cfoutput>
+													<cfelse>
+														<cfoutput><input type="CheckBox" Name="additionalParticipants" Value="#GetUsersWithinCorporation.UserID#" <cfif GetUsersWithinCorporation.UserID EQ Session.Mura.UserID>checked</cfif>>&nbsp;&nbsp;#GetUsersWithinCorporation.Lname#, #GetUsersWithinCorporation.Fname#</cfoutput>
+													</cfif>
+												</td>
 											</cfdefaultcase>
 										</cfswitch>
 										</cfloop>

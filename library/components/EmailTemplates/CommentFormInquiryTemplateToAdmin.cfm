@@ -5,7 +5,7 @@ Event Registration Administrator,
 The individual listed below submitted the following information through the Comment Form.
 
 
-Individual's Name': #Arguments.EmailInfo.CommentFormName#
+Individual's Name': #Arguments.ContactInfo.ContactFirstName# #Arguments.ContactInfo.ContactLastName#
 Email Address: #Arguments.EmailInfo.ContactFormEmail#
 Telephone Number: #Arguments.EmailInfo.ContactFormNumber#
 Best Contact Method: #Arguments.EmailInfo.ContactBy#
@@ -15,7 +15,7 @@ Question:
 #Arguments.EmailInfo.EventQuestion#
 
 
-Please contact this indivudal with the Best Contact Method Listed above. 
+Please contact this indivudal with the Best Contact Method Listed above.
 
 Note: This email address is not valid and is not read by a human individual. This email address is strictly for system notifications that are sent from this system.
 </cfmailpart>

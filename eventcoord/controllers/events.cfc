@@ -2782,6 +2782,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfset ParticipantInfo.EventShortTitle = #GetSelectedEvent.ShortTitle#>
 						<cfset ParticipantInfo.EmailMessageBody = #FORM.EmailMsg#>
 						<cfset ParticipantInfo.DocLinksInEmail = 0>
+						<cfif LEN(FORM.FirstWebLink) or LEN(FORM.SecondWebLink)>
+							<cfset ParticipantInfo.WebLinksInEmail = 1>
+							<cfset ParticipantInfo.WebLink1 = #FORM.FirstWebLink#>
+							<cfset ParticipantInfo.WebLink2 = #FORM.SecondWebLink#>
+						<cfelse>
+							<cfset ParticipantInfo.WebLinksInEmail = 0>
+						</cfif>
 						<cfset temp = #SendEMailCFC.SendEventMessageToAllParticipants(Variables.ParticipantInfo)#>
 					</cfloop>
 				<cfelse>

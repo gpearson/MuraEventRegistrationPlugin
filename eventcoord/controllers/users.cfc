@@ -118,7 +118,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 						<!--- Initiates the User Bean --->
 						<cfset NewUser = #Application.userManager.readByUsername(form.Username, rc.$.siteConfig('siteID'))#>
-						<cfset NewUser.setInActive(1)>
+						<cfset NewUser.setInActive(0)>
 						<cfset NewUser.setSiteID(rc.$.siteConfig('siteID'))>
 						<cfset NewUser.setFname(FORM.fName)>
 						<cfset NewUser.setLname(FORM.lName)>
@@ -392,6 +392,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 						Where UserID = <cfqueryparam value="#URL.RecNo#" cfsqltype="cf_sql_varchar">
 					</cfquery>
 					<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.default&Successful=true&UserAction=DeActivateAccount" addtoken="false">
+				</cfcase>
+				<cfcase value="Activate">
+					<cfquery name="updateUserRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Update tusers
+						Set inActive = <cfqueryparam value="0" cfsqltype="cf_sql_bit">
+						Where UserID = <cfqueryparam value="#URL.RecNo#" cfsqltype="cf_sql_varchar">
+					</cfquery>
+					<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.default&Successful=true&UserAction=ActivateAccount" addtoken="false">
 				</cfcase>
 			</cfswitch>
 		</cfif>

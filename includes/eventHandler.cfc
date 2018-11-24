@@ -2,7 +2,7 @@
 
 This file is part of MuraFW1
 
-Copyright 2010-2013 Stephen J. Withington, Jr.
+Copyright 2010-2015 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
@@ -16,11 +16,18 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	// Add any other Mura CMS Specific methods you need here.
 
 	public void function onApplicationLoad(required struct $) {
+		// trigger FW/1 to reload
+		lock scope='application' type='exclusive' timeout=20 {
+			getApplication().setupApplicationWrapper(); // this ensures the appCache is cleared as well
+		};
+
+		// register this file as a Mura eventHandler
 		variables.pluginConfig.addEventHandler(this);
 	}
 	
 	public void function onSiteRequestStart(required struct $) {
-		arguments.$.setCustomMuraScopeKey(variables.framework.package, getApplication());
+		// make the methods in displayObjects.cfc accessible via $.packageName.methodName()
+		arguments.$.setCustomMuraScopeKey(variables.framework.package, new displayObjects());
 	}
 
 	public any function onRenderStart(required struct $) {

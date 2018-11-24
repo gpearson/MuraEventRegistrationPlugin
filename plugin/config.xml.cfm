@@ -2,7 +2,7 @@
 
 This file is part of MuraFW1
 
-Copyright 2010-2014 Stephen J. Withington, Jr.
+Copyright 2010-2015 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
@@ -43,13 +43,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 			Meta information. The name of the creator/organization that
 			developed the plugin.
 		-->
-		<provider>Graham Pearson</provider>
+		<provider>Steve Withington</provider>
 
 		<!--
 			ProviderURL :
 			URL of the creator/organization that developed the plugin.
 		-->
-		<providerURL>http://www.yourcfpro.com</providerURL>
+		<providerURL>http://stephenwithington.com</providerURL>
 
 		<!-- Category : Usually either 'Application' or 'Utility' -->
 		<category>Application</category>
@@ -149,30 +149,24 @@ http://www.apache.org/licenses/LICENSE-2.0
 		-->
 		<displayobjects location="global">
 
-			<displayobject name="Available Events Display" displaymethod="ViewAvailableEvents" component="includes.displayObjects" persist="false" />
-
-			<!-- App1 is a FW/1 sub-application -->
-			<!--- <displayobject
-					name="MuraFW1 App1"
-					component="includes.displayObjects"
-					displaymethod="dspMuraFW1App1"
-					persist="false" />
-
-			<!-- App2 is a FW/1 sub-application -->
+			<!-- An uber simple display object, has nothing to do with FW/1 -->
 			<displayobject
-					name="MuraFW1 App2"
+					name="Public Event Registration Site"
 					component="includes.displayObjects"
-					displaymethod="dspMuraFW1App2"
+					displaymethod="dspEventRegistrationPublicView"
 					persist="false" />
 
-			<!-- App3 is a FW/1 sub-application -->
-			<!-- Configurable Display Object Example -->
-			<displayobject name="MuraFW1 App3"
+			<displayobject
+					name="Event Coordinator View Site"
 					component="includes.displayObjects"
-					displaymethod="dspConfiguredMuraFW1App3"
-					configuratorJS="includes/configurators/app3/configurator.js"
-					configuratorInit="initApp3Configurator"
-					persist="false" /> --->
+					displaymethod="dspEventRegistrationEventCoordinatorView"
+					persist="false" />
+
+			<displayobject
+					name="Site Administrator View Site"
+					component="includes.displayObjects"
+					displaymethod="dspEventRegistrationSiteAdminPublicView"
+					persist="false" />
 
 		</displayobjects>
 

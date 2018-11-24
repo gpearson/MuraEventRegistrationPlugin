@@ -9,6 +9,11 @@ Message Details Below
 #Arguments.ParticipantInfo.EmailMessageBody#
 
 
+<cfif isDefined("Arguments.ParticipantInfo.WebLinksInEmail")><cfif Arguments.ParticipantInfo.WebLinksInEmail EQ 1>Web Link(s):
+	 #Arguments.ParticipantInfo.WebLink1#
+	 #Arguments.ParticipantInfo.WebLink1#
+</cfif></cfif>
+
 <cfif isDefined("Arguments.ParticipantInfo.DocLinksInEmail")><cfif Arguments.ParticipantInfo.DocLinksInEmail EQ 1>Here are the links to the Event Documents for your reference:
 
 	<cfif isDefined("Arguments.ParticipantInfo.EmailFileOne")>http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameOne#</cfif>
@@ -33,6 +38,7 @@ Note: This email address is not valid and is not read by a human individual. Thi
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#Arguments.ParticipantInfo.EmailMessageBody#</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;"><cfif isDefined("Arguments.ParticipantInfo.WebLinksInEmail")><cfif Arguments.ParticipantInfo.WebLinksInEmail EQ 1>Web Link(s):<br><A href="#Arguments.ParticipantInfo.WebLink1#">#Arguments.ParticipantInfo.WebLink1#</A><br /><A href="#Arguments.ParticipantInfo.WebLink2#">#Arguments.ParticipantInfo.WebLink2#</A></cfif></cfif></td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;"><cfif isDefined("Arguments.ParticipantInfo.DocLinksInEmail")><cfif Arguments.ParticipantInfo.DocLinksInEmail EQ 1>Here are the links to the Event Documents for your reference:
 			<br />

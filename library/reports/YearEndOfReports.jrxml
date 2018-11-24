@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2015-12-10T12:17:17 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="YearEndOfReports" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6cfd8d4f-b5c6-48b3-b802-d9d8e272cbca">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="DisplayReportFromToDate" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="EventID" class="java.lang.String"/>
+	<field name="EventTitle" class="java.lang.String"/>
+	<field name="ProfitPerParticipant" class="java.lang.Number"/>
+	<field name="TotalExpensesToHold" class="java.lang.Number"/>
+	<field name="TotalParticipants" class="java.lang.Number"/>
+	<field name="TotalIncome" class="java.lang.Number"/>
+	<field name="NIESCLogoPath" class="java.lang.String"/>
+	<field name="EventDate" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="10" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="148" splitType="Stretch">
+			<staticText>
+				<reportElement x="3" y="30" width="747" height="26" uuid="9ea6fe2f-db99-4763-b5e4-1914b00eaaf0"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Profit / Loss Report of Events]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="3" y="120" width="747" height="24" uuid="56d89ed6-5fd8-4190-bf24-6e8bf78f3cc5"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DisplayReportFromToDate}]]></textFieldExpression>
+			</textField>
+			<image evaluationTime="Report">
+				<reportElement x="2" y="0" width="167" height="130" uuid="f734655d-860c-4afb-8a10-a9652e5a8fee"/>
+				<imageExpression><![CDATA[$F{NIESCLogoPath}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="3" y="0" width="746" height="26" uuid="9ba1b38d-b6a9-4dcb-a493-cba89086ad49"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif" size="20"/>
+				</textElement>
+				<text><![CDATA[Northern Indiana Educational Services Center]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="3" y="0" width="46" height="20" uuid="071e767e-1bac-4412-9666-d17c61f5f3bb"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Event ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="52" y="0" width="168" height="20" uuid="56244aec-9238-4b8d-9ce5-9c6987a0fcef"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Event Title]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="314" y="0" width="84" height="20" uuid="ac1ec85b-7327-4dfd-a677-647520f18332"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Participants]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="552" y="0" width="107" height="20" uuid="46f158de-7aa4-438b-865c-7c201a949074"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Profit Per Participant]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="0" width="64" height="20" uuid="1011b780-2c85-4e47-942b-7f42d66b78e4"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Income]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="470" y="0" width="74" height="20" uuid="9e473d92-f5fd-4b45-b0c6-e1aa5563b41e"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Expenses]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="227" y="0" width="84" height="20" uuid="622790c7-6b91-443c-a0ca-f689b1298467"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Event Date]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="69" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="400" y="5" width="64" height="20" uuid="105c097b-110d-4e90-8872-3bfb5d26aed1"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{TotalIncome}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="470" y="5" width="74" height="20" uuid="c0eaca4c-b333-4b8f-af7c-dbc00f9fbc93">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{TotalExpensesToHold}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="552" y="5" width="100" height="20" uuid="025591f7-8ec2-471d-8082-f76c67133e12">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{ProfitPerParticipant}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="314" y="5" width="84" height="20" uuid="ec97a68c-5441-4449-aaeb-685d0138c48f"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{TotalParticipants}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="52" y="5" width="168" height="44" uuid="e81ef9fc-e40d-4f99-868d-f6d17804a10e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{EventTitle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="3" y="5" width="46" height="20" uuid="e3242158-c65c-4e5f-9a09-1d5f50eae489">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{EventID}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="227" y="5" width="84" height="20" uuid="42a6777a-5809-4743-b82c-7a472b7a3fc4"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{EventDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="25" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="15" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="18" splitType="Stretch"/>
+	</summary>
+</jasperReport>

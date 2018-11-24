@@ -3,7 +3,7 @@
 --->
 
 <cfif isDefined("URL.Info")>
-	<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:events.eventinfo&EventID=#URL.Info#">
+	<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:events.eventinfo&EventID=#URL.Info#" addtoken="false">
 </cfif>
 <cfif isDefined("Session.Mura")>
 	<cfif Session.Mura.isLoggedIn EQ "true" and isDefined("Session.UserRegistrationInfo")>
