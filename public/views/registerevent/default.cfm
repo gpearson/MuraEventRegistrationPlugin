@@ -238,12 +238,10 @@
 	<cflock timeout="60" scope="SESSION" type="Exclusive">
 		<cfif isDefined("Session.UserRegistrationInfo")>
 			<cfset Session.UserRegistrationInfo.EventID = #URL.EventID#>
-			<cfset Session.UserRegistrationInfo.UserID = #Session.Mura.UserID#>
 			<cfset Session.UserRegistrationInfo.DateRegistered = #Now()#>
 		<cfelse>
 			<cfset Session.UserRegistrationInfo = StructNew()>
 			<cfset Session.UserRegistrationInfo.EventID = #URL.EventID#>
-			<cfset Session.UserRegistrationInfo.UserID = #Session.Mura.UserID#>
 			<cfset Session.UserRegistrationInfo.DateRegistered = #Now()#>
 		</cfif>
 	</cflock>

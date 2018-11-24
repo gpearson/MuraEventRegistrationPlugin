@@ -7,10 +7,12 @@
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<cfset Session.FormErrors = #ArrayNew()#>
-		<h2>Update Account Password</h2>
+		<div class="art-blockheader">
+			<h3 class="t">Update Account Password</h3>
+		</div>
 		<p class="alert-box notice">Please complete the following information to update your account password.</p>
 		<hr>
-		<uForm:form action="" method="Post" id="ChangePassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/properties/uniForm/"
+		<uForm:form action="" method="Post" id="ChangePassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
 			showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm"
 			submitValue="Change Password" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
 			<input type="hidden" name="formSubmit" value="true">
@@ -23,10 +25,12 @@
 			</uForm:fieldset>
 		</uForm:form>
 	<cfelseif isDefined("URL.FormRetry")>
-		<h2>Update Account Password</h2>
+		<div class="art-blockheader">
+			<h3 class="t">Update Account Password</h3>
+		</div>
 		<p class="alert-box notice">Please complete the following information to update your account password.</p>
 		<hr>
-		<uForm:form action="" method="Post" id="ChangePassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/properties/uniForm/"
+		<uForm:form action="" method="Post" id="ChangePassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
 			showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm"
 			submitValue="Change Password" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
 			<input type="hidden" name="formSubmit" value="true">

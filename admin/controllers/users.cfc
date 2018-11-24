@@ -10,6 +10,74 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfcomponent extends="controller" output="false" persistent="false" accessors="true">
 	<cffunction name="default" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif isDefined("FORM.FormSubmited")>
+			<cfswitch expression="#FORM.SearchCriteria#">
+				<cfcase value="LName">
+					<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
+						From tusers
+						Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							LName LIKE '%#FORM.SearchText#%'
+						Order by LName ASC, FName ASC
+					</cfquery>
+					<cfset rc.Query = StructNew()>
+					<cfset rc.Query = StructCopy(getAllUsers)>
+					<cfreturn rc>
+				</cfcase>
+				<cfcase value="FName">
+					<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
+						From tusers
+						Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							FName LIKE '%#FORM.SearchText#%'
+						Order by LName ASC, FName ASC
+					</cfquery>
+					<cfset rc.Query = StructNew()>
+					<cfset rc.Query = StructCopy(getAllUsers)>
+					<cfreturn rc>
+				</cfcase>
+				<cfcase value="Email">
+					<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
+						From tusers
+						Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							Email LIKE '%#FORM.SearchText#%'
+						Order by LName ASC, FName ASC
+					</cfquery>
+					<cfset rc.Query = StructNew()>
+					<cfset rc.Query = StructCopy(getAllUsers)>
+					<cfreturn rc>
+				</cfcase>
+				<cfcase value="Company">
+					<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
+						From tusers
+						Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							Company LIKE '%#FORM.SearchText#%'
+						Order by LName ASC, FName ASC
+					</cfquery>
+					<cfset rc.Query = StructNew()>
+					<cfset rc.Query = StructCopy(getAllUsers)>
+					<cfreturn rc>
+				</cfcase>
+			</cfswitch>
+		<cfelse>
+			<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
+				From tusers
+				Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+					LENGTH(FName) > 0 or
+					SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+					LENGTH(LName) > 0
+					or SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+					LENGTH(Username) > 0
+				Order by LName ASC, FName ASC
+			</cfquery>
+			<cfset rc.Query = StructNew()>
+			<cfset rc.Query = StructCopy(getAllUsers)>
+			<cfreturn rc>
+		</cfif>
 	</cffunction>
 
 	<cffunction name="adduser" returntype="any" output="false">
@@ -86,6 +154,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 			Select UserID From tusers
 			Where GroupName = <cfqueryparam value="#Arguments.RoleName#" cfsqltype="cf_sql_varchar"> and SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
 		</cfquery>
+
 		<cfreturn GetRole.UserID>
 	</cffunction>
 

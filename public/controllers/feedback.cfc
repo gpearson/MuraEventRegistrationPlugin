@@ -3,6 +3,11 @@
 
 */
 <cfcomponent output="false" persistent="false" accessors="true">
+	<cffunction name="init" returntype="any" output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+	</cffunction>
+
 	<cffunction name="requestworkshop" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
@@ -82,7 +87,7 @@
 
 			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
 			<cfset temp = #SendEmailCFC.SendWorkshopRequestFormToAdmin(Session.FormData)#>
-			<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.viewavailableevents&SentCommentInquiry=true">
+			<cflocation addtoken="true" url="/?SentInquiry=true&RequestEvent=True">
 		</cfif>
 	</cffunction>
 
@@ -109,7 +114,7 @@
 				<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:feedback&FormRetry=True">
 			</cfif>
 
-			<cfif StructCount(FORM) NEQ 11>
+			<cfif StructCount(FORM) NEQ 12>
 				<cflock timeout="60" scope="SESSION" type="Exclusive">
 					<cfscript>
 						errormsg = {property="FormErrors",message="Invalid Form Submission Detected"};
@@ -121,53 +126,51 @@
 			</cfif>
 
 			<cfswitch expression="#FORM.ContactBy#">
-					<cfcase value="Reply By Email">
-						<cfif Len(FORM.ContactFormEmail) EQ 0>
-							<cflock timeout="60" scope="SESSION" type="Exclusive">
-								<cfscript>
-									errormsg = {property="EmailAddr",message="Please enter your email address so we can reply to your inquiry"};
-									arrayAppend(Session.FormErrors, errormsg);
-								</cfscript>
-							</cflock>
-							<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:feedback&FormRetry=True">
-						</cfif>
-						<cfif not isValid("email", FORM.ContactFormEmail)>
-							<cflock timeout="60" scope="SESSION" type="Exclusive">
-								<cfscript>
-									errormsg = {property="EmailAddr",message="Email Address is not in proper format"};
-									arrayAppend(Session.FormErrors, errormsg);
-								</cfscript>
-							</cflock>
-							<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:feedback&FormRetry=True">
-						</cfif>
-					</cfcase>
-					<cfcase value="Reply By Telephone">
-						<cfif Len(FORM.ContactFormNumber) EQ 0>
-							<cflock timeout="60" scope="SESSION" type="Exclusive">
-								<cfscript>
-									errormsg = {property="ContactNumber",message="Please enter your contact phone number so we can reply to your inquiry"};
-									arrayAppend(Session.FormErrors, errormsg);
-								</cfscript>
-							</cflock>
-							<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:feedback&FormRetry=True">
-						</cfif>
-						<cfif not isValid("telephone", FORM.ContactFormNumber)>
-							<cflock timeout="60" scope="SESSION" type="Exclusive">
-								<cfscript>
-									errormsg = {property="ContactNumber",message="Please enter proper telephone number format so we can reply to your inquiry"};
-									arrayAppend(Session.FormErrors, errormsg);
-								</cfscript>
-							</cflock>
-							<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:feedback&FormRetry=True">
-						</cfif>
-					</cfcase>
-				</cfswitch>
-				<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
-				<cfset temp = #SendEmailCFC.SendCommentFormToAdmin(Session.FormData)#>
-				<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.viewavailableevents&SentCommentInquiry=true">
+				<cfcase value="Reply By Email">
+					<cfif Len(FORM.ContactFormEmail) EQ 0>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								errormsg = {property="EmailAddr",message="Please enter your email address so we can reply to your inquiry"};
+								arrayAppend(Session.FormErrors, errormsg);
+							</cfscript>
+						</cflock>
+						<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:feedback&FormRetry=True">
+					</cfif>
+					<cfif not isValid("email", FORM.ContactFormEmail)>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								errormsg = {property="EmailAddr",message="Email Address is not in proper format"};
+								arrayAppend(Session.FormErrors, errormsg);
+							</cfscript>
+						</cflock>
+						<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:feedback&FormRetry=True">
+					</cfif>
+				</cfcase>
+				<cfcase value="Reply By Telephone">
+					<cfif Len(FORM.ContactFormNumber) EQ 0>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								errormsg = {property="ContactNumber",message="Please enter your contact phone number so we can reply to your inquiry"};
+								arrayAppend(Session.FormErrors, errormsg);
+							</cfscript>
+						</cflock>
+						<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:feedback&FormRetry=True">
+					</cfif>
+					<cfif not isValid("telephone", FORM.ContactFormNumber)>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								errormsg = {property="ContactNumber",message="Please enter proper telephone number format so we can reply to your inquiry"};
+								arrayAppend(Session.FormErrors, errormsg);
+							</cfscript>
+						</cflock>
+						<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:feedback&FormRetry=True">
+					</cfif>
+				</cfcase>
+			</cfswitch>
+			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
+			<cfset temp = #SendEmailCFC.SendCommentFormToAdmin(Session.FormData)#>
+			<cflocation addtoken="true" url="/?SentInquiry=true&CommentSuggestion=True">
 		</cfif>
-
-
 	</cffunction>
 
 </cfcomponent>

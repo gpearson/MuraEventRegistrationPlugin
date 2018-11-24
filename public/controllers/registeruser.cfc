@@ -95,7 +95,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 					<cfset SendActivationEmail = #SendEmailCFC.SendAccountActivationEmail(Variables.NewUserID)#>
 
-					<cflocation url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?EventRegistrationaction=public:main.viewavailableevents&UserRegistrationSuccessfull=true" addtoken="false">
+					<cflocation url="/?UserRegistrationSuccessfull=true" addtoken="false">
 				<cfelse>
 					<cfdump var="#AddNewAccount.getErrors()#"><cfabort>
 				</cfif>

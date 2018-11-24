@@ -95,49 +95,56 @@ http://www.apache.org/licenses/LICENSE-2.0
 	</cfswitch>
 </cfif>
 <cfoutput>
-	<table class="art-article" style="width:100%;">
-		<thead>
-			<tr>
-				<td width="50%">Event Title</td>
-				<td width="15%">Event Date</td>
-				<td>Actions</td>
-			</tr>
-		</thead>
-		<cfif getAvailableEvents.RecordCount>
-			<tfoot>
-				<tr>
-					<td colspan="3">Add a new Event or Workshop to allow registrations not listed above by clicking <a href="#buildURL('admin:events.addevent')#" class="art-button">here</a></td>
-				</tr>
-			</tfoot>
-			<tbody>
-				<cfloop query="getAvailableEvents">
-					<cfquery name="getRegistrationsForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Select TContent_ID
-						From eRegistrations
-						Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-							EventID = <cfqueryparam value="#getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer">
-					</cfquery>
-					<tr bgcolor="###iif(currentrow MOD 2,DE('ffffff'),DE('efefef'))#">
-						<td width="50%">#getAvailableEvents.ShortTitle#</td>
-						<td width="15%">#DateFormat(getAvailableEvents.EventDate, "mmm dd, yy")#</td>
-						<td>
-							<a href="#buildURL('admin:events.updateevent_review')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Update</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.cancelevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Cancel</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.emailregistered')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Email</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.copypriorevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Copy</a>&nbsp;&nbsp;<a href="" class="art-button">Info</a><br />
-							<a href="#buildURL('admin:events.registeruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Register</a>
-							<cfif getRegistrationsForEvent.RecordCount>
-								&nbsp;&nbsp;<a href="#buildURL('admin:events.deregisteruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">De-Register</a>
-								&nbsp;&nbsp;<a href="#buildURL('admin:events.eventsigninsheet')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Sheet</a>
-								&nbsp;&nbsp;<a href="#buildURL('admin:events.eventsigninparticipant')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Participant</a>
-							</cfif>
-						</td>
+	<div class="art-block clearfix">
+		<div class="art-blockheader">
+			<h3 class="t">Current Events</h3>
+		</div>
+		<div class="art-blockcontent">
+			<table class="art-article" style="width:100%;">
+				<thead>
+					<tr>
+						<td width="50%">Event Title</td>
+						<td width="15%">Event Date</td>
+						<td>Actions</td>
 					</tr>
-				</cfloop>
-			</tbody>
-		<cfelse>
-			<tbody>
-				<tr>
-					<td colspan="6"><div align="center" class="alert-box notice">No Events have been located within the database with an event date after #DateFormat(Variables.PriorDate, "FULL")#. Please click <a href="#buildURL('admin:events.addevent')#" class="art-button">here</a> to add a new event or workshop.</div></td>
-				</tr>
-			</tbody>
-		</cfif>
-	</table>
+				</thead>
+				<cfif getAvailableEvents.RecordCount>
+					<tfoot>
+						<tr>
+							<td colspan="3">Add a new Event or Workshop to allow registrations not listed above by clicking <a href="#buildURL('admin:events.addevent')#" class="art-button">here</a></td>
+						</tr>
+					</tfoot>
+					<tbody>
+						<cfloop query="getAvailableEvents">
+							<cfquery name="getRegistrationsForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Select TContent_ID
+								From eRegistrations
+								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer">
+							</cfquery>
+							<tr bgcolor="###iif(currentrow MOD 2,DE('ffffff'),DE('efefef'))#">
+								<td width="50%">#getAvailableEvents.ShortTitle#</td>
+								<td width="15%">#DateFormat(getAvailableEvents.EventDate, "mmm dd, yy")#</td>
+								<td>
+									<a href="#buildURL('admin:events.updateevent_review')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Update</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.cancelevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Cancel</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.emailregistered')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Email</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.copypriorevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Copy</a>&nbsp;&nbsp;<a href="" class="art-button">Info</a><br />
+									<a href="#buildURL('admin:events.registeruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Register</a>
+									<cfif getRegistrationsForEvent.RecordCount>
+										&nbsp;&nbsp;<a href="#buildURL('admin:events.deregisteruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">De-Register</a>
+										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventsigninsheet')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Sheet</a>
+										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventsigninparticipant')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Participant</a>
+									</cfif>
+								</td>
+							</tr>
+						</cfloop>
+					</tbody>
+				<cfelse>
+					<tbody>
+						<tr>
+							<td colspan="6"><div align="center" class="alert-box notice">No Events have been located within the database with an event date after #DateFormat(Variables.PriorDate, "FULL")#. Please click <a href="#buildURL('admin:events.addevent')#" class="art-button">here</a> to add a new event or workshop.</div></td>
+						</tr>
+					</tbody>
+				</cfif>
+			</table>
+		</div>
+	</div>
 </cfoutput>

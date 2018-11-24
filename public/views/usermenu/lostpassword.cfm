@@ -7,11 +7,13 @@
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry") and not isDefined("URL.Key")>
 		<cfset Session.FormErrors = #ArrayNew()#>
-		<h2>Acquire Lost Password</h2>
+		<div class="art-blockheader">
+			<h3 class="t">Acquire Lost Password</h3>
+		</div>
 		<p class="alert-box notice">Please complete the following information to retrieve your lost account password.</p>
 		<hr>
-		<uForm:form action="" method="Post" id="LostPassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/properties/uniForm/"
-			showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:main.viewavailableevents&Return=True"
+		<uForm:form action="" method="Post" id="LostPassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
+			showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:events.viewavailableevents&Return=True"
 			submitValue="Get Password" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
 			<input type="hidden" name="formSubmit" value="true">
 			<uForm:fieldset legend="Required Fields">
@@ -22,11 +24,13 @@
 			</uForm:fieldset>
 		</uForm:form>
 	<cfelseif isDefined("URL.FormRetry") and not isDefined("URL.Key")>
-		<h2>Acquire Lost Password</h2>
+		<div class="art-blockheader">
+			<h3 class="t">Acquire Lost Password</h3>
+		</div>
 		<p class="alert-box notice">Please complete the following information to retrieve your lost account password.</p>
 		<hr>
-		<uForm:form action="" method="Post" id="LostPassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/properties/uniForm/"
-			showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:main.viewavailableevents&Return=True"
+		<uForm:form action="" method="Post" id="LostPassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
+			showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:events.viewavailableevents&Return=True"
 			submitValue="Get Password" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
 			<input type="hidden" name="formSubmit" value="true">
 			<uForm:fieldset legend="Required Fields">
@@ -66,11 +70,13 @@
 		<cfif DateDiff("n", Now(), Variables.DateSent) GTE 45>
 			<p class="alert-box error">The time between when the initial request in the password retrieval email and the current time is greater than the allotted time of 45 minutes. This attempt has failed and to reset your password a new request must be made.</p>
 		<cfelse>
-			<h2>Acquire Lost Password</h2>
+			<div class="art-blockheader">
+				<h3 class="t">Acquire Lost Password</h3>
+			</div>
 			<p class="alert-box notice">Please complete the following information to retrieve your lost account password.</p>
 			<hr>
-			<uForm:form action="" method="Post" id="LostPassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/properties/uniForm/"
-				showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:main.viewavailableevents&Return=True"
+			<uForm:form action="" method="Post" id="LostPassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
+				showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:events.viewavailableevents&Return=True"
 				submitValue="Send Temporary Password" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
 				<input type="hidden" name="formSubmit" value="true">
 				<input type="hidden" name="formSendTemporaryPassword" value="true">
@@ -100,11 +106,13 @@
 		<cfif DateDiff("n", Now(), Variables.DateSent) GTE 45>
 			<p class="alert-box error">The time between when the initial request in the password retrieval email and the current time is greater than the allotted time of 45 minutes. This attempt has failed and to reset your password a new request must be made.</p>
 		<cfelse>
-			<h2>Acquire Lost Password</h2>
+			<div class="art-blockheader">
+				<h3 class="t">Acquire Lost Password</h3>
+			</div>
 			<p class="alert-box notice">Please complete the following information to retrieve your lost account password.</p>
 			<hr>
-			<uForm:form action="" method="Post" id="LostPassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/properties/uniForm/"
-				showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:main.viewavailableevents&Return=True"
+			<uForm:form action="" method="Post" id="LostPassword" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
+				showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:events.viewavailableevents&Return=True"
 				submitValue="Send Temporary Password" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
 				<input type="hidden" name="formSubmit" value="true">
 				<input type="hidden" name="formSendTemporaryPassword" value="true">

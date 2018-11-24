@@ -18,10 +18,12 @@
 			From tusers
 			Where UserID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
 		</cfquery>
-		<h2>Update Account Profile</h2>
+		<div class="art-blockheader">
+			<h3 class="t">Update Account Profile</h3>
+		</div>
 		<p class="alert-box notice">Please complete the following information to update your account profile.</p>
 		<hr>
-		<uForm:form action="" method="Post" id="EditProfile" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/properties/uniForm/"
+		<uForm:form action="" method="Post" id="EditProfile" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
 			showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm"
 			submitValue="Update Profile" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
 			<input type="hidden" name="formSubmit" value="true">
@@ -70,10 +72,12 @@
 			From tusers
 			Where UserID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
 		</cfquery>
-		<h2>Update Account Profile</h2>
+		<div class="art-blockheader">
+			<h3 class="t">Update Account Password</h3>
+		</div>
 		<p class="alert-box notice">Please complete the following information to update your account profile.</p>
 		<hr>
-		<uForm:form action="" method="Post" id="EditProfile" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/properties/uniForm/"
+		<uForm:form action="" method="Post" id="EditProfile" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
 			showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm"
 			submitValue="Update Profile" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
 			<input type="hidden" name="formSubmit" value="true">

@@ -58,7 +58,7 @@ $(document).ready(function() {
 	var dateOptions = {
 	 	showOn:'both',
 		buttonText:'Select Date',
-		buttonImage:'/properties/uniForm/images/calendar.png',
+		buttonImage:'/plugins/EventRegistration/library/uniForm/images/calendar.png',
 		buttonImageOnly:true
 	};
 	try { // try to set the datepicker defaults (Keith Wood)
@@ -70,14 +70,14 @@ $(document).ready(function() {
 	try { // try to set the timeentry defaults (Keith Wood)
 		jQuery.timeEntry.setDefaults({
 			show24Hours:false,
-		 	spinnerImage:'/properties/uniForm/images/timeentry/spinnerDefault.png'
+		 	spinnerImage:'/plugins/EventRegistration/library/uniForm/images/timeentry/spinnerDefault.png'
 		});
 	} catch (e3) {}
 	try { // try to set the timepicker defaults (jQuery UI)
 		jQuery.timepicker.setDefaults({
 			timeFormat:"h:mm tt",
 			buttonText:"Enter Time",
-			buttonImage:"/properties/uniForm/images/clock.png",
+			buttonImage:"/plugins/EventRegistration/library/uniForm/images/clock.png",
 			buttonImageOnly:true
 		});
 	} catch (e2) {}

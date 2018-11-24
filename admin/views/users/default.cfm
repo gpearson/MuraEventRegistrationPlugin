@@ -18,59 +18,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 	</cfif>
 </cfif>
 
-<cfif isDefined("FORM.FormSubmited")>
-	<cfswitch expression="#FORM.SearchCriteria#">
-		<cfcase value="LName">
-			<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
-				From tusers
-				Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-					LName LIKE '%#FORM.SearchText#%'
-				Order by LName ASC, FName ASC
-			</cfquery>
-		</cfcase>
-		<cfcase value="FName">
-			<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
-				From tusers
-				Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-					FName LIKE '%#FORM.SearchText#%'
-				Order by LName ASC, FName ASC
-			</cfquery>
-		</cfcase>
-		<cfcase value="Email">
-			<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
-				From tusers
-				Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-					Email LIKE '%#FORM.SearchText#%'
-				Order by LName ASC, FName ASC
-			</cfquery>
-		</cfcase>
-		<cfcase value="Company">
-			<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
-				From tusers
-				Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-					Company LIKE '%#FORM.SearchText#%'
-				Order by LName ASC, FName ASC
-			</cfquery>
-		</cfcase>
-	</cfswitch>
-<cfelse>
-	<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
-		From tusers
-		Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-			LENGTH(FName) > 0 or
-			SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-			LENGTH(LName) > 0
-			or SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-			LENGTH(Username) > 0
-		Order by LName ASC, FName ASC
-	</cfquery>
-</cfif>
-
 <cflock timeout="60" scope="SESSION" type="Exclusive">
 	<cfset Session.FormData = #StructNew()#>
 	<cfset Session.FormErrors = #ArrayNew()#>
@@ -118,7 +65,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</cfcase>
 		</cfswitch>
 	</cfif>
-	<br />
+	<div class="art-blockheader">
+		<h3 class="t">Search for Specific User Account</h3>
+	</div>
 	<form class="form-search" method="post" action="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:users.default">
 		<table class="art-article" style="width:100%;">
 			<tr>
@@ -135,6 +84,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 		</table>
 	</form>
 	<br>
+	<div class="art-blockheader">
+		<h3 class="t">List Available User Accounts</h3>
+	</div>
 	<table class="art-article" style="width:100%;">
 		<thead>
 			<tr>
@@ -147,22 +99,22 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<th width="100">Actions</th>
 			</tr>
 		</thead>
-		<cfif getAllUsers.RecordCount>
+		<cfif rc.Query.RecordCount>
 			<tfoot>
 				<tr>
 					<td colspan="7">Add a new user not listed in the table above, click <a href="#buildURL('admin:users.adduser')#&PerformAction=AddUser" class="art-button">here</a></td>
 				</tr>
 			</tfoot>
 			<tbody>
-				<cfloop query="getAllUsers">
+				<cfloop query="rc.Query">
 					<tr bgcolor="###iif(currentrow MOD 2,DE('ffffff'),DE('efefef'))#">
-					<td>#getAllUsers.LName#</td>
-					<td>#getAllUsers.FName#</td>
-					<td>#getAllUsers.UserName#</td>
-					<td>#getAllUsers.Email#</td>
-					<td>#getAllUsers.Company#</td>
-					<td><cfswitch expression="#getAllUsers.InActive#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch></td>
-					<td><a href="#buildURL('admin:users.updateuser')#&PerformAction=Edit&RecNo=#getAllUsers.UserID#" class="art-button">U</a>&nbsp;<a href="#buildURL('admin:users.updateuser')#&PerformAction=Delete&RecNo=#getAllUsers.UserID#" class="art-button">D</a>&nbsp;<a href="#buildURL('admin:users.updateuser')#&PerformAction=LoginUser&RecNo=#getAllUsers.UserID#" class="art-button">L</a>&nbsp;<a href="#buildURL('admin:users.updateuser')#&PerformAction=ChangePassword&RecNo=#getAllUsers.UserID#" class="art-button">P</a></td>
+					<td>#rc.Query.LName#</td>
+					<td>#rc.Query.FName#</td>
+					<td>#rc.Query.UserName#</td>
+					<td>#rc.Query.Email#</td>
+					<td>#rc.Query.Company#</td>
+					<td><cfswitch expression="#rc.Query.InActive#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch></td>
+					<td><a href="#buildURL('admin:users.updateuser')#&PerformAction=Edit&RecNo=#rc.Query.UserID#" class="art-button">U</a>&nbsp;<a href="#buildURL('admin:users.updateuser')#&PerformAction=Delete&RecNo=#rc.Query.UserID#" class="art-button">D</a>&nbsp;<a href="#buildURL('admin:users.updateuser')#&PerformAction=LoginUser&RecNo=#rc.Query.UserID#" class="art-button">L</a>&nbsp;<a href="#buildURL('admin:users.updateuser')#&PerformAction=ChangePassword&RecNo=#rc.Query.UserID#" class="art-button">P</a></td>
 					</tr>
 				</cfloop>
 			</tbody>

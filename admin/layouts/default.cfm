@@ -157,14 +157,6 @@
 							</cfif>
 						</li>
 						<cfif Session.Mura.IsLoggedIn EQ "true">
-							<cfparam name="EventCoordinatorRole" default="0" type="boolean">
-							<cfparam name="EventPresenterRole" default="0" type="boolean">
-							<cfset UserMembershipQuery = #$.currentUser().getMembershipsQuery()#>
-							<cfloop query="#Variables.UserMembershipQuery#">
-								<cfif UserMembershipQuery.GroupName EQ "Event Coordinator"><cfset EventCoordinatorRole = true></cfif>
-								<cfif UserMembershipQuery.GroupName EQ "Presenter"><cfset EventPresenterRole = true></cfif>
-							</cfloop>
-
 							<cfif Session.Mura.Username EQ "admin">
 								<li><a href="/plugins/EventRegistration/" class="active">Event Administration</a>
 									<ul>
@@ -178,28 +170,6 @@
 								</li>
 								<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=admin:sysadmin.default" class="active">System Administration</a>
 
-								</li>
-							<cfelseif Variables.EventCoordinatorRole EQ "true" and Variables.EventPresenterRole EQ "false">
-								<li><a href="" class="active">Event Administration</a>
-									<ul>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:caterers.default" class="active">Manage Catering</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:events.default" class="active">Manage Events</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:facilities.default" class="active">Manage Facilities</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:membership.default" class="active">Manage Membership</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:presenters.default" class="active">Manage Presenters</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:users.default" class="active">Manage Users</a></li>
-									</ul>
-								</li>
-							<cfelseif Variables.EventCoordinatorRole EQ "false" and Variables.EventPresenterRole EQ "true">
-								<li><a href="" class="active">Presenter Administration</a>
-									<!--- <ul>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:caterers.default" class="active">Manage Catering</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:events.default" class="active">Manage Events</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:facilities.default" class="active">Manage Facilities</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:membership.default" class="active">Manage Membership</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:presenters.default" class="active">Manage Presenters</a></li>
-										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:users.default" class="active">Manage Users</a></li>
-									</ul> --->
 								</li>
 							</cfif>
 						</cfif>
@@ -261,23 +231,6 @@
 														<h3 class="t">Manage Facility Administrative Interface</h3>
 													</div>
 												</cfcase>
-
-												<cfcase value="membership">
-													<div class="art-blockheader">
-														<h3 class="t">Manage Membership Administrative Interface</h3>
-													</div>
-												</cfcase>
-												<cfcase value="admin:membership">
-													<div class="art-blockheader">
-														<h3 class="t">Manage Membership Administrative Interface</h3>
-													</div>
-												</cfcase>
-												<cfcase value="membership.default">
-													<div class="art-blockheader">
-														<h3 class="t">Manage Membership Administrative Interface</h3>
-													</div>
-												</cfcase>
-
 												<cfcase value="presenters">
 													<div class="art-blockheader">
 														<h3 class="t">Manage Presenters Administrative Interface</h3>
@@ -295,11 +248,6 @@
 												</cfcase>
 
 												<cfcase value="users">
-													<div class="art-blockheader">
-														<h3 class="t">Manage Users Administrative Interface</h3>
-													</div>
-												</cfcase>
-												<cfcase value="admin:users">
 													<div class="art-blockheader">
 														<h3 class="t">Manage Users Administrative Interface</h3>
 													</div>

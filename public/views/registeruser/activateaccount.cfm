@@ -46,9 +46,9 @@
 		</cftry>
 
 		<cfset SendActivationEmailConfirmation = #SendEmailCFC.SendAccountActivationEmailConfirmation(ListLast(Variables.UserID, '='))#>
-		<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:main.viewavailableevents&UserRegistrationActive=true" addtoken="false">
+		<cflocation url="/?UserRegistrationActive=true" addtoken="false">
 	<cfelse>
 		<cfset SendActivationEmail = #SendEmailCFC.SendAccountActivationEmail(ListLast(Variables.UserID, '='))#>
-		<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:main.viewavailableevents&UserRegistrationActive=failed" addtoken="false">
+		<cflocation url="/?UserRegistrationActive=failed" addtoken="false">
 	</cfif>
 </cfif>
