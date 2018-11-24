@@ -110,8 +110,8 @@
 			<h2>Register for Event: #getSelectedEvent.ShortTitle#</h2>
 			<p class="alert-box notice">Please complete the following information to register for this event. All electronic communication from this system will be sent to the Participant's Email Address</p>
 			<hr>
-			<uForm:form action="" method="Post" id="RegisterEvent" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/properties/uniForm/"
-				showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:main.viewavailableevents&Return=True"
+			<uForm:form action="" method="Post" id="RegisterEvent" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
+				showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:events.viewavailableevents&Return=True"
 				submitValue="Register for Event" loadValidation="true" loadMaskUI="true" loadDateUI="true" loadTimeUI="true">
 				<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<input type="hidden" name="EventID" value="#URL.EventID#">
@@ -174,8 +174,8 @@
 			<h2>Register for Event: #getSelectedEvent.ShortTitle#</h2>
 			<p class="alert-box notice">Please complete the following information to register for this event. All electric communications from this system will be sent to the Participant's Email Address</p>
 			<hr>
-			<uForm:form action="" method="Post" id="RegisterEvent" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/properties/uniForm/"
-				showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:main.viewavailableevents&Return=True"
+			<uForm:form action="" method="Post" id="RegisterEvent" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
+				showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:events.viewavailableevents&Return=True"
 				submitValue="Register for Event" loadValidation="true" loadMaskUI="true" loadDateUI="true" loadTimeUI="true">
 				<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<input type="hidden" name="EventID" value="#URL.EventID#">
@@ -217,7 +217,7 @@
 					</uForm:fieldset>
 				</cfif>
 				<cfif getSelectedEvent.WebinarAvailable EQ 0>
-					<uForm:fieldset legend="Cost to physically attend Event">
+					<uForm:fieldset legend="Cost to attend Event">
 						<cfif Session.UserRegistrationInfo.SpecialPricingAvailable EQ "True">
 							<cfif UserRegistrationInfo.SpecialPricingAvailable EQ "True"><cfset SpecialPriceAvailable = "Yes"><cfelse><cfset SpecialPriceAvailable = "No"></cfif>
 							<uForm:field label="Special Price Available" name="SpecialPriceAvailable" isRequired="false" isDisabled="True" value="#Variables.SpecialPriceAvailable#" maxFieldLength="50" type="text" hint="Does Event allow for Special Pricing if Requirements are met?" />

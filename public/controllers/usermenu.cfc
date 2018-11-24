@@ -277,13 +277,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</cfscript>
 				<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.lostpassword&FormRetry=True">
 			</cfif>
-			
+
 			<cfquery name="GetAccountUsername" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
 				Select Fname, Lname, UserName, Email, created
 				From tusers
 				Where Email = <cfqueryparam value="#FORM.Email#" cfsqltype="cf_sql_varchar"> and SiteID = <cfqueryparam value="#Session.FormData.PluginInfo.SiteID#" cfsqltype="cf_sql_varchar">
 			</cfquery>
-			
+
 			<cfif GetAccountUsername.RecordCount EQ 0>
 				<cfscript>
 					UsernameNotValid = {property="Email",message="The Email Address was not located within the database as a valid account. We use this to lookup your account so that the correct information can be sent to you."};
@@ -295,6 +295,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfset Temp = #SendEmailCFC.SendLostPasswordVerifyFormToUser(FORM.Email)#>
 			<cflocation addtoken="true" url="/?UserAccountPasswordVerify=True">
 		<cfelseif isDefined("FORM.formSubmit") and isDefined("FORM.formSendTemporaryPassword")>
+			<cfquery name="GetAccountUsername" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+				Select Fname, Lname, UserName, Email, created
+				From tusers
+				Where Email = <cfqueryparam value="#FORM.UserAccountEmail#" cfsqltype="cf_sql_varchar"> and SiteID = <cfqueryparam value="#Session.FormData.PluginInfo.SiteID#" cfsqltype="cf_sql_varchar">
+			</cfquery>
+
 			<cfif not isDefined("Session.FormData.PluginInfo")>
 				<cfset Session.FormData.PluginInfo = StructNew()>
 				<cfset Session.FormData.PluginInfo.Datasource = #rc.$.globalConfig('datasource')#>
@@ -356,10 +362,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
 					<cfset Info = StructNew()>
 					<cfset Info.RegistrationID = #URL.RegistrationID#>
-					<cfset Info.EventID = #URL.EventID#>
 					<cfset Info.FormData = #StructCopy(Session.FormData.PluginInfo)#>
 					<cfset temp = #SendEmailCFC.SendEventCancellationToSingleParticipant(Variables.Info)#>
-					<cflocation addtoken="true" url="?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.default&CancelEventSuccessfull=True">
+					<cflocation url="/index.cfm?CancelEventSuccessfull=True" addtoken="false">
 				</cfcase>
 				<cfcase value="No">
 					<cflocation addtoken="true" url="?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.default&CancelEventAborted=True">
@@ -381,14 +386,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<cfif isDefined("FORM.formSubmit") and isDefined("FORM.CancelEventID")>
 			<cfif isNumeric(FORM.CancelEventID) EQ True>
 				<cfquery name="GetRegisteredEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					SELECT eRegistrations.RegistrationID, eEvents.TContent_ID, eEvents.ShortTitle, eEvents.EventDate, eRegistrations.RequestsMeal, eEvents.PGPAvailable, eEvents.PGPPoints, eRegistrations.IVCParticipant, eRegistrations.AttendeePrice, eRegistrations.WebinarParticipant
+					SELECT eRegistrations.TContent_ID, eEvents.TContent_ID, eEvents.ShortTitle, eEvents.EventDate, eRegistrations.RequestsMeal, eEvents.PGPAvailable, eEvents.PGPPoints, eRegistrations.IVCParticipant, eRegistrations.AttendeePrice, eRegistrations.WebinarParticipant
 					FROM eRegistrations INNER JOIN eEvents ON eEvents.TContent_ID = eRegistrations.EventID
 					WHERE eRegistrations.Site_ID = <cfqueryparam value="#Session.Mura.SiteID#" cfsqltype="cf_sql_varchar"> AND
 						eRegistrations.User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
 						eEvents.TContent_ID = <cfqueryparam value="#FORM.CancelEventID#" cfsqltype="cf_sql_integer">
 					ORDER BY eRegistrations.RegistrationDate DESC
 				</cfquery>
-				<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.cancelregistration&EventID=#FORM.CancelEventID#&RegistrationID=#GetRegisteredEvents.RegistrationID#">
+				<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.cancelregistration&RegistrationID=#FORM.CancelEventID#">
 			</cfif>
 		<cfelseif isDefined("FORM.formSubmit") and isDefined("FORM.ViewRegistrationID")>
 			<cfif isNumeric(FORM.ViewRegistrationID) EQ True>

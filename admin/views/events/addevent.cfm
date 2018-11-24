@@ -216,6 +216,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<uform:option display="No" value="0" isSelected="true" />
 						</cfif>
 					</uform:field>
+					<uform:field label="Post to Facebook Page" name="PostEventToFB" type="select" hint="Do you want to post this event to Facebook Timeline?">
+						<cfif isDefined("Session.UserSuppliedInfo.PostEventToFB")>
+							<cfif Session.UserSuppliedInfo.PostEventToFB EQ 1>
+								<uform:option display="Yes" value="1" isSelected="true" />
+								<uform:option display="No" value="0" />
+							<cfelse>
+								<uform:option display="Yes" value="1" />
+								<uform:option display="No" value="0" isSelected="true" />
+							</cfif>
+						<cfelse>
+							<uform:option display="Yes" value="1" />
+							<uform:option display="No" value="0" isSelected="true" />
+						</cfif>
+					</uform:field>
 					<uform:field label="Location for Event" name="LocationType" type="select" hint="What type of Facility will this event be held at?">
 						<cfif isDefined("Session.UserSuppliedInfo.LocationType")>
 							<cfif Session.UserSuppliedInfo.LocationType EQ "S">

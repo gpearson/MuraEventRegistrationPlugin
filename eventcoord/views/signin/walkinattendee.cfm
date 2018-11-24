@@ -23,8 +23,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 </cfif>
 
 <cfif #URLDecode(ListLast(ListFirst(ListLast(CGI.http_referer, "?"), "&"), "="))# EQ "signin.addattendee" and isDefined("URL.EventID") or 
-	#URLDecode(ListLast(ListFirst(ListLast(CGI.http_referer, "?"), "&"), "="))# EQ "admin:signin.addattendee" and isDefined("URL.EventID") or 
-	#URLDecode(ListLast(ListFirst(ListLast(CGI.http_referer, "?"), "&"), "="))# EQ "admin:signin.walkinattendee" and isDefined("URL.EventID")>
+	#URLDecode(ListLast(ListFirst(ListLast(CGI.http_referer, "?"), "&"), "="))# EQ "eventcoord:signin.addattendee" and isDefined("URL.EventID") or 
+	#URLDecode(ListLast(ListFirst(ListLast(CGI.http_referer, "?"), "&"), "="))# EQ "eventcoord:signin.walkinattendee" and isDefined("URL.EventID")>
 	<cfif not isDefined("FORM.FormErrors")>
 		<cflock timeout="60" scope="SESSION" type="Exclusive">
 			<cfset Session.FormErrors = #ArrayNew()#>

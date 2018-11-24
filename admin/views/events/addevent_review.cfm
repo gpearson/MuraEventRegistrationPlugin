@@ -156,6 +156,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<uform:field label="Maximum Participants" name="RoomMaxParticipants" isDisabled="true" type="text" value="#Session.UserSuppliedInfo.RoomMaxParticipants#" hint="Maximum Participants allowed to register for this event?" />
 					</uForm:fieldset>
 				</cfif>
+				<cfif Session.UserSuppliedInfo.PostEventToFB EQ 1>
+					<uForm:fieldset legend="Event Posting to Facebook">
+						<cfif Session.UserSuppliedInfo.PostEventToFB EQ 1><cfset EventPostToFB_AvailableText = "Yes"><cfelse><cfset EventPostToFB_AvailableText = "No"></cfif>
+						<uform:field label="Post Event To Facebook <a href='#buildURL('admin:events.addevent')#' class='ui-icon ui-icon-pencil'></a>" name="PostEventToFB" type="text" isDisabled="true" value="#Variables.EventPostToFB_AvailableText#" hint="Would this event be posted to the Organization's Facebook Page?" />
+					</uForm:fieldset>
+					<cfset Session.UserSuppliedInfo.FB = #StructNew()#>
+					<cfset Session.UserSuppliedInfo.FB.AppID = "923408481055376">
+					<cfset Session.UserSuppliedInfo.FB.AppSecretKey = "95ed34b87333b62d01ef326848ae89fd">
+					<cfset Session.UserSuppliedInfo.FB.PageID = "172096152818693">
+					<cfset Session.UserSuppliedInfo.FB.AppScope = "email,public_profile,publish_actions">
+				</cfif>
 				<uForm:fieldset legend="Allow Registrations">
 					<uform:field label="Accept Registrations" name="AcceptRegistrations" type="select" hint="Do you want to accept registrations for this event?">
 						<uform:option display="Yes" value="1" />

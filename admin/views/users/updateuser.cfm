@@ -65,16 +65,18 @@
 							submitValue="Update Account" loadValidation="true" loadMaskUI="true" loadDateUI="true" loadTimeUI="true">
 							<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 							<input type="hidden" name="RecNo" value="#URL.RecNo#">
-							<input type="hidden" name="UserName" value="#getSelectedUser.UserName#">
 							<input type="hidden" name="formSubmit" value="true">
 							<uForm:fieldset legend="Required Fields">
 								<uForm:field label="First Name" name="Fname" isRequired="true" maxFieldLength="35" value="#getSelectedUser.Fname#" type="text" hint="User's First Name" />
 								<uForm:field label="Last Name" name="Lname" isRequired="true" maxFieldLength="70" value="#getSelectedUser.Lname#" type="text" hint="User's Last Name" />
-								<uForm:field label="Username" name="UserName" isRequired="true" isDisabled="true" maxFieldLength="70" value="#getSelectedUser.UserName#" type="text" hint="User's Login Username" />
+								<uForm:field label="Username" name="UserName" isRequired="true" isDisabled="false" maxFieldLength="70" value="#getSelectedUser.UserName#" type="text" hint="User's Login Username" />
 								<uForm:field label="Email Address" name="Email" isRequired="true" maxFieldLength="70" value="#getSelectedUser.Email#" type="text" hint="User's Email Address" />
 							</uForm:fieldset>
 							<uForm:fieldset legend="Optional Fields">
 								<uform:field label="School District" name="Company" type="select" hint="School District employeed at?">
+									<uform:option display="-- Business Organization" value="0000" />
+									<uform:option display="-- Higher Education Organization" value="0001" />
+									<uform:option display="-- Another State K-12 School District" value="0002" />
 									<cfloop query="getSchoolDistricts">
 										<cfif getSelectedUser.Company EQ getSchoolDistricts.OrganizationName>
 											<uform:option display="#getSchoolDistricts.OrganizationName#" value="#getSchoolDistricts.StateDOE_IDNumber#" isSelected="true" />

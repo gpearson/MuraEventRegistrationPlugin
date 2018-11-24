@@ -18,7 +18,7 @@
 		<cfif GetRegisteredEvents.RecordCount EQ 0>
 			<div class="alert-box notice"><p class="text-center">You currently are not registered for any active events at this time.</p></div>
 		<cfelse>
-			<div class="alert-box success">The table lists all of the current events which you either registered for or someone registered for you.</div>
+			<div class="alert-box success">The table lists all of the current events which you either registered for or someone has registered for you.</div>
 			<hr>
 			<table class="art-article" style="width: 100%;" cellspacing="0" cellpadding="0">
 				<tr style="font-face: Arial; font-weight: bold; font-size: 14px;">
@@ -32,7 +32,7 @@
 					<td width="25%">#DateFormat(GetRegisteredEvents.EventDate, "short")#</td>
 					<td>
 						<cfif GetRegisteredEvents.AttendedEvent EQ 0>
-							<a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.cancelregistration&EventID=#GetRegisteredEvents.EventID#&RegistrationID=#GetRegisteredEvents.RegistrationID#" class="art-button" alt="Cancel Event">Cancel Event</a>
+							<a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.manageregistrations" class="art-button" alt="Cancel Event">Manage Registration</a>
 						<cfelseif GetRegisteredEvents.AttendedEvent EQ 1 and GetRegisteredEvents.PGPAvailable EQ 1>
 							<a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.getcertificate&EventID=#GetRegisteredEvents.EventID#&RegistrationID=#GetRegisteredEvents.RegistrationID#" class="art-button" alt="Retrieve Certificate">Retrieve Certificate</a>
 						</cfif>
@@ -43,5 +43,5 @@
 		</cfif>
 	</cfoutput>
 <cfelseif Session.Mura.IsLoggedIn EQ "False" and isDefined("URL.EventID")>
-	<cflocation url="/index.cfm?EventRegistrationaction=public:main.viewavailableevents" addtoken="false">
+	<cflocation url="/index.cfm?EventRegistrationaction=public:events.viewavailableevents" addtoken="false">
 </cfif>

@@ -43,6 +43,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfif isDefined("FORM.MealProvided")><cfset Session.UserSuppliedInfo.MealProvided = #FORM.MealProvided#></cfif>
 				<cfif isDefined("FORM.AllowVideoConference")><cfset Session.UserSuppliedInfo.AllowVideoConference = #FORM.AllowVideoConference#></cfif>
 				<cfif isDefined("FORM.WebinarEvent")><cfset Session.UserSuppliedInfo.WebinarEvent = #FORM.WebinarEvent#></cfif>
+				<cfif isDefined("FORM.PostEventToFB")><cfset Session.UserSuppliedInfo.PostEventToFB = #FORM.PostEventToFB#></cfif>
 				<cfif isDefined("FORM.LocationType")><cfset Session.UserSuppliedInfo.LocationType = #FORM.LocationType#></cfif>
 			</cflock>
 			<cfif not isNumericDate(Session.UserSuppliedInfo.EventDate)>
@@ -464,18 +465,26 @@ http://www.apache.org/licenses/LICENSE-2.0
 						lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
 					Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
 				</cfquery>
+				<cfcatch type="Database">
+					<cfdump var="#CFCATCH#"><cfabort>
+				</cfcatch>
+			</cftry>
 
+			<cfif Session.UserSuppliedInfo.PostEventToFB EQ 1>
+				<cflock timeout="60" scope="Session" type="Exclusive">
+					<cfset temp = #StructDelete(Session, "FormData", "True")#>
+					<cfset temp = #StructDelete(Session, "FormErrors", "True")#>
+					<cfset Session.UserSuppliedInfo.FB.RedirectURI = "http://#cgi.server_name#/plugins/EventRegistration/?EventRegistrationaction=admin:events.publishtofb&compactDisplay=false&EventID=#insertNewEvent.GENERATED_KEY#&PerformAction=AutomaticPost">
+				</cflock>
+				<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events.publishtofb&SiteID=#rc.$.siteConfig('siteID')#&EventID=#insertNewEvent.GENERATED_KEY#&AutomaticPost=True" addtoken="false">
+			<cfelse>
 				<cflock timeout="60" scope="Session" type="Exclusive">
 					<cfset temp = #StructDelete(Session, "UserSuppliedInfo", "True")#>
 					<cfset temp = #StructDelete(Session, "FormData", "True")#>
 					<cfset temp = #StructDelete(Session, "FormErrors", "True")#>
 				</cflock>
-
-				<cfcatch type="Database">
-					<cfdump var="#CFCATCH#"><cfabort>
-				</cfcatch>
-			</cftry>
-			<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events&UserAction=AddedEvent&SiteID=#rc.$.siteConfig('siteID')#&Successful=true" addtoken="false">
+				<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events&UserAction=AddedEvent&SiteID=#rc.$.siteConfig('siteID')#&Successful=true" addtoken="false">
+			</cfif>
 		</cfif>
 	</cffunction>
 
@@ -2137,7 +2146,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 					MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost,
 					AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, Maxparticipants,
 					LocationType, LocationID, LocationRoomID, MaxParticipants, Presenters, Facilitator, dateCreated, lastUpdated, lastUpdateBy, Active,
-					WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
+					WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost,
+					EventDoc_FileNameOne, EventDoc_FileTypeOne, EventDoc_FileNameTwo, EventDoc_FileTypeTwo, EventDoc_FileNameThree, EventDoc_FileTypeThree,
+					EventDoc_FileNameFour, EventDoc_FileTypeFour, EventDoc_FileNameFive, EventDoc_FileTypeFive
 				From eEvents
 				Where TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
 			</cfquery>
@@ -2213,6 +2224,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfset Session.UserSuppliedInfo.WebinarConnectInfo = #GetSelectedEvent.WebinarConnectInfo#>
 				<cfset Session.UserSuppliedInfo.WebinarMemberCost = #GetSelectedEvent.WebinarMemberCost#>
 				<cfset Session.UserSuppliedInfo.WebinarNonMemberCost = #GetSelectedEvent.WebinarNonMemberCost#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileNameOne = #GetSelectedEvent.EventDoc_FileNameOne#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileNameTwo = #GetSelectedEvent.EventDoc_FileNameTwo#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileNameThree = #GetSelectedEvent.EventDoc_FileNameThree#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileNameFour =  #GetSelectedEvent.EventDoc_FileNameFour#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileNameFive = #GetSelectedEvent.EventDoc_FileNameFive#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileTypeOne = #GetSelectedEvent.EventDoc_FileTypeOne#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileTypeTwo = #GetSelectedEvent.EventDoc_FileTypeTwo#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileTypeThree = #GetSelectedEvent.EventDoc_FileTypeThree#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileTypeFour = #GetSelectedEvent.EventDoc_FileTypeFour#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileTypeFive = #GetSelectedEvent.EventDoc_FileTypeFive#>
 			</cflock>
 		</cfif>
 
@@ -2251,7 +2272,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 					MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost,
 					AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, Maxparticipants,
 					LocationType, LocationID, LocationRoomID, MaxParticipants, Presenters, Facilitator, dateCreated, lastUpdated, lastUpdateBy, Active,
-					WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
+					WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, EventDoc_FileNameOne, EventDoc_FileTypeOne, EventDoc_FileNameTwo, EventDoc_FileTypeTwo, EventDoc_FileNameThree, EventDoc_FileTypeThree,
+					EventDoc_FileNameFour, EventDoc_FileTypeFour, EventDoc_FileNameFive, EventDoc_FileTypeFive
 				From eEvents
 				Where TContent_ID = <cfqueryparam value="#GetRegisteredUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
 			</cfquery>
@@ -2267,16 +2289,158 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfset ParticipantInfo.Email = #GetRegisteredUsersForEvent.Email#>
 						<cfset ParticipantInfo.EventShortTitle = #GetSelectedEvent.ShortTitle#>
 						<cfset ParticipantInfo.EmailMessageBody = #FORM.EmailMsg#>
+						<cfset ParticipantInfo.DocLinksInEmail = #FORM.IncludeFileLinks#>
 						<cfset temp = #SendEMailCFC.SendEventMessageToAllParticipants(Variables.ParticipantInfo)#>
 					</cfloop>
 				<cfelse>
-					<cfif LEN(FORM.FirstDocumentToSend)>
-						<cffile action="upload" fileField="FORM.FirstDocumentToSend" destination="" nameconflict="MakeUnique">
+					<cfif isDefined("FORM.FirstDocumentToSend")>
+						<cfif LEN(FORM.FirstDocumentToSend)>
+							<cffile action="upload" fileField="FORM.FirstDocumentToSend" result="EventDocumentOne" destination="#GetTempDirectory()#" nameconflict="MakeUnique">
+							<cfset NewServerFileOne = #Replace(Variables.EventDocumentOne.ServerFile, " ", "_", "ALL")#>
+							<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocumentOne.ServerFile#" Destination="#Variables.NewServerFileOne#">
+							<cfdirectory action="list" directory="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#" name="DoesDirectoryExists">
+							<cfif DoesDirectoryExists.RecordCount EQ 0>
+								<cfdirectory action="Create" directory="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#">
+							</cfif>
+							<cffile action="move" source="#GetTempDirectory()#/#Variables.NewServerFileOne#" Destination="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#/#Variables.NewServerFileOne#">
+							<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update eEvents
+								Set EventDoc_FileNameOne = <cfqueryparam value="#Variables.NewServerFileOne#" cfsqltype="cf_sql_varchar">,
+									EventDoc_FileTypeOne = <cfqueryparam value="#Variables.EventDocumentOne.ContentType#/#Variables.EventDocumentOne.ContentSubType#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#GetRegisteredUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
+							</cfquery>
+							<cfset EmailMessageWithFileOne = True>
+						</cfif>
 					</cfif>
-					<cfdump var="#GetSelectedEvent#">
-					<cfdump var="#GetRegisteredUsersForEvent#">
-					<cfdump var="#FORM#">
-					<cfabort>
+					<cfif isDefined("FORM.SecondDocumentToSend")>
+						<cfif LEN(FORM.SecondDocumentToSend)>
+						<cffile action="upload" fileField="FORM.SecondDocumentToSend" result="EventDocumentTwo" destination="#GetTempDirectory()#" nameconflict="MakeUnique">
+						<cfset NewServerFileTwo = #Replace(Variables.EventDocumentTwo.ServerFile, " ", "_", "ALL")#>
+						<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocumentTwo.ServerFile#" Destination="#Variables.NewServerFileTwo#">
+						<cffile action="move" source="#GetTempDirectory()#/#Variables.NewServerFileTwo#" Destination="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#/#Variables.NewServerFileTwo#">
+						<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update eEvents
+							Set EventDoc_FileNameTwo = <cfqueryparam value="#Variables.NewServerFileTwo#" cfsqltype="cf_sql_varchar">,
+								EventDoc_FileTypeTwo = <cfqueryparam value="#Variables.EventDocumentTwo.ContentType#/#Variables.EventDocumentTwo.ContentSubType#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#GetRegisteredUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+						<cfset EmailMessageWithFileTwo = True>
+						</cfif>
+					</cfif>
+					<cfif isDefined("FORM.ThirdDocumentToSend")>
+						<cfif LEN(FORM.ThirdDocumentToSend)>
+						<cffile action="upload" fileField="FORM.ThirdDocumentToSend" result="EventDocumentThree" destination="#GetTempDirectory()#" nameconflict="MakeUnique">
+						<cfset NewServerFileThree = #Replace(Variables.EventDocumentThree.ServerFile, " ", "_", "ALL")#>
+						<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocumentThree.ServerFile#" Destination="#Variables.NewServerFileThree#">
+						<cffile action="move" source="#GetTempDirectory()#/#Variables.NewServerFileThree#" Destination="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#/#Variables.NewServerFileThree#">
+						<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update eEvents
+							Set EventDoc_FileNameThree = <cfqueryparam value="#Variables.NewServerFileThree#" cfsqltype="cf_sql_varchar">,
+								EventDoc_FileTypeThree = <cfqueryparam value="#Variables.EventDocumentThree.ContentType#/#Variables.EventDocumentThree.ContentSubType#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#GetRegisteredUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+						<cfset EmailMessageWithFileThree = True>
+						</cfif>
+					</cfif>
+					<cfif isDefined("FORM.FourthDocumentToSend")>
+						<cfif LEN(FORM.FourthDocumentToSend)>
+						<cffile action="upload" fileField="FORM.FourthDocumentToSend" result="EventDocumentFour" destination="#GetTempDirectory()#" nameconflict="MakeUnique">
+						<cfset NewServerFileFour = #Replace(Variables.EventDocumentFour.ServerFile, " ", "_", "ALL")#>
+						<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocumentFour.ServerFile#" Destination="#Variables.NewServerFileFour#">
+						<cffile action="move" source="#GetTempDirectory()#/#Variables.NewServerFileFour#" Destination="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#/#Variables.NewServerFileFour#">
+						<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update eEvents
+							Set EventDoc_FileNameFour = <cfqueryparam value="#Variables.NewServerFileFour#" cfsqltype="cf_sql_varchar">,
+								EventDoc_FileTypeFour = <cfqueryparam value="#Variables.EventDocumentFour.ContentType#/#Variables.EventDocumentFour.ContentSubType#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#GetRegisteredUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+						<cfset EmailMessageWithFileFour = True>
+						</cfif>
+					</cfif>
+					<cfif isDefined("FORM.FifthDocumentToSend")>
+						<cfif LEN(FORM.FifthDocumentToSend)>
+						<cffile action="upload" fileField="FORM.FifthDocumentToSend" result="EventDocumentFive" destination="#GetTempDirectory()#" nameconflict="MakeUnique">
+						<cfset NewServerFileFive = #Replace(Variables.EventDocumentFive.ServerFile, " ", "_", "ALL")#>
+						<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocumentFive.ServerFile#" Destination="#Variables.NewServerFileFive#">
+						<cffile action="move" source="#GetTempDirectory()#/#Variables.NewServerFileFive#" Destination="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#/#Variables.NewServerFileFive#">
+						<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update eEvents
+							Set EventDoc_FileNameFive = <cfqueryparam value="#Variables.NewServerFileFive#" cfsqltype="cf_sql_varchar">,
+								EventDoc_FileTypeFive = <cfqueryparam value="#Variables.EventDocumentFive.ContentType#/#Variables.EventDocumentFive.ContentSubType#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#GetRegisteredUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+						<cfset EmailMessageWithFileFive = True>
+						</cfif>
+					</cfif>
+					<cfloop query="GetRegisteredUsersForEvent">
+						<cfset ParticipantInfo = StructNew()>
+						<cfset ParticipantInfo.FName = #GetRegisteredUsersForEvent.Fname#>
+						<cfset ParticipantInfo.LName = #GetRegisteredUsersForEvent.Lname#>
+						<cfset ParticipantInfo.Email = #GetRegisteredUsersForEvent.Email#>
+						<cfset ParticipantInfo.EventShortTitle = #GetSelectedEvent.ShortTitle#>
+						<cfset ParticipantInfo.EmailMessageBody = #FORM.EmailMsg#>
+						<cfset ParticipantInfo.DocLinksInEmail = #FORM.IncludeFileLinks#>
+						<cfset ParticipantInfo.PackageName = #rc.pc.getPackage()#>
+						<cfset ParticipantInfo.EventID = #GetRegisteredUsersForEvent.EventID#>
+
+						<cfif isDefined("Variables.EmailMessageWithFileOne") or LEN(GetSelectedEvent.EventDoc_FileNameOne)>
+							<cfset ParticipantInfo.EmailFileOne = True>
+							<cfif isDefined("Variables.EmailMessageWithFileOne")>
+								<cfset ParticipantInfo.EmailFileLocOne = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileOne#>
+								<cfset ParticipantInfo.EmailFileNameOne = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileOne#>
+								<cfset ParticipantInfo.EmailFileTypeOne = #Variables.EventDocumentOne.ContentType# & "/" & #Variables.EventDocumentOne.ContentSubType#>
+							<cfelse>
+								<cfset ParticipantInfo.EmailFileLocOne = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameOne#>
+								<cfset ParticipantInfo.EmailFileNameOne = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameOne#>
+								<cfset ParticipantInfo.EmailFileTypeOne = #GetSelectedEvent.EventDoc_FileTypeOne#>
+							</cfif>
+						</cfif>
+						<cfif isDefined("Variables.EmailMessageWithFileTwo")  or LEN(GetSelectedEvent.EventDoc_FileNameTwo)><cfset ParticipantInfo.EmailFileTwo = True>
+							<cfif isDefined("Variables.EmailMessageWithFileTwo")>
+								<cfset ParticipantInfo.EmailFileLocTwo = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileTwo#>
+								<cfset ParticipantInfo.EmailFileNameTwo = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileTwo#>
+								<cfset ParticipantInfo.EmailFileTypeTwo = #Variables.EventDocumentTwo.ContentType# & "/" & #Variables.EventDocumentTwo.ContentSubType#>
+							<cfelse>
+								<cfset ParticipantInfo.EmailFileLocTwo = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameTwo#>
+								<cfset ParticipantInfo.EmailFileNameTwo = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameTwo#>
+								<cfset ParticipantInfo.EmailFileTypeTwo = #GetSelectedEvent.EventDoc_FileTypeTwo#>
+							</cfif>
+						</cfif>
+						<cfif isDefined("Variables.EmailMessageWithFileThree")  or LEN(GetSelectedEvent.EventDoc_FileNameThree)><cfset ParticipantInfo.EmailFileThree = True>
+							<cfif isDefined("Variables.EmailMessageWithFileThree")>
+								<cfset ParticipantInfo.EmailFileLocThree = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileThree#>
+								<cfset ParticipantInfo.EmailFileNameThree = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileThree#>
+								<cfset ParticipantInfo.EmailFileTypeThree = #Variables.EventDocumentThree.ContentType# & "/" & #Variables.EventDocumentThree.ContentSubType#>
+							<cfelse>
+								<cfset ParticipantInfo.EmailFileLocThree = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameThree#>
+								<cfset ParticipantInfo.EmailFileNameThree = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameThree#>
+								<cfset ParticipantInfo.EmailFileTypeThree = #GetSelectedEvent.EventDoc_FileTypeThree#>
+							</cfif>
+						</cfif>
+						<cfif isDefined("Variables.EmailMessageWithFileFour")  or LEN(GetSelectedEvent.EventDoc_FileNameFour)><cfset ParticipantInfo.EmailFileFour = True>
+						<cfif isDefined("Variables.EmailMessageWithFileFour")>
+								<cfset ParticipantInfo.EmailFileLocFour = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileFour#>
+								<cfset ParticipantInfo.EmailFileNameFour = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileFour#>
+								<cfset ParticipantInfo.EmailFileTypeFour = #Variables.EventDocumentFour.ContentType# & "/" & #Variables.EventDocumentFour.ContentSubType#>
+							<cfelse>
+								<cfset ParticipantInfo.EmailFileLocFour = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameFour#>
+								<cfset ParticipantInfo.EmailFileNameFour = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameFour#>
+								<cfset ParticipantInfo.EmailFileTypeFour = #GetSelectedEvent.EventDoc_FileTypeFour#>
+							</cfif>
+						</cfif>
+						<cfif isDefined("Variables.EmailMessageWithFileFive")  or LEN(GetSelectedEvent.EventDoc_FileNameFive)><cfset ParticipantInfo.EmailFileFive = True>
+							<cfif isDefined("Variables.EmailMessageWithFileFive")>
+								<cfset ParticipantInfo.EmailFileLocFive = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileFive#>
+								<cfset ParticipantInfo.EmailFileNameFive = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileFive#>
+								<cfset ParticipantInfo.EmailFileTypeFive = #Variables.EventDocumentFive.ContentType# & "/" & #Variables.EventDocumentFive.ContentSubType#>
+							<cfelse>
+								<cfset ParticipantInfo.EmailFileLocFive = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameFive#>
+								<cfset ParticipantInfo.EmailFileNameFive = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameFive#>
+								<cfset ParticipantInfo.EmailFileTypeFive = #GetSelectedEvent.EventDoc_FileTypeFive#>
+							</cfif>
+						</cfif>
+						<cfset temp = #SendEMailCFC.SendEventMessageToAllParticipants(Variables.ParticipantInfo)#>
+					</cfloop>
 				</cfif>
 				<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events&UserAction=RegistrationsSent&SiteID=#rc.$.siteConfig('siteID')#&Successful=true&EventID=#GetRegisteredUsersForEvent.EventID#" addtoken="false">
 			<cfelseif GetRegisteredUsersForEvent.RecordCount EQ 0>
@@ -4120,4 +4284,455 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</cfif>
 		</cfif>
 	</cffunction>
+
+	<cffunction name="publishtofb" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif isDefined("URL.EventID") and isDefined("URL.AutomaticPost")>
+			<cfif URL.AutomaticPost EQ "True">
+				<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription,
+						Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime,
+						EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost,
+						EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost,
+						ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints,
+						MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost,
+						AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, Maxparticipants,
+						LocationType, LocationID, LocationRoomID, MaxParticipants, Presenters, Facilitator, dateCreated, lastUpdated, lastUpdateBy, Active,
+						WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
+					From eEvents
+					Where TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
+				</cfquery>
+
+				<cfquery name="GetFacilityInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					SELECT eFacility.FacilityName, eFacility.PhysicalAddress, eFacility.PhysicalCity, eFacility.PhysicalState, eFacility.PhysicalZipCode, eFacilityRooms.RoomName
+					FROM eFacility INNER JOIN eFacilityRooms ON eFacilityRooms.Facility_ID = eFacility.TContent_ID
+					WHERE eFacility.Active = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> AND eFacility.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+						AND eFacilityRooms.TContent_ID = <cfqueryparam value="#GetSelectedEvent.LocationRoomID#" cfsqltype="cf_sql_integer">
+				</cfquery>
+
+				<cfset Session.UserSuppliedInfo.FacilityInfo = #StructCopy(GetFacilityInformation)#>
+			</cfif>
+		<cfelseif not isDefined("Form.PerformAction") and isDefined("URL.EventID") and not isDefined("URL.PerformAction") and isDefined("URL.EventID")>
+			<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription,
+					Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime,
+					EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost,
+					EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost,
+					ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints,
+					MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost,
+					AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, Maxparticipants,
+					LocationType, LocationID, LocationRoomID, MaxParticipants, Presenters, Facilitator, dateCreated, lastUpdated, lastUpdateBy, Active,
+					WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
+				From eEvents
+				Where TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
+			</cfquery>
+
+			<cfquery name="GetSelectedEventRegistrations" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select Count(RegistrationID) as NumRegistrations
+				From eRegistrations
+				Where EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
+			</cfquery>
+
+			<cfif GetSelectedEventRegistrations.RecordCount>
+				<cfset Session.EventNumberRegistrations = #GetSelectedEventRegistrations.NumRegistrations#>
+			<cfelse>
+				<cfset Session.EventNumberRegistrations = 0>
+			</cfif>
+
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfset Session.UserSuppliedInfo = StructNew()>
+				<cfset Session.UserSuppliedInfo.PickedEvent = StructNew()>
+				<cfset Session.UserSuppliedInfo.PickedEvent.RecNo = #GetSelectedEvent.TContent_ID#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.ShortTitle = #GetSelectedEvent.ShortTitle#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EventDate = #GetSelectedEvent.EventDate#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EventDate1 = #GetSelectedEvent.EventDate1#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EventDate2 = #GetSelectedEvent.EventDate2#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EventDate3 = #GetSelectedEvent.EventDate3#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EventDate4 = #GetSelectedEvent.EventDate4#>
+				<cfif LEN(GetSelectedEvent.EventDate1) or LEN(GetSelectedEvent.EventDate2) or LEN(GetSelectedEvent.EventDate3) or LEN(GetSelectedEvent.EventDate4)>
+					<cfset Session.UserSuppliedInfo.PickedEvent.EventSpanDates = 1>
+				<cfelse>
+					<cfset Session.UserSuppliedInfo.PickedEvent.EventSpanDates = 0>
+				</cfif>
+				<cfset Session.UserSuppliedInfo.PickedEvent.LongDescription = #GetSelectedEvent.LongDescription#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Event_StartTime = #GetSelectedEvent.Event_StartTime#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Event_EndTime = #GetSelectedEvent.Event_EndTime#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Registration_Deadline = #GetSelectedEvent.Registration_Deadline#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Registration_BeginTime = #GetSelectedEvent.Registration_BeginTime#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Registration_EndTime = #GetSelectedEvent.Registration_EndTime#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EventFeatured = #GetSelectedEvent.EventFeatured#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Featured_StartDate = #GetSelectedEvent.Featured_StartDate#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Featured_EndDate = #GetSelectedEvent.Featured_EndDate#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Featured_SortOrder = #GetSelectedEvent.Featured_SortOrder#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.MemberCost = #GetSelectedEvent.MemberCost#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.NonMemberCost = #GetSelectedEvent.NonMemberCost#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EarlyBird_RegistrationDeadline = #GetSelectedEvent.EarlyBird_RegistrationDeadline#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EarlyBird_RegistrationAvailable = #GetSelectedEvent.EarlyBird_RegistrationAvailable#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EarlyBird_MemberCost = #GetSelectedEvent.EarlyBird_MemberCost#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EarlyBird_NonMemberCost = #GetSelectedEvent.EarlyBird_NonMemberCost#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.ViewSpecialPricing = #GetSelectedEvent.ViewSpecialPricing#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.SpecialMemberCost = #GetSelectedEvent.SpecialMemberCost#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.SpecialNonMemberCost = #GetSelectedEvent.SpecialNonMemberCost#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.SpecialPriceRequirements = #GetSelectedEvent.SpecialPriceRequirements#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.PGPAvailable = #GetSelectedEvent.PGPAvailable#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.PGPPoints = #GetSelectedEvent.PGPPoints#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.MealProvided = #GetSelectedEvent.MealProvided#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.MealProvidedBy = #GetSelectedEvent.MealProvidedBy#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.MealCost_Estimated = #GetSelectedEvent.MealCost_Estimated#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.AllowVideoConference = #GetSelectedEvent.AllowVideoConference#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.VideoConferenceInfo = #GetSelectedEvent.VideoConferenceInfo#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.VideoConferenceCost = #GetSelectedEvent.VideoConferenceCost#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.AcceptRegistrations = #GetSelectedEvent.AcceptRegistrations#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EventAgenda = #GetSelectedEvent.EventAgenda#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EventTargetAudience = #GetSelectedEvent.EventTargetAudience#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EventStrategies = #GetSelectedEvent.EventStrategies#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.EventSpecialInstructions = #GetSelectedEvent.EventSpecialInstructions#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Maxparticipants = #GetSelectedEvent.Maxparticipants#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.LocationType = #GetSelectedEvent.LocationType#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.LocationID = #GetSelectedEvent.LocationID#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.LocationRoomID = #GetSelectedEvent.LocationRoomID#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.RoomMaxParticipants = #GetSelectedEvent.MaxParticipants#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Presenters = #GetSelectedEvent.Presenters#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Facilitator = #GetSelectedEvent.Facilitator#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.dateCreated = #GetSelectedEvent.dateCreated#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.lastUpdated = #GetSelectedEvent.lastUpdated#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.lastUpdateBy = #GetSelectedEvent.lastUpdateBy#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.Active = #GetSelectedEvent.Active#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.WebinarAvailable = #GetSelectedEvent.WebinarAvailable#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.WebinarConnectInfo = #GetSelectedEvent.WebinarConnectInfo#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.WebinarMemberCost = #GetSelectedEvent.WebinarMemberCost#>
+				<cfset Session.UserSuppliedInfo.PickedEvent.WebinarNonMemberCost = #GetSelectedEvent.WebinarNonMemberCost#>
+			</cflock>
+		<cfelseif isDefined("FORM.PerformAction") and isDefined("URL.EventID")>
+			<cfswitch expression="#FORM.PerformAction#">
+				<cfcase value="FacebookAuthenticate">
+					<cfset Session.UserSuppliedInfo.FBPost = #StructCopy(FORM)#>
+				</cfcase>
+			</cfswitch>
+		<cfelseif isDefined("URL.PerformAction") and isDefined("URL.EventID")>
+			<cfswitch expression="#URL.PerformAction#">
+				<cfcase value="PostMessageToFB">
+				</cfcase>
+			</cfswitch>
+		</cfif>
+	</cffunction>
+
+	<cffunction name="emailattended" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif not isDefined("FORM.formSubmit") and isDefined("URL.EventID")>
+			<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription,
+					Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime,
+					EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost,
+					EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost,
+					ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints,
+					MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost,
+					AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, Maxparticipants,
+					LocationType, LocationID, LocationRoomID, MaxParticipants, Presenters, Facilitator, dateCreated, lastUpdated, lastUpdateBy, Active,
+					WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost,
+					EventDoc_FileNameOne, EventDoc_FileTypeOne, EventDoc_FileNameTwo, EventDoc_FileTypeTwo, EventDoc_FileNameThree, EventDoc_FileTypeThree,
+					EventDoc_FileNameFour, EventDoc_FileTypeFour, EventDoc_FileNameFive, EventDoc_FileTypeFive
+				From eEvents
+				Where TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
+			</cfquery>
+			<cfquery name="GetSelectedEventRegistrations" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select Count(RegistrationID) as NumRegistrations
+				From eRegistrations
+				Where EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and AttendedEvent = <cfqueryparam value="1" cfsqltype="cf_sql_integer">
+			</cfquery>
+			<cfif GetSelectedEventRegistrations.RecordCount>
+				<cfset Session.EventNumberRegistrations = #GetSelectedEventRegistrations.NumRegistrations#>
+			<cfelse>
+				<cfset Session.EventNumberRegistrations = 0>
+			</cfif>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfset Session.UserSuppliedInfo = StructNew()>
+				<cfset Session.UserSuppliedInfo.RecNo = #GetSelectedEvent.TContent_ID#>
+				<cfset Session.UserSuppliedInfo.ShortTitle = #GetSelectedEvent.ShortTitle#>
+				<cfset Session.UserSuppliedInfo.EventDate = #GetSelectedEvent.EventDate#>
+				<cfset Session.UserSuppliedInfo.EventDate1 = #GetSelectedEvent.EventDate1#>
+				<cfset Session.UserSuppliedInfo.EventDate2 = #GetSelectedEvent.EventDate2#>
+				<cfset Session.UserSuppliedInfo.EventDate3 = #GetSelectedEvent.EventDate3#>
+				<cfset Session.UserSuppliedInfo.EventDate4 = #GetSelectedEvent.EventDate4#>
+				<cfif LEN(GetSelectedEvent.EventDate1) or LEN(GetSelectedEvent.EventDate2) or LEN(GetSelectedEvent.EventDate3) or LEN(GetSelectedEvent.EventDate4)>
+					<cfset Session.UserSuppliedInfo.EventSpanDates = 1>
+				<cfelse>
+					<cfset Session.UserSuppliedInfo.EventSpanDates = 0>
+				</cfif>
+				<cfset Session.UserSuppliedInfo.LongDescription = #GetSelectedEvent.LongDescription#>
+				<cfset Session.UserSuppliedInfo.Event_StartTime = #GetSelectedEvent.Event_StartTime#>
+				<cfset Session.UserSuppliedInfo.Event_EndTime = #GetSelectedEvent.Event_EndTime#>
+				<cfset Session.UserSuppliedInfo.Registration_Deadline = #GetSelectedEvent.Registration_Deadline#>
+				<cfset Session.UserSuppliedInfo.Registration_BeginTime = #GetSelectedEvent.Registration_BeginTime#>
+				<cfset Session.UserSuppliedInfo.Registration_EndTime = #GetSelectedEvent.Registration_EndTime#>
+				<cfset Session.UserSuppliedInfo.EventFeatured = #GetSelectedEvent.EventFeatured#>
+				<cfset Session.UserSuppliedInfo.Featured_StartDate = #GetSelectedEvent.Featured_StartDate#>
+				<cfset Session.UserSuppliedInfo.Featured_EndDate = #GetSelectedEvent.Featured_EndDate#>
+				<cfset Session.UserSuppliedInfo.Featured_SortOrder = #GetSelectedEvent.Featured_SortOrder#>
+				<cfset Session.UserSuppliedInfo.MemberCost = #GetSelectedEvent.MemberCost#>
+				<cfset Session.UserSuppliedInfo.NonMemberCost = #GetSelectedEvent.NonMemberCost#>
+				<cfset Session.UserSuppliedInfo.EarlyBird_RegistrationDeadline = #GetSelectedEvent.EarlyBird_RegistrationDeadline#>
+				<cfset Session.UserSuppliedInfo.EarlyBird_RegistrationAvailable = #GetSelectedEvent.EarlyBird_RegistrationAvailable#>
+				<cfset Session.UserSuppliedInfo.EarlyBird_MemberCost = #GetSelectedEvent.EarlyBird_MemberCost#>
+				<cfset Session.UserSuppliedInfo.EarlyBird_NonMemberCost = #GetSelectedEvent.EarlyBird_NonMemberCost#>
+				<cfset Session.UserSuppliedInfo.ViewSpecialPricing = #GetSelectedEvent.ViewSpecialPricing#>
+				<cfset Session.UserSuppliedInfo.SpecialMemberCost = #GetSelectedEvent.SpecialMemberCost#>
+				<cfset Session.UserSuppliedInfo.SpecialNonMemberCost = #GetSelectedEvent.SpecialNonMemberCost#>
+				<cfset Session.UserSuppliedInfo.SpecialPriceRequirements = #GetSelectedEvent.SpecialPriceRequirements#>
+				<cfset Session.UserSuppliedInfo.PGPAvailable = #GetSelectedEvent.PGPAvailable#>
+				<cfset Session.UserSuppliedInfo.PGPPoints = #GetSelectedEvent.PGPPoints#>
+				<cfset Session.UserSuppliedInfo.MealProvided = #GetSelectedEvent.MealProvided#>
+				<cfset Session.UserSuppliedInfo.MealProvidedBy = #GetSelectedEvent.MealProvidedBy#>
+				<cfset Session.UserSuppliedInfo.MealCost_Estimated = #GetSelectedEvent.MealCost_Estimated#>
+				<cfset Session.UserSuppliedInfo.AllowVideoConference = #GetSelectedEvent.AllowVideoConference#>
+				<cfset Session.UserSuppliedInfo.VideoConferenceInfo = #GetSelectedEvent.VideoConferenceInfo#>
+				<cfset Session.UserSuppliedInfo.VideoConferenceCost = #GetSelectedEvent.VideoConferenceCost#>
+				<cfset Session.UserSuppliedInfo.AcceptRegistrations = #GetSelectedEvent.AcceptRegistrations#>
+				<cfset Session.UserSuppliedInfo.EventAgenda = #GetSelectedEvent.EventAgenda#>
+				<cfset Session.UserSuppliedInfo.EventTargetAudience = #GetSelectedEvent.EventTargetAudience#>
+				<cfset Session.UserSuppliedInfo.EventStrategies = #GetSelectedEvent.EventStrategies#>
+				<cfset Session.UserSuppliedInfo.EventSpecialInstructions = #GetSelectedEvent.EventSpecialInstructions#>
+				<cfset Session.UserSuppliedInfo.Maxparticipants = #GetSelectedEvent.Maxparticipants#>
+				<cfset Session.UserSuppliedInfo.LocationType = #GetSelectedEvent.LocationType#>
+				<cfset Session.UserSuppliedInfo.LocationID = #GetSelectedEvent.LocationID#>
+				<cfset Session.UserSuppliedInfo.LocationRoomID = #GetSelectedEvent.LocationRoomID#>
+				<cfset Session.UserSuppliedInfo.RoomMaxParticipants = #GetSelectedEvent.MaxParticipants#>
+				<cfset Session.UserSuppliedInfo.Presenters = #GetSelectedEvent.Presenters#>
+				<cfset Session.UserSuppliedInfo.Facilitator = #GetSelectedEvent.Facilitator#>
+				<cfset Session.UserSuppliedInfo.dateCreated = #GetSelectedEvent.dateCreated#>
+				<cfset Session.UserSuppliedInfo.lastUpdated = #GetSelectedEvent.lastUpdated#>
+				<cfset Session.UserSuppliedInfo.lastUpdateBy = #GetSelectedEvent.lastUpdateBy#>
+				<cfset Session.UserSuppliedInfo.Active = #GetSelectedEvent.Active#>
+				<cfset Session.UserSuppliedInfo.WebinarAvailable = #GetSelectedEvent.WebinarAvailable#>
+				<cfset Session.UserSuppliedInfo.WebinarConnectInfo = #GetSelectedEvent.WebinarConnectInfo#>
+				<cfset Session.UserSuppliedInfo.WebinarMemberCost = #GetSelectedEvent.WebinarMemberCost#>
+				<cfset Session.UserSuppliedInfo.WebinarNonMemberCost = #GetSelectedEvent.WebinarNonMemberCost#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileNameOne = #GetSelectedEvent.EventDoc_FileNameOne#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileNameTwo = #GetSelectedEvent.EventDoc_FileNameTwo#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileNameThree = #GetSelectedEvent.EventDoc_FileNameThree#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileNameFour =  #GetSelectedEvent.EventDoc_FileNameFour#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileNameFive = #GetSelectedEvent.EventDoc_FileNameFive#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileTypeOne = #GetSelectedEvent.EventDoc_FileTypeOne#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileTypeTwo = #GetSelectedEvent.EventDoc_FileTypeTwo#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileTypeThree = #GetSelectedEvent.EventDoc_FileTypeThree#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileTypeFour = #GetSelectedEvent.EventDoc_FileTypeFour#>
+				<cfset Session.UserSuppliedInfo.EventDoc_FileTypeFive = #GetSelectedEvent.EventDoc_FileTypeFive#>
+			</cflock>
+		</cfif>
+
+		<cfif isDefined("FORM.formSubmit") and isDefined("FORM.PerformAction")>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfset Session.FormData = #StructCopy(FORM)#>
+				<cfset Session.FormErrors = #ArrayNew()#>
+				<cfif not isDefined("Session.UserSuppliedInfo")>
+					<cfset Session.UserSuppliedInfo = StructNew()>
+					<cfset Session.UserSuppliedInfo.NewRecNo = 0>
+				</cfif>
+			</cflock>
+
+			<cfif LEN(FORM.EmailMsg) EQ 0>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please Enter some text for the participants to ready about this event."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events.emailattended&SiteID=#rc.$.siteConfig('siteID')#&EventID=#Session.UserSuppliedInfo.RecNo#" addtoken="false">
+			</cfif>
+
+			<cfquery name="GetAttendedUsersForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select eRegistrations.RegistrationID, eRegistrations.Site_ID, eRegistrations.RegistrationDate, eRegistrations.EventID, eRegistrations.RequestsMeal, eRegistrations.IVCParticipant, eRegistrations.AttendeePrice,
+					eRegistrations.OnWaitingList, eRegistrations.Comments, eRegistrations.WebinarParticipant, tusers.Fname, tusers.Lname, tusers.UserName, tusers.Email, eRegistrations.AttendedEvent
+				FROM eRegistrations INNER JOIN tusers ON tusers.UserID = eRegistrations.User_ID
+				WHERE eRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+					eRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
+					eRegistrations.AttendedEvent = <cfqueryparam value="1" cfsqltype="cf_sql_integer">
+			</cfquery>
+
+			<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription,
+					Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime,
+					EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost,
+					EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost,
+					ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints,
+					MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost,
+					AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, Maxparticipants,
+					LocationType, LocationID, LocationRoomID, MaxParticipants, Presenters, Facilitator, dateCreated, lastUpdated, lastUpdateBy, Active,
+					WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, EventDoc_FileNameOne, EventDoc_FileTypeOne, EventDoc_FileNameTwo, EventDoc_FileTypeTwo, EventDoc_FileNameThree, EventDoc_FileTypeThree,
+					EventDoc_FileNameFour, EventDoc_FileTypeFour, EventDoc_FileNameFive, EventDoc_FileTypeFive
+				From eEvents
+				Where TContent_ID = <cfqueryparam value="#GetRegisteredUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
+			</cfquery>
+
+			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
+
+			<cfif GetAttendedUsersForEvent.RecordCount>
+				<cfif Len(FORM.FirstDocumentToSend) EQ 0 and LEN(Form.SecondDocumentToSend) EQ 0 and LEN(Form.ThirdDocumentToSend) EQ 0 and LEN(Form.FourthDocumentToSend) EQ 0 and LEN(Form.FifthDocumentToSend) EQ 0>
+					<cfloop query="GetAttendedUsersForEvent">
+						<cfset ParticipantInfo = StructNew()>
+						<cfset ParticipantInfo.FName = #GetAttendedUsersForEvent.Fname#>
+						<cfset ParticipantInfo.LName = #GetAttendedUsersForEvent.Lname#>
+						<cfset ParticipantInfo.Email = #GetAttendedUsersForEvent.Email#>
+						<cfset ParticipantInfo.EventShortTitle = #GetSelectedEvent.ShortTitle#>
+						<cfset ParticipantInfo.EmailMessageBody = #FORM.EmailMsg#>
+						<cfset ParticipantInfo.DocLinksInEmail = #FORM.IncludeFileLinks#>
+						<cfset temp = #SendEMailCFC.SendEventMessageToAllParticipants(Variables.ParticipantInfo)#>
+					</cfloop>
+				<cfelse>
+					<cfif isDefined("FORM.FirstDocumentToSend")>
+						<cfif LEN(FORM.FirstDocumentToSend)>
+							<cffile action="upload" fileField="FORM.FirstDocumentToSend" result="EventDocumentOne" destination="#GetTempDirectory()#" nameconflict="MakeUnique">
+							<cfset NewServerFileOne = #Replace(Variables.EventDocumentOne.ServerFile, " ", "_", "ALL")#>
+							<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocumentOne.ServerFile#" Destination="#Variables.NewServerFileOne#">
+							<cfdirectory action="list" directory="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#" name="DoesDirectoryExists">
+							<cfif DoesDirectoryExists.RecordCount EQ 0>
+								<cfdirectory action="Create" directory="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#">
+							</cfif>
+							<cffile action="move" source="#GetTempDirectory()#/#Variables.NewServerFileOne#" Destination="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#/#Variables.NewServerFileOne#">
+							<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update eEvents
+								Set EventDoc_FileNameOne = <cfqueryparam value="#Variables.NewServerFileOne#" cfsqltype="cf_sql_varchar">,
+									EventDoc_FileTypeOne = <cfqueryparam value="#Variables.EventDocumentOne.ContentType#/#Variables.EventDocumentOne.ContentSubType#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#GetRegisteredUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
+							</cfquery>
+							<cfset EmailMessageWithFileOne = True>
+						</cfif>
+					</cfif>
+					<cfif isDefined("FORM.SecondDocumentToSend")>
+						<cfif LEN(FORM.SecondDocumentToSend)>
+						<cffile action="upload" fileField="FORM.SecondDocumentToSend" result="EventDocumentTwo" destination="#GetTempDirectory()#" nameconflict="MakeUnique">
+						<cfset NewServerFileTwo = #Replace(Variables.EventDocumentTwo.ServerFile, " ", "_", "ALL")#>
+						<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocumentTwo.ServerFile#" Destination="#Variables.NewServerFileTwo#">
+						<cffile action="move" source="#GetTempDirectory()#/#Variables.NewServerFileTwo#" Destination="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#/#Variables.NewServerFileTwo#">
+						<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update eEvents
+							Set EventDoc_FileNameTwo = <cfqueryparam value="#Variables.NewServerFileTwo#" cfsqltype="cf_sql_varchar">,
+								EventDoc_FileTypeTwo = <cfqueryparam value="#Variables.EventDocumentTwo.ContentType#/#Variables.EventDocumentTwo.ContentSubType#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#GetAttendedUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+						<cfset EmailMessageWithFileTwo = True>
+						</cfif>
+					</cfif>
+					<cfif isDefined("FORM.ThirdDocumentToSend")>
+						<cfif LEN(FORM.ThirdDocumentToSend)>
+						<cffile action="upload" fileField="FORM.ThirdDocumentToSend" result="EventDocumentThree" destination="#GetTempDirectory()#" nameconflict="MakeUnique">
+						<cfset NewServerFileThree = #Replace(Variables.EventDocumentThree.ServerFile, " ", "_", "ALL")#>
+						<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocumentThree.ServerFile#" Destination="#Variables.NewServerFileThree#">
+						<cffile action="move" source="#GetTempDirectory()#/#Variables.NewServerFileThree#" Destination="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#/#Variables.NewServerFileThree#">
+						<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update eEvents
+							Set EventDoc_FileNameThree = <cfqueryparam value="#Variables.NewServerFileThree#" cfsqltype="cf_sql_varchar">,
+								EventDoc_FileTypeThree = <cfqueryparam value="#Variables.EventDocumentThree.ContentType#/#Variables.EventDocumentThree.ContentSubType#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#GetAttendedUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+						<cfset EmailMessageWithFileThree = True>
+						</cfif>
+					</cfif>
+					<cfif isDefined("FORM.FourthDocumentToSend")>
+						<cfif LEN(FORM.FourthDocumentToSend)>
+						<cffile action="upload" fileField="FORM.FourthDocumentToSend" result="EventDocumentFour" destination="#GetTempDirectory()#" nameconflict="MakeUnique">
+						<cfset NewServerFileFour = #Replace(Variables.EventDocumentFour.ServerFile, " ", "_", "ALL")#>
+						<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocumentFour.ServerFile#" Destination="#Variables.NewServerFileFour#">
+						<cffile action="move" source="#GetTempDirectory()#/#Variables.NewServerFileFour#" Destination="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#/#Variables.NewServerFileFour#">
+						<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update eEvents
+							Set EventDoc_FileNameFour = <cfqueryparam value="#Variables.NewServerFileFour#" cfsqltype="cf_sql_varchar">,
+								EventDoc_FileTypeFour = <cfqueryparam value="#Variables.EventDocumentFour.ContentType#/#Variables.EventDocumentFour.ContentSubType#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#GetAttendedUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+						<cfset EmailMessageWithFileFour = True>
+						</cfif>
+					</cfif>
+					<cfif isDefined("FORM.FifthDocumentToSend")>
+						<cfif LEN(FORM.FifthDocumentToSend)>
+						<cffile action="upload" fileField="FORM.FifthDocumentToSend" result="EventDocumentFive" destination="#GetTempDirectory()#" nameconflict="MakeUnique">
+						<cfset NewServerFileFive = #Replace(Variables.EventDocumentFive.ServerFile, " ", "_", "ALL")#>
+						<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocumentFive.ServerFile#" Destination="#Variables.NewServerFileFive#">
+						<cffile action="move" source="#GetTempDirectory()#/#Variables.NewServerFileFive#" Destination="#rc.pc.getFullPath()#/library/EventDocs/#GetSelectedEvent.TContent_ID#/#Variables.NewServerFileFive#">
+						<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update eEvents
+							Set EventDoc_FileNameFive = <cfqueryparam value="#Variables.NewServerFileFive#" cfsqltype="cf_sql_varchar">,
+								EventDoc_FileTypeFive = <cfqueryparam value="#Variables.EventDocumentFive.ContentType#/#Variables.EventDocumentFive.ContentSubType#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#GetAttendedUsersForEvent.EventID#" cfsqltype="cf_sql_integer">
+						</cfquery>
+						<cfset EmailMessageWithFileFive = True>
+						</cfif>
+					</cfif>
+					<cfloop query="GetAttendedUsersForEvent">
+						<cfset ParticipantInfo = StructNew()>
+						<cfset ParticipantInfo.FName = #GetAttendedUsersForEvent.Fname#>
+						<cfset ParticipantInfo.LName = #GetAttendedUsersForEvent.Lname#>
+						<cfset ParticipantInfo.Email = #GetAttendedUsersForEvent.Email#>
+						<cfset ParticipantInfo.EventShortTitle = #GetSelectedEvent.ShortTitle#>
+						<cfset ParticipantInfo.EmailMessageBody = #FORM.EmailMsg#>
+						<cfset ParticipantInfo.DocLinksInEmail = #FORM.IncludeFileLinks#>
+						<cfset ParticipantInfo.PackageName = #rc.pc.getPackage()#>
+						<cfset ParticipantInfo.EventID = #GetAttendedUsersForEvent.EventID#>
+
+						<cfif isDefined("Variables.EmailMessageWithFileOne") or LEN(GetSelectedEvent.EventDoc_FileNameOne)>
+							<cfset ParticipantInfo.EmailFileOne = True>
+							<cfif isDefined("Variables.EmailMessageWithFileOne")>
+								<cfset ParticipantInfo.EmailFileLocOne = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileOne#>
+								<cfset ParticipantInfo.EmailFileNameOne = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileOne#>
+								<cfset ParticipantInfo.EmailFileTypeOne = #Variables.EventDocumentOne.ContentType# & "/" & #Variables.EventDocumentOne.ContentSubType#>
+							<cfelse>
+								<cfset ParticipantInfo.EmailFileLocOne = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameOne#>
+								<cfset ParticipantInfo.EmailFileNameOne = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameOne#>
+								<cfset ParticipantInfo.EmailFileTypeOne = #GetSelectedEvent.EventDoc_FileTypeOne#>
+							</cfif>
+						</cfif>
+						<cfif isDefined("Variables.EmailMessageWithFileTwo")  or LEN(GetSelectedEvent.EventDoc_FileNameTwo)><cfset ParticipantInfo.EmailFileTwo = True>
+							<cfif isDefined("Variables.EmailMessageWithFileTwo")>
+								<cfset ParticipantInfo.EmailFileLocTwo = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileTwo#>
+								<cfset ParticipantInfo.EmailFileNameTwo = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileTwo#>
+								<cfset ParticipantInfo.EmailFileTypeTwo = #Variables.EventDocumentTwo.ContentType# & "/" & #Variables.EventDocumentTwo.ContentSubType#>
+							<cfelse>
+								<cfset ParticipantInfo.EmailFileLocTwo = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameTwo#>
+								<cfset ParticipantInfo.EmailFileNameTwo = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameTwo#>
+								<cfset ParticipantInfo.EmailFileTypeTwo = #GetSelectedEvent.EventDoc_FileTypeTwo#>
+							</cfif>
+						</cfif>
+						<cfif isDefined("Variables.EmailMessageWithFileThree")  or LEN(GetSelectedEvent.EventDoc_FileNameThree)><cfset ParticipantInfo.EmailFileThree = True>
+							<cfif isDefined("Variables.EmailMessageWithFileThree")>
+								<cfset ParticipantInfo.EmailFileLocThree = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileThree#>
+								<cfset ParticipantInfo.EmailFileNameThree = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileThree#>
+								<cfset ParticipantInfo.EmailFileTypeThree = #Variables.EventDocumentThree.ContentType# & "/" & #Variables.EventDocumentThree.ContentSubType#>
+							<cfelse>
+								<cfset ParticipantInfo.EmailFileLocThree = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameThree#>
+								<cfset ParticipantInfo.EmailFileNameThree = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameThree#>
+								<cfset ParticipantInfo.EmailFileTypeThree = #GetSelectedEvent.EventDoc_FileTypeThree#>
+							</cfif>
+						</cfif>
+						<cfif isDefined("Variables.EmailMessageWithFileFour")  or LEN(GetSelectedEvent.EventDoc_FileNameFour)><cfset ParticipantInfo.EmailFileFour = True>
+						<cfif isDefined("Variables.EmailMessageWithFileFour")>
+								<cfset ParticipantInfo.EmailFileLocFour = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileFour#>
+								<cfset ParticipantInfo.EmailFileNameFour = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileFour#>
+								<cfset ParticipantInfo.EmailFileTypeFour = #Variables.EventDocumentFour.ContentType# & "/" & #Variables.EventDocumentFour.ContentSubType#>
+							<cfelse>
+								<cfset ParticipantInfo.EmailFileLocFour = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameFour#>
+								<cfset ParticipantInfo.EmailFileNameFour = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameFour#>
+								<cfset ParticipantInfo.EmailFileTypeFour = #GetSelectedEvent.EventDoc_FileTypeFour#>
+							</cfif>
+						</cfif>
+						<cfif isDefined("Variables.EmailMessageWithFileFive")  or LEN(GetSelectedEvent.EventDoc_FileNameFive)><cfset ParticipantInfo.EmailFileFive = True>
+							<cfif isDefined("Variables.EmailMessageWithFileFive")>
+								<cfset ParticipantInfo.EmailFileLocFive = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileFive#>
+								<cfset ParticipantInfo.EmailFileNameFive = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #Variables.NewServerFileFive#>
+								<cfset ParticipantInfo.EmailFileTypeFive = #Variables.EventDocumentFive.ContentType# & "/" & #Variables.EventDocumentFive.ContentSubType#>
+							<cfelse>
+								<cfset ParticipantInfo.EmailFileLocFive = #rc.pc.getFullPath()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameFive#>
+								<cfset ParticipantInfo.EmailFileNameFive = #rc.pc.getPackage()# & "/library/EventDocs/" & #GetSelectedEvent.TContent_ID# & "/" & #GetSelectedEvent.EventDoc_FileNameFive#>
+								<cfset ParticipantInfo.EmailFileTypeFive = #GetSelectedEvent.EventDoc_FileTypeFive#>
+							</cfif>
+						</cfif>
+						<cfset temp = #SendEMailCFC.SendEventMessageToAllParticipants(Variables.ParticipantInfo)#>
+					</cfloop>
+				</cfif>
+				<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events&UserAction=RegistrationsSent&SiteID=#rc.$.siteConfig('siteID')#&Successful=true&EventID=#GetRegisteredUsersForEvent.EventID#" addtoken="false">
+			<cfelseif GetAttendedUsersForEvent.RecordCount EQ 0>
+				<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=admin:events&UserAction=NoRegistrations&SiteID=#rc.$.siteConfig('siteID')#&Successful=false&EventID=#GetRegisteredUsersForEvent.EventID#" addtoken="false">
+			</cfif>
+		</cfif>
+	</cffunction>
+
 </cfcomponent>

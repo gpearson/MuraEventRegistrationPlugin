@@ -36,6 +36,8 @@ component persistent="false" accessors="true" output="false" extends="mura.cfobj
 		if ( rc.isFrontEndRequest ) {
 			//getFW().redirect(action='public:main.default');
 			location(url='#rc.$.globalConfig('context')#/', addtoken=false);
+		} else if ( !rc.$.currentUser().isSuperUser() ) { // lock app down to Super Users only
+			// location(url='#rc.$.globalConfig('context')#/admin/', addtoken=false);
 		};
 
 	}

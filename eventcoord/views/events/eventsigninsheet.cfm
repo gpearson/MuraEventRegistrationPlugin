@@ -50,6 +50,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfset EventDates = ValueList(EventDateQuery.EventDate, ",")>
 
 <cfoutput>
+	<div class="art-blockheader">
+		<h3 class="t">Event Signin Document</h3>
+	</div>
+	<div class="alert-box notice">Below is the sign in sheet for the selected report. Click <A href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:events.default" class="art-button">here</a> to return to the listing of available events.</div>
+	<hr>
 	<cfif ListLen(Variables.EventDates) GTE 2 and not isDefined("URL.EventDatePOS")>
 		<Table style="border-width: 3px; border-spacing: 1px; border-style: outset; border-color: gray; border-collapse: separate; background-color: ##EDEDED;" Align="Center" Width="100%">
 			<tr>
@@ -71,6 +76,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				eRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
 			ORDER BY tusers.Lname ASC, tusers.Fname ASC
 		</cfquery>
+		<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
 		<cfset LogoPath = ArrayNew(1)>
 		<cfloop from="1" to="#getRegisteredParticipants.RecordCount#" step="1" index="i">
 			<cfset LogoPath[i] = #ExpandPath("/plugins/EventRegistration/library/images/NIESC_Logo.png")#>
@@ -78,9 +84,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<cfset temp = QueryAddColumn(getRegisteredParticipants, "NIESCLogoPath", "VarChar", Variables.LogoPath)>
 		<cfset ReportDirectory = #ExpandPath("/plugins/EventRegistration/library/reports/")# >
 		<cfset ReportExportLoc = #ExpandPath("/plugins/EventRegistration/library/ReportExports/")# & #URL.EventID# & "EventSignInSheet.pdf" >
-		<cf_jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" filename="#ReportExportLoc#" exporttype="pdf" query="#getRegisteredParticipants#" />
-		<!--- <cfimport taglib="/cfjasperreports/tag/cfjasperreport" prefix="jr">
 		<jr:jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" query="#getRegisteredParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
+		<!---
+			<cf_jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" filename="#ReportExportLoc#" exporttype="pdf" query="#getRegisteredParticipants#" />
 		--->
 		<embed src="/plugins/EventRegistration/library/ReportExports/#URL.EventID#EventSignInSheet.pdf" width="850" height="650">
 	</cfif>

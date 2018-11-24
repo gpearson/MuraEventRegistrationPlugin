@@ -10,11 +10,11 @@
 
 	<cfswitch expression="#URL.PerformAction#">
 		<cfcase value="AddUser">
-			<cfimport taglib="/properties/uniForm/tags/" prefix="uForm">
+			<cfimport taglib="/plugins/EventRegistration/library/uniForm/tags/" prefix="uForm">
 			<cfset GetAllUserGroups = #$.getBean( 'userManager' ).getUserGroups( rc.$.siteConfig('siteID'), 1 )#>
 			<cfoutput>
 				<uForm:form action="" method="Post" id="AddUserAccount" errors="#Session.FormErrors#" errorMessagePlacement="both"
-					commonassetsPath="/properties/uniForm/" showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton"
+					commonassetsPath="/plugins/EventRegistration/library/uniForm/" showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton"
 					cancelAction="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users&compactDisplay=false"
 					submitValue="Add Account" loadValidation="true" loadMaskUI="true" loadDateUI="true" loadTimeUI="true">
 					<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">

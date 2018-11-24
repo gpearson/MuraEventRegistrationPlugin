@@ -89,13 +89,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<cfscript>
 									GeoCodeResultStreetNumber = GeoCodeResultAddressComponent[1].XmlChildren;
 									GeoCodeResultStreetName = GeoCodeResultAddressComponent[2].XmlChildren;
-									GeoCodeResultNeighborhoodName = GeoCodeResultAddressComponent[3].XmlChildren;
-									GeoCodeResultCityName = GeoCodeResultAddressComponent[4].XmlChildren;
-									GeoCodeResultTownshipName = GeoCodeResultAddressComponent[5].XmlChildren;
-									GeoCodeResultCountyName = GeoCodeResultAddressComponent[6].XmlChildren;
-									GeoCodeResultStateName = GeoCodeResultAddressComponent[7].XmlChildren;
-									GeoCodeResultCountryName = GeoCodeResultAddressComponent[8].XmlChildren;
-									GeoCodeResultZipCode = GeoCodeResultAddressComponent[9].XmlChildren;
+									GeoCodeResultNeighborhoodName = GeoCodeResultAddressComponent[4].XmlChildren;
+									GeoCodeResultCityName = GeoCodeResultAddressComponent[3].XmlChildren;
+									// GeoCodeResultTownshipName = GeoCodeResultAddressComponent[5].XmlChildren;
+									GeoCodeResultCountyName = GeoCodeResultAddressComponent[5].XmlChildren;
+									GeoCodeResultStateName = GeoCodeResultAddressComponent[6].XmlChildren;
+									GeoCodeResultCountryName = GeoCodeResultAddressComponent[7].XmlChildren;
+									GeoCodeResultZipCode = GeoCodeResultAddressComponent[8].XmlChildren;
+									GeoCodeResultZipCodeSuffix = GeoCodeResultAddressComponent[9].XmlChildren;
 									GeoCodeAddressLocation = GeoCodeResultGeometryComponent[1].XmlChildren;
 									GeoCodeFormattedAddress = GeoCodeResultFormattedAddress[1].XmlText;
 								</cfscript>
@@ -115,8 +116,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<cfset Temp.AddressLocation = #GeoCodeAddressLocation[1].XMLChildren#>
 								<cfset Temp.AddressLatitude = #Temp.AddressLocation[1].XMLText#>
 								<cfset Temp.AddressLongitude = #Temp.AddressLocation[2].XMLText#>
-								<cfset Temp.AddressTownshipNameLong = #GeoCodeResultTownshipName[1].XMLText#>
-								<cfset Temp.AddressTownshipNameShort = #GeoCodeResultTownshipName[1].XMLText#>
+								<!--- <cfset Temp.AddressTownshipNameLong = #GeoCodeResultTownshipName[1].XMLText#>
+								<cfset Temp.AddressTownshipNameShort = #GeoCodeResultTownshipName[1].XMLText#> --->
 								<cfset Temp.NeighborhoodNameLong = #GeoCodeResultNeighborhoodName[1].XMLText#>
 								<cfset Temp.NeighborhoodNameShort = #GeoCodeResultNeighborhoodName[2].XMLText#>
 								<cfset #arrayAppend(GeoCodeAddress, Temp)#>
@@ -540,7 +541,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 										Update eFacility
 										Set GeoCode_Latitude = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressLatitude)#" cfsqltype="cf_sql_varchar">,
 											GeoCode_Longitude = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressLongitude)#" cfsqltype="cf_sql_varchar">,
-											GeoCode_Township = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressTownshipNameLong)#" cfsqltype="cf_sql_varchar">,
+											<!--- GeoCode_Township = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressTownshipNameLong)#" cfsqltype="cf_sql_varchar">, --->
 											GeoCode_StateLongName = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressStateNameLong)#" cfsqltype="cf_sql_varchar">,
 											GeoCode_CountryShortName = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressCountryNameShort)#" cfsqltype="cf_sql_varchar">,
 											isAddressVerified = <cfqueryparam value="1" cfsqltype="cf_sql_varchar">,

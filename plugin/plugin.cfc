@@ -201,7 +201,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				// Since the Database Table does not exists, Lets Create it
 				var dbCreateTableUserMatrix = new query();
 				dbCreateTableUserMatrix.setDatasource("#application.configBean.getDatasource()#");
-				dbCreateTableUserMatrix.setSQL("CREATE TABLE `eUserMatrix` ( `TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` tinytext NOT NULL, `User_ID` char(35) NOT NULL, `School_District` int(11) NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, `lastUpdated` datetime NOT NULL, PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;");
+				dbCreateTableUserMatrix.setSQL("CREATE TABLE `eUserMatrix` ( `TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` tinytext NOT NULL, `User_ID` char(35) NOT NULL, `School_District` int(11) DEFAULT NULL, `lastUpdateBy` varchar(35) NOT NULL, `lastUpdated` datetime NOT NULL, PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;");
 				var dbCreateTableUserMatrixResult = dbCreateTableUserMatrix.execute();
 			} else {
 				// Database Table Exists, We must Drop it to create it again
@@ -213,7 +213,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				if (len(dbDropTableUserMatrixResult.getResult()) eq 0) {
 					var dbCreateTableUserMatrix = new query();
 					dbCreateTableUserMatrix.setDatasource("#application.configBean.getDatasource()#");
-					dbCreateTableUserMatrix.setSQL("CREATE TABLE `eUserMatrix` ( `TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` tinytext NOT NULL, `User_ID` char(35) NOT NULL, `School_District` int(11) NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, `lastUpdated` datetime NOT NULL, PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;");
+					dbCreateTableUserMatrix.setSQL("CREATE TABLE `eUserMatrix` ( `TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` tinytext NOT NULL, `User_ID` char(35) NOT NULL, `School_District` int(11) DEFAULT NULL, `lastUpdateBy` varchar(35) NOT NULL, `lastUpdated` datetime NOT NULL, PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;");
 					var dbCreateTableUserMatrixResult = dbCreateTableUserMatrix.execute();
 				} else {
 				 writedump(dbCreateTableUserMatrixResult.getResult());
@@ -702,6 +702,22 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cffile action="copy" source="#Variables.itextFile3Orig#" destination="#Variables.itextFile3Dest#">
 		</cfif>
 
+		<!--- Initiates the User Bean --->
+		<!--- Creates the Group Presenter --->
+		<cfset NewGroupPresenter = #Application.userManager.read("")#>
+		<cfset NewGroupPresenter.setSiteID(Session.SiteID)>
+		<cfset NewGroupPresenter.setGroupName("Presenter")>
+		<cfset NewGroupPresenter.setType(1)>
+		<cfset NewGroupPresenter.setIsPublic(1)>
+		<cfset NewGroupPresneter=#Application.userManager.create(NewGroupPresenter)#>
+
+		<!--- Creates the Group Presenter --->
+		<cfset NewGroupFacilitator = #Application.userManager.read("")#>
+		<cfset NewGroupFacilitator.setSiteID(Session.SiteID)>
+		<cfset NewGroupFacilitator.setGroupName("Event Facilitator")>
+		<cfset NewGroupFacilitator.setType(1)>
+		<cfset NewGroupFacilitator.setIsPublic(1)>
+		<cfset NewGroupFacilitator=#Application.userManager.create(NewGroupFacilitator)#>
 
 	</cffunction>
 

@@ -24,6 +24,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<cfcase value="true">
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
+					<cfcase value="PostToFB">
+						<div class="alert-box success">
+							<p>Your have successfully posted a message regarding <cfoutput>#Session.UserSuppliedInfo.PickedEvent.ShortTitle#</cfoutput> to the Organization's Facebook Page.</p>
+						</div>
+					</cfcase>
 					<cfcase value="ParticipantsRegistered">
 						<cfoutput>
 							<div class="alert-box success">
@@ -134,16 +139,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 									EventID = <cfqueryparam value="#getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer">
 							</cfquery>
 							<tr bgcolor="###iif(currentrow MOD 2,DE('ffffff'),DE('efefef'))#">
-								<td width="50%">#getAvailableEvents.ShortTitle#</td>
+								<td width="50%">(<a href="http://#cgi.server_name#/?Info=#getAvailableEvents.TContent_ID#">#getAvailableEvents.TContent_ID#</a>) / #getAvailableEvents.ShortTitle#</td>
 								<td width="15%">#DateFormat(getAvailableEvents.EventDate, "mmm dd, yy")#</td>
 								<td>
-									<a href="#buildURL('admin:events.updateevent_review')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Update</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.cancelevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Cancel</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.emailregistered')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Email</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.copypriorevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Copy</a><br />
+									<a href="#buildURL('admin:events.updateevent_review')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Update</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.cancelevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Cancel</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.emailregistered')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Email Registered</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.emailattended')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Email Attended</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.copypriorevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Copy</a><br />
 									<a href="#buildURL('admin:events.geteventinfo')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Info</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.registeruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Register</a>
 									<cfif getRegistrationsForEvent.RecordCount>
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.deregisteruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">De-Register</a><br />
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventsigninsheet')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Sheet</a>
-										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventsigninparticipant')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Participant</a>
+										&nbsp;&nbsp;<a href="#buildURL('admin:events.eventsigninparticipant')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Sign-In Participant</a><br />
 									</cfif>
+									<a href="#buildURL('admin:events.publishtofb')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Post to Facebook</a>
 								</td>
 							</tr>
 						</cfloop>

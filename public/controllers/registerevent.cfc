@@ -48,7 +48,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfset Temp = #SendEmailCFC.SendEventCancellationToSingleParticipant(Session.UserRegistrationInfo.RegisterUserForEvent)#>
 						<cfset temp = #StructDelete(Session, "UserRegistrationInfo")#>
 					</cfif>
-					<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:main.viewavailableevents&CancelRegistrationSuccessfull=True&SingleRegistration=True" addtoken="false">
+					<cflocation url="?EventRegistrationaction=public:events.viewavailableevents&CancelRegistrationSuccessfull=True&SingleRegistration=True" addtoken="false">
 				<cfelseif isDefined("FORM.submitButton")>
 
 					<!--- User wants to register for this event wothout registering other participants --->
@@ -108,10 +108,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</cftry>
 						<cfset Temp = #SendEmailCFC.SendEventRegistrationToSingleParticipant(insertNewRegistration.GENERATED_KEY)#>
 						<cfset temp = #StructDelete(Session, "UserRegistrationInfo")#>
-						<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:main.viewavailableevents&RegistrationSuccessfull=True&SingleRegistration=True" addtoken="false">
+						<cflocation url="/index.cfm?RegistrationSuccessfull=True&SingleRegistration=True" addtoken="false">
 					<cfelse>
 						<cfscript>
-							AlreadyRegistered = {property="RegisterAdditionalParticipants",message="You are already registered for this event. Please change this option to register additional participants, or you can cancel your registration by using the appropriate button below"};
+							AlreadyRegistered = {property="RegisterAdditionalParticipants",message="You are already registered for this event. Please change this option to register additional participants."};
 							arrayAppend(Session.FormErrors, AlreadyRegistered);
 						</cfscript>
 						<cfif isDefined("URL.EventID")>
@@ -826,7 +826,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cflock scope="Session" type="Exclusive" timeout="60">
 					<cfset StructDelete(Session, "UserRegistrationInfo")>
 				</cflock>
-				<cflocation url="plugins/EventRegistration/index.cfm?EventRegistrationaction=public:main.viewavailableevents&RegistrationSuccessfull=True&MultipleRegistration=True" addtoken="false">
+				<cflocation url="plugins/EventRegistration/index.cfm?EventRegistrationaction=public:events.viewavailableevents&RegistrationSuccessfull=True&MultipleRegistration=True" addtoken="false">
 			</cfif>
 		</cfif>
 	</cffunction>

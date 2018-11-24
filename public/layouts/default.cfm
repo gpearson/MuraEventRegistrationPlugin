@@ -106,12 +106,12 @@
 					</li>
 					<cfif isDefined("Session.Mura")>
 						<cfif Session.Mura.IsLoggedIn EQ "true">
-							<cfparam name="EventCoordinatorRole" default="0" type="boolean">
-							<cfparam name="EventPresenterRole" default="0" type="boolean">
+							<cfparam name="Session.Mura.EventCoordinatorRole" default="0" type="boolean">
+							<cfparam name="Session.Mura.EventPresenterRole" default="0" type="boolean">
 							<cfset UserMembershipQuery = #$.currentUser().getMembershipsQuery()#>
 							<cfloop query="#Variables.UserMembershipQuery#">
-								<cfif UserMembershipQuery.GroupName EQ "Event Coordinator"><cfset EventCoordinatorRole = true></cfif>
-								<cfif UserMembershipQuery.GroupName EQ "Presenter"><cfset EventPresenterRole = true></cfif>
+								<cfif UserMembershipQuery.GroupName EQ "Event Facilitator"><cfset Session.Mura.EventCoordinatorRole = true></cfif>
+								<cfif UserMembershipQuery.GroupName EQ "Presenter"><cfset Session.Mura.EventPresenterRole = true></cfif>
 							</cfloop>
 							<cfif Session.Mura.Username EQ "admin">
 								<li><a href="/plugins/EventRegistration/" class="active">Event Administration</a>
@@ -125,7 +125,7 @@
 									</ul>
 								</li>
 							</cfif>
-							<cfif Variables.EventCoordinatorRole EQ "true" and Variables.EventPresenterRole EQ "false">
+							<cfif Session.Mura.EventCoordinatorRole EQ "true" and Session.Mura.EventPresenterRole EQ "false">
 								<li><a href="" class="active">Event Administration</a>
 									<ul>
 										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:caterers.default" class="active">Manage Catering</a></li>
@@ -136,7 +136,7 @@
 										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:users.default" class="active">Manage Users</a></li>
 									</ul>
 								</li>
-							<cfelseif Variables.EventCoordinatorRole EQ "false" and Variables.EventPresenterRole EQ "true">
+							<cfelseif Session.Mura.EventCoordinatorRole EQ "false" and Session.Mura.EventPresenterRole EQ "true">
 								<li><a href="" class="active">Presenter Administration</a>
 									<!--- <ul>
 										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:caterers.default" class="active">Manage Catering</a></li>
@@ -147,7 +147,7 @@
 										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:users.default" class="active">Manage Users</a></li>
 									</ul> --->
 								</li>
-							<cfelseif Variables.EventCoordinatorRole EQ "false" and Variables.EventPresenterRole EQ "false">
+							<cfelseif Session.Mura.EventCoordinatorRole EQ "false" and Session.Mura.EventPresenterRole EQ "false">
 								<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.default" class="active">User Administration</a>
 									<ul>
 										<li><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.manageregistrations" class="active">Manage Registrations</a></li>

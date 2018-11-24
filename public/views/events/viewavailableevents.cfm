@@ -1,6 +1,10 @@
 <!---
 
 --->
+
+<cfif isDefined("URL.Info")>
+	<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:events.eventinfo&EventID=#URL.Info#">
+</cfif>
 <cfif isDefined("Session.Mura")>
 	<cfif Session.Mura.isLoggedIn EQ "true" and isDefined("Session.UserRegistrationInfo")>
 		<!--- Outer CFIF Code Block was added to prevent moving on to another page when user enters wrong password for account --->
@@ -132,6 +136,36 @@
 	</cfswitch>
 </cfif>
 
+<cfif isDefined("URL.RegistrationSuccessfull")>
+	<cfswitch expression="#URL.RegistrationSuccessfull#">
+		<cfcase value="true">
+			<div class="art-block clearfix">
+					<div class="art-blockheader">
+						<h3 class="t">Registration Successfull</h3>
+					</div>
+					<cfif isDefined("URL.SingleRegistration")>
+						<div class="art-blockcontent"><p class="alert-box notice">You have sucessfully registered yourself for the event. You will receive an email confirmation to your email address within the next few minutes regarding the details of this registration.</p></div>
+					<cfelse>
+						<div class="art-blockcontent"><p class="alert-box notice">You have sucessfully registered yourself and others for the event. You will receive an email confirmation to your email address within the next few minutes regarding the details of this registration. You will need to share this information with the other people who you registered at this same time.</p></div>
+					</cfif>
+				</div>
+		</cfcase>
+	</cfswitch>
+</cfif>
+
+<cfif isDefined("URL.CancelEventSuccessfull")>
+	<cfswitch expression="#URL.CancelEventSuccessfull#">
+		<cfcase value="True">
+			<div class="art-block clearfix">
+					<div class="art-blockheader">
+						<h3 class="t">Registration Cancelled Successfull</h3>
+					</div>
+					<div class="art-blockcontent"><p class="alert-box notice">You have sucessfully cancelled the registration to attend the event. If this was done by error, you will need to register for the event again.</p></div>
+				</div>
+		</cfcase>
+	</cfswitch>
+</cfif>
+
 
 <cfoutput>
 
@@ -236,11 +270,11 @@
 									<cfif Variables.FeatureEventAcceptRegistrations EQ 1>
 										<cfif DateDiff("d", Now(), FeatureEventRegistrationDeadline) GTE 0>
 											<cfif Variables.FeaturedEventSeatsLeft GT 0>
-												<a href="/plugins/#variables.Framework.package##buildURL('public:registerevent.default')#&EventID=#Variables.FeatureEventRecordID#" class="art-button" alt="Register Event">Register</a>
+												<a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:registerevent.default&EventID=#Variables.FeatureEventRecordID#" class="art-button" alt="Register Event">Register</a>
 											</cfif>
 										</cfif>
 									</cfif>
-									<a href="/plugins/#variables.Framework.package##buildURL('public:main.eventinfo')#&EventID=#Variables.FeatureEventRecordID#" class="art-button">More Info</a>
+									<a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:events.eventinfo&EventID=#Variables.FeatureEventRecordID#" class="art-button">More Info</a>
 								</td>
 								<td style="width: 10%;"></td>
 							</tr>
@@ -308,10 +342,10 @@
 							<td style="width: 20%;">#DateFormat(getNonFeaturedEvents.EventDate, "mmm dd, yy")#</td>
 							<td style="width: 20%;">
 								<cfif getNonFeaturedEvents.AcceptRegistrations EQ 1>
-									<cfif Variables.EventSeatsLeft GTE 1>
-										<a href="/plugins/#variables.Framework.package##buildURL('public:registerevent.default')#&EventID=#getNonFeaturedEvents.TContent_ID#" class="art-button" alt="Register Event">Register</a>
+									<cfif Variables.EventSeatsLeft GTE 1 and DateDiff("d", Now(), getNonFeaturedEvents.Registration_Deadline) GTE 0>
+										<a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:registerevent.default&EventID=#getNonFeaturedEvents.TContent_ID#" class="art-button" alt="Register Event">Register</a> &nbsp;
 									</cfif>
-								</cfif> &nbsp; <a href="/plugins/#variables.Framework.package##buildURL('public:main.eventinfo')#&EventID=#getNonFeaturedEvents.TContent_ID#" class="art-button">More Info</a>
+								</cfif><a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:events.eventinfo&EventID=#getNonFeaturedEvents.TContent_ID#" class="art-button">More Info</a>
 							</td>
 							<td style="width: 10%;">
 								<cfif getNonFeaturedEvents.PGPAvailable EQ 1><img src="/plugins/EventRegistration/includes/assets/images/award.png" alt="PGP Certificate" border="0"></cfif>
@@ -324,7 +358,6 @@
 		</p></div>
 	</div>
 </cfif>
-<cfdump var="#Session#">
 	<!--- <cfset GetAllGroups = #$.getBean( 'userManager' ).getUserGroups( rc.$.siteConfig('siteID'), 1 )#>
 	<cfset GetGroupMembers = #members=$.getBean( 'user' ).loadBy( groupname = 'Event Coordinator' ).getRecordCount()#>
 	<cfset UserSuperUser = #rc.$.getCurrentUser().isSuperUser()#>

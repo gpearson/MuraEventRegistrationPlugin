@@ -150,7 +150,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<cfif getAllPresenters.RecordCount>
 			<tfoot>
 				<tr>
-					<td colspan="4">Add new Membership Organization not listed above by clicking <a href="#buildURL('admin:membership.addorganization')#" class="art-button">here</a></td>
+					<td colspan="6">Add new Membership Organization not listed above by clicking <a href="#buildURL('admin:membership.addorganization')#" class="art-button">here</a></td>
 				</tr>
 			</tfoot>
 			<tbody>

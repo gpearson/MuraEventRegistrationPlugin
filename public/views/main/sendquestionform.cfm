@@ -22,10 +22,15 @@
 
 <cfimport taglib="/plugins/EventRegistration/library/uniForm/tags/" prefix="uForm">
 <cfoutput>
+		<div class="art-block clearfix">
+			<div class="art-blockheader">
+				<h3 class="t">Questions about Event: #getSelectedEvent.ShortTitle#</h3>
+			</div>
+			<div class="art-blockcontent">
 	<p class="alert-box notice" style="font-family: arial; font-size: 14px; font-weight: bold;">Do you have questions regarding #getSelectedEvent.ShortTitle#? Complete this form to send us an email about this event which you would like answered.</p>
 	<uForm:form action="" method="Post" id="EventInqiryForm" errors="#Session.FormErrors#" errorMessagePlacement="both"
-		commonassetsPath="/properties/uniForm/" showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton"
-		cancelAction="?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#URL.EventID#"
+		commonassetsPath="/plugins/EventRegistration/library/uniForm/" showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton"
+		cancelAction="/plugins/EventRegistration/?#HTMLEditFormat(rc.pc.getPackage())#action=public:events.eventinfo&EventID=#URL.EventID#"
 		submitValue="Send Email" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
 		<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 		<input type="hidden" name="EventID" value="#URL.EventID#">
@@ -108,4 +113,6 @@
 			<uform:field name="HumanChecker" isRequired="true" label="Please enter the characters you see below" type="captcha" captchaWidth="800" captchaMinChars="5" captchaMaxChars="8" />
 		</uForm:fieldset>
 	</uForm:form>
+	</div>
+	</div>
 </cfoutput>
