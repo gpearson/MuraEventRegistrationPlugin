@@ -22,6 +22,14 @@
 		Where UserID = <cfqueryparam value="#getSelectedEvent.Facilitator#" cfsqltype="cf_sql_varchar">
 	</cfquery>
 
+	<cfset UserEmailDomain = #Right(Session.Mura.EMail, Len(Session.Mura.Email) - Find("@", Session.Mura.Email))#>
+	<cfquery name="getActiveMembership" datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+		Select TContent_ID, OrganizationName, OrganizationDomainName, Active
+		From eMembership
+		Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+			OrganizationDomainName = <cfqueryparam value="#Variables.UserEmailDomain#" cfsqltype="cf_sql_varchar">
+	</cfquery>
+
 	<cfif getSelectedEvent.EarlyBird_RegistrationAvailable EQ 1>
 		<cfif DateDiff("d", Now(), getSelectedEvent.EarlyBird_RegistrationDeadline) GTE 0>
 			<cfset Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration = True>

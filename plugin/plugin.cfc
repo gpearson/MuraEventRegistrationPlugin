@@ -18,31 +18,89 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<cfset application.appInitialized = false>
 
 		<cfscript>
-			var dbCheckTableRegistrations = new query();
-			dbCheckTableRegistrations.setDatasource("#application.configBean.getDatasource()#");
-			dbCheckTableRegistrations.setSQL("Show Tables LIKE 'eRegistrations'");
-			var dbCheckTableRegistrationsResult = dbCheckTableRegistrations.execute();
+			var dbCheckTableCaterers = new query();
+			dbCheckTableCaterers.setDatasource("#application.configBean.getDatasource()#");
+			dbCheckTableCaterers.setSQL("Show Tables LIKE 'eCaterers'");
+			var dbCheckTableCaterersResult = dbCheckTableCaterers.execute();
 
-			if (dbCheckTableRegistrationsResult.getResult().recordcount eq 0) {
+			if (dbCheckTableCaterersResult.getResult().recordcount eq 0) {
 				// Since the Database Table does not exists, Lets Create it
-				var dbCreateTableRegistrations = new query();
-				dbCreateTableRegistrations.setDatasource("#application.configBean.getDatasource()#");
-				dbCreateTableRegistrations.setSQL("CREATE TABLE `eRegistrations` (`TContent_ID` int(10) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL DEFAULT '', `RegistrationID` varchar(35) NOT NULL DEFAULT '', `RegistrationDate` datetime NOT NULL DEFAULT '1980-01-01 01:00:00', `User_ID` char(35) NOT NULL, `EventID` int(10) NOT NULL DEFAULT '0', `RequestsMeal` bit(1) NOT NULL DEFAULT b'0', `IVCParticipant` bit(1) NOT NULL DEFAULT b'0', `AttendeePrice` double(6,2) DEFAULT '0.00', `RegistrationIPAddr` varchar(15) NOT NULL DEFAULT '0.0.0.0', `RegisterByUserID` varchar(35) NOT NULL DEFAULT '', `OnWaitingList` bit(1) NOT NULL DEFAULT b'0', `AttendedEvent` bit(1) NOT NULL DEFAULT b'0', `Comments` varchar(255) DEFAULT NULL, `WebinarParticipant` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`, `Site_ID`, `User_ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-				var dbCreateTableRegistrationsResults = dbCreateTableRegistrations.execute();
+				var dbCreateTableCaterers = new query();
+				dbCreateTableCaterers.setDatasource("#application.configBean.getDatasource()#");
+				dbCreateTableCaterers.setSQL("CREATE TABLE `eCaterers` (`TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL, `FacilityName` tinytext NOT NULL, `PhysicalAddress` tinytext NOT NULL, `PhysicalCity` tinytext NOT NULL, `PhysicalState` varchar(2) NOT NULL, `PhysicalZipCode` varchar(5) NOT NULL, `PhysicalZip4` varchar(4) DEFAULT NULL, `PrimaryVoiceNumber` varchar(14) DEFAULT NULL, `BusinessWebsite` tinytext, `ContactName` tinytext, `ContactPhoneNumber` tinytext, `ContactEmail` tinytext, `PaymentTerms` tinytext, `DeliveryInfo` tinytext, `GuaranteeInformation` tinytext, `AdditionalNotes` tinytext, `dateCreated` date NOT NULL, `lastUpdated` date NOT NULL, `lastUpdateBy` tinytext NOT NULL, `isAddressVerified` bit(1) NOT NULL DEFAULT b'0', `GeoCode_Latitude` varchar(20) DEFAULT NULL, `GeoCode_Longitude` varchar(20) DEFAULT NULL, `GeoCode_Township` tinytext, `GeoCode_StateLongName` tinytext, `GeoCode_CountryShortName` tinytext, `GeoCode_Neighborhood` tinytext, `Active` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`,`Site_ID`) ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+				var dbCreateTableCaterersResult = dbCreateTableCaterers.execute();
 			} else {
 				// Database Table Exists, We must Drop it to create it again
-				var dbDropTableRegistrations = new query();
-				dbDropTableRegistrations.setDatasource("#application.configBean.getDatasource()#");
-				dbDropTableRegistrations.setSQL("DROP TABLE eRegistrations");
-				var dbDropTableRegistrationsResult = dbDropTableRegistrations.execute();
+				var dbDropTableCaterers = new query();
+				dbDropTableCaterers.setDatasource("#application.configBean.getDatasource()#");
+				dbDropTableCaterers.setSQL("DROP TABLE eCaterers");
+				var dbDropTableCaterersResult = dbDropTableCaterers.execute();
 
-				if (len(dbDropTableRegistrationsResult.getResult()) eq 0) {
-					var dbCreateTableRegistrations = new query();
-					dbCreateTableRegistrations.setDatasource("#application.configBean.getDatasource()#");
-					dbCreateTableRegistrations.setSQL("CREATE TABLE `eRegistrations` (`TContent_ID` int(10) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL DEFAULT '', `RegistrationID` varchar(35) NOT NULL DEFAULT '', `RegistrationDate` datetime NOT NULL DEFAULT '1980-01-01 01:00:00', `User_ID` char(35) NOT NULL, `EventID` int(10) NOT NULL DEFAULT '0', `RequestsMeal` bit(1) NOT NULL DEFAULT b'0', `IVCParticipant` bit(1) NOT NULL DEFAULT b'0', `AttendeePrice` double(6,2) DEFAULT '0.00', `RegistrationIPAddr` varchar(15) NOT NULL DEFAULT '0.0.0.0', `RegisterByUserID` varchar(35) NOT NULL DEFAULT '', `OnWaitingList` bit(1) NOT NULL DEFAULT b'0', `AttendedEvent` bit(1) NOT NULL DEFAULT b'0', `Comments` varchar(255) DEFAULT NULL, `WebinarParticipant` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`, `Site_ID`, `User_ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-					var dbCreateTableRegistrationsResults = dbCreateTableRegistrations.execute();
+				if (len(dbDropTableCaterersResult.getResult()) eq 0) {
+					var dbCreateTableCaterers = new query();
+				dbCreateTableCaterers.setDatasource("#application.configBean.getDatasource()#");
+				dbCreateTableCaterers.setSQL("CREATE TABLE `eCaterers` (`TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL, `FacilityName` tinytext NOT NULL, `PhysicalAddress` tinytext NOT NULL, `PhysicalCity` tinytext NOT NULL, `PhysicalState` varchar(2) NOT NULL, `PhysicalZipCode` varchar(5) NOT NULL, `PhysicalZip4` varchar(4) DEFAULT NULL, `PrimaryVoiceNumber` varchar(14) DEFAULT NULL, `BusinessWebsite` tinytext, `ContactName` tinytext, `ContactPhoneNumber` tinytext, `ContactEmail` tinytext, `PaymentTerms` tinytext, `DeliveryInfo` tinytext, `GuaranteeInformation` tinytext, `AdditionalNotes` tinytext, `dateCreated` date NOT NULL, `lastUpdated` date NOT NULL, `lastUpdateBy` tinytext NOT NULL, `isAddressVerified` bit(1) NOT NULL DEFAULT b'0', `GeoCode_Latitude` varchar(20) DEFAULT NULL, `GeoCode_Longitude` varchar(20) DEFAULT NULL, `GeoCode_Township` tinytext, `GeoCode_StateLongName` tinytext, `GeoCode_CountryShortName` tinytext, `GeoCode_Neighborhood` tinytext, `Active` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`,`Site_ID`) ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+				var dbCreateTableCaterersResult = dbCreateTableCaterers.execute();
 				} else {
-				 writedump(dbDropTableRegistrationsResult.getResult());
+				 writedump(dbDropTableCaterersResult.getResult());
+				 abort;
+				}
+			}
+
+			var dbCheckTableEventExpenseList = new query();
+			dbCheckTableEventExpenseList.setDatasource("#application.configBean.getDatasource()#");
+			dbCheckTableEventExpenseList.setSQL("Show Tables LIKE 'eEvent_ExpenseList'");
+			var dbCheckTableEventExpenseListResult = dbCheckTableEventExpenseList.execute();
+
+			if (dbCheckTableEventExpenseListResult.getResult().recordcount eq 0) {
+				// Since the Database Table does not exists, Lets Create it
+				var dbCreateTableEventExpenseList = new query();
+				dbCreateTableEventExpenseList.setDatasource("#application.configBean.getDatasource()#");
+				dbCreateTableEventExpenseList.setSQL("CREATE TABLE `eEvent_ExpenseList` ( `TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL, `Expense_Name` tinytext NOT NULL, `Active` bit(1) NOT NULL DEFAULT b'0', `dateCreated` datetime NOT NULL, `lastUpdated` datetime NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, PRIMARY KEY (`TContent_ID`) ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;");
+				var dbCreateTableEventExpenseListResults = dbCreateTableEventExpenseList.execute();
+			} else {
+				// Database Table Exists, We must Drop it to create it again
+				var dbDropTableEventExpenseList = new query();
+				dbDropTableEventExpenseList.setDatasource("#application.configBean.getDatasource()#");
+				dbDropTableEventExpenseList.setSQL("DROP TABLE eEvent_ExpenseList");
+				var dbDropTableEventExpenseListResult = dbDropTableEventExpenseList.execute();
+
+				if (len(dbDropTableEventExpenseListResult.getResult()) eq 0) {
+					var dbCreateTableEventExpenseList = new query();
+					dbCreateTableEventExpenseList.setDatasource("#application.configBean.getDatasource()#");
+					dbCreateTableEventExpenseList.setSQL("CREATE TABLE `eEvent_ExpenseList` ( `TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL, `Expense_Name` tinytext NOT NULL, `Active` bit(1) NOT NULL DEFAULT b'0', `dateCreated` datetime NOT NULL, `lastUpdated` datetime NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, PRIMARY KEY (`TContent_ID`) ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;");
+					var dbCreateTableEventExpenseListResults = dbCreateTableEventExpenseList.execute();
+				} else {
+				 writedump(dbDropTableEventExpenseListResult.getResult());
+				 abort;
+				}
+			}
+
+			var dbCheckTableEventExpenses = new query();
+			dbCheckTableEventExpenses.setDatasource("#application.configBean.getDatasource()#");
+			dbCheckTableEventExpenses.setSQL("Show Tables LIKE 'eEvent_Expenses'");
+			var dbCheckTableEventExpensesResults = dbCheckTableEventExpenses.execute();
+
+			if (dbCheckTableEventExpensesResult.getResult().recordcount eq 0) {
+				// Since the Database Table does not exists, Lets Create it
+				var dbCreateTableEventExpenses = new query();
+				dbCreateTableEventExpenses.setDatasource("#application.configBean.getDatasource()#");
+				dbCreateTableEventExpenses.setSQL("CREATE TABLE `eEvent_Expenses` ( `TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL, `Event_ID` int(11) NOT NULL, `Expense_ID` int(11) NOT NULL, `Cost_Amount` double(8,2) NOT NULL, `dateCreated` datetime NOT NULL, `lastUpdated` datetime NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, PRIMARY KEY (`TContent_ID`,`Event_ID`), KEY `Event_ID_Index` (`Event_ID`) ) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+				var dbCreateTableEventExpensesResults = dbCreateTableEventExpenses.execute();
+			} else {
+				// Database Table Exists, We must Drop it to create it again
+				var dbDropTableEventExpenses = new query();
+				dbDropTableEventExpenses.setDatasource("#application.configBean.getDatasource()#");
+				dbDropTableEventExpenses.setSQL("DROP TABLE eEvent_Expenses");
+				var dbDropTableEventExpensesResults = dbDropTableEventExpenses.execute();
+
+				if (len(dbDropTableEventExpensesResults.getResult()) eq 0) {
+					var dbCreateTableEventExpenses = new query();
+					dbCreateTableEventExpenses.setDatasource("#application.configBean.getDatasource()#");
+					dbCreateTableEventExpenses.setSQL("CREATE TABLE `eEvent_Expenses` ( `TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL, `Event_ID` int(11) NOT NULL, `Expense_ID` int(11) NOT NULL, `Cost_Amount` double(8,2) NOT NULL, `dateCreated` datetime NOT NULL, `lastUpdated` datetime NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, PRIMARY KEY (`TContent_ID`,`Event_ID`), KEY `Event_ID_Index` (`Event_ID`) ) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+					var dbCreateTableEventExpensesResults = dbCreateTableEventExpenses.execute();
+				} else {
+				 writedump(dbDropTableEventExpensesResults.getResult());
 				 abort;
 				}
 			}
@@ -56,7 +114,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				// Since the Database Table does not exists, Lets Create it
 				var dbCreateTableEvents = new query();
 				dbCreateTableEvents.setDatasource("#application.configBean.getDatasource()#");
-				dbCreateTableEvents.setSQL("CREATE TABLE `eEvents` ( `TContent_ID` int(10) NOT NULL auto_increment, `Site_ID` varchar(20) NOT NULL default '', `ShortTitle` varchar(75) NOT NULL default '', `EventDate` date NOT NULL default '1980-01-01', `EventDate1` date default NULL, `EventDate2` date default NULL, `EventDate3` date default NULL, `EventDate4` date default NULL, `EventDate5` date default NULL, `LongDescription` longtext, `Event_StartTime` time default NULL, `Event_EndTime` time default NULL, `Registration_Deadline` date NOT NULL default '1980-01-01', `Registration_BeginTime` time default NULL, `Registration_EndTime` time default NULL, `EventFeatured` bit(1) NOT NULL default b'0', `Featured_StartDate` date default '1980-01-01', `Featured_EndDate` date default '1980-01-01', `Featured_SortOrder` int(10) default '100', `MemberCost` decimal(6,2) default NULL, `NonMemberCost` decimal(6,2) default NULL, `EarlyBird_RegistrationDeadline` date default '1980-01-01', `EarlyBird_RegistrationAvailable` bit(1) NOT NULL default b'0', `EarlyBird_MemberCost` decimal(6,2) default NULL, `EarlyBird_NonMemberCost` decimal(6,2) default NULL, `ViewSpecialPricing` bit(1) NOT NULL default b'0', `SpecialMemberCost` decimal(6,2) default NULL, `SpecialNonMemberCost` decimal(6,2) default NULL, `SpecialPriceRequirements` longtext, `PGPAvailable` bit(1) NOT NULL default b'0', `PGPPoints` decimal(5,2) default NULL, `MealProvided` bit(1) NOT NULL default b'0', `MealProvidedBy` int(11) default NULL, `MealCost_Estimated` decimal(6,2) default '0.00', `AllowVideoConference` bit(1) NOT NULL default b'0', `VideoConferenceInfo` longtext, `VideoConferenceCost` decimal(6,2) default NULL, `AcceptRegistrations` bit(1) NOT NULL default b'0', `EventAgenda` longtext, `EventTargetAudience` longtext, `EventStrategies` longtext, `EventSpecialInstructions` longtext, `MaxParticipants` int(10) default '0', `LocationType` char(1) NOT NULL default 'S', `LocationID` int(10) default '0', `LocationRoomID` int(10) default '0', `Presenters` tinytext, `Facilitator` char(35) default '0', `dateCreated` date NOT NULL, `lastUpdated` date default NULL, `lastUpdateBy` char(35) default NULL, `Active` bit(1) NOT NULL default b'0', `EventCancelled` bit(1) NOT NULL default b'0', `WebinarAvailable` bit(1) NOT NULL default b'0', `WebinarConnectInfo` mediumtext, `WebinarMemberCost` decimal(6,2) default NULL, `WebinarNonMemberCost` decimal(6,2) default NULL, `EventDoc_FileNameOne` tinytext, `EventDoc_FileTypeOne` tinytext, `EventDoc_FileNameTwo` tinytext, `EventDoc_FileTypeTwo` tinytext, `EventDoc_FileNameThree` tinytext, `EventDoc_FileTypeThree` tinytext, `EventDoc_FileNameFour` tinytext, `EventDoc_FileTypeFour` tinytext, `EventDoc_FileNameFive` tinytext, `EventDoc_FileTypeFive` tinytext, `EventDoc_FileNameSix` tinytext, `EventDoc_FileTypeSix` tinytext, `EventDoc_FileNameSeven` tinytext, `EventDoc_FileTypeSeven` tinytext, `EventDoc_FileNameEight` tinytext, `EventDoc_FileTypeEight` tinytext, `EventDoc_FileNameNine` tinytext, `EventDoc_FileTypeNine` tinytext, `EventDoc_FileNameTen` tinytext, `EventDoc_FileTypeTen` tinytext, `PostedTo_Facebook` bit(1) NOT NULL default b'0', `PostedTo_Twitter` bit(1) NOT NULL default b'0', PRIMARY KEY  (`TContent_ID`,`Site_ID`) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+				dbCreateTableEvents.setSQL("CREATE TABLE `eEvents` ( `TContent_ID` int(10) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL DEFAULT '', `ShortTitle` varchar(75) NOT NULL DEFAULT '', `EventDate` date NOT NULL DEFAULT '1980-01-01', `EventDate1` date DEFAULT NULL, `EventDate2` date DEFAULT NULL, `EventDate3` date DEFAULT NULL, `EventDate4` date DEFAULT NULL, `EventDate5` date DEFAULT NULL, `LongDescription` longtext, `Event_StartTime` time DEFAULT NULL, `Event_EndTime` time DEFAULT NULL, `Registration_Deadline` date NOT NULL DEFAULT '1980-01-01', `Registration_BeginTime` time DEFAULT NULL, `Registration_EndTime` time DEFAULT NULL, `EventFeatured` bit(1) NOT NULL DEFAULT b'0', `Featured_StartDate` date DEFAULT '1980-01-01', `Featured_EndDate` date DEFAULT '1980-01-01', `Featured_SortOrder` int(10) DEFAULT '100', `MemberCost` decimal(6,2) DEFAULT NULL, `NonMemberCost` decimal(6,2) DEFAULT NULL, `EarlyBird_RegistrationDeadline` date DEFAULT '1980-01-01', `EarlyBird_RegistrationAvailable` bit(1) NOT NULL DEFAULT b'0', `EarlyBird_MemberCost` decimal(6,2) DEFAULT NULL, `EarlyBird_NonMemberCost` decimal(6,2) DEFAULT NULL, `ViewSpecialPricing` bit(1) NOT NULL DEFAULT b'0', `SpecialMemberCost` decimal(6,2) DEFAULT NULL, `SpecialNonMemberCost` decimal(6,2) DEFAULT NULL, `SpecialPriceRequirements` longtext, `PGPAvailable` bit(1) NOT NULL DEFAULT b'0', `PGPPoints` decimal(5,2) DEFAULT NULL, `MealProvided` bit(1) NOT NULL DEFAULT b'0', `MealProvidedBy` int(11) DEFAULT NULL, `MealCost_Estimated` decimal(6,2) DEFAULT '0.00', `AllowVideoConference` bit(1) NOT NULL DEFAULT b'0', `VideoConferenceInfo` longtext, `VideoConferenceCost` decimal(6,2) DEFAULT NULL, `AcceptRegistrations` bit(1) NOT NULL DEFAULT b'0', `EventAgenda` longtext, `EventTargetAudience` longtext, `EventStrategies` longtext, `EventSpecialInstructions` longtext, `MaxParticipants` int(10) DEFAULT '0', `LocationType` char(1) NOT NULL DEFAULT 'S', `LocationID` int(10) DEFAULT '0', `LocationRoomID` int(10) DEFAULT '0', `Presenters` tinytext, `Facilitator` char(35) DEFAULT '0', `dateCreated` date NOT NULL, `lastUpdated` date DEFAULT NULL, `lastUpdateBy` char(35) DEFAULT NULL, `Active` bit(1) NOT NULL DEFAULT b'0', `EventCancelled` bit(1) NOT NULL DEFAULT b'0', `WebinarAvailable` bit(1) NOT NULL DEFAULT b'0', `WebinarConnectInfo` mediumtext, `WebinarMemberCost` decimal(6,2) DEFAULT NULL, `WebinarNonMemberCost` decimal(6,2) DEFAULT NULL, `EventDoc_FileNameOne` tinytext, `EventDoc_FileTypeOne` tinytext, `EventDoc_FileNameTwo` tinytext, `EventDoc_FileTypeTwo` tinytext, `EventDoc_FileNameThree` tinytext, `EventDoc_FileTypeThree` tinytext, `EventDoc_FileNameFour` tinytext, `EventDoc_FileTypeFour` tinytext, `EventDoc_FileNameFive` tinytext, `EventDoc_FileTypeFive` tinytext, `EventDoc_FileNameSix` tinytext, `EventDoc_FileTypeSix` tinytext, `EventDoc_FileNameSeven` tinytext, `EventDoc_FileTypeSeven` tinytext, `EventDoc_FileNameEight` tinytext, `EventDoc_FileTypeEight` tinytext, `EventDoc_FileNameNine` tinytext, `EventDoc_FileTypeNine` tinytext, `EventDoc_FileNameTen` tinytext, `EventDoc_FileTypeTen` tinytext, `PostedTo_Facebook` bit(1) NOT NULL DEFAULT b'0', `PostedTo_Twitter` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`,`Site_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;");
 				var dbCreateTableEventsResults = dbCreateTableEvents.execute();
 			} else {
 				// Database Table Exists, We must Drop it to create it again
@@ -68,10 +126,39 @@ http://www.apache.org/licenses/LICENSE-2.0
 				if (len(dbDropTableEventsResult.getResult()) eq 0) {
 					var dbCreateTableEvents = new query();
 					dbCreateTableEvents.setDatasource("#application.configBean.getDatasource()#");
-					dbCreateTableEvents.setSQL("CREATE TABLE `eEvents` ( `TContent_ID` int(10) NOT NULL auto_increment, `Site_ID` varchar(20) NOT NULL default '', `ShortTitle` varchar(75) NOT NULL default '', `EventDate` date NOT NULL default '1980-01-01', `EventDate1` date default NULL, `EventDate2` date default NULL, `EventDate3` date default NULL, `EventDate4` date default NULL, `EventDate5` date default NULL, `LongDescription` longtext, `Event_StartTime` time default NULL, `Event_EndTime` time default NULL, `Registration_Deadline` date NOT NULL default '1980-01-01', `Registration_BeginTime` time default NULL, `Registration_EndTime` time default NULL, `EventFeatured` bit(1) NOT NULL default b'0', `Featured_StartDate` date default '1980-01-01', `Featured_EndDate` date default '1980-01-01', `Featured_SortOrder` int(10) default '100', `MemberCost` decimal(6,2) default NULL, `NonMemberCost` decimal(6,2) default NULL, `EarlyBird_RegistrationDeadline` date default '1980-01-01', `EarlyBird_RegistrationAvailable` bit(1) NOT NULL default b'0', `EarlyBird_MemberCost` decimal(6,2) default NULL, `EarlyBird_NonMemberCost` decimal(6,2) default NULL, `ViewSpecialPricing` bit(1) NOT NULL default b'0', `SpecialMemberCost` decimal(6,2) default NULL, `SpecialNonMemberCost` decimal(6,2) default NULL, `SpecialPriceRequirements` longtext, `PGPAvailable` bit(1) NOT NULL default b'0', `PGPPoints` decimal(5,2) default NULL, `MealProvided` bit(1) NOT NULL default b'0', `MealProvidedBy` int(11) default NULL, `MealCost_Estimated` decimal(6,2) default '0.00', `AllowVideoConference` bit(1) NOT NULL default b'0', `VideoConferenceInfo` longtext, `VideoConferenceCost` decimal(6,2) default NULL, `AcceptRegistrations` bit(1) NOT NULL default b'0', `EventAgenda` longtext, `EventTargetAudience` longtext, `EventStrategies` longtext, `EventSpecialInstructions` longtext, `MaxParticipants` int(10) default '0', `LocationType` char(1) NOT NULL default 'S', `LocationID` int(10) default '0', `LocationRoomID` int(10) default '0', `Presenters` tinytext, `Facilitator` char(35) default '0', `dateCreated` date NOT NULL, `lastUpdated` date default NULL, `lastUpdateBy` char(35) default NULL, `Active` bit(1) NOT NULL default b'0', `EventCancelled` bit(1) NOT NULL default b'0', `WebinarAvailable` bit(1) NOT NULL default b'0', `WebinarConnectInfo` mediumtext, `WebinarMemberCost` decimal(6,2) default NULL, `WebinarNonMemberCost` decimal(6,2) default NULL, `EventDoc_FileNameOne` tinytext, `EventDoc_FileTypeOne` tinytext, `EventDoc_FileNameTwo` tinytext, `EventDoc_FileTypeTwo` tinytext, `EventDoc_FileNameThree` tinytext, `EventDoc_FileTypeThree` tinytext, `EventDoc_FileNameFour` tinytext, `EventDoc_FileTypeFour` tinytext, `EventDoc_FileNameFive` tinytext, `EventDoc_FileTypeFive` tinytext, `EventDoc_FileNameSix` tinytext, `EventDoc_FileTypeSix` tinytext, `EventDoc_FileNameSeven` tinytext, `EventDoc_FileTypeSeven` tinytext, `EventDoc_FileNameEight` tinytext, `EventDoc_FileTypeEight` tinytext, `EventDoc_FileNameNine` tinytext, `EventDoc_FileTypeNine` tinytext, `EventDoc_FileNameTen` tinytext, `EventDoc_FileTypeTen` tinytext, `PostedTo_Facebook` bit(1) NOT NULL default b'0', `PostedTo_Twitter` bit(1) NOT NULL default b'0', PRIMARY KEY  (`TContent_ID`,`Site_ID`) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+					dbCreateTableEvents.setSQL("CREATE TABLE `eEvents` ( `TContent_ID` int(10) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL DEFAULT '', `ShortTitle` varchar(75) NOT NULL DEFAULT '', `EventDate` date NOT NULL DEFAULT '1980-01-01', `EventDate1` date DEFAULT NULL, `EventDate2` date DEFAULT NULL, `EventDate3` date DEFAULT NULL, `EventDate4` date DEFAULT NULL, `EventDate5` date DEFAULT NULL, `LongDescription` longtext, `Event_StartTime` time DEFAULT NULL, `Event_EndTime` time DEFAULT NULL, `Registration_Deadline` date NOT NULL DEFAULT '1980-01-01', `Registration_BeginTime` time DEFAULT NULL, `Registration_EndTime` time DEFAULT NULL, `EventFeatured` bit(1) NOT NULL DEFAULT b'0', `Featured_StartDate` date DEFAULT '1980-01-01', `Featured_EndDate` date DEFAULT '1980-01-01', `Featured_SortOrder` int(10) DEFAULT '100', `MemberCost` decimal(6,2) DEFAULT NULL, `NonMemberCost` decimal(6,2) DEFAULT NULL, `EarlyBird_RegistrationDeadline` date DEFAULT '1980-01-01', `EarlyBird_RegistrationAvailable` bit(1) NOT NULL DEFAULT b'0', `EarlyBird_MemberCost` decimal(6,2) DEFAULT NULL, `EarlyBird_NonMemberCost` decimal(6,2) DEFAULT NULL, `ViewSpecialPricing` bit(1) NOT NULL DEFAULT b'0', `SpecialMemberCost` decimal(6,2) DEFAULT NULL, `SpecialNonMemberCost` decimal(6,2) DEFAULT NULL, `SpecialPriceRequirements` longtext, `PGPAvailable` bit(1) NOT NULL DEFAULT b'0', `PGPPoints` decimal(5,2) DEFAULT NULL, `MealProvided` bit(1) NOT NULL DEFAULT b'0', `MealProvidedBy` int(11) DEFAULT NULL, `MealCost_Estimated` decimal(6,2) DEFAULT '0.00', `AllowVideoConference` bit(1) NOT NULL DEFAULT b'0', `VideoConferenceInfo` longtext, `VideoConferenceCost` decimal(6,2) DEFAULT NULL, `AcceptRegistrations` bit(1) NOT NULL DEFAULT b'0', `EventAgenda` longtext, `EventTargetAudience` longtext, `EventStrategies` longtext, `EventSpecialInstructions` longtext, `MaxParticipants` int(10) DEFAULT '0', `LocationType` char(1) NOT NULL DEFAULT 'S', `LocationID` int(10) DEFAULT '0', `LocationRoomID` int(10) DEFAULT '0', `Presenters` tinytext, `Facilitator` char(35) DEFAULT '0', `dateCreated` date NOT NULL, `lastUpdated` date DEFAULT NULL, `lastUpdateBy` char(35) DEFAULT NULL, `Active` bit(1) NOT NULL DEFAULT b'0', `EventCancelled` bit(1) NOT NULL DEFAULT b'0', `WebinarAvailable` bit(1) NOT NULL DEFAULT b'0', `WebinarConnectInfo` mediumtext, `WebinarMemberCost` decimal(6,2) DEFAULT NULL, `WebinarNonMemberCost` decimal(6,2) DEFAULT NULL, `EventDoc_FileNameOne` tinytext, `EventDoc_FileTypeOne` tinytext, `EventDoc_FileNameTwo` tinytext, `EventDoc_FileTypeTwo` tinytext, `EventDoc_FileNameThree` tinytext, `EventDoc_FileTypeThree` tinytext, `EventDoc_FileNameFour` tinytext, `EventDoc_FileTypeFour` tinytext, `EventDoc_FileNameFive` tinytext, `EventDoc_FileTypeFive` tinytext, `EventDoc_FileNameSix` tinytext, `EventDoc_FileTypeSix` tinytext, `EventDoc_FileNameSeven` tinytext, `EventDoc_FileTypeSeven` tinytext, `EventDoc_FileNameEight` tinytext, `EventDoc_FileTypeEight` tinytext, `EventDoc_FileNameNine` tinytext, `EventDoc_FileTypeNine` tinytext, `EventDoc_FileNameTen` tinytext, `EventDoc_FileTypeTen` tinytext, `PostedTo_Facebook` bit(1) NOT NULL DEFAULT b'0', `PostedTo_Twitter` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`,`Site_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;");
 					var dbCreateTableEventsResults = dbCreateTableEvents.execute();
 				} else {
 				 writedump(dbDropTableEventsResult.getResult());
+				 abort;
+				}
+			}
+
+			var dbCheckTableEventsMatrix = new query();
+			dbCheckTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
+			dbCheckTableEventsMatrix.setSQL("Show Tables LIKE 'eEventsMatrix'");
+			var dbCheckTableEventsMatrixResults = dbCheckTableEventsMatrix.execute();
+
+			if (dbCheckTableEventsMatrixResults.getResult().recordcount eq 0) {
+				// Since the Database Table does not exists, Lets Create it
+				var dbCreateTableEventsMatrix = new query();
+				dbCreateTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
+				dbCreateTableEventsMatrix.setSQL("CREATE TABLE `eEventsMatrix` ( `TContent_ID` int(11) NOT NULL auto_increment, `Event_ID` int(11) NOT NULL, `Event_AdditionalDayID` int(11) default NULL, `Event_TotalIncomeFromParticipants` double(12,2) default NULL, `Event_TotalExpensesToHold` double(12,2) default NULL, `Event_CostPerParticipant` double(12,2) default NULL, `Event_RebatePerParticipant` double(6,2) default NULL, PRIMARY KEY  (`TContent_ID`) ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
+				var dbCreateTableEventsMatrixResults = dbCreateTableEventsMatrix.execute();
+			} else {
+				// Database Table Exists, We must Drop it to create it again
+				var dbDropTableEventsMatrix = new query();
+				dbDropTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
+				dbDropTableEventsMatrix.setSQL("DROP TABLE eEventsMatrix");
+				var dbDropTableEventsMatrixResults = dbDropTableEventsMatrix.execute();
+
+				if (len(dbDropTableEventsMatrixResults.getResult()) eq 0) {
+					var dbCreateTableEventsMatrix = new query();
+					dbCreateTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
+					dbCreateTableEventsMatrix.setSQL("CREATE TABLE `eEventsMatrix` ( `TContent_ID` int(11) NOT NULL auto_increment, `Event_ID` int(11) NOT NULL, `Event_AdditionalDayID` int(11) default NULL, `Event_TotalIncomeFromParticipants` double(12,2) default NULL, `Event_TotalExpensesToHold` double(12,2) default NULL, `Event_CostPerParticipant` double(12,2) default NULL, `Event_RebatePerParticipant` double(6,2) default NULL, PRIMARY KEY  (`TContent_ID`) ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
+					var dbCreateTableEventsMatrixResults = dbCreateTableEventsMatrix.execute();
+				} else {
+				 writedump(dbCreateTableEventsMatrixResults.getResult());
 				 abort;
 				}
 			}
@@ -134,35 +221,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 				}
 			}
 
-			var dbCheckTableCaterers = new query();
-			dbCheckTableCaterers.setDatasource("#application.configBean.getDatasource()#");
-			dbCheckTableCaterers.setSQL("Show Tables LIKE 'eCaterers'");
-			var dbCheckTableCaterersResult = dbCheckTableCaterers.execute();
-
-			if (dbCheckTableCaterersResult.getResult().recordcount eq 0) {
-				// Since the Database Table does not exists, Lets Create it
-				var dbCreateTableCaterers = new query();
-				dbCreateTableCaterers.setDatasource("#application.configBean.getDatasource()#");
-				dbCreateTableCaterers.setSQL("CREATE TABLE `eCaterers` (`TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL, `FacilityName` tinytext NOT NULL, `PhysicalAddress` tinytext NOT NULL, `PhysicalCity` tinytext NOT NULL, `PhysicalState` varchar(2) NOT NULL, `PhysicalZipCode` varchar(5) NOT NULL, `PhysicalZip4` varchar(4) DEFAULT NULL, `PrimaryVoiceNumber` varchar(14) DEFAULT NULL, `BusinessWebsite` tinytext, `ContactName` tinytext, `ContactPhoneNumber` tinytext, `ContactEmail` tinytext, `PaymentTerms` tinytext, `DeliveryInfo` tinytext, `GuaranteeInformation` tinytext, `AdditionalNotes` tinytext, `dateCreated` date NOT NULL, `lastUpdated` date NOT NULL, `lastUpdateBy` tinytext NOT NULL, `isAddressVerified` bit(1) NOT NULL DEFAULT b'0', `GeoCode_Latitude` varchar(20) DEFAULT NULL, `GeoCode_Longitude` varchar(20) DEFAULT NULL, `GeoCode_Township` tinytext, `GeoCode_StateLongName` tinytext, `GeoCode_CountryShortName` tinytext, `GeoCode_Neighborhood` tinytext, `Active` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`,`Site_ID`) ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
-				var dbCreateTableCaterersResult = dbCreateTableCaterers.execute();
-			} else {
-				// Database Table Exists, We must Drop it to create it again
-				var dbDropTableCaterers = new query();
-				dbDropTableCaterers.setDatasource("#application.configBean.getDatasource()#");
-				dbDropTableCaterers.setSQL("DROP TABLE eCaterers");
-				var dbDropTableCaterersResult = dbDropTableCaterers.execute();
-
-				if (len(dbDropTableCaterersResult.getResult()) eq 0) {
-					var dbCreateTableCaterers = new query();
-				dbCreateTableCaterers.setDatasource("#application.configBean.getDatasource()#");
-				dbCreateTableCaterers.setSQL("CREATE TABLE `eCaterers` (`TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL, `FacilityName` tinytext NOT NULL, `PhysicalAddress` tinytext NOT NULL, `PhysicalCity` tinytext NOT NULL, `PhysicalState` varchar(2) NOT NULL, `PhysicalZipCode` varchar(5) NOT NULL, `PhysicalZip4` varchar(4) DEFAULT NULL, `PrimaryVoiceNumber` varchar(14) DEFAULT NULL, `BusinessWebsite` tinytext, `ContactName` tinytext, `ContactPhoneNumber` tinytext, `ContactEmail` tinytext, `PaymentTerms` tinytext, `DeliveryInfo` tinytext, `GuaranteeInformation` tinytext, `AdditionalNotes` tinytext, `dateCreated` date NOT NULL, `lastUpdated` date NOT NULL, `lastUpdateBy` tinytext NOT NULL, `isAddressVerified` bit(1) NOT NULL DEFAULT b'0', `GeoCode_Latitude` varchar(20) DEFAULT NULL, `GeoCode_Longitude` varchar(20) DEFAULT NULL, `GeoCode_Township` tinytext, `GeoCode_StateLongName` tinytext, `GeoCode_CountryShortName` tinytext, `GeoCode_Neighborhood` tinytext, `Active` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`,`Site_ID`) ) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
-				var dbCreateTableCaterersResult = dbCreateTableCaterers.execute();
-				} else {
-				 writedump(dbDropTableCaterersResult.getResult());
-				 abort;
-				}
-			}
-
 			var dbCheckTableMembership = new query();
 			dbCheckTableMembership.setDatasource("#application.configBean.getDatasource()#");
 			dbCheckTableMembership.setSQL("Show Tables LIKE 'eMembership'");
@@ -189,6 +247,35 @@ http://www.apache.org/licenses/LICENSE-2.0
 				} else {
 					writedump(dbCreateTableMembershipResult.getResult());
 					abort;
+				}
+			}
+
+			var dbCheckTableRegistrations = new query();
+			dbCheckTableRegistrations.setDatasource("#application.configBean.getDatasource()#");
+			dbCheckTableRegistrations.setSQL("Show Tables LIKE 'eRegistrations'");
+			var dbCheckTableRegistrationsResult = dbCheckTableRegistrations.execute();
+
+			if (dbCheckTableRegistrationsResult.getResult().recordcount eq 0) {
+				// Since the Database Table does not exists, Lets Create it
+				var dbCreateTableRegistrations = new query();
+				dbCreateTableRegistrations.setDatasource("#application.configBean.getDatasource()#");
+				dbCreateTableRegistrations.setSQL("CREATE TABLE `eRegistrations` (`TContent_ID` int(10) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL DEFAULT '', `RegistrationID` varchar(35) NOT NULL DEFAULT '', `RegistrationDate` datetime NOT NULL DEFAULT '1980-01-01 01:00:00', `User_ID` char(35) NOT NULL, `EventID` int(10) NOT NULL DEFAULT '0', `RequestsMeal` bit(1) NOT NULL DEFAULT b'0', `IVCParticipant` bit(1) NOT NULL DEFAULT b'0', `AttendeePrice` double(6,2) DEFAULT '0.00', `RegistrationIPAddr` varchar(15) NOT NULL DEFAULT '0.0.0.0', `RegisterByUserID` varchar(35) NOT NULL DEFAULT '', `OnWaitingList` bit(1) NOT NULL DEFAULT b'0', `AttendedEvent` bit(1) NOT NULL DEFAULT b'0', `Comments` varchar(255) DEFAULT NULL, `WebinarParticipant` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`, `Site_ID`, `User_ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+				var dbCreateTableRegistrationsResults = dbCreateTableRegistrations.execute();
+			} else {
+				// Database Table Exists, We must Drop it to create it again
+				var dbDropTableRegistrations = new query();
+				dbDropTableRegistrations.setDatasource("#application.configBean.getDatasource()#");
+				dbDropTableRegistrations.setSQL("DROP TABLE eRegistrations");
+				var dbDropTableRegistrationsResult = dbDropTableRegistrations.execute();
+
+				if (len(dbDropTableRegistrationsResult.getResult()) eq 0) {
+					var dbCreateTableRegistrations = new query();
+					dbCreateTableRegistrations.setDatasource("#application.configBean.getDatasource()#");
+					dbCreateTableRegistrations.setSQL("CREATE TABLE `eRegistrations` (`TContent_ID` int(10) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL DEFAULT '', `RegistrationID` varchar(35) NOT NULL DEFAULT '', `RegistrationDate` datetime NOT NULL DEFAULT '1980-01-01 01:00:00', `User_ID` char(35) NOT NULL, `EventID` int(10) NOT NULL DEFAULT '0', `RequestsMeal` bit(1) NOT NULL DEFAULT b'0', `IVCParticipant` bit(1) NOT NULL DEFAULT b'0', `AttendeePrice` double(6,2) DEFAULT '0.00', `RegistrationIPAddr` varchar(15) NOT NULL DEFAULT '0.0.0.0', `RegisterByUserID` varchar(35) NOT NULL DEFAULT '', `OnWaitingList` bit(1) NOT NULL DEFAULT b'0', `AttendedEvent` bit(1) NOT NULL DEFAULT b'0', `Comments` varchar(255) DEFAULT NULL, `WebinarParticipant` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`, `Site_ID`, `User_ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+					var dbCreateTableRegistrationsResults = dbCreateTableRegistrations.execute();
+				} else {
+				 writedump(dbDropTableRegistrationsResult.getResult());
+				 abort;
 				}
 			}
 
@@ -220,35 +307,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 				 abort;
 				}
 			}
-
-			var dbCheckTableEventsMatrix = new query();
-			dbCheckTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
-			dbCheckTableEventsMatrix.setSQL("Show Tables LIKE 'eEventsMatrix'");
-			var dbCheckTableEventsMatrixResults = dbCheckTableEventsMatrix.execute();
-
-			if (dbCheckTableEventsMatrixResults.getResult().recordcount eq 0) {
-				// Since the Database Table does not exists, Lets Create it
-				var dbCreateTableEventsMatrix = new query();
-				dbCreateTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
-				dbCreateTableEventsMatrix.setSQL("CREATE TABLE `eEventsMatrix` ( `id` int(11) NOT NULL AUTO_INCREMENT, `Event_ID` int(11) NOT NULL, `EventID_AdditionalDates` int(11) NOT NULL, PRIMARY KEY (`id`) ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;");
-				var dbCreateTableEventsMatrixResults = dbCreateTableEventsMatrix.execute();
-			} else {
-				// Database Table Exists, We must Drop it to create it again
-				var dbDropTableEventsMatrix = new query();
-				dbDropTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
-				dbDropTableEventsMatrix.setSQL("DROP TABLE eEventsMatrix");
-				var dbDropTableEventsMatrixResults = dbDropTableEventsMatrix.execute();
-
-				if (len(dbDropTableEventsMatrixResults.getResult()) eq 0) {
-					var dbCreateTableEventsMatrix = new query();
-					dbCreateTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
-					dbCreateTableEventsMatrix.setSQL("CREATE TABLE `eEventsMatrix` ( `id` int(11) NOT NULL AUTO_INCREMENT, `Event_ID` int(11) NOT NULL, `EventID_AdditionalDates` int(11) NOT NULL, PRIMARY KEY (`id`) ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;");
-					var dbCreateTableEventsMatrixResults = dbCreateTableEventsMatrix.execute();
-				} else {
-				 writedump(dbCreateTableEventsMatrixResults.getResult());
-				 abort;
-				}
-			}
 		</cfscript>
 
 		<cfscript>
@@ -260,6 +318,15 @@ http://www.apache.org/licenses/LICENSE-2.0
 			insertFacilityRoomRows = arrayNew(1);
 			insertFacilityRoomRows[1] = "'#Session.SiteID#', 1, 'Conference Room 1', 30, '0.00', 1, '2013-09-11 11:35:12', '2013-09-11 11:35:12', 'admin'";
 			insertFacilityRoomRows[2] = "'#Session.SiteID#', 1, 'Conference Room 2', 15, '0.00', 1, '2013-09-11 11:35:12', '2013-09-11 11:35:12', 'admin'";
+
+			insertEventExpenseListRows = arrayNew(1);
+			insertEventExpenseListRows[1] = "'#Session.SiteID#', 'Presenter Fee', 1, #Now()#, #Now()#, 'Admin User'";
+			insertEventExpenseListRows[2] = "'#Session.SiteID#', 'Presenter Lodging', 1, #Now()#, #Now()#, 'Admin User'";
+			insertEventExpenseListRows[3] = "'#Session.SiteID#', 'Presenter Travel', 1, #Now()#, #Now()#, 'Admin User'";
+			insertEventExpenseListRows[4] = "'#Session.SiteID#', 'Facility Rental Fee', 1, #Now()#, #Now()#, 'Admin User'";
+			insertEventExpenseListRows[5] = "'#Session.SiteID#', 'Total Meal Expense', 1, #Now()#, #Now()#, 'Admin User'";
+			insertEventExpenseListRows[6] = "'#Session.SiteID#', 'Material Printing Expenses', 1, #Now()#, #Now()#, 'Admin User'";
+			insertEventExpenseListRows[7] = "'#Session.SiteID#', 'Support Staff Expenses', 1, #Now()#, #Now()#, 'Admin User'";
 
 			insertMembershipRows = arrayNew(1);
 			insertMembershipRows[1] = "'#Session.SiteID#','21st Century Charter Sch of Gary','geofoundation.org','9545','IN',0,'2013-12-06','B6BA1738-9B59-4084-A3F9C1FBF3EAA61C','2013-12-06','333 N Pennsylvania Suite 1000','Indianapolis','IN','46202','3175361027','3179219443','','','',''";
@@ -680,6 +747,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</cfquery>
 		</cfloop>
 
+		<cfloop array="#insertEventExpenseListRows#" index="i">
+			<cfquery name="insertData" datasource="#Application.configBean.getDatasource()#">
+				Insert into eEvent_ExpenseList(Site_ID, Cost_Type, Active)
+				values(#i#)
+			</cfquery>
+		</cfloop>
+
 		<cfquery name="GetNIESCFacilityID" Datasource="#Application.configBean.getDatasource()#">
 			Select TContent_ID
 			From eFacility
@@ -824,6 +898,46 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 			if (len(dbDropTableUserMatrixResult.getResult()) neq 0) {
 				writedump(dbDropTableUserMatrixResult.getResult());
+				abort;
+			}
+
+			var dbDropTableEventExpenseList = new query();
+			dbDropTableEventExpenseList.setDatasource("#application.configBean.getDatasource()#");
+			dbDropTableEventExpenseList.setSQL("DROP TABLE eEvent_ExpenseList");
+			var dbDropTableEventExpenseListResult = dbDropTableEventExpenseList.execute();
+
+			if (len(dbDropTableEventExpenseListResult.getResult()) neq 0) {
+				writedump(dbDropTableEventExpenseListResult.getResult());
+				abort;
+			}
+
+			var dbDropTableEventExpenses = new query();
+			dbDropTableEventExpenses.setDatasource("#application.configBean.getDatasource()#");
+			dbDropTableEventExpenses.setSQL("DROP TABLE eEvent_Expenses");
+			var dbDropTableEventExpensesResult = dbDropTableEventExpenses.execute();
+
+			if (len(dbDropTableEventExpensesResult.getResult()) neq 0) {
+				writedump(dbDropTableEventExpensesResult.getResult());
+				abort;
+			}
+
+			var dbDropTableEventsMatrix = new query();
+			dbDropTableEventsMatrix.setDatasource("#application.configBean.getDatasource()#");
+			dbDropTableEventsMatrix.setSQL("DROP TABLE eEventsMatrix");
+			var dbDropTableEventsMatrixResults = dbDropTableEventsMatrix.execute();
+
+			if (len(dbDropTableEventsMatrixResults.getResult()) neq 0) {
+				writedump(dbDropTableEventsMatrixResults.getResult());
+				abort;
+			}
+
+			var dbDropTableEventsBreakoutSession = new query();
+			dbDropTableEventsBreakoutSession.setDatasource("#application.configBean.getDatasource()#");
+			dbDropTableEventsBreakoutSession.setSQL("DROP TABLE eEvents_BreakoutSessions");
+			var dbDropTableEventsBreakoutSessionResults = dbDropTableEventsBreakoutSession.execute();
+
+			if (len(dbDropTableEventsBreakoutSessionResults.getResult()) neq 0) {
+				writedump(dbDropTableEventsBreakoutSessionResults.getResult());
 				abort;
 			}
 		</cfscript>

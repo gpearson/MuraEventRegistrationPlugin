@@ -154,7 +154,7 @@
 		<cfreturn Trim(variables.vcal)>
 	</cffunction>
 
-	<cffunction name="UpcomingEvents" ReturnType="Query" Access="Remote" Output="False"  hint="Returns Upcoming Events">
+	<cffunction name="UpcomingEvents" ReturnType="xml" Access="Remote" Output="False"  hint="Returns Upcoming Events">
 		<cfargument name="DaysInFuture" required="true" type="Number">
 		<cfargument name="SiteID" required="true" type="String">
 
@@ -170,16 +170,10 @@
 				eEvents.Active = 1
 			Order by EventDate ASC
 		</cfquery>
-		<cfreturn getEvent>
 
 		<cfif getEvent.RecordCount>
 			<cfsavecontent variable="xmlData">
-			<?xml version="1.0" encoding="UTF-8"?>
-			<cfoutput><UpComingEvents><cfloop query="getEvent"><Event ID="#getEvent.TContent_ID#">
-					<DateOfEvent>#DateFormat(getEvent.EventDate, "mm-dd-yyyy")#</DateOfEvent>
-					<EventTitle>#getEvent.ShortTitle#</EventTitle>
-					<EventMoreInfo>http://events.niesc.k12.in.us/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:events.eventinfo&EventID=#getEvent.TContent_ID#</EventMoreInfo>
-				</Event></cfloop></UpComingEvents></cfoutput>
+				<cfoutput><?xml version="1.0" encoding="UTF-8"?><Events CF_TYPE='array'><cfloop query="getEvent"><Event ID="#getEvent.TContent_ID#" CF_TYPE="query"><DateOfEvent>#DateFormat(getEvent.EventDate, "mm-dd-yyyy")#</DateOfEvent><EventTitle>#getEvent.ShortTitle#</EventTitle><EventID>#getEvent.TContent_ID#</EventID></Event></cfloop></Events></cfoutput>
 			</cfsavecontent>
 			<cfreturn RTrim(LTrim(Variables.xmlData))>
 		<cfelse>

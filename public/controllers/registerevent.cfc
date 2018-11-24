@@ -305,7 +305,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 		<cfif isDefined("FORM.formSubmit") and isDefined("FORM.EventID")>
 			<cflock scope="session" type="exclusive" timeout="30">
-				<cfset Session.FormData = #StructCopy(FORM)#>
+				<cfset Session.FormDataAdditionalParticipants = #StructCopy(FORM)#>
 				<cfset Session.FormData.PluginInfo = StructNew()>
 				<cfset Session.FormData.PluginInfo.Datasource = #rc.$.globalConfig('datasource')#>
 				<cfset Session.FormData.PluginInfo.DBUserName = #rc.$.globalConfig('dbusername')#>
@@ -317,10 +317,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
 			<cfset CreateiCalCard = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>
 
-			<cfif isDefined("FORM.additionalParticipants")>
-				<cfif ListLen(FORM.additionalParticipants) EQ 1>
-					<cfif isDefined("FORM.RegisterAllDays")>
-						<cfswitch expression="#FORM.RegisterAllDays#">
+			<cfif isDefined("Session.FormDataAdditionalParticipants.RegisterAdditionalParticipants")>
+				<cfif ListLen(Session.FormDataAdditionalParticipants.RegisterAdditionalParticipants) EQ 1>
+					<cfif isDefined("Session.FormDataAdditionalParticipants.RegisterAllDays")>
+						<cfswitch expression="#Session.FormDataAdditionalParticipants.RegisterAllDays#">
 							<cfcase value="1">
 								<cfquery name="GetEventMultipleDatesID" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 									Select EventID_AdditionalDates
@@ -438,8 +438,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<cfquery name="CheckUserAlreadyRegistered" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 									Select TContent_ID
 									From eRegistrations
-									Where Site_ID = <cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar"> and
-										User_ID = <cfqueryparam value="#FORM.additionalParticipants#" cfsqltype="cf_sql_varchar"> and
+									Where Site_ID = <cfqueryparam value="#Session.FormData.SiteID#" cfsqltype="cf_sql_varchar"> and
+										User_ID = <cfqueryparam value="#Session.FormDataAdditionalParticipants.additionalParticipants#" cfsqltype="cf_sql_varchar"> and
 										<cfif isDefined("URL.EventID")>
 											EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
 										<cfelse>
@@ -461,7 +461,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 												<cfqueryparam value="#Session.UserRegistrationInfo.UserEventPrice#" cfsqltype="cf_sql_money">,
 												<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
 												<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
-												<cfqueryparam value="#FORM.WantsMeal#" cfsqltype="cf_sql_bit">
+												<cfqueryparam value="#Session.FormData.WantsMeal#" cfsqltype="cf_sql_bit">
 											)
 										</cfquery>
 										<cfif isDefined("FORM.WebinarParticipant")>
@@ -500,16 +500,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 								insert into eRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, WebinarParticipant, RequestsMeal)
 								Values(
-									<cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#Session.FormData.SiteID#" cfsqltype="cf_sql_varchar">,
 									<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
 									<cfqueryparam value="#Now()#" cfsqltype="cf_sql_date">,
-									<cfqueryparam value="#Form.additionalparticipants#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#Session.FormDataAdditionalParticipants.additionalparticipants#" cfsqltype="cf_sql_varchar">,
 									<cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">,
 									<cfqueryparam value="#Session.UserRegistrationInfo.UserEventPrice#" cfsqltype="cf_sql_double">,
 									<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
 									<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
 									<cfif isDefined("FORM.WebinarParticipant")><cfqueryparam value="#FORM.WebinarParticipant#" cfsqltype="cf_sql_bit">,<cfelse><cfqueryparam value="0" cfsqltype="cf_sql_bit">,</cfif>
-									<cfqueryparam value="#FORM.WantsMeal#" cfsqltype="cf_sql_bit">
+									<cfqueryparam value="#Session.FormData.WantsMeal#" cfsqltype="cf_sql_bit">
 								)
 							</cfquery>
 							<cfcatch type="Database">
@@ -523,8 +523,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</cfif>
 					</cfif>
 				<cfelseif ListLen(FORM.additionalParticipants) GTE 2>
-					<cfif isDefined("FORM.RegisterAllDays")>
-						<cfswitch expression="#FORM.RegisterAllDays#">
+					<cfif isDefined("Session.FormDataAdditionalParticipants.RegisterAllDays")>
+						<cfswitch expression="#Session.FormDataAdditionalParticipants.RegisterAllDays#">
 							<cfcase value="1">
 								<cfquery name="GetEventMultipleDatesID" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 									Select EventID_AdditionalDates
@@ -606,13 +606,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 								</cfloop>
 							</cfcase>
 							<cfdefaultcase>
-								<cfloop list="#FORM.additionalParticipants#" index="i" delimiters=",">
+								<cfloop list="#Session.FormDataAdditionalParticipants.additionalParticipants#" index="i" delimiters=",">
 									<cfset RegistrationID = #CreateUUID()#>
 									<cftry>
 										<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 											insert into eRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, WebinarParticipant, RequestsMeal)
 											Values(
-												<cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar">,
+												<cfqueryparam value="#Session.FormData.SiteID#" cfsqltype="cf_sql_varchar">,
 												<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
 												<cfqueryparam value="#Now()#" cfsqltype="cf_sql_date">,
 												<cfqueryparam value="#i#" cfsqltype="cf_sql_varchar">,
@@ -621,7 +621,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 												<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
 												<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
 												<cfif isDefined("FORM.WebinarParticipant")><cfqueryparam value="#FORM.WebinarParticipant#" cfsqltype="cf_sql_bit">,<cfelse><cfqueryparam value="0" cfsqltype="cf_sql_bit">,</cfif>
-												<cfqueryparam value="#FORM.WantsMeal#" cfsqltype="cf_sql_bit">
+												<cfqueryparam value="#Session.FormData.WantsMeal#" cfsqltype="cf_sql_bit">
 											)
 										</cfquery>
 										<cfcatch type="Database">
@@ -637,13 +637,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</cfdefaultcase>
 						</cfswitch>
 					<cfelse>
-						<cfloop list="#FORM.additionalParticipants#" index="i" delimiters=",">
+						<cfloop list="#Session.FormDataAdditionalParticipants.additionalParticipants#" index="i" delimiters=",">
 							<cfset RegistrationID = #CreateUUID()#>
 							<cftry>
 								<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 									insert into eRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, WebinarParticipant, RequestsMeal)
 									Values(
-										<cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar">,
+										<cfqueryparam value="#Session.FormData.SiteID#" cfsqltype="cf_sql_varchar">,
 										<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
 										<cfqueryparam value="#Now()#" cfsqltype="cf_sql_date">,
 										<cfqueryparam value="#i#" cfsqltype="cf_sql_varchar">,
@@ -652,7 +652,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 										<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
 										<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
 										<cfif isDefined("FORM.WebinarParticipant")><cfqueryparam value="#FORM.WebinarParticipant#" cfsqltype="cf_sql_bit">,<cfelse><cfqueryparam value="0" cfsqltype="cf_sql_bit">,</cfif>
-										<cfqueryparam value="#FORM.WantsMeal#" cfsqltype="cf_sql_bit">
+										<cfqueryparam value="#Session.FormData.WantsMeal#" cfsqltype="cf_sql_bit">
 									)
 								</cfquery>
 								<cfcatch type="Database">

@@ -9,9 +9,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 --->
 </cfsilent>
-<cfset PriorDate = #DateAdd("m", -2, Now())#>
+<cfset PriorDate = #CreateDate(2015, 07, 01)#>
 <cfquery name="getAvailableEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-	Select TContent_ID, ShortTitle, EventDate, LongDescription, PGPAvailable
+	Select TContent_ID, ShortTitle, EventDate, LongDescription, PGPAvailable, MemberCost, NonMemberCost
 	From eEvents
 	Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 		EventDate >= <cfqueryparam value="#Variables.PriorDate#" cfsqltype="cf_sql_date"> and
@@ -24,6 +24,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<cfcase value="true">
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
+					<cfcase value="PLStatementGenerated">
+						<div class="alert-box success">
+							<p>Your have successfully generated the information for the Profit and Loss Report for the event titled <cfoutput>#Session.getEvent.ShortTitle#</cfoutput></p>
+						</div>
+					</cfcase>
 					<cfcase value="PGPCertificatesSent">
 						<div class="alert-box success">
 							<p>Your have successfully send participants who attended the event titled <cfoutput>#Session.UserSuppliedInfo.PickedEvent.ShortTitle#</cfoutput> professional growth certificates.</p>
@@ -174,6 +179,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 									EventID = <cfqueryparam value="#getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
 									AttendedEvent = <cfqueryparam value="1" cfsqltype="cf_sql_boolean">
 							</cfquery>
+							<cfquery name="getEventExpenses" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Select TContent_ID
+								From eEvent_Expenses
+								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									Event_ID = <cfqueryparam value="#getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer">
+							</cfquery>
 							<tr bgcolor="###iif(currentrow MOD 2,DE('ffffff'),DE('efefef'))#">
 								<td width="50%">(<a href="http://#cgi.server_name#/?Info=#getAvailableEvents.TContent_ID#">#getAvailableEvents.TContent_ID#</a>) / #getAvailableEvents.ShortTitle#</td>
 								<td width="15%">#DateFormat(getAvailableEvents.EventDate, "mmm dd, yy")#</td>
@@ -188,6 +199,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 									</cfif>
 									<cfif getAttendedParticipantsForEvent.RecordCount and getAvailableEvents.PGPAvailable EQ 1>
 										&nbsp;&nbsp;<a href="#buildURL('admin:events.sendpgpcertificates')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Send PGP Certificates</a><br />
+										&nbsp;&nbsp;<a href="#buildURL('admin:events.enterexpenses')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Enter Event Expenses</a><br />
+									<cfelseif getAttendedParticipantsForEvent.RecordCount and getAvailableEvents.PGPAvailable EQ 0>
+										&nbsp;&nbsp;<a href="#buildURL('admin:events.enterexpenses')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Enter Event Expenses</a><br />
+									</cfif>
+									<cfif getEventExpenses.RecordCount>
+										&nbsp;&nbsp;<a href="#buildURL('admin:events.generateprofitlossreport')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Generate Profit/Loss Report</a><br />
 									</cfif>
 									<a href="#buildURL('admin:events.publishtofb')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Post to Facebook</a>
 								</td>
