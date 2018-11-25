@@ -24,7 +24,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</cfcase>
 				</cfswitch>
 			</cfif>
-
 		</div>
 	</div>
 </cfoutput>

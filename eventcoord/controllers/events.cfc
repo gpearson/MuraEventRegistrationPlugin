@@ -116,6 +116,14 @@
 			<cfif FORM.AddNewEventStep EQ "Back to Step 1">
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent&FormRetry=True" addtoken="false">
 			</cfif>
+			<cfif FORM.LocationID EQ "----">
+				<cfscript>
+					errormsg = {property="MealProvidedBy",message="Please Select a Facility to hold this event. If a facility does not display in the Location dropdown, you first must add a facility to the system."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_step2&FormRetry=True" addtoken="false">
+			</cfif>
+
 			<cflock timeout="60" scope="Session" type="Exclusive">
 				<!--- Clear out the Array from Previous Submissions --->
 				<cfset Session.FormErrors = #ArrayNew()#>
@@ -222,7 +230,7 @@
 			</cfif>
 			<cfset Session.FormErrors = #ArrayNew()#>
 			<cfset Session.UserSuppliedInfo.MaxRoomParticipants = #FORM.RoomMaxParticipants#>
-			<cfset Session.UserSuppliedInfo.AddNewEventStep = #FORM.AddNewEventStep#>
+
 
 			<cfif LEN(FORM.RoomMaxParticipants) EQ 0>
 				<cfscript>
@@ -251,7 +259,7 @@
 			</cfif>
 			<cfif isDefined("FORM.RoomMaxParticipants")><cfset Session.UserSuppliedInfo.RoomMaxParticipants = #FORM.RoomMaxParticipants#></cfif>
 			<cfif isDefined("FORM.AcceptRegistrations")><cfset Session.UserSuppliedInfo.AcceptRegistrations = #FORM.AcceptRegistrations#></cfif>
-
+			<cfset Session.UserSuppliedInfo.AddNewEventStep = #FORM.AddNewEventStep#>
 			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_review" addtoken="false">
 		</cfif>
 	</cffunction>
@@ -627,7 +635,7 @@
 
 			<cftry>
 				<cfquery name="insertNewEvent" result="insertNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Insert into p_EventRegistration_Events(Site_ID, ShortTitle, EventDate, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, EarlyBird_RegistrationAvailable, ViewSpecialPricing, PGPAvailable, MealProvided, AllowVideoConference, AcceptRegistrations, Facilitator, dateCreated, MaxParticipants, Active, lastUpdated, lastUpdateBy)
+					Insert into p_EventRegistration_Events(Site_ID, ShortTitle, EventDate, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, EarlyBird_RegistrationAvailable, ViewSpecialPricing, PGPAvailable, MealProvided, AllowVideoConference, AcceptRegistrations, Facilitator, dateCreated, MaxParticipants, Active, lastUpdated, lastUpdateBy, EventCancelled)
 					Values (
 						<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
 						<cfqueryparam value="#FORM.ShortTitle#" cfsqltype="cf_sql_varchar">,
@@ -650,483 +658,404 @@
 						<cfqueryparam value="#FORM.RoomMaxParticipants#" cfsqltype="cf_sql_integer">,
 						<cfqueryparam value="1" cfsqltype="cf_sql_integer">,
 						<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-						<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+						<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="0" cfsqltype="cf_sql_integer">
 					)
 				</cfquery>
 
-				<cfquery name="updateEventLocationInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update p_EventRegistration_Events
-					Set LocationID = <cfqueryparam value="#FORM.LocationID#" cfsqltype="cf_sql_integer">,
-						LocationRoomID = <cfqueryparam value="#FORM.LocationRoomID#" cfsqltype="cf_sql_integer">,
-						MemberCost = <cfqueryparam value="#NumberFormat(FORM.MemberCost, '9999.99')#" cfsqltype="cf_sql_float">,
-						NonMemberCost = <cfqueryparam value="#NumberFormat(FORM.NonMemberCost, '9999.99')#" cfsqltype="cf_sql_float">,
-						lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-						lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-					Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-				</cfquery>
-
-				<cfif isDefined("FORM.EventDate1")>
-					<cfif #isDate(FORM.EventDate1)# EQ 1>
-						<cfquery name="updateEventDate1" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				<cfswitch expression="#application.configbean.getDBType()#">
+					<cfcase value="mysql">
+						<cfquery name="updateEventLocationInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 							Update p_EventRegistration_Events
-							Set EventDate1 = #CreateDate(ListLast(FORM.EventDate1, "/"), ListFirst(FORM.EventDate1, "/"), ListGetAt(FORM.EventDate1, 2, "/"))#,
+							Set LocationID = <cfqueryparam value="#FORM.LocationID#" cfsqltype="cf_sql_integer">,
+								LocationRoomID = <cfqueryparam value="#FORM.LocationRoomID#" cfsqltype="cf_sql_integer">,
+								MemberCost = <cfqueryparam value="#Right(FORM.MemberCost, LEN(FORM.MemberCost) - 1)#" cfsqltype="cf_sql_money">,
+								NonMemberCost = <cfqueryparam value="#Right(FORM.NonMemberCost, LEN(FORM.NonMemberCost) - 1)#" cfsqltype="cf_sql_money">,
 								lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
 								lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
 							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
 						</cfquery>
-					</cfif>
-				</cfif>
 
-				<cfif isDefined("FORM.EventDate2")>
-					<cfif #isDate(FORM.EventDate2)# EQ 1>
-						<cfquery name="updateEventDate2" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						<cfif isDefined("FORM.EventDate1")>
+							<cfif #isDate(FORM.EventDate1)# EQ 1>
+								<cfquery name="updateEventDate1" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventDate1 = #CreateDate(ListLast(FORM.EventDate1, "/"), ListFirst(FORM.EventDate1, "/"), ListGetAt(FORM.EventDate1, 2, "/"))#,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
+
+						<cfif isDefined("FORM.EventDate2")>
+							<cfif #isDate(FORM.EventDate2)# EQ 1>
+								<cfquery name="updateEventDate2" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventDate2 = #CreateDate(ListLast(FORM.EventDate2, "/"), ListFirst(FORM.EventDate2, "/"), ListGetAt(FORM.EventDate2, 2, "/"))#,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
+
+						<cfif isDefined("FORM.EventDate3")>
+							<cfif #isDate(FORM.EventDate3)# EQ 1>
+								<cfquery name="updateEventDate3" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventDate3 = #CreateDate(ListLast(FORM.EventDate3, "/"), ListFirst(FORM.EventDate3, "/"), ListGetAt(FORM.EventDate3, 2, "/"))#,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
+
+						<cfif isDefined("FORM.EventDate4")>
+							<cfif #isDate(FORM.EventDate4)# EQ 1>
+								<cfquery name="updateEventDate4" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventDate4 = #CreateDate(ListLast(FORM.EventDate4, "/"), ListFirst(FORM.EventDate4, "/"), ListGetAt(FORM.EventDate4, 2, "/"))#,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
+
+						<cfif isDefined("FORM.EventAgenda")>
+							<cfif LEN(FORM.EventAgenda)>
+								<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventAgenda = <cfqueryparam value="#FORM.EventAgenda#" cfsqltype="cf_sql_varchar">,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
+
+						<cfif isDefined("FORM.EventTargetAudience")>
+							<cfif LEN(FORM.EventTargetAudience)>
+								<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventTargetAudience = <cfqueryparam value="#FORM.EventTargetAudience#" cfsqltype="cf_sql_varchar">,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
+
+						<cfif isDefined("FORM.EventStrategies")>
+							<cfif LEN(FORM.EventStrategies)>
+								<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventStrategies = <cfqueryparam value="#FORM.EventStrategies#" cfsqltype="cf_sql_varchar">,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
+
+						<cfif isDefined("FORM.EventSpecialInstructions")>
+							<cfif LEN(FORM.EventSpecialInstructions)>
+								<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventSpecialInstructions = <cfqueryparam value="#FORM.EventSpecialInstructions#" cfsqltype="cf_sql_varchar">,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
+
+						<cfif FORM.EventFeatured EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set Featured_StartDate = #CreateDate(ListLast(FORM.Featured_StartDate, "/"), ListFirst(FORM.Featured_StartDate, "/"), ListGetAt(FORM.Featured_StartDate, 2, "/"))#,
+									Featured_EndDate = #CreateDate(ListLast(FORM.Featured_EndDate, "/"), ListFirst(FORM.Featured_EndDate, "/"), ListGetAt(FORM.Featured_EndDate, 2, "/"))#,
+									Featured_SortOrder = <cfqueryparam value="#FORM.Featured_SortOrder#" cfsqltype="cf_sql_integer">,
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
+
+						<cfif FORM.EarlyBird_RegistrationAvailable EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set EarlyBird_RegistrationAvailable = <cfqueryparam value="#FORM.EarlyBird_RegistrationAvailable#" cfsqltype="cf_sql_bit">,
+									EarlyBird_RegistrationDeadline = #CreateDate(ListLast(FORM.EarlyBird_RegistrationDeadline, "/"), ListFirst(FORM.EarlyBird_RegistrationDeadline, "/"), ListGetAt(FORM.EarlyBird_RegistrationDeadline, 2, "/"))#,
+									EarlyBird_MemberCost = "#FORM.EarlyBird_MemberCost#",
+									EarlyBird_NonMemberCost = "#FORM.EarlyBird_NonMemberCost#",
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
+
+						<cfif FORM.ViewSpecialPricing EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set ViewSpecialPricing = <cfqueryparam value="#FORM.ViewSpecialPricing#" cfsqltype="cf_sql_bit">,
+									SpecialMemberCost = "#FORM.SpecialMemberCost#",
+									SpecialNonMemberCost = "#FORM.SpecialNonMemberCost#",
+									SpecialPriceRequirements = "#FORM.SpecialPriceRequirements#",
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
+
+						<cfif FORM.PGPAvailable EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set PGPAvailable = <cfqueryparam value="#FORM.PGPAvailable#" cfsqltype="cf_sql_bit">,
+									PGPPoints = <cfqueryparam value="#FORM.PGPPoints#" cfsqltype="cf_sql_DECIMAL">,
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
+
+						<cfif FORM.MealProvided EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set MealCost_Estimated = <cfqueryparam value="#FORM.MealCost_Estimated#" cfsqltype="CF_SQL_MONEY">,
+									MealProvidedBy = <cfqueryparam value="#FORM.MealProvidedBy#" cfsqltype="CF_SQL_INTEGER">,
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
+
+						<cfif FORM.AllowVideoConference EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set AllowVideoConference = <cfqueryparam value="#FORM.AllowVideoConference#" cfsqltype="cf_sql_bit">,
+									VideoConferenceInfo = <cfqueryparam value="#FORM.VideoConferenceInfo#" cfsqltype="CF_SQL_VARCHAR">,
+									VideoConferenceCost = <cfqueryparam value="#FORM.VideoConferenceCost#" cfsqltype="CF_SQL_MONEY">,
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
+
+						<cfif FORM.WebinarEvent EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set WebinarAvailable = <cfqueryparam value="#FORM.WebinarEvent#" cfsqltype="cf_sql_bit">,
+									WebinarConnectInfo = <cfqueryparam value="#FORM.WebinarConnectWebInfo#" cfsqltype="CF_SQL_VARCHAR">,
+									WebinarMemberCost = <cfqueryparam value="#FORM.WebinarMemberCost#" cfsqltype="CF_SQL_MONEY">,
+									WebinarNonMemberCost = <cfqueryparam value="#FORM.WebinarNonMemberCost#" cfsqltype="CF_SQL_MONEY">,
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
+					</cfcase>
+					<cfcase value="mssql">
+						<cfquery name="updateEventLocationInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 							Update p_EventRegistration_Events
-							Set EventDate2 = #CreateDate(ListLast(FORM.EventDate2, "/"), ListFirst(FORM.EventDate2, "/"), ListGetAt(FORM.EventDate2, 2, "/"))#,
+							Set LocationID = <cfqueryparam value="#FORM.LocationID#" cfsqltype="cf_sql_integer">,
+								LocationRoomID = <cfqueryparam value="#FORM.LocationRoomID#" cfsqltype="cf_sql_integer">,
+								MemberCost = <cfqueryparam value="#Right(FORM.MemberCost, LEN(FORM.MemberCost) - 1)#" cfsqltype="cf_sql_money">,
+								NonMemberCost = <cfqueryparam value="#Right(FORM.NonMemberCost, LEN(FORM.NonMemberCost) - 1)#" cfsqltype="cf_sql_money">,
 								lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
 								lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+							Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
 						</cfquery>
-					</cfif>
-				</cfif>
 
-				<cfif isDefined("FORM.EventDate3")>
-					<cfif #isDate(FORM.EventDate3)# EQ 1>
-						<cfquery name="updateEventDate3" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-							Update p_EventRegistration_Events
-							Set EventDate3 = #CreateDate(ListLast(FORM.EventDate3, "/"), ListFirst(FORM.EventDate3, "/"), ListGetAt(FORM.EventDate3, 2, "/"))#,
-								lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-								lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-						</cfquery>
-					</cfif>
-				</cfif>
+						<cfif isDefined("FORM.EventDate1")>
+							<cfif #isDate(FORM.EventDate1)# EQ 1>
+								<cfquery name="updateEventDate1" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventDate1 = #CreateDate(ListLast(FORM.EventDate1, "/"), ListFirst(FORM.EventDate1, "/"), ListGetAt(FORM.EventDate1, 2, "/"))#,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
 
-				<cfif isDefined("FORM.EventDate4")>
-					<cfif #isDate(FORM.EventDate4)# EQ 1>
-						<cfquery name="updateEventDate4" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-							Update p_EventRegistration_Events
-							Set EventDate4 = #CreateDate(ListLast(FORM.EventDate4, "/"), ListFirst(FORM.EventDate4, "/"), ListGetAt(FORM.EventDate4, 2, "/"))#,
-								lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-								lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-						</cfquery>
-					</cfif>
-				</cfif>
+						<cfif isDefined("FORM.EventDate2")>
+							<cfif #isDate(FORM.EventDate2)# EQ 1>
+								<cfquery name="updateEventDate2" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventDate2 = #CreateDate(ListLast(FORM.EventDate2, "/"), ListFirst(FORM.EventDate2, "/"), ListGetAt(FORM.EventDate2, 2, "/"))#,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
 
-				<cfif isDefined("FORM.EventAgenda")>
-					<cfif LEN(FORM.EventAgenda)>
-						<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-							Update p_EventRegistration_Events
-							Set EventAgenda = <cfqueryparam value="#FORM.EventAgenda#" cfsqltype="cf_sql_varchar">,
-								lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-								lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-						</cfquery>
-					</cfif>
-				</cfif>
+						<cfif isDefined("FORM.EventDate3")>
+							<cfif #isDate(FORM.EventDate3)# EQ 1>
+								<cfquery name="updateEventDate3" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventDate3 = #CreateDate(ListLast(FORM.EventDate3, "/"), ListFirst(FORM.EventDate3, "/"), ListGetAt(FORM.EventDate3, 2, "/"))#,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
 
-				<cfif isDefined("FORM.EventTargetAudience")>
-					<cfif LEN(FORM.EventTargetAudience)>
-						<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-							Update p_EventRegistration_Events
-							Set EventTargetAudience = <cfqueryparam value="#FORM.EventTargetAudience#" cfsqltype="cf_sql_varchar">,
-								lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-								lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-						</cfquery>
-					</cfif>
-				</cfif>
+						<cfif isDefined("FORM.EventDate4")>
+							<cfif #isDate(FORM.EventDate4)# EQ 1>
+								<cfquery name="updateEventDate4" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventDate4 = #CreateDate(ListLast(FORM.EventDate4, "/"), ListFirst(FORM.EventDate4, "/"), ListGetAt(FORM.EventDate4, 2, "/"))#,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
 
-				<cfif isDefined("FORM.EventStrategies")>
-					<cfif LEN(FORM.EventStrategies)>
-						<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-							Update p_EventRegistration_Events
-							Set EventStrategies = <cfqueryparam value="#FORM.EventStrategies#" cfsqltype="cf_sql_varchar">,
-								lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-								lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-						</cfquery>
-					</cfif>
-				</cfif>
+						<cfif isDefined("FORM.EventAgenda")>
+							<cfif LEN(FORM.EventAgenda)>
+								<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventAgenda = <cfqueryparam value="#FORM.EventAgenda#" cfsqltype="cf_sql_varchar">,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
 
-				<cfif isDefined("FORM.EventSpecialInstructions")>
-					<cfif LEN(FORM.EventSpecialInstructions)>
-						<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-							Update p_EventRegistration_Events
-							Set EventSpecialInstructions = <cfqueryparam value="#FORM.EventSpecialInstructions#" cfsqltype="cf_sql_varchar">,
-								lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-								lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-						</cfquery>
-					</cfif>
-				</cfif>
+						<cfif isDefined("FORM.EventTargetAudience")>
+							<cfif LEN(FORM.EventTargetAudience)>
+								<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventTargetAudience = <cfqueryparam value="#FORM.EventTargetAudience#" cfsqltype="cf_sql_varchar">,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
 
-				<cfif FORM.EventFeatured EQ 1>
-					<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Update p_EventRegistration_Events
-						Set Featured_StartDate = #CreateDate(ListLast(FORM.Featured_StartDate, "/"), ListFirst(FORM.Featured_StartDate, "/"), ListGetAt(FORM.Featured_StartDate, 2, "/"))#,
-							Featured_EndDate = #CreateDate(ListLast(FORM.Featured_EndDate, "/"), ListFirst(FORM.Featured_EndDate, "/"), ListGetAt(FORM.Featured_EndDate, 2, "/"))#,
-							Featured_SortOrder = <cfqueryparam value="#FORM.Featured_SortOrder#" cfsqltype="cf_sql_integer">,
-							lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-							lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-						Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-					</cfquery>
-				</cfif>
+						<cfif isDefined("FORM.EventStrategies")>
+							<cfif LEN(FORM.EventStrategies)>
+								<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventStrategies = <cfqueryparam value="#FORM.EventStrategies#" cfsqltype="cf_sql_varchar">,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
 
-				<cfif FORM.EarlyBird_RegistrationAvailable EQ 1>
-					<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Update p_EventRegistration_Events
-						Set EarlyBird_RegistrationAvailable = <cfqueryparam value="#FORM.EarlyBird_RegistrationAvailable#" cfsqltype="cf_sql_bit">,
-							EarlyBird_RegistrationDeadline = #CreateDate(ListLast(FORM.EarlyBird_RegistrationDeadline, "/"), ListFirst(FORM.EarlyBird_RegistrationDeadline, "/"), ListGetAt(FORM.EarlyBird_RegistrationDeadline, 2, "/"))#,
-							EarlyBird_MemberCost = "#FORM.EarlyBird_MemberCost#",
-							EarlyBird_NonMemberCost = "#FORM.EarlyBird_NonMemberCost#",
-							lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-							lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-						Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-					</cfquery>
-				</cfif>
+						<cfif isDefined("FORM.EventSpecialInstructions")>
+							<cfif LEN(FORM.EventSpecialInstructions)>
+								<cfquery name="updateEventAgenda" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Update p_EventRegistration_Events
+									Set EventSpecialInstructions = <cfqueryparam value="#FORM.EventSpecialInstructions#" cfsqltype="cf_sql_varchar">,
+										lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+										lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+									Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+								</cfquery>
+							</cfif>
+						</cfif>
 
-				<cfif FORM.ViewSpecialPricing EQ 1>
-					<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Update p_EventRegistration_Events
-						Set ViewSpecialPricing = <cfqueryparam value="#FORM.ViewSpecialPricing#" cfsqltype="cf_sql_bit">,
-							SpecialMemberCost = "#FORM.SpecialMemberCost#",
-							SpecialNonMemberCost = "#FORM.SpecialNonMemberCost#",
-							SpecialPriceRequirements = "#FORM.SpecialPriceRequirements#",
-							lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-							lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-						Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-					</cfquery>
-				</cfif>
+						<cfif FORM.EventFeatured EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set Featured_StartDate = #CreateDate(ListLast(FORM.Featured_StartDate, "/"), ListFirst(FORM.Featured_StartDate, "/"), ListGetAt(FORM.Featured_StartDate, 2, "/"))#,
+									Featured_EndDate = #CreateDate(ListLast(FORM.Featured_EndDate, "/"), ListFirst(FORM.Featured_EndDate, "/"), ListGetAt(FORM.Featured_EndDate, 2, "/"))#,
+									Featured_SortOrder = <cfqueryparam value="#FORM.Featured_SortOrder#" cfsqltype="cf_sql_integer">,
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
 
-				<cfif FORM.PGPAvailable EQ 1>
-					<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Update p_EventRegistration_Events
-						Set PGPAvailable = <cfqueryparam value="#FORM.PGPAvailable#" cfsqltype="cf_sql_bit">,
-							PGPPoints = <cfqueryparam value="#FORM.PGPPoints#" cfsqltype="cf_sql_DECIMAL">,
-							lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-							lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-						Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-					</cfquery>
-				</cfif>
+						<cfif FORM.EarlyBird_RegistrationAvailable EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set EarlyBird_RegistrationAvailable = <cfqueryparam value="#FORM.EarlyBird_RegistrationAvailable#" cfsqltype="cf_sql_bit">,
+									EarlyBird_RegistrationDeadline = #CreateDate(ListLast(FORM.EarlyBird_RegistrationDeadline, "/"), ListFirst(FORM.EarlyBird_RegistrationDeadline, "/"), ListGetAt(FORM.EarlyBird_RegistrationDeadline, 2, "/"))#,
+									EarlyBird_MemberCost = "#FORM.EarlyBird_MemberCost#",
+									EarlyBird_NonMemberCost = "#FORM.EarlyBird_NonMemberCost#",
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
 
-				<cfif FORM.MealProvided EQ 1>
-					<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Update p_EventRegistration_Events
-						Set MealCost_Estimated = <cfqueryparam value="#FORM.MealCost_Estimated#" cfsqltype="CF_SQL_MONEY">,
-							MealProvidedBy = <cfqueryparam value="#FORM.MealProvidedBy#" cfsqltype="CF_SQL_INTEGER">,
-							lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-							lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-						Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-					</cfquery>
-				</cfif>
+						<cfif FORM.ViewSpecialPricing EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set ViewSpecialPricing = <cfqueryparam value="#FORM.ViewSpecialPricing#" cfsqltype="cf_sql_bit">,
+									SpecialMemberCost = "#FORM.SpecialMemberCost#",
+									SpecialNonMemberCost = "#FORM.SpecialNonMemberCost#",
+									SpecialPriceRequirements = "#FORM.SpecialPriceRequirements#",
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
 
-				<cfif FORM.AllowVideoConference EQ 1>
-					<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Update p_EventRegistration_Events
-						Set AllowVideoConference = <cfqueryparam value="#FORM.AllowVideoConference#" cfsqltype="cf_sql_bit">,
-							VideoConferenceInfo = <cfqueryparam value="#FORM.VideoConferenceInfo#" cfsqltype="CF_SQL_VARCHAR">,
-							VideoConferenceCost = <cfqueryparam value="#FORM.VideoConferenceCost#" cfsqltype="CF_SQL_MONEY">,
-							lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-							lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-						Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-					</cfquery>
-				</cfif>
+						<cfif FORM.PGPAvailable EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set PGPAvailable = <cfqueryparam value="#FORM.PGPAvailable#" cfsqltype="cf_sql_bit">,
+									PGPPoints = <cfqueryparam value="#FORM.PGPPoints#" cfsqltype="cf_sql_DECIMAL">,
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
 
-				<cfif FORM.WebinarEvent EQ 1>
-					<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Update p_EventRegistration_Events
-						Set WebinarAvailable = <cfqueryparam value="#FORM.WebinarEvent#" cfsqltype="cf_sql_bit">,
-							WebinarConnectInfo = <cfqueryparam value="#FORM.WebinarConnectWebInfo#" cfsqltype="CF_SQL_VARCHAR">,
-							WebinarMemberCost = <cfqueryparam value="#FORM.WebinarMemberCost#" cfsqltype="CF_SQL_MONEY">,
-							WebinarNonMemberCost = <cfqueryparam value="#FORM.WebinarNonMemberCost#" cfsqltype="CF_SQL_MONEY">,
-							lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-							lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-						Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-					</cfquery>
-				</cfif>
+						<cfif FORM.MealProvided EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set MealCost_Estimated = <cfqueryparam value="#FORM.MealCost_Estimated#" cfsqltype="CF_SQL_MONEY">,
+									MealProvidedBy = <cfqueryparam value="#FORM.MealProvidedBy#" cfsqltype="CF_SQL_INTEGER">,
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
 
-				<cfquery name="CheckEventMultipleDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select Site_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder,
-						MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated,
-						AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Presenters, Facilitator, dateCreated, lastUpdated, lastUpdateBy, Active, EventCancelled, WebinarAvailable,
-						WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, PostedTo_Facebook, PostedTo_Twitter
-					From p_EventRegistration_Events
-					Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-				</cfquery>
-				<cfif isDate(CheckEventMultipleDates.EventDate1) or isDate(CheckEventMultipleDates.EventDate2) or isDate(CheckEventMultipleDates.EventDate3) or isDate(CheckEventMultipleDates.EventDate4) or isDate(CheckEventMultipleDates.EventDate5)>
-					<cfif isDate(CheckEventMultipleDates.EventDate1)><cfset TotalNumberDays = 2></cfif>
-					<cfif isDate(CheckEventMultipleDates.EventDate2)><cfset TotalNumberDays = 3></cfif>
-					<cfif isDate(CheckEventMultipleDates.EventDate3)><cfset TotalNumberDays = 4></cfif>
-					<cfif isDate(CheckEventMultipleDates.EventDate4)><cfset TotalNumberDays = 5></cfif>
-					<cfif isDate(CheckEventMultipleDates.EventDate5)><cfset TotalNumberDays = 6></cfif>
-					<cfif Len(CheckEventMultipleDates.ShortTitle) LTE 62>
-						<cfset NewEventTitle = #CheckEventMultipleDates.ShortTitle# & " - Day 1 of " & #Variables.TotalNumberDays#>
-					<cfelse>
-						<cfset NewEventTitle = #Left(CheckEventMultipleDates.ShortTitle, 62)# & " - Day 1 of " & #Variables.TotalNumberDays#>
-					</cfif>
-					<cfquery name="UpdateEventTitle" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Update p_EventRegistration_Events
-						Set ShortTitle = <cfqueryparam value="#Variables.NewEventTitle#" cfsqltype="CF_SQL_VARCHAR">
-						Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
-					</cfquery>
-				</cfif>
-				<cfif isDate(CheckEventMultipleDates.EventDate1)>
-					<cfif Len(CheckEventMultipleDates.ShortTitle) LTE 62>
-						<cfset NewEventTitle = #CheckEventMultipleDates.ShortTitle# & " - Day 2 of " & #Variables.TotalNumberDays#>
-					<cfelse>
-						<cfset NewEventTitle = #Left(CheckEventMultipleDates.ShortTitle, 62)# & " - Day 2 of " & #Variables.TotalNumberDays#>
-					</cfif>
+						<cfif FORM.AllowVideoConference EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set AllowVideoConference = <cfqueryparam value="#FORM.AllowVideoConference#" cfsqltype="cf_sql_bit">,
+									VideoConferenceInfo = <cfqueryparam value="#FORM.VideoConferenceInfo#" cfsqltype="CF_SQL_VARCHAR">,
+									VideoConferenceCost = <cfqueryparam value="#FORM.VideoConferenceCost#" cfsqltype="CF_SQL_MONEY">,
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
 
-					<cfquery name="InsertSecondEventDate" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Insert into p_EventRegistration_Events(Site_ID, ShortTitle, EventDate, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, EventFeatured, EarlyBird_RegistrationAvailable, ViewSpecialPricing, PGPAvailable, MealProvided, AllowVideoConference, AcceptRegistrations, Facilitator, dateCreated, MaxParticipants, Active, Featured_StartDate, Featured_EndDate, Featured_SortOrder, EarlyBird_RegistrationDeadline, MemberCost, NonMemberCost, EarlyBird_MemberCost, EarlyBird_NonMemberCost, SpecialMemberCost, SpecialNonMemberCost, MealCost_Estimated, WebinarMemberCost, WebinarNonMemberCost, VideoConferenceCost, SpecialPriceRequirements, VideoConferenceInfo, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, WebinarConnectInfo, Presenters, PGPPoints, MealProvidedBy, LocationID, LocationRoomID, EventCancelled, WebinarAvailable, PostedTo_Facebook, PostedTo_Twitter, lastUpdated, lastUpdateBy)
-						Values(
-						<cfqueryparam value="#CheckEventMultipleDates.Site_ID#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#Variables.NewEventTitle#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventDate1#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.LongDescription#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.Event_StartTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.Event_EndTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.Registration_Deadline#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Registration_BeginTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventFeatured#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_RegistrationAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.ViewSpecialPricing#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PGPAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealProvided#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.AllowVideoConference#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.AcceptRegistrations#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.Facilitator#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.dateCreated#" cfsqltype="CF_SQL_TIMESTAMP">,
-						<cfqueryparam value="#CheckEventMultipleDates.MaxParticipants#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.Active#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_StartDate#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_EndDate#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_SortOrder#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_RegistrationDeadline#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.MemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.NonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_MemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_NonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialNonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealCost_Estimated#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarNonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.VideoConferenceCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialPriceRequirements#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.VideoConferenceInfo#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventAgenda#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventTargetAudience#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventStrategies#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventSpecialInstructions#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarConnectInfo#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.Presenters#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.PGPPoints#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealProvidedBy#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.LocationID#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.LocationRoomID#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventCancelled#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PostedTo_Facebook#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PostedTo_Twitter#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.lastUpdated#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.lastUpdateBy#" cfsqltype="CF_SQL_CHAR">)
-					</cfquery>
-				</cfif>
-				<cfif isDate(CheckEventMultipleDates.EventDate2)>
-					<cfif Len(CheckEventMultipleDates.ShortTitle) LTE 62>
-						<cfset NewEventTitle = #CheckEventMultipleDates.ShortTitle# & " - Day 3 of " & #Variables.TotalNumberDays#>
-					<cfelse>
-						<cfset NewEventTitle = #Left(CheckEventMultipleDates.ShortTitle, 62)# & " - Day 3 of " & #Variables.TotalNumberDays#>
-					</cfif>
-
-					<cfquery name="InsertSecondEventDate" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Insert into p_EventRegistration_Events(Site_ID, ShortTitle, EventDate, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, EventFeatured, EarlyBird_RegistrationAvailable, ViewSpecialPricing, PGPAvailable, MealProvided, AllowVideoConference, AcceptRegistrations, Facilitator, dateCreated, MaxParticipants, Active, Featured_StartDate, Featured_EndDate, Featured_SortOrder, EarlyBird_RegistrationDeadline, MemberCost, NonMemberCost, EarlyBird_MemberCost, EarlyBird_NonMemberCost, SpecialMemberCost, SpecialNonMemberCost, MealCost_Estimated, WebinarMemberCost, WebinarNonMemberCost, VideoConferenceCost, SpecialPriceRequirements, VideoConferenceInfo, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, WebinarConnectInfo, Presenters, PGPPoints, MealProvidedBy, LocationID, LocationRoomID, EventCancelled, WebinarAvailable, PostedTo_Facebook, PostedTo_Twitter, lastUpdated, lastUpdateBy)
-						Values(
-						<cfqueryparam value="#CheckEventMultipleDates.Site_ID#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#Variables.NewEventTitle#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventDate2#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.LongDescription#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.Event_StartTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.Event_EndTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.Registration_Deadline#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Registration_BeginTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventFeatured#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_RegistrationAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.ViewSpecialPricing#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PGPAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealProvided#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.AllowVideoConference#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.AcceptRegistrations#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.Facilitator#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.dateCreated#" cfsqltype="CF_SQL_TIMESTAMP">,
-						<cfqueryparam value="#CheckEventMultipleDates.MaxParticipants#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.Active#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_StartDate#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_EndDate#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_SortOrder#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_RegistrationDeadline#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.MemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.NonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_MemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_NonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialNonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealCost_Estimated#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarNonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.VideoConferenceCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialPriceRequirements#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.VideoConferenceInfo#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventAgenda#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventTargetAudience#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventStrategies#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventSpecialInstructions#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarConnectInfo#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.Presenters#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.PGPPoints#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealProvidedBy#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.LocationID#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.LocationRoomID#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventCancelled#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PostedTo_Facebook#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PostedTo_Twitter#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.lastUpdated#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.lastUpdateBy#" cfsqltype="CF_SQL_CHAR">)
-					</cfquery>
-				</cfif>
-				<cfif isDate(CheckEventMultipleDates.EventDate3)>
-					<cfif Len(CheckEventMultipleDates.ShortTitle) LTE 62>
-						<cfset NewEventTitle = #CheckEventMultipleDates.ShortTitle# & " - Day 4 of " & #Variables.TotalNumberDays#>
-					<cfelse>
-						<cfset NewEventTitle = #Left(CheckEventMultipleDates.ShortTitle, 62)# & " - Day 4 of " & #Variables.TotalNumberDays#>
-					</cfif>
-
-					<cfquery name="InsertSecondEventDate" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Insert into p_EventRegistration_Events(Site_ID, ShortTitle, EventDate, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, EventFeatured, EarlyBird_RegistrationAvailable, ViewSpecialPricing, PGPAvailable, MealProvided, AllowVideoConference, AcceptRegistrations, Facilitator, dateCreated, MaxParticipants, Active, Featured_StartDate, Featured_EndDate, Featured_SortOrder, EarlyBird_RegistrationDeadline, MemberCost, NonMemberCost, EarlyBird_MemberCost, EarlyBird_NonMemberCost, SpecialMemberCost, SpecialNonMemberCost, MealCost_Estimated, WebinarMemberCost, WebinarNonMemberCost, VideoConferenceCost, SpecialPriceRequirements, VideoConferenceInfo, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, WebinarConnectInfo, Presenters, PGPPoints, MealProvidedBy, LocationID, LocationRoomID, EventCancelled, WebinarAvailable, PostedTo_Facebook, PostedTo_Twitter, lastUpdated, lastUpdateBy)
-						Values(
-						<cfqueryparam value="#CheckEventMultipleDates.Site_ID#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#Variables.NewEventTitle#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventDate3#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.LongDescription#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.Event_StartTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.Event_EndTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.Registration_Deadline#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Registration_BeginTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventFeatured#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_RegistrationAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.ViewSpecialPricing#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PGPAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealProvided#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.AllowVideoConference#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.AcceptRegistrations#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.Facilitator#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.dateCreated#" cfsqltype="CF_SQL_TIMESTAMP">,
-						<cfqueryparam value="#CheckEventMultipleDates.MaxParticipants#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.Active#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_StartDate#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_EndDate#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_SortOrder#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_RegistrationDeadline#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.MemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.NonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_MemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_NonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialNonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealCost_Estimated#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarNonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.VideoConferenceCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialPriceRequirements#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.VideoConferenceInfo#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventAgenda#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventTargetAudience#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventStrategies#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventSpecialInstructions#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarConnectInfo#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.Presenters#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.PGPPoints#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealProvidedBy#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.LocationID#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.LocationRoomID#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventCancelled#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PostedTo_Facebook#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PostedTo_Twitter#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.lastUpdated#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.lastUpdateBy#" cfsqltype="CF_SQL_CHAR">)
-					</cfquery>
-				</cfif>
-				<cfif isDate(CheckEventMultipleDates.EventDate4)>
-					<cfif Len(CheckEventMultipleDates.ShortTitle) LTE 62>
-						<cfset NewEventTitle = #CheckEventMultipleDates.ShortTitle# & " - Day 5 of " & #Variables.TotalNumberDays#>
-					<cfelse>
-						<cfset NewEventTitle = #Left(CheckEventMultipleDates.ShortTitle, 62)# & " - Day 5 of " & #Variables.TotalNumberDays#>
-					</cfif>
-
-					<cfquery name="InsertSecondEventDate" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Insert into p_EventRegistration_Events(Site_ID, ShortTitle, EventDate, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, EventFeatured, EarlyBird_RegistrationAvailable, ViewSpecialPricing, PGPAvailable, MealProvided, AllowVideoConference, AcceptRegistrations, Facilitator, dateCreated, MaxParticipants, Active, Featured_StartDate, Featured_EndDate, Featured_SortOrder, EarlyBird_RegistrationDeadline, MemberCost, NonMemberCost, EarlyBird_MemberCost, EarlyBird_NonMemberCost, SpecialMemberCost, SpecialNonMemberCost, MealCost_Estimated, WebinarMemberCost, WebinarNonMemberCost, VideoConferenceCost, SpecialPriceRequirements, VideoConferenceInfo, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, WebinarConnectInfo, Presenters, PGPPoints, MealProvidedBy, LocationID, LocationRoomID, EventCancelled, WebinarAvailable, PostedTo_Facebook, PostedTo_Twitter, lastUpdated, lastUpdateBy)
-						Values(
-						<cfqueryparam value="#CheckEventMultipleDates.Site_ID#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#Variables.NewEventTitle#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventDate4#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.LongDescription#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.Event_StartTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.Event_EndTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.Registration_Deadline#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Registration_BeginTime#" cfsqltype="CF_SQL_TIME">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventFeatured#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_RegistrationAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.ViewSpecialPricing#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PGPAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealProvided#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.AllowVideoConference#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.AcceptRegistrations#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.Facilitator#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.dateCreated#" cfsqltype="CF_SQL_TIMESTAMP">,
-						<cfqueryparam value="#CheckEventMultipleDates.MaxParticipants#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.Active#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_StartDate#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_EndDate#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.Featured_SortOrder#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_RegistrationDeadline#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.MemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.NonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_MemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.EarlyBird_NonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialNonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealCost_Estimated#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarNonMemberCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.VideoConferenceCost#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.SpecialPriceRequirements#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.VideoConferenceInfo#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventAgenda#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventTargetAudience#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventStrategies#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventSpecialInstructions#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarConnectInfo#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.Presenters#" cfsqltype="CF_SQL_VARCHAR">,
-						<cfqueryparam value="#CheckEventMultipleDates.PGPPoints#" cfsqltype="CF_SQL_DECIMAL">,
-						<cfqueryparam value="#CheckEventMultipleDates.MealProvidedBy#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.LocationID#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.LocationRoomID#" cfsqltype="CF_SQL_INTEGER">,
-						<cfqueryparam value="#CheckEventMultipleDates.EventCancelled#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.WebinarAvailable#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PostedTo_Facebook#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.PostedTo_Twitter#" cfsqltype="CF_SQL_BIT">,
-						<cfqueryparam value="#CheckEventMultipleDates.lastUpdated#" cfsqltype="CF_SQL_DATE">,
-						<cfqueryparam value="#CheckEventMultipleDates.lastUpdateBy#" cfsqltype="CF_SQL_CHAR">)
-					</cfquery>
-				</cfif>
+						<cfif FORM.WebinarEvent EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set WebinarAvailable = <cfqueryparam value="#FORM.WebinarEvent#" cfsqltype="cf_sql_bit">,
+									WebinarConnectInfo = <cfqueryparam value="#FORM.WebinarConnectWebInfo#" cfsqltype="CF_SQL_VARCHAR">,
+									WebinarMemberCost = <cfqueryparam value="#FORM.WebinarMemberCost#" cfsqltype="CF_SQL_MONEY">,
+									WebinarNonMemberCost = <cfqueryparam value="#FORM.WebinarNonMemberCost#" cfsqltype="CF_SQL_MONEY">,
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.IdentityCol#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
+					</cfcase>
+				</cfswitch>
 				<cfcatch type="Any">
 					<cfscript>
 						eventdate = {property="Registration_Deadline",message="Event was not added to the database due to an error: " & cfcatch.detail};
 						arrayAppend(Session.FormErrors, eventdate);
+						arrayAppend(Session.FormErrors, cfcatch);
 					</cfscript>
 					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:main.default&UserAction=EventAdded&Successful=False" addtoken="false">
 				</cfcatch>
@@ -3685,6 +3614,15 @@
 				<cfset temp = StructDelete(Session, "getSelectedRoomInfo")>
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default" addtoken="false">
 			</cfif>
+			<cfif FORM.UserAction EQ "Submit Changes">
+				<cfset temp = StructDelete(Session, "FormData")>
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cfset temp = StructDelete(Session, "getSelectedEvent")>
+				<cfset temp = StructDelete(Session, "getSelectedMealProvider")>
+				<cfset temp = StructDelete(Session, "getSelectedLocation")>
+				<cfset temp = StructDelete(Session, "getSelectedRoomInfo")>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default" addtoken="false">
+			</cfif>
 
 		</cfif>
 	</cffunction>
@@ -4119,12 +4057,24 @@
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
 		<cfif not isDefined("FORM.FormSubmit")>
-			<cfquery name="GetUpComingEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select TContent_ID, ShortTitle, EventDate, LongDescription
-				From p_EventRegistration_Events
-				Where DateDiff(Registration_Deadline, Now()) >= 1
-				Order by EventDate ASC
-			</cfquery>
+			<cfswitch expression="#application.configbean.getDBType()#">
+				<cfcase value="mysql">
+					<cfquery name="GetUpComingEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Select TContent_ID, ShortTitle, EventDate, LongDescription
+						From p_EventRegistration_Events
+						Where DateDiff("d", Registration_Deadline, Now()) >= 1
+						Order by EventDate ASC
+					</cfquery>
+				</cfcase>
+				<cfcase value="mssql">
+					<cfquery name="GetUpComingEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Select TContent_ID, ShortTitle, EventDate, LongDescription
+						From p_EventRegistration_Events
+						Where DateDiff("d", Registration_Deadline, GETUTCDATE()) >= 1
+						Order by EventDate ASC
+					</cfquery>
+				</cfcase>
+			</cfswitch>
 
 			<cfset Session.EmailMarketing = #StructNew()#>
 			<cfset Session.EmailMarketing.MasterTemplate = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/reports/EventUpcomingList.jrxml")#>

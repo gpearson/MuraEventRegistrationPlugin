@@ -2,12 +2,24 @@
 	<cffunction name="default" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
-		<cfquery name="Session.getUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select UserID, FName, LName, UserName, Company, LastLogin, LastUpdate, InActive, Created
-			From tusers
-			Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and GroupName is null and Username <> "admin"
-			Order by LName ASC, FName ASC
-		</cfquery>
+		<cfswitch expression="#application.configbean.getDBType()#">
+			<cfcase value="mysql">
+				<cfquery name="Session.getUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select UserID, FName, LName, UserName, Company, LastLogin, LastUpdate, InActive, Created
+					From tusers
+					Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and GroupName is null and Username <> "admin"
+					Order by LName ASC, FName ASC
+				</cfquery>
+			</cfcase>
+			<cfcase value="mssql">
+				<cfquery name="Session.getUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select UserID, FName, LName, UserName, Company, LastLogin, LastUpdate, InActive, Created
+					From tusers
+					Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and GroupName is null
+					Order by LName ASC, FName ASC
+				</cfquery>
+			</cfcase>
+		</cfswitch>
 	</cffunction>
 
 	<cffunction name="getAllUsers" access="remote" returnformat="json">
@@ -44,8 +56,10 @@
 			<cfelse>
 				<cfset strActive = "No">
 			</cfif>
-			<cfset arrUsers[i] = [#UserID#,#LName#,#FName#,#UserName#,#Company#,#LastLogin#,#Created#,#strActive#]>
-			<cfset i = i + 1>
+			<cfif getUsers.UserName NEQ "admin">
+				<cfset arrUsers[i] = [#UserID#,#LName#,#FName#,#UserName#,#Company#,#LastLogin#,#Created#,#strActive#]>
+				<cfset i = i + 1>
+			</cfif>
 		</cfloop>
 
 		<!--- Calculate the Total Number of Pages for your records. --->
@@ -229,6 +243,13 @@
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
 		<cfif not isDefined("FORM.formSubmit")>
+			<cfquery name="Session.getEventGroups" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select UserID, GroupName
+				From tusers
+				Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and InActive = <cfqueryparam cfsqltype="cf_sql_bit" value="0"> and
+					GroupName Like <cfqueryparam cfsqltype="cf_sql_varchar" value="%Event%">
+				Order by GroupName ASC
+			</cfquery>
 
 		<cfelseif isDefined("FORM.formSubmit")>
 			<cflock timeout="60" scope="Session" type="Exclusive">
