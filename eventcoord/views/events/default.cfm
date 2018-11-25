@@ -21,6 +21,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfif isDefined("URL.UserAction")>
 				<div class="panel-body">
 					<cfswitch expression="#URL.UserAction#">
+						<cfcase value="EmailUpComingEvents">
+							<cfif isDefined("URL.Successful")>
+								<cfif URL.Successful EQ "true">
+									<div class="alert alert-success"><p>You have successfully sent an email with the PDF Attachment of all upcoming events currently active in the system. Depending on the number of participants, this process can take a few minutes before the email shows up in the user's inbox.</p></div>
+								</cfif>
+							</cfif>
+						</cfcase>
 						<cfcase value="SentPGPCertificates">
 							<cfif isDefined("URL.Successful")>
 								<cfif URL.Successful EQ "true">
@@ -207,4 +214,5 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</table>
 		</div>
 	</div>
+	<cfdump var="#Application.configBean.getPluginManager()#">
 </cfoutput>

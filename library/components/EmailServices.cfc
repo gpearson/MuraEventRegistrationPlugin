@@ -407,6 +407,25 @@
 		<cfinclude template="EmailTemplates/SendEventPGPCertificateToIndividual.cfm">
 	</cffunction>
 
+	<cffunction name="SendEmailWithUpComingEventListing" returntype="Any" Output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="UserID" type="String" Required="True">
+
+		<cfquery name="getUserAccount" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select Fname, Lname, UserName, Email, created
+			From tusers
+			Where UserID = <cfqueryparam value="#Arguments.UserID#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+
+		<cfif getUserAccount.RecordCount GTE 1>
+			<cfinclude template="EmailTemplates/SendEmailToUserWithUpComingEventListing.cfm">
+		<cfelse>
+			<cfinclude template="EmailTemplates/SendEmailToMailingListsWithUpComingEventListing.cfm">
+		</cfif>
+
+
+	</cffunction>
+
 
 
 
