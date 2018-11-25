@@ -1,0 +1,16 @@
+/* fallbacks */
+			.no-cssgradients subnav, .no-js subnav { padding-bottom:4px; border:none; color:##FFFFFF; font:16px Tahoma, Sans-serif; background:url(/plugins/EventRegistration/common/images/navbar/navBG.gif) repeat-x 0 0; }
+			.no-borderradius subnav ul, .no-js subnav ul { background:url(/plugins/EventRegistration/common/images/navbar/navRight.gif) no-repeat 100% 0; }
+			.no-borderradius subnav ul ul, .no-js subnav ul ul { background:none; }
+			.no-borderradius subnav li, .no-js subnav li { height:44px;  }
+			.no-cssgradients subnav li:hover, .no-js subnav li:hover { background:url(/plugins/EventRegistration/common/images/navbar/navOverBG.gif) repeat-x 0 0; }
+			.no-borderradius subnav li li, .no-js subnav li li { height:auto; width:98%; left:-2px; }
+			.no-borderradius subnav li:first-child, .no-js nav li:first-child { background:url(/plugins/EventRegistration/common/images/navbar/navLeft.gif) no-repeat 0 0; }
+			.no-borderradius subnav li:first-child:hover, .no-js nav li:first-child:hover { background:url(/plugins/EventRegistration/common/images/navbar/navOverLeft.gif) no-repeat 0 0; }
+			.no-borderradius subnav li li:first-child, .no-js nav li li:first-child { background:none; }
+			.no-rgba subnav ul ul, .no-js subnav ul ul { left:1px; padding-left:2px; background:url(/plugins/EventRegistration/common/images/navbar/subnavBG.png) no-repeat 100% 100%; }
+			.no-rgba subnav ul ul a, .no-js subnav ul ul a { left:3px; }
+			.no-rgba subnav ul ul a:hover { background:url(/plugins/EventRegistration/common/images/navbar/subOverBG.png) repeat 0 0; }
+			.no-csstransforms ul a span { height:7px; width:12px; margin-top:8px; text-indent:-5000px; overflow:hidden; background:url(/plugins/EventRegistration/common/images/navbar/indicator.png) no-repeat 0 0; }
+			.no-borderradius ul ul li.last { margin-bottom:10px; }
+			.no-cssgradients.boxshadow subnav { box-shadow:none; }			
