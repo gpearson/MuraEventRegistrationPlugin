@@ -100,7 +100,7 @@
 						</td>
 						</tr>
 					</cfif>
-					<cfif Session.EventInfo.SelectedEvent.WebinarAvailable EQ 0 and Session.EventInfo.EventFacility.RecordCount NEQ 0 OR LEN(Session.EventInfo.SelectedEvent.WebinarAvailable) EQ 0 and Session.EventInfo.EventFacility.RecordCount NEQ 0>
+					<cfif Session.EventInfo.EventFacility.RecordCount NEQ 0>
 						<tr>
 						<td style="width: 141px;" colspan="4">
 						<table class="art-article" style="width:100%;">

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2016-09-07T07:54:41 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NewInvoice" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b2892e6f-9350-4cb4-9d4e-3c59d7c55fb2">
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="EventDateDisplay" class="java.lang.String"/>
+	<field name="ShortTitle" class="java.lang.String"/>
+	<field name="InvoiceDate" class="java.lang.String"/>
+	<field name="EventID" class="java.lang.Number"/>
+	<field name="Domain" class="java.lang.String"/>
+	<field name="OrganizationName" class="java.lang.String"/>
+	<field name="Mailing_Address" class="java.lang.String"/>
+	<field name="Mailing_City" class="java.lang.String"/>
+	<field name="Mailing_State" class="java.lang.String"/>
+	<field name="Mailing_ZipCode" class="java.lang.String"/>
+	<field name="ImagePath" class="java.lang.String"/>
+	<field name="AttendeePriceDisplay" class="java.lang.String"/>
+	<field name="Email" class="java.lang.String"/>
+	<field name="FName" class="java.lang.String"/>
+	<field name="LName" class="java.lang.String"/>
+	<field name="AttendeePrice" class="java.lang.Number"/>
+	<field name="StartPage" class="java.lang.Number"/>
+	<field name="StopPage" class="java.lang.Number"/>
+	<variable name="AttendeePrice1" class="java.lang.Number" resetType="Group" resetGroup="ParticipantsByDistrict" calculation="Sum">
+		<variableExpression><![CDATA[$F{AttendeePrice}]]></variableExpression>
+	</variable>
+	<variable name="Variable_StartPage" class="java.lang.Number" resetType="Group" resetGroup="ParticipantsByDistrict" incrementType="Page" calculation="Sum">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
+	<variable name="Variable_StopPage" class="java.lang.Number" resetType="Group" resetGroup="ParticipantsByDistrict" incrementType="Page" calculation="Sum">
+		<variableExpression><![CDATA[$V{Variable_StartPage}]]></variableExpression>
+	</variable>
+	<group name="ParticipantsByDistrict" isStartNewPage="true" isResetPageNumber="true">
+		<groupExpression><![CDATA[$F{Domain}]]></groupExpression>
+		<groupHeader>
+			<band height="88">
+				<staticText>
+					<reportElement x="0" y="-53" width="84" height="25" uuid="a389f7ac-8bdf-43fb-9a07-57e156dd9e3a">
+						<property name="local_mesure_unitheight" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Bill to:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="-28" width="160" height="15" uuid="5961e1f6-3713-46be-a266-fd0656a56be7">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{OrganizationName}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="-12" width="160" height="15" uuid="f8e22cb5-3e36-4feb-80de-c267b716d73b">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{Mailing_Address}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="3" width="160" height="15" uuid="eaaeb2ba-c8f7-402b-92fb-9a3f5e607670">
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{Mailing_City} + " " + $F{Mailing_State} + " "  + $F{Mailing_ZipCode}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="404" y="-28" width="50" height="20" uuid="7d584df0-1301-4c7b-bb31-8603c8b4b952"/>
+					<box rightPadding="4"/>
+					<textElement textAlignment="Right"/>
+					<text><![CDATA[Date:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="459" y="-28" width="100" height="20" uuid="2fa3e1dd-1b2f-4c0d-aa14-01c3003c7d95"/>
+					<textFieldExpression><![CDATA[$F{InvoiceDate}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="459" y="-7" width="100" height="20" uuid="2a3606fb-d6cf-41cb-ac1d-70e5166652b6"/>
+					<textFieldExpression><![CDATA[$F{EventID}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="404" y="-7" width="50" height="20" uuid="d95f9ea4-ecd7-4726-af44-cf3e3912d36f"/>
+					<box rightPadding="4"/>
+					<textElement textAlignment="Right"/>
+					<text><![CDATA[Event ID:]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="20" width="580" height="1" uuid="065120c8-d3d7-44eb-9086-fa2b27795147">
+						<property name="local_mesure_unitheight" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+				</line>
+				<textField>
+					<reportElement x="0" y="22" width="580" height="30" uuid="a1665cd4-5416-4bf0-a0f0-0d6c97a05a4a"/>
+					<textElement textAlignment="Left">
+						<font size="19" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{EventDateDisplay} + " - " + $F{ShortTitle}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="20" y="66" width="150" height="20" uuid="282744d4-b35e-476e-807c-b45e38aee3a0"/>
+					<textElement>
+						<font size="14" isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[Participant's Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="175" y="66" width="271" height="20" uuid="59134d3a-02c2-4c0a-9184-d93d27639f0e"/>
+					<textElement>
+						<font size="14" isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[Email]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="489" y="66" width="90" height="20" uuid="2ff25002-1bc4-4a6f-a4a0-180535c35a64"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="true" isUnderline="true"/>
+					</textElement>
+					<text><![CDATA[Event Cost]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="49">
+				<staticText>
+					<reportElement x="350" y="10" width="100" height="30" uuid="762e6e9d-092a-4786-960c-bd9de3b3baa9"/>
+					<textElement textAlignment="Right">
+						<font size="19" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total Due:]]></text>
+				</staticText>
+				<textField pattern="¤#,##0.00;¤-#,##0.00">
+					<reportElement x="459" y="10" width="118" height="30" forecolor="#FF0400" uuid="5999e8b6-74c1-4367-8e9a-5847af002ca4"/>
+					<textElement textAlignment="Right">
+						<font size="19" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{AttendeePrice1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="166" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="80" width="573" height="33" uuid="eab8a5d2-1fe5-47d3-ac44-d268fce65ee1"/>
+				<textElement textAlignment="Center">
+					<font size="25" isBold="true"/>
+				</textElement>
+				<text><![CDATA[I N V O I C E]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="79" width="572" height="1" uuid="8bca750e-a421-4339-a05f-bfddf18c92e9">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+				</reportElement>
+			</line>
+			<image scaleImage="RetainShape" evaluationTime="Report">
+				<reportElement x="470" y="0" width="113" height="110" uuid="09d8228e-3344-4988-8dae-789c9ad2e532"/>
+				<imageExpression><![CDATA[$F{ImagePath}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="1" y="50" width="205" height="30" uuid="26860211-176f-4f25-b2f9-b5f18730ac83"/>
+				<text><![CDATA[574-254-0111 
+www.niesc.k12.in.us]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="35" width="205" height="15" uuid="9892215c-d3f9-4902-a939-14fa00159144"/>
+				<text><![CDATA[Mishawaka, IN 46545]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="205" height="15" uuid="940965c5-a3f1-4ebf-a1a9-d54da2ea05cc"/>
+				<text><![CDATA[56535 Magnetic Drive]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="325" height="20" uuid="5d4f9bf2-e593-4292-a8f1-2908fa3299ae">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Northern Indiana Educational Service Center]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="36" splitType="Stretch">
+			<textField>
+				<reportElement x="20" y="6" width="183" height="20" uuid="d492f10a-e19f-4bbe-95f3-8e8f31f7047d"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FName} + " " + $F{LName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="175" y="6" width="280" height="20" uuid="bc05b43b-29eb-40e5-9ef7-2550c893c82a"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Email}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="498" y="6" width="80" height="20" uuid="c105453b-71f7-4c26-9c34-60b07d5254f3"/>
+				<textElement textAlignment="Right">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AttendeePriceDisplay}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="14" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="48" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" mode="Opaque" x="0" y="0" width="578" height="30" backcolor="#E6E8E9" uuid="9d3ece8f-589e-4f88-bf20-197637968b0e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Serif" size="9" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[THANK YOU FOR YOUR BUSINESS]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="13" splitType="Stretch"/>
+	</summary>
+</jasperReport>

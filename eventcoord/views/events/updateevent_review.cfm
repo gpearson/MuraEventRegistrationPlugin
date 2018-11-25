@@ -95,11 +95,11 @@
 					<cfif Session.getSelectedEvent.EventFeatured EQ 1>
 						<div class="form-group">
 						<label for="Featured_StateDate" class="control-label col-sm-3">Start Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.Featured_StartDate#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#DateFormat(Session.getSelectedEvent.Featured_StartDate, 'mm/dd/yyyy')#</p></div>
 						</div>
 						<div class="form-group">
 						<label for="Featured_EndDate" class="control-label col-sm-3">End Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.Featured_EndDate#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#DateFormat(Session.getSelectedEvent.Featured_EndDate, 'mm/dd/yyyy')#</p></div>
 						</div>
 						<div class="form-group">
 						<label for="Featured_SortOrder" class="control-label col-sm-3">Sort Order:&nbsp;</label>
@@ -124,8 +124,8 @@
 					</div>
 					<cfif Session.getSelectedEvent.EarlyBird_RegistrationAvailable EQ 1>
 						<div class="form-group">
-						<label for="EarlyBird_RegistrationDeadline" class="control-label col-sm-3">NonMember Price:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#DateFormat(Session.getSelectedEvent.EarlyBird_RegistrationDeadline, "full")#</p></div>
+						<label for="EarlyBird_RegistrationDeadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#DateFormat(Session.getSelectedEvent.EarlyBird_RegistrationDeadline, 'mm/dd/yyyy')#</p></div>
 						</div>
 						<div class="form-group">
 						<label for="EarlyBird_MemberCost" class="control-label col-sm-3">NonMember Price:&nbsp;</label>
