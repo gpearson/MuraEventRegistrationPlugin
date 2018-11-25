@@ -57,7 +57,7 @@
 				</cfif>
 			</cfif>
 			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
-			<cfset temp = #SendEmailCFC.SendCommentInquiryToAdministrators(rc, Session.FormData)#>
+			<cfset temp = #SendEmailCFC.SendCommentFormToAdmin(rc, Session.FormData)#>
 			<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:contactus.default&SentInquiry=true">
 		</cfif>
 	</cffunction>

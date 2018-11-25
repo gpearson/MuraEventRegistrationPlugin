@@ -1,100 +1,137 @@
-<cfimport taglib="/plugins/EventRegistration/library/uniForm/tags/" prefix="uForm">
-<cfif not isDefined("URL.UserRegistrationSuccessfull")>
-	<cflock timeout="60" scope="SESSION" type="Exclusive">
-		<cfset Session.FormData = #StructNew()#>
-		<cfset Session.FormErrors = #ArrayNew()#>
-		<cfset Session.UserRegistrationInfo = #StructNew()#>
-	</cflock>
-	<cfquery name="getSchoolDistricts" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		Select OrganizationName, StateDOE_IDNumber
-		From eMembership
-		Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-		Order by OrganizationName
-	</cfquery>
-
+<cfif not isDefined("URL.FormRetry")>
 	<cfoutput>
-		<div class="art-block clearfix">
-			<div class="art-blockheader">
-				<h3 class="t">Register New User Account</h3>
+		<cfset captcha = #Session.Captcha#>
+		<cfset captchaHash = Hash(captcha)>
+		<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
+			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+			<cfinput type="hidden" name="CaptchaEncrypted" value="#Variables.CaptchaHash#">
+			<cfinput type="hidden" name="InActive" value="1">
+			<cfinput type="hidden" name="HumanValidation" value="#Variables.Captcha#">
+			<cfinput type="hidden" name="formSubmit" value="true">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h1>Register New User Account</h1></div>
+				<div class="panel-body">
+					<div class="well">Please complete the following information to register for a user account on this event registration system. All electric communications from this system will be sent to the email address you provide. Any certificates that will be generated upon successfull completion of an event that issues certificates will use the information on this screen. Please make sure the information listed below is correct.</div>
+					<div class="panel-heading"><h2>Your Information</h2></div>
+					<div class="form-group">
+						<label for="YourFirstName" class="control-label col-sm-3">First Name:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="fName" name="fName" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="YourLastName" class="control-label col-sm-3">Last Name:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="lName" name="lName" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="YourEmail" class="control-label col-sm-3">Email Address:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="UserName" name="UserName" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="YourDesiredPassword" class="control-label col-sm-3">Desired Password:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="password" class="form-control" id="Password" name="Password" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="VerifyDesiredPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" required="yes"></div>
+					</div>
+					<div class="panel-heading"><h2>Optional Information</h2></div>
+					<div class="form-group">
+						<label for="SchoolDistrict" class="control-label col-sm-3">School District:&nbsp;</label>
+						<div class="col-sm-6">
+							<cfselect name="Company" class="form-control" Required="Yes" Multiple="No" query="Session.getSchoolDistricts" value="StateDOE_IDNumber" Display="OrganizationName"  queryposition="below">
+								<option value="0000">Corporate Business</option>
+								<option value="0001">School District Not Listed</option>
+							</cfselect>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="alert alert-warning" role="alert">Enter a phone number that you will answer in the event that an event or workshop will be registered for that you will be able to receive emergency information about the event or workshop like it is cancelled due to mother nature.</div>
+						<label for="ContactNumber" class="control-label col-sm-3">Phone Number:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" required="no"></div>
+					</div>
+					<div class="panel-heading"><h2>Human Checker</h2></div>
+					<div class="form-group">
+						<label for="HumanChecker" class="control-label col-sm-3">Enter Text:&nbsp;</label>
+						<div class="col-sm-6">
+							<cfimage action="captcha" difficulty="medium" text="#captcha#" fonts="arial,times roman, tahoma" height="150" width="500" /><br>
+							<cfinput name="ValidateCaptcha" type="text" required="yes" message="Input Captcha Text" />
+						</div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<cfinput type="Submit" name="RegisterAccount" class="btn btn-primary pull-right" value="Register Account"><br /><br />
+				</div>
 			</div>
-			<div class="art-blockcontent"><p class="alert-box notice">Please complete the following information to register for a user account on this event registration system. All electric communications from this system will be sent to the email address you provide. Any certificates that will be generated upon successfull completion of an event that issues certificates will use the information on this screen. Please make sure the information listed below is correct.</p>
-				<hr>
-				<uForm:form action="" method="Post" id="RegisterUser" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
-					showCancel="no" cancelValue="<--- Return to Available Events" cancelName="cancelButton" cancelAction="/index.cfm"
-					submitValue="Create User Account" loadValidation="true" loadMaskUI="true" loadDateUI="true" loadTimeUI="true">
-						<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-						<input type="hidden" name="InActive" valule="1">
-						<input type="hidden" name="formSubmit" value="true">
-					<uForm:fieldset legend="User Account Fields">
-						<uForm:field label="Your First Name" name="fName" isRequired="true" isDisabled="false" maxFieldLength="50" type="text" hint="Your First Name as you would like printed on certificates" />
-						<uForm:field label="Your Last Name" name="lName" isRequired="true" isDisabled="false" maxFieldLength="50" type="text" hint="Your Last Name as you would like printed on certificates" />
-						<uForm:field label="Your Email Address" name="UserName" isRequired="true" isDisabled="false" maxFieldLength="50" type="text" hint="Your Primary Email Address" />
-						<uForm:field label="Your Desired Password" name="Password" isRequired="true" isDisabled="false" maxFieldLength="50" type="password" hint="The Password for this site" />
-						<uForm:field label="Confirm Desired Password" name="VerifyPassword" isRequired="true" isDisabled="false" maxFieldLength="50" type="password" hint="Confirm Password for Site" />
-					</uForm:fieldset>
-					<uForm:fieldset legend="Optional Fields">
-						<uform:field label="School District" name="Company" type="select" hint="School District employeed at?">
-							<uform:option display="Corporate Business" value="0000" isSelected="true" />
-							<uform:option display="School District Not Listed" value="0001"  />
-							<cfloop query="getSchoolDistricts">
-								<uform:option display="#getSchoolDistricts.OrganizationName#" value="#getSchoolDistricts.StateDOE_IDNumber#" />
-							</cfloop>
-						</uform:field>
-						<uForm:field label="Phone Number" name="mobilePhone" type="text" maxFieldLength="14" mask="(999) 999-9999" hint="Your contact number in case of cancellation of event" />
-					</uForm:fieldset>
-				</uForm:form>
-			</div>
-		</div>
+		</cfform>
 	</cfoutput>
-<cfelseif isDefined("URL.UserRegistrationSuccessfull")>
-	<cfquery name="getSchoolDistricts" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		Select OrganizationName, StateDOE_IDNumber
-		From eMembership
-		Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-		Order by OrganizationName
-	</cfquery>
-
+<cfelseif isDefined("URL.FormRetry")>
 	<cfoutput>
-		<div class="art-block clearfix">
-			<div class="art-blockheader">
-				<h3 class="t">Register New User Account</h3>
+		<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
+			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+			<cfinput type="hidden" name="CaptchaEncrypted" value="#Session.FormData.CaptchaEncrypted#">
+			<cfinput type="hidden" name="HumanValidation" value="#Session.FormData.HumanValidation#">
+			<cfinput type="hidden" name="InActive" value="1">
+			<cfinput type="hidden" name="formSubmit" value="true">
+			<div class="panel panel-default">
+				<div class="panel-heading"><h1>Register New User Account</h1></div>
+				<div class="panel-body">
+					<cfif isDefined("Session.FormErrors")>
+						<div class="panel-body">
+							<cfif ArrayLen(Session.FormErrors) GTE 1>
+								<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
+							</cfif>
+						</div>
+						<br />
+					</cfif>
+					<div class="well">Please complete the following information to register for a user account on this event registration system. All electric communications from this system will be sent to the email address you provide. Any certificates that will be generated upon successfull completion of an event that issues certificates will use the information on this screen. Please make sure the information listed below is correct.</div>
+					<div class="panel-heading"><h2>Your Information</h2></div>
+					<div class="form-group">
+						<label for="YourFirstName" class="control-label col-sm-3">First Name:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" value="#Session.FormData.fName#" id="fName" name="fName" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="YourLastName" class="control-label col-sm-3">Last Name:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" value="#Session.FormData.lName#" id="lName" name="lName" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="YourEmail" class="control-label col-sm-3">Email Address:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" value="#Session.FormData.UserName#" id="UserName" name="UserName" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="YourDesiredPassword" class="control-label col-sm-3">Desired Password:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="password" class="form-control" value="#Session.FormData.Password#" id="Password" name="Password" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="VerifyDesiredPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="password" class="form-control" value="#Session.FormData.VerifyPassword#" id="VerifyPassword" name="VerifyPassword" required="yes"></div>
+					</div>
+					<div class="panel-heading"><h2>Optional Information</h2></div>
+					<div class="form-group">
+						<label for="SchoolDistrict" class="control-label col-sm-3">School District:&nbsp;</label>
+						<div class="col-sm-6">
+							<cfselect name="Company" class="form-control" Required="Yes" Multiple="No" selected="#Session.FormData.Company#" query="Session.getSchoolDistricts" value="StateDOE_IDNumber" Display="OrganizationName"  queryposition="below">
+								<option value="0000">Corporate Business</option>
+								<option value="0001">School District Not Listed</option>
+							</cfselect>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="alert alert-warning" role="alert">Enter a phone number that you will answer in the event that an event or workshop will be registered for that you will be able to receive emergency information about the event or workshop like it is cancelled due to mother nature.</div>
+						<label for="ContactNumber" class="control-label col-sm-3">Phone Number:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" value="#Session.FormData.mobilePhone#" id="mobilePhone" name="mobilePhone" required="no"></div>
+					</div>
+					<div class="panel-heading"><h2>Human Checker</h2></div>
+					<div class="form-group">
+						<label for="HumanChecker" class="control-label col-sm-3">Enter Text:&nbsp;</label>
+						<div class="col-sm-6">
+							<cfimage action="captcha" difficulty="medium" text="#Session.FormData.HumanValidation#" fonts="arial,times roman, tahoma" height="150" width="500" /><br>
+							<cfinput name="ValidateCaptcha" type="text" required="yes" message="Input Captcha Text" />
+						</div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<cfinput type="Submit" name="RegisterAccount" class="btn btn-primary pull-right" value="Register Account"><br /><br />
+				</div>
 			</div>
-			<div class="art-blockcontent"><p class="alert-box notice">Please complete the following information to register for a user account on this event registration system. All electric communications from this system will be sent to the email address you provide. Any certificates that will be generated upon successfull completion of an event that issues certificates will use the information on this screen. Please make sure the information listed below is correct.</p>
-				<hr>
-				<uForm:form action="" method="Post" id="RegisterUser" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/properties/uniForm/"
-					showCancel="no" cancelValue="<--- Return to Available Events" cancelName="cancelButton" cancelAction="/index.cfm"
-					submitValue="Create User Account" loadValidation="true" loadMaskUI="true" loadDateUI="true" loadTimeUI="true">
-						<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-						<input type="hidden" name="InActive" valule="1">
-						<input type="hidden" name="formSubmit" value="true">
-						<uForm:fieldset legend="User Account Fields">
-							<uForm:field label="Your First Name" name="fName" isRequired="true" isDisabled="false" value="#Session.FormData.fName#" maxFieldLength="50" type="text" hint="Your First Name as you would like printed on certificates" />
-							<uForm:field label="Your Last Name" name="lName" isRequired="true" isDisabled="false" value="#Session.FormData.lName#" maxFieldLength="50" type="text" hint="Your Last Name as you would like printed on certificates" />
-							<uForm:field label="Your Email Address" name="UserName" isRequired="true" isDisabled="false" value="#Session.FormData.UserName#" maxFieldLength="50" type="text" hint="Your Primary Email Address" />
-							<uForm:field label="Your Desired Password" name="Password" isRequired="true" isDisabled="false" value="#Session.FormData.Password#" maxFieldLength="50" type="password" hint="The Password for this site" />
-							<uForm:field label="Confirm Desired Password" name="VerifyPassword" isRequired="true" isDisabled="false" value="#Session.FormData.VerifyPassword#" maxFieldLength="50" type="password" hint="Confirm Password for Site" />
-						</uForm:fieldset>
-						<uForm:fieldset legend="Optional Fields">
-							<uform:field label="School District" name="Company" type="select" hint="School District employeed at?">
-								<cfif Session.FormData.Company eq "0000">
-									<uform:option display="Corporate Business" value="0000" isSelected="true" />
-								<cfelse>
-									<uform:option display="Corporate Business" value="0000" />
-								</cfif>
-								<cfif Session.FormData.Company eq "0001">
-									<uform:option display="School District Not Listed" value="0001" isSelected="true" />
-								<cfelse>
-									<uform:option display="School District Not Listed" value="0001" />
-								</cfif>
-								<cfloop query="getSchoolDistricts">
-									<uform:option display="#getSchoolDistricts.OrganizationName#" value="#getSchoolDistricts.StateDOE_IDNumber#" />
-								</cfloop>
-							</uform:field>
-							<uForm:field label="Phone Number" name="mobilePhone" type="text" maxFieldLength="14" mask="(999) 999-9999" value="#Session.FOrmData.mobilePhone#" hint="Your contact number in case of cancellation of event" />
-							<uform:field name="HumanChecker" isRequired="true" label="Please enter the characters you see below" type="captcha" captchaWidth="800" captchaMinChars="5" captchaMaxChars="8" />
-						</uForm:fieldset>
-				</uForm:form>
-			</div>
-		</div>
+		</cfform>
 	</cfoutput>
 </cfif>

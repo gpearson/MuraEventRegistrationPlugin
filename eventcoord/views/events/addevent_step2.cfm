@@ -9,11 +9,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 --->
 </cfsilent>
-<cfimport taglib="/plugins/EventRegistration/library/uniForm/tags/" prefix="uForm">
-<cflock timeout="60" scope="SESSION" type="Exclusive">
-	<cfset Session.FormData = #StructNew()#>
-	<cfif not isDefined("Session.FormErrors")><cfset Session.FormErrors = #ArrayNew()#></cfif>
-</cflock>
 <cfoutput>
 	<script>
 		$(function() {
@@ -21,246 +16,364 @@ http://www.apache.org/licenses/LICENSE-2.0
 			$("##EventDate2").datepicker();
 			$("##EventDate3").datepicker();
 			$("##EventDate4").datepicker();
-			$("##EventDate5").datepicker();
+			$("##Featured_StartDate").datepicker();
+			$("##Featured_EndDate").datepicker();
+			$("##EarlyBird_RegistrationDeadline").datepicker();
 		});
 	</script>
-	<div class="art-block clearfix">
-		<div class="art-blockheader">
-			<h3 class="t">Add new Event or Workshop</h3>
-		</div>
-		<div class="art-blockcontent">
-			<div class="alert-box notice">This is Step 2 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
-			<hr>
-			<uForm:form action="" method="Post" id="AddEvent"  errorMessagePlacement="both"
-			commonassetsPath="/plugins/EventRegistration/library/uniForm/" showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton"
-			cancelAction="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent&compactDisplay=false"
-			submitValue="Proceed To Step 3" loadValidation="true" loadMaskUI="true" loadDateUI="false"
-			loadTimeUI="false">
-			<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-			<input type="hidden" name="formSubmit" value="true">
-			<input type="hidden" name="AcceptRegistrations" value="0">
-			<input type="hidden" name="PerformAction" value="Step3">
-			<cfif Session.UserSuppliedInfo.EventSpanDates EQ 1>
-				<uForm:fieldset legend="Event Additional Date(s)">
-					<cfif isDefined("Session.UserSuppliedInfo.EventDate1")>
-						<uform:field label="Additional Event Date" name="EventDate1" isRequired="true" value="#Session.UserSuppliedInfo.EventDate1#" type="date" inputClass="date" hint="Date of Event, Second Date if event has multiple dates." />
-					<cfelse>
-						<uform:field label="Additional Event Date" name="EventDate1" isRequired="true" type="date" inputClass="date" hint="Date of Event, Second Date if event has multiple dates." />
-					</cfif>
-					<cfif isDefined("Session.UserSuppliedInfo.EventDate2")>
-						<uform:field label="Additional Event Date" name="EventDate2" isRequired="false" value="#Session.UserSuppliedInfo.EventDate2#" type="date" inputClass="date" hint="Date of Event, Third Date if event has multiple dates." />
-					<cfelse>
-						<uform:field label="Additional Event Date" name="EventDate2" isRequired="false" type="date" inputClass="date" hint="Date of Event, Third Date if event has multiple dates." />
-					</cfif>
-					<cfif isDefined("Session.UserSuppliedInfo.EventDate3")>
-						<uform:field label="Additional Event Date" name="EventDate3" isRequired="false" value="#Session.UserSuppliedInfo.EventDate3#" type="date" inputClass="date" hint="Date of Event, Fourth Date if event has multiple dates." />
-					<cfelse>
-						<uform:field label="Additional Event Date" name="EventDate3" isRequired="false" type="date" inputClass="date" hint="Date of Event, Fourth Date if event has multiple dates." />
-					</cfif>
-					<cfif isDefined("Session.UserSuppliedInfo.EventDate4")>
-						<uform:field label="Additional Event Date" name="EventDate4" isRequired="false" value="#Session.UserSuppliedInfo.EventDate4#" type="date" inputClass="date" hint="Date of Event, Fifth Date if event has multiple dates." />
-					<cfelse>
-						<uform:field label="Additional Event Date" name="EventDate4" isRequired="false" type="date" inputClass="date" hint="Date of Event, Fifth Date if event has multiple dates." />
-					</cfif>
-					<cfif isDefined("Session.UserSuppliedInfo.EventDate5")>
-						<uform:field label="Additional Event Date" name="EventDate5" isRequired="false" value="#Session.UserSuppliedInfo.EventDate5#" type="date" inputClass="date" hint="Date of Event, Sixth Date if event has multiple dates." />
-					<cfelse>
-						<uform:field label="Additional Event Date" name="EventDate5" isRequired="false" type="date" inputClass="date" hint="Date of Event, Sixth Date if event has multiple dates." />
-					</cfif>
-				</uForm:fieldset>
-			</cfif>
+	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency-1.4.0.js"></script>
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrnecy.all.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function()
+			{
+				$('##MemberCost').blur(function() {
+					$('##MemberCost').formatCurrency();
+				});
 
-			<uForm:fieldset legend="Event Details">
-				<cfif isDefined("Session.UserSuppliedInfo.EventAgenda")>
-					<uform:field label="Event Agenda" name="EventAgenda" isRequired="false" value="#Session.UserSuppliedInfo.EventAgenda#" type="textarea" hint="The Agenda if avaialble for this event." />
-				<cfelse>
-					<uform:field label="Event Agenda" name="EventAgenda" isRequired="false" type="textarea" hint="The Agenda if avaialble for this event." />
-				</cfif>
-				<cfif isDefined("Session.UserSuppliedInfo.EventAgenda")>
-					<uform:field label="Event Target Audience" name="EventTargetAudience" value="#Session.UserSuppliedInfo.EventTargetAudience#" isRequired="false" type="textarea" hint="The Target Audience for this event. Who should come to this event" />
-				<cfelse>
-					<uform:field label="Event Target Audience" name="EventTargetAudience" isRequired="false" type="textarea" hint="The Target Audience for this event. Who should come to this event" />
-				</cfif>
-				<cfif isDefined("Session.UserSuppliedInfo.EventStrategies")>
-					<uform:field label="Event Strategies" name="EventStrategies" isRequired="false" value="#Session.UserSuppliedInfo.EventStrategies#" type="textarea" hint="The Strategies of this event, if any." />
-				<cfelse>
-					<uform:field label="Event Strategies" name="EventStrategies" isRequired="false" type="textarea" hint="The Strategies of this event, if any." />
-				</cfif>
-				<cfif isDefined("Session.UserSuppliedInfo.EventSpecialInstructions")>
-					<uform:field label="Event Special Instructions" name="EventSpecialInstructions" isRequired="false" value="#Session.UserSuppliedInfo.EventSpecialInstructions#" type="textarea" hint="If available, any special instructions participants need." />
-				<cfelse>
-					<uform:field label="Event Special Instructions" name="EventSpecialInstructions" isRequired="false" type="textarea" hint="If available, any special instructions participants need." />
-				</cfif>
-			</uForm:fieldset>
-			<cfif Session.UserSuppliedInfo.WebinarEvent EQ 0>
-				<uForm:fieldset legend="Event Pricing">
-					<cfif isDefined("Session.UserSuppliedInfo.MemberCost")>
-						<uform:field label="Member Pricing" name="MemberCost" isRequired="true" type="text" value="#Session.UserSuppliedInfo.MemberCost#" hint="The cost for a member school district to attend per person." />
-					<cfelse>
-						<uform:field label="Member Pricing" name="MemberCost" isRequired="true" type="text" Value="#NumberFormat('0.00', '9999.99')#" hint="The cost for a member school district to attend per person." />
+				$('##NonMemberCost').blur(function() {
+					$('##NonMemberCost').formatCurrency();
+				});
+			});
+
+	</script>
+	<cfif not isDefined("URL.FormRetry")>
+		<div class="panel panel-default">
+			<div class="panel-heading"><h1>Add New Event or Workshop - Step 2</h1></div>
+			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<div class="panel-body">
+					<div class="alert alert-info">This is Step 2 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
+					<cfif Session.UserSuppliedInfo.EventSpanDates EQ 1>
+						<div class="panel-heading"><h1>Additional Dates for Event or Workshop</h1></div>
+						<div class="form-group">
+							<label for="EventDate1" class="control-label col-sm-3">2nd Event Date:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate1" name="EventDate1" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventDate" class="control-label col-sm-3">3rd Event Date:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate2" name="EventDate2" required="no"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventDate" class="control-label col-sm-3">4th Event Date:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate3" name="EventDate3" required="no"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventDate" class="control-label col-sm-3">5th Event Date:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate4" name="EventDate4" required="no"></div>
+						</div>
 					</cfif>
-					<cfif isDefined("Session.UserSuppliedInfo.NonMemberCost")>
-						<uform:field label="NonMember Pricing" name="NonMemberCost" isRequired="true" type="text" value="#Session.UserSuppliedInfo.NonMemberCost#" hint="The cost for a nonmember school district to attend per person." />
-					<cfelse>
-						<uform:field label="NonMember Pricing" name="NonMemberCost" isRequired="true" type="text" Value="#NumberFormat('0.00', '9999.99')#" hint="The cost for a nonmember school district to attend per person." />
+					<div class="panel-heading"><h1>Additional Detail Information for Event or Workshop</h1></div>
+					<div class="form-group">
+						<label for="EventAgenda" class="control-label col-sm-3">Event Agenda:&nbsp;</label>
+						<div class="col-sm-8"><textarea name="EventAgenda" id="EventAgenda" class="form-control"></textarea></div>
+					</div>
+					<div class="form-group">
+						<label for="EventTargetAudience" class="control-label col-sm-3">Event Target Audience:&nbsp;</label>
+						<div class="col-sm-8"><textarea name="EventTargetAudience" id="EventTargetAudience" class="form-control"></textarea></div>
+					</div>
+					<div class="form-group">
+						<label for="EventStrategies" class="control-label col-sm-3">Event Strategies:&nbsp;</label>
+						<div class="col-sm-8"><textarea name="EventStrategies" id="EventStrategies" class="form-control"></textarea></div>
+					</div>
+					<div class="form-group">
+						<label for="EventSpecialInstructions" class="control-label col-sm-3">Event Special Instructions:&nbsp;</label>
+						<div class="col-sm-8"><textarea name="EventSpecialInstructions" id="EventSpecialInstructions" class="form-control"></textarea></div>
+					</div>
+					<cfif Session.UserSuppliedInfo.WebinarEvent EQ 0>
+						<div class="panel-heading"><h1>Event Pricing</h1></div>
+						<div class="form-group">
+							<label for="MemberCost" class="control-label col-sm-3">Member Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control MemberCost" id="MemberCost" name="MemberCost" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="NonMemberCost" class="control-label col-sm-3">NonMember Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control NonMemberCost" id="NonMemberCost" name="NonMemberCost" required="yes"></div>
+						</div>
 					</cfif>
-				</uForm:fieldset>
-			</cfif>
-			<cfif Session.UserSuppliedInfo.EventFeatured EQ 1>
-				<uForm:fieldset legend="Event Featured Information">
-				<cfif isDefined("Session.UserSuppliedInfo.Featured_StartDate")>
-					<uform:field label="Start Date" name="Featured_StartDate" isRequired="true" value="#Session.UserSuppliedInfo.Featured_StartDate#" type="date" inputClass="date" hint="The start date of this event being featured" />
-				<cfelse>
-					<uform:field label="Start Date" name="Featured_StartDate" isRequired="true" type="date" inputClass="date" hint="The start date of this event being featured" />
-				</cfif>
-				<cfif isDefined("Session.UserSuppliedInfo.Featured_EndDate")>
-					<uform:field label="End Date" name="Featured_EndDate" isRequired="true" type="date" value="#Session.UserSuppliedInfo.Featured_EndDate#" inputClass="date" hint="The ending date of this event being featured" />
-				<cfelse>
-					<uform:field label="End Date" name="Featured_EndDate" isRequired="true" type="date" inputClass="date" hint="The ending date of this event being featured" />
-				</cfif>
-				<cfif isDefined("Session.UserSuppliedInfo.Featured_SortOrder")>
-					<uform:field label="Sort Order" name="Featured_SortOrder" isRequired="true" maxFieldLength="3" value="#Session.UserSuppliedInfo.Featured_SortOrder#" type="text" hint="The Sort Order of this featured event. Lower the number higher in the listing" />
-				<cfelse>
-					<uform:field label="Sort Order" name="Featured_SortOrder" isRequired="true" maxFieldLength="3" value="100" type="text" hint="The Sort Order of this featured event. Lower the number higher in the listing" />
-				</cfif>
-				</uForm:fieldset>
-			</cfif>
-			<cfif Session.UserSuppliedInfo.EarlyBird_RegistrationAvailable EQ 1>
-				<uForm:fieldset legend="Early Bird Registration Information">
-					<cfif isDefined("Session.UserSuppliedInfo.EarlyBird_RegistrationDeadline")>
-						<uform:field label="Registration Deadline" name="EarlyBird_RegistrationDeadline" isRequired="true" value="#Session.UserSuppliedInfo.EarlyBird_RegistrationDeadline#" type="date" inputClass="date" hint="The cutoff date for Early Bird Registrations" />
-					<cfelse>
-						<uform:field label="Registration Deadline" name="EarlyBird_RegistrationDeadline" isRequired="true" type="date" inputClass="date" hint="The cutoff date for Early Bird Registrations" />
+					<cfif Session.UserSuppliedInfo.EventFeatured EQ 1>
+						<div class="panel-heading"><h1>Event Featured Information</h1></div>
+						<div class="form-group">
+							<label for="Featured_StartDate" class="control-label col-sm-3">Start Date to be Featured:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_StartDate" name="Featured_StartDate" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="Featured_EndDate" class="control-label col-sm-3">End Date to be Featured:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_EndDate" name="Featured_EndDate" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="Featured_SortOrder" class="control-label col-sm-3">Featured Sort order:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_SortOrder" name="Featured_SortOrder" required="yes"></div>
+						</div>
 					</cfif>
-					<cfif isDefined("Session.UserSuppliedInfo.EarlyBird_MemberCost")>
-						<uform:field label="Member Pricing" name="EarlyBird_MemberCost" isRequired="true" type="text" Value="#NumberFormat(Session.UserSuppliedInfo.EarlyBird_MemberCost, '9999.99')#" hint="The Early Bird Pricing for Member School Districts" />
-					<cfelse>
-						<uform:field label="Member Pricing" name="EarlyBird_MemberCost" isRequired="true" type="text" Value="#NumberFormat('0.00', '9999.99')#" hint="The Early Bird Pricing for Member School Districts" />
+					<cfif Session.UserSuppliedInfo.EarlyBird_RegistrationAvailable EQ 1>
+						<div class="panel-heading"><h1>Event Early Bird Registration Information</h1></div>
+						<div class="form-group">
+							<label for="EarlyBird_RegistrationDeadline" class="control-label col-sm-3">Featured Sort order:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_RegistrationDeadline" name="EarlyBird_RegistrationDeadline" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EarlyBird_Member" class="control-label col-sm-3">EarlyBird Member Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_Member" name="EarlyBird_Member" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EarlyBird_NonMemberCost" class="control-label col-sm-3">EarlyBird NonMember Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_NonMemberCost" name="EarlyBird_NonMemberCost" required="yes"></div>
+						</div>
 					</cfif>
-					<cfif isDefined("Session.UserSuppliedInfo.EarlyBird_NonMemberCost")>
-						<uform:field label="NonMember Pricing" name="EarlyBird_NonMemberCost" isRequired="true" type="text" Value="#NumberFormat(Session.UserSuppliedInfo.EarlyBird_NonMemberCost, '9999.99')#" hint="The Early Bird Pricing for NonMember School Districts" />
-					<cfelse>
-						<uform:field label="NonMember Pricing" name="EarlyBird_NonMemberCost" isRequired="true" type="text" Value="#NumberFormat('0.00', '9999.99')#" hint="The Early Bird Pricing for NonMember School Districts" />
+					<cfif Session.UserSuppliedInfo.ViewSpecialPricing EQ 1 and Session.UserSuppliedInfo.WebinarEvent EQ 0>
+						<div class="panel-heading"><h1>Event Special Pricing Information</h1></div>
+						<div class="form-group">
+							<label for="SpecialPriceRequirements" class="control-label col-sm-3">Requirements to Meet Special Pricing:&nbsp;</label>
+							<div class="col-sm-8"><textarea name="SpecialPriceRequirements" id="SpecialPriceRequirements" class="form-control"></textarea></div>
+						</div>
+						<div class="form-group">
+							<label for="SpecialMemberCost" class="control-label col-sm-3">Special Member Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="SpecialMemberCost" name="SpecialMemberCost" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="SpecialNonMemberCost" class="control-label col-sm-3">Special NonMember Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="SpecialNonMemberCost" name="SpecialNonMemberCost" required="yes"></div>
+						</div>
 					</cfif>
-				</uForm:fieldset>
-			</cfif>
-			<cfif Session.UserSuppliedInfo.ViewSpecialPricing EQ 1 and Session.UserSuppliedInfo.WebinarEvent EQ 0>
-				<uForm:fieldset legend="Event Special Pricing Information">
-					<cfif isDefined("Session.UserSuppliedInfo.SpecialPriceRequirements")>
-						<uform:field label="Requirements" name="SpecialPriceRequirements" isRequired="true" type="textarea" value="#Session.UserSuppliedInfo.SpecialPriceRequirements#" hint="The requirements a participant must meet to get this price for this event" />
-					<cfelse>
-						<uform:field label="Requirements" name="SpecialPriceRequirements" isRequired="true" type="textarea" hint="The requirements a participant must meet to get this price for this event" />
+					<cfif Session.UserSuppliedInfo.PGPAvailable EQ 1>
+						<div class="panel-heading"><h1>Professional Growth Point Certificate Available</h1></div>
+						<div class="form-group">
+							<label for="PGPPoints" class="control-label col-sm-3">Number of PGP Points:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="PGPPoints" name="PGPPoints" required="yes"></div>
+						</div>
 					</cfif>
-					<cfif isDefined("Session.UserSuppliedInfo.SpecialMemberCost")>
-						<uform:field label="Member Pricing" name="SpecialMemberCost" isRequired="true" type="text" Value="#NumberFormat(Session.UserSuppliedInfo.SpecialMemberCost, '9999.99')#" hint="The Special Price for this event from a Member School Districts" />
-					<cfelse>
-						<uform:field label="Member Pricing" name="SpecialMemberCost" isRequired="true" type="text" Value="#NumberFormat('0.00', '9999.99')#" hint="The Special Price for this event from a Member School Districts" />
+					<cfif Session.UserSuppliedInfo.MealProvided EQ 1 and Session.UserSuppliedInfo.WebinarEvent EQ 0>
+						<div class="panel-heading"><h1>Caterer Information</h1></div>
+						<div class="form-group">
+							<label for="MealCost_Estimated" class="control-label col-sm-3">Meal Cost Estimated:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="MealCost_Estimated" name="MealCost_Estimated" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="MealProvidedBy" class="control-label col-sm-3">Provided By:&nbsp;</label>
+							<div class="col-sm-8">
+								<cfselect name="MealProvidedBy" class="form-control" Required="Yes" Multiple="No" query="Session.getCatererInformation" value="TContent_ID" Display="FacilityName"  queryposition="below">
+									<option value="----">Select Who Provides Meal</option>
+								</cfselect>
+							</div>
+						</div>
 					</cfif>
-					<cfif isDefined("Session.UserSuppliedInfo.SpecialNonMemberCost")>
-						<uform:field label="NonMember Pricing" name="SpecialNonMemberCost" isRequired="true" type="text" Value="#NumberFormat(Session.UserSuppliedInfo.SpecialNonMemberCost, '9999.99')#" hint="The Special Price for this event from a NonMember School Districts" />
-					<cfelse>
-						<uform:field label="NonMember Pricing" name="SpecialNonMemberCost" isRequired="true" type="text" Value="#NumberFormat('0.00', '9999.99')#" hint="The Special Price for this event from a NonMember School Districts" />
+					<cfif Session.UserSuppliedInfo.AllowVideoConference EQ 1 and Session.UserSuppliedInfo.WebinarEvent EQ 0>
+						<div class="panel-heading"><h1>Video Conference Information</h1></div>
+						<div class="form-group">
+							<label for="VideoConferenceInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
+							<div class="col-sm-8"><textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control"></textarea></div>
+						</div>
+						<div class="form-group">
+							<label for="VideoConferenceCost" class="control-label col-sm-3">Cost to Attend via this:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="VideoConferenceCost" name="VideoConferenceCost" required="yes"></div>
+						</div>
 					</cfif>
-				</uForm:fieldset>
-			</cfif>
-			<cfif Session.UserSuppliedInfo.PGPAvailable EQ 1>
-				<uForm:fieldset legend="Event Professional Growth Points Information">
-					<cfif isDefined("Session.UserSuppliedInfo.PGPPoints")>
-						<uform:field label="Number of Points" name="PGPPoints" isRequired="true" type="text" Value="#NumberFormat(Session.UserSuppliedInfo.PGPPoints, '999.99')#" hint="The number of PGP Points available to particiapnt upon sucessfull completion of this event." />
-					<cfelse>
-						<uform:field label="Number of Points" name="PGPPoints" isRequired="true" type="text" Value="#NumberFormat('0.00', '999.99')#" hint="The number of PGP Points available to particiapnt upon sucessfull completion of this event." />
+					<cfif Session.UserSuppliedInfo.WebinarEvent EQ 1>
+						<div class="panel-heading"><h1>Webinar Information</h1></div>
+						<div class="form-group">
+							<label for="WebinarConnectWebInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
+							<div class="col-sm-8"><textarea name="WebinarConnectWebInfo" id="WebinarConnectWebInfo" class="form-control"></textarea></div>
+						</div>
+						<div class="form-group">
+							<label for="WebinarMemberCost" class="control-label col-sm-3">Member Cost to Attend via this:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="WebinarMemberCost" name="WebinarMemberCost" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="WebinarNonMemberCost" class="control-label col-sm-3">NonMember Cost to Attend via this:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="WebinarNonMemberCost" name="WebinarNonMemberCost" required="yes"></div>
+						</div>
 					</cfif>
-				</uForm:fieldset>
-			</cfif>
-			<cfif Session.UserSuppliedInfo.MealProvided EQ 1 and Session.UserSuppliedInfo.WebinarEvent EQ 0>
-				<cfquery name="getCatererInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select TContent_ID, FacilityName
-					From eCaterers
-					Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-						Active = <cfqueryparam value="1" cfsqltype="CF_SQL_BIT">
-				</cfquery>
-				<uForm:fieldset legend="Event Caterer Information">
-					<cfif isDefined("Session.UserSuppliedInfo.MealCost_Estimated")>
-						<uform:field label="Cost Per Person " name="MealCost_Estimated" isRequired="false" Value="#NumberFormat(Session.UserSuppliedInfo.MealCost_Estimated, '999.99')#" type="text" hint="The estimated cost per person for providing this meal." />
-					<cfelse>
-						<uform:field label="Cost Per Person " name="MealCost_Estimated" isRequired="false" Value="#NumberFormat('0.00', '999.99')#" type="text" hint="The estimated cost per person for providing this meal." />
+					<cfif Session.UserSuppliedInfo.WebinarEvent EQ 0>
+						<div class="panel-heading"><h1>Event Held At</h1></div>
+						<div class="form-group">
+							<label for="LocationID" class="control-label col-sm-3">Location of Event:&nbsp;</label>
+							<div class="col-sm-8">
+								<cfselect name="LocationID" class="form-control" Required="Yes" Multiple="No" query="Session.getFacilityInformation" value="TContent_ID" Display="FacilityName"  queryposition="below">
+									<option value="----">Select Location of Event</option>
+								</cfselect>
+							</div>
+						</div>
 					</cfif>
-					<uform:field label="Meal Provided By" name="MealProvidedBy" type="select" isRequired="true" hint="Which Caterer is providing this meal?">
-						<cfif getCatererInformation.RecordCount EQ 0>
-							<uform:option display="Please Enter Caterer Information to Database First" value="0" isSelected="true" />
-						<cfelse>
-							<cfif isDefined("Session.UserSuppliedInfo.MealProvidedBy")>
-								<uform:option display="Vendor/Speaker Provided Meal for Event" value="0" />
-								<cfloop query="getCatererInformation">
-									<cfif isDefined("Session.UserSuppliedInfo.MealProvidedBy")>
-										<cfif #getCatererInformation.TContent_ID# EQ #Session.UserSuppliedInfo.MealProvidedBy#>
-											<uform:option display="#getCatererInformation.FacilityName#" value="#getCatererInformation.TContent_ID#" isSelected="True" />
-										<cfelse>
-											<uform:option display="#getCatererInformation.FacilityName#" value="#getCatererInformation.TContent_ID#" isSelected="False" />
-										</cfif>
-									<cfelse>
-									<uform:option display="#getCatererInformation.FacilityName#" value="#getCatererInformation.TContent_ID#" />
-									</cfif>
-								</cfloop>
-							<cfelse>
-								<uform:option display="Please Select Caterer from Listing" value="0" isSelected="true" />
-								<cfloop query="getCatererInformation">
-									<uform:option display="#getCatererInformation.FacilityName#" value="#getCatererInformation.TContent_ID#" />
-								</cfloop>
-							</cfif>
-						</cfif>
-					</uform:field>
-				</uForm:fieldset>
-			</cfif>
-			<cfif Session.UserSuppliedInfo.AllowVideoConference EQ 1 and Session.UserSuppliedInfo.WebinarEvent EQ 0>
-				<uForm:fieldset legend="Event Video Conference Information">
-					<uform:field label="Video Conference Details" name="VideoConferenceInfo" isRequired="false" type="textarea" hint="Information about Video Conference that participants need to know to be able to connect." />
-					<uform:field label="Video Confernece Cost" name="VideoConferenceCost" type="text" Value="#NumberFormat('750.00', '9999.99')#" isRequired="true" hint="What are the costs for a participant to attend via video conference" />
-				</uForm:fieldset>
-			</cfif>
-			<cfif Session.UserSuppliedInfo.WebinarEvent EQ 1>
-				<uForm:fieldset legend="Event Webinar Information">
-					<uform:field label="Webinar Connection Details" name="WebinarConnectWebInfo" isRequired="false" type="textarea" hint="Provide the details for users to be able to connect to this webinar. Give information just incase user has to get viewing device software installed." />
-					<uform:field label="Webinar Member Cost" name="WebinarMemberCost" type="text" Value="#NumberFormat('750.00', '9999.99')#" isRequired="true" hint="What is the cost for a member participant to attend via this method" />
-					<uform:field label="Webinar NonMember Cost" name="WebinarNonMemberCost" type="text" Value="#NumberFormat('1500.00', '9999.99')#" isRequired="true" hint="What is the cost for a nonmember participant to attend via this method" />
-				</uForm:fieldset>
-			</cfif>
-			<cfif Session.UserSuppliedInfo.WebinarEvent EQ 0>
-				<cfquery name="getFacilityInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select TContent_ID, FacilityName
-					From eFacility
-					Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-						Active = <cfqueryparam value="1" cfsqltype="CF_SQL_BIT"> and
-						FacilityType = <cfqueryparam value="#Session.UserSuppliedInfo.LocationType#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-				<cfif getFacilityInformation.RecordCount>
-					<uForm:fieldset legend="Event Held At">
-						<uform:field label="Facility Location" name="LocationID" type="select" isRequired="true" hint="Where is this facility being held at?">
-							<uform:option display="Please Select Facility from Listing" value="0" isSelected="true" />
-							<cfif isDefined("Session.UserSuppliedInfo.LocationID")>
-								<cfloop query="getFacilityInformation">
-									<cfif getFacilityInformation.TContent_ID EQ Session.UserSuppliedInfo.LocationID>
-										<uform:option display="#getFacilityInformation.FacilityName#" value="#getFacilityInformation.TContent_ID#" isSelected="true" />
-									<cfelse>
-										<uform:option display="#getFacilityInformation.FacilityName#" value="#getFacilityInformation.TContent_ID#" />
-									</cfif>
-								</cfloop>
-							<cfelse>
-								<cfloop query="getFacilityInformation">
-									<uform:option display="#getFacilityInformation.FacilityName#" value="#getFacilityInformation.TContent_ID#" />
-								</cfloop>
-							</cfif>
-						</uform:field>
-					</uForm:fieldset>
-				<cfelse>
-					<uForm:fieldset legend="Event Held At">
-						<uform:field label="Facility Location" name="LocationID" type="select" isRequired="true" hint="Where is this facility being held at?">
-							<uform:option display="Please Add Facility to System" value="0" isSelected="true" />
-						</uform:field>
-					</uForm:fieldset>
-				</cfif>
-			</cfif>
-		</uForm:form>
+				</div>
+				<div class="panel-footer">
+					<cfinput type="Submit" name="RegisterAccount" class="btn btn-primary pull-right" value="Add Event - Step 3"><br /><br />
+				</div>
+			</cfform>
+			<cfdump var="#Session#">
 		</div>
-	</div>
-	</cfoutput>
+	<cfelseif isDefined("URL.FormRetry")>
+		<div class="panel panel-default">
+			<div class="panel-heading"><h1>Add New Event or Workshop - Step 2</h1></div>
+			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfif isDefined("Session.FormErrors")>
+					<div class="panel-body">
+						<cfif ArrayLen(Session.FormErrors) GTE 1>
+							<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
+						</cfif>
+					</div>
+				</cfif>
+				<div class="panel-body">
+					<div class="alert alert-info">This is Step 2 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
+					<cfif Session.UserSuppliedInfo.EventSpanDates EQ 1>
+						<div class="panel-heading"><h1>Additional Dates for Event or Workshop</h1></div>
+						<div class="form-group">
+							<label for="EventDate1" class="control-label col-sm-3">2nd Event Date:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate1" value="#Session.UserSuppliedInfo.EventDate1#" name="EventDate1" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventDate" class="control-label col-sm-3">3rd Event Date:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate2" name="EventDate2" value="#Session.UserSuppliedInfo.EventDate2#" required="no"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventDate" class="control-label col-sm-3">4th Event Date:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate3" name="EventDate3" value="#Session.UserSuppliedInfo.EventDate3#" required="no"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventDate" class="control-label col-sm-3">5th Event Date:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate4" name="EventDate4" value="#Session.UserSuppliedInfo.EventDate4#" required="no"></div>
+						</div>
+					</cfif>
+					<div class="panel-heading"><h1>Additional Detail Information for Event or Workshop</h1></div>
+					<div class="form-group">
+						<label for="EventAgenda" class="control-label col-sm-3">Event Agenda:&nbsp;</label>
+						<div class="col-sm-8"><textarea name="EventAgenda" id="EventAgenda" class="form-control">#Session.UserSuppliedInfo.EventAgenda#</textarea></div>
+					</div>
+					<div class="form-group">
+						<label for="EventTargetAudience" class="control-label col-sm-3">Event Target Audience:&nbsp;</label>
+						<div class="col-sm-8"><textarea name="EventTargetAudience" id="EventTargetAudience" class="form-control">#Session.UserSuppliedInfo.EventTargetAudience#</textarea></div>
+					</div>
+					<div class="form-group">
+						<label for="EventStrategies" class="control-label col-sm-3">Event Strategies:&nbsp;</label>
+						<div class="col-sm-8"><textarea name="EventStrategies" id="EventStrategies" class="form-control">#Session.UserSuppliedInfo.EventStrategies#</textarea></div>
+					</div>
+					<div class="form-group">
+						<label for="EventSpecialInstructions" class="control-label col-sm-3">Event Special Instructions:&nbsp;</label>
+						<div class="col-sm-8"><textarea name="EventSpecialInstructions" id="EventSpecialInstructions" class="form-control">#Session.UserSuppliedInfo.EventSpecialInstructions#</textarea></div>
+					</div>
+					<cfif Session.UserSuppliedInfo.WebinarEvent EQ 0>
+						<div class="panel-heading"><h1>Event Pricing</h1></div>
+						<div class="form-group">
+							<label for="MemberCost" class="control-label col-sm-3">Member Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" value="#Session.UserSuppliedInfo.MemberCost#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="NonMemberCost" class="control-label col-sm-3">NonMember Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" value="#Session.UserSuppliedInfo.NonMemberCost#" required="yes"></div>
+						</div>
+					</cfif>
+					<cfif Session.UserSuppliedInfo.EventFeatured EQ 1>
+						<div class="panel-heading"><h1>Event Featured Information</h1></div>
+						<div class="form-group">
+							<label for="Featured_StartDate" class="control-label col-sm-3">Start Date to be Featured:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_StartDate" name="Featured_StartDate" value="#Session.UserSuppliedInfo.Featured_StartDate#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="Featured_EndDate" class="control-label col-sm-3">End Date to be Featured:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_EndDate" name="Featured_EndDate" value="#Session.UserSuppliedInfo.Featured_EndDate#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="Featured_SortOrder" class="control-label col-sm-3">Featured Sort order:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_SortOrder" name="Featured_SortOrder" value="#Session.UserSuppliedInfo.Featured_SortOrder#"  required="yes"></div>
+						</div>
+					</cfif>
+					<cfif Session.UserSuppliedInfo.EarlyBird_RegistrationAvailable EQ 1>
+						<div class="panel-heading"><h1>Event Early Bird Registration Information</h1></div>
+						<div class="form-group">
+							<label for="EarlyBird_RegistrationDeadline" class="control-label col-sm-3">Featured Sort order:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_RegistrationDeadline" name="EarlyBird_RegistrationDeadline" value="#Session.UserSuppliedInfo.EarlyBird_RegistrationDeadline#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EarlyBird_Member" class="control-label col-sm-3">EarlyBird Member Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_Member" name="EarlyBird_Member" value="#Session.UserSuppliedInfo.EarlyBird_Member#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EarlyBird_NonMemberCost" class="control-label col-sm-3">EarlyBird NonMember Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_NonMemberCost" name="EarlyBird_NonMemberCost" value="#Session.UserSuppliedInfo.EarlyBird_NonMemberCost#" required="yes"></div>
+						</div>
+					</cfif>
+					<cfif Session.UserSuppliedInfo.ViewSpecialPricing EQ 1 and Session.UserSuppliedInfo.WebinarEvent EQ 0>
+						<div class="panel-heading"><h1>Event Special Pricing Information</h1></div>
+						<div class="form-group">
+							<label for="SpecialPriceRequirements" class="control-label col-sm-3">Requirements to Meet Special Pricing:&nbsp;</label>
+							<div class="col-sm-8"><textarea name="SpecialPriceRequirements" id="SpecialPriceRequirements" class="form-control">#Session.UserSuppliedInfo.SpecialPriceRequirements#</textarea></div>
+						</div>
+						<div class="form-group">
+							<label for="SpecialMemberCost" class="control-label col-sm-3">Special Member Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="SpecialMemberCost" name="SpecialMemberCost" value="#Session.UserSuppliedInfo.SpecialMemberCost#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="SpecialNonMemberCost" class="control-label col-sm-3">Special NonMember Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="SpecialNonMemberCost" name="SpecialNonMemberCost" value="#Session.UserSuppliedInfo.SpecialNonMemberCost#" required="yes"></div>
+						</div>
+					</cfif>
+					<cfif Session.UserSuppliedInfo.PGPAvailable EQ 1>
+						<div class="panel-heading"><h1>Professional Growth Point Certificate Available</h1></div>
+						<div class="form-group">
+							<label for="PGPPoints" class="control-label col-sm-3">Number of PGP Points:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="PGPPoints" name="PGPPoints" value="#Session.UserSuppliedInfo.PGPPoints#" required="yes"></div>
+						</div>
+					</cfif>
+					<cfif Session.UserSuppliedInfo.MealProvided EQ 1 and Session.UserSuppliedInfo.WebinarEvent EQ 0>
+						<div class="panel-heading"><h1>Caterer Information</h1></div>
+						<div class="form-group">
+							<label for="MealCost_Estimated" class="control-label col-sm-3">Meal Cost Estimated:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="MealCost_Estimated" name="MealCost_Estimated" value="#Session.UserSuppliedInfo.MealCost_Estimated#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="MealProvidedBy" class="control-label col-sm-3">Provided By:&nbsp;</label>
+							<div class="col-sm-8">
+								<cfselect name="MealProvidedBy" class="form-control" Required="Yes" Multiple="No" query="Session.getCatererInformation" selected="#Session.UserSUppliedInfo.MealProvidedBy#" value="TContent_ID" Display="FacilityName"  queryposition="below">
+									<option value="----">Select Who Provides Meal</option>
+								</cfselect>
+							</div>
+						</div>
+					</cfif>
+					<cfif Session.UserSuppliedInfo.AllowVideoConference EQ 1 and Session.UserSuppliedInfo.WebinarEvent EQ 0>
+						<div class="panel-heading"><h1>Video Conference Information</h1></div>
+						<div class="form-group">
+							<label for="VideoConferenceInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
+							<div class="col-sm-8"><textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control">#Session.UserSuppliedInfo.VideoConferenceInfo#</textarea></div>
+						</div>
+						<div class="form-group">
+							<label for="VideoConferenceCost" class="control-label col-sm-3">Cost to Attend via this:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="VideoConferenceCost" name="VideoConferenceCost" value="#Session.UserSuppliedInfo.VideoConferenceCost#" required="yes"></div>
+						</div>
+					</cfif>
+					<cfif Session.UserSuppliedInfo.WebinarEvent EQ 1>
+						<div class="panel-heading"><h1>Webinar Information</h1></div>
+						<div class="form-group">
+							<label for="WebinarConnectWebInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
+							<div class="col-sm-8"><textarea name="WebinarConnectWebInfo" id="WebinarConnectWebInfo" class="form-control">#Session.UserSuppliedInfo.WebinarConnectWebInfo#</textarea></div>
+						</div>
+						<div class="form-group">
+							<label for="WebinarMemberCost" class="control-label col-sm-3">Member Cost to Attend via this:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="WebinarMemberCost" name="WebinarMemberCost" value="#Session.UserSuppliedInfo.WebinarMemberCost#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="WebinarNonMemberCost" class="control-label col-sm-3">NonMember Cost to Attend via this:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="WebinarNonMemberCost" name="WebinarNonMemberCost" value="#Session.UserSuppliedInfo.WebinarNonMemberCost#" required="yes"></div>
+						</div>
+					</cfif>
+					<cfif Session.UserSuppliedInfo.WebinarEvent EQ 0>
+						<div class="panel-heading"><h1>Event Held At</h1></div>
+						<div class="form-group">
+							<label for="LocationID" class="control-label col-sm-3">Location of Event:&nbsp;</label>
+							<div class="col-sm-8">
+								<cfselect name="LocationID" class="form-control" Required="Yes" Multiple="No" query="Session.getFacilityInformation" selected="#Session.UserSuppliedInfo.LocationID#" value="TContent_ID" Display="FacilityName"  queryposition="below">
+									<option value="----">Select Location of Event</option>
+								</cfselect>
+							</div>
+						</div>
+					</cfif>
+				</div>
+				<div class="panel-footer">
+					<cfinput type="Submit" name="RegisterAccount" class="btn btn-primary pull-right" value="Add Event - Step 3"><br /><br />
+				</div>
+			</cfform>
+		</div>
+	</cfif>
+</cfoutput>

@@ -36,7 +36,26 @@
 	<div class="panel panel-default">
 		<div class="panel-heading"><h1>Current Events and/or Workshops</h1></div>
 		<div class="panel-body">
-
+			<cfif isDefined("URL.UserAction")>
+				<cfswitch expression="#URL.UserAction#">
+					<cfcase value="UserActivated">
+						<cfif URL.Successfull EQ "true">
+							<div class="alert alert-success">You have successfully activated your account on the event registration system. You are now able to login and register for any upcoming events or workshops that are offered through this system.</div>
+						<cfelse>
+							<div class="alert alert-danger">Something happened during the registration process. Please contact us so that we can resolve the system error</div>
+						</cfif>
+					</cfcase>
+					<cfcase value="UserRegistraton">
+						<cfif URL.Successfull EQ "true">
+							<div class="alert alert-success">You have successfully registered for an account on this event registration system.</div>
+						<cfelse>
+							<div class="alert alert-danger">Something happened during the registration process. Please contact us so that we can resolve the system error</div>
+						</cfif>
+					</cfcase>
+				</cfswitch>
+			</cfif>
+			<cfdump var="#Session.getFeaturedEvents#">
+			<cfdump var="#Session.getNonFeaturedEvents#">
 		</div>
 	</div>
 </cfoutput>

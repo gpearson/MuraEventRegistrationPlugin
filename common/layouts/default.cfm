@@ -18,11 +18,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<link rel="stylesheet" href="#pluginPath#/library/bootstrap/css/bootstrap-theme.css">
 	    <link rel="stylesheet" href="#pluginPath#/library/jqGrid_5.1.0/css/ui.jqgrid-bootstrap.css" />
 	    <link rel="stylesheet" href="#pluginPath#/includes/assets/css/ui-custom/jquery-ui-1.10.4.custom.min.css" />
+	    <link rel="stylesheet" href="#pluginPath#/includes/assets/css/jquery.timepicker.css">
 		<link rel="stylesheet" href="#pluginPath#/includes/assets/css/murafw1.css">
 		<script type="text/ecmascript" src="#pluginPath#/includes/assets/js/jquery-ui-1.9.2.custom.min.js"></script>
 		<script type="text/ecmascript" src="#pluginPath#/library/jqGrid_5.1.0/js/i18n/grid.locale-en.js"></script>
 	    <script type="text/ecmascript" src="#pluginPath#/library/jqGrid_5.1.0/js/jquery.jqGrid.min.js"></script>
-	    <script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.syotimer.js"></script>
+	    <script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.timepicker.min.js"></script>
 	</cfoutput></cfsavecontent>
 	<cfhtmlhead text="#htmlhead#" />
 	<cfset request.mfw1cssexists = true>

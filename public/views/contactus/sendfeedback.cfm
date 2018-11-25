@@ -9,51 +9,6 @@
 <cfoutput>
 	<div class="panel panel-default">
 		<div class="panel-heading"><h1>Contact Us</h1></div>
-		<cfif isDefined("URL.UserAction")>
-			<div class="panel-body">
-				<cfswitch expression="#URL.UserAction#">
-					<cfcase value="AddedCustomer">
-						<cfif isDefined("URL.Successful")>
-							<cfif URL.Successful EQ "true">
-								<div class="alert alert-success">
-									You have successfully added a new customer record to the database.
-								</div>
-							<cfelse>
-								<div class="alert alert-danger">
-									An error has occurred and the customer record was not added to the database.
-								</div>
-							</cfif>
-						</cfif>
-					</cfcase>
-					<cfcase value="UpdatedCustomer">
-						<cfif isDefined("URL.Successful")>
-							<cfif URL.Successful EQ "true">
-								<div class="alert alert-success">
-									You have successfully updated the selected customer record in the database.
-								</div>
-							<cfelse>
-								<div class="alert alert-danger">
-									An error has occurred and the customer record was not updated in the database.
-								</div>
-							</cfif>
-						</cfif>
-					</cfcase>
-					<cfcase value="DeletedCustomer">
-						<cfif isDefined("URL.Successful")>
-							<cfif URL.Successful EQ "true">
-								<div class="alert alert-success">
-									You have successfully deactivated the selected customer record in the database.
-								</div>
-							<cfelse>
-								<div class="alert alert-danger">
-									An error has occurred and the customer record was not deactivated in the database.
-								</div>
-							</cfif>
-						</cfif>
-					</cfcase>
-				</cfswitch>
-			</div>
-		</cfif>
 		<cfif not isDefined("URL.FormRetry")>
 			<cfset captcha = #Session.Captcha#>
 			<cfset captchaHash = Hash(captcha)>
@@ -70,9 +25,9 @@
 						<label for="YourFirstName" class="control-label col-sm-2">First Name:&nbsp;</label>
 						<div class="col-sm-9">
 							<cfif Session.Mura.IsLoggedIn EQ true>
-								<cfinput type="text" class="form-control" value="#Session.Mura.FName#" id="ContactFirstName" name="ContactFirstName" required="yes" placeholder="Enter Your Name" disabled="true">
+								<cfinput type="text" class="form-control" value="#Session.Mura.FName#" id="ContactFirstName" name="ContactFirstName" required="yes" placeholder="Enter Your First Name" disabled="true">
 							<cfelse>
-								<cfinput type="text" class="form-control" id="ContactFirstName" name="ContactFirstName" required="yes" placeholder="Enter Your Name">
+								<cfinput type="text" class="form-control" id="ContactFirstName" name="ContactFirstName" required="yes" placeholder="Enter Your First Name">
 							</cfif>
 						</div>
 					</div>
@@ -80,9 +35,9 @@
 						<label for="YourLastName" class="control-label col-sm-2">Last Name:&nbsp;</label>
 						<div class="col-sm-9">
 							<cfif Session.Mura.IsLoggedIn EQ True>
-								<cfinput type="text" class="form-control" value="#Session.Mura.LName#" id="ContactLastName" name="ContactLastName" required="yes" placeholder="Enter Your Name" disabled="true">
+								<cfinput type="text" class="form-control" value="#Session.Mura.LName#" id="ContactLastName" name="ContactLastName" required="yes" placeholder="Enter Your Last Name" disabled="true">
 							<cfelse>
-								<cfinput type="text" class="form-control" id="ContactLastName" name="ContactLastName" required="yes" placeholder="Enter Your Name">
+								<cfinput type="text" class="form-control" id="ContactLastName" name="ContactLastName" required="yes" placeholder="Enter Your Last Name">
 							</cfif>
 						</div>
 					</div>
@@ -90,9 +45,9 @@
 						<label for="YourEmail" class="control-label col-sm-2">Your Email:&nbsp;</label>
 						<div class="col-sm-9">
 							<cfif Session.Mura.IsLoggedIn EQ True>
-								<cfinput type="text" class="form-control" value="#Session.Mura.Email#" id="ContactEmail" name="ContactEmail" required="yes" placeholder="Enter Your Name" disabled="true">
+								<cfinput type="text" class="form-control" value="#Session.Mura.Email#" id="ContactEmail" name="ContactEmail" required="yes" placeholder="Enter Your Email Address" disabled="true">
 							<cfelse>
-								<cfinput type="text" class="form-control" id="ContactEmail" name="ContactEmail" required="yes" placeholder="Enter Your Name">
+								<cfinput type="text" class="form-control" id="ContactEmail" name="ContactEmail" required="yes" placeholder="Enter Your Email Address">
 							</cfif>
 
 
@@ -100,7 +55,7 @@
 					</div>
 					<div class="form-group">
 						<label for="YourTelephone" class="control-label col-sm-2">Your Phone:&nbsp;</label>
-						<div class="col-sm-9"><cfinput type="text" class="form-control" id="ContactPhone" name="ContactPhone" required="yes" placeholder="Enter Your Name"></div>
+						<div class="col-sm-9"><cfinput type="text" class="form-control" id="ContactPhone" name="ContactPhone" required="yes" placeholder="Enter Your Best Contact Number"></div>
 					</div>
 					<div class="form-group">
 						<label for="BestContactMethod" class="control-label col-sm-2">Best Contact Method:&nbsp;</label>
@@ -149,19 +104,19 @@
 					<div class="panel-heading"><h2>Your Contact Information</h2></div>
 					<div class="form-group">
 						<label for="YourFirstName" class="control-label col-sm-2">First Name:&nbsp;</label>
-						<div class="col-sm-9"><cfinput type="text" class="form-control" id="ContactFirstName" name="ContactFirstName" required="yes" value="#Session.FormData.ContactFirstName#" placeholder="Enter Your Name"></div>
+						<div class="col-sm-9"><cfinput type="text" class="form-control" id="ContactFirstName" name="ContactFirstName" required="yes" value="#Session.FormData.ContactFirstName#" placeholder="Enter Your First Name"></div>
 					</div>
 					<div class="form-group">
 						<label for="YourLastName" class="control-label col-sm-2">Last Name:&nbsp;</label>
-						<div class="col-sm-9"><cfinput type="text" class="form-control" id="ContactLastName" value="#Session.FormData.ContactLastName#" name="ContactLastName" required="yes" placeholder="Enter Your Name"></div>
+						<div class="col-sm-9"><cfinput type="text" class="form-control" id="ContactLastName" value="#Session.FormData.ContactLastName#" name="ContactLastName" required="yes" placeholder="Enter Your Last Name"></div>
 					</div>
 					<div class="form-group">
 						<label for="YourEmail" class="control-label col-sm-2">Your Email:&nbsp;</label>
-						<div class="col-sm-9"><cfinput type="text" class="form-control" id="ContactEmail" name="ContactEmail" value="#Session.FormData.ContactEmail#" required="yes" placeholder="Enter Your Name"></div>
+						<div class="col-sm-9"><cfinput type="text" class="form-control" id="ContactEmail" name="ContactEmail" value="#Session.FormData.ContactEmail#" required="yes" placeholder="Enter Your Email Address"></div>
 					</div>
 					<div class="form-group">
 						<label for="YourTelephone" class="control-label col-sm-2">Your Phone:&nbsp;</label>
-						<div class="col-sm-9"><cfinput type="text" class="form-control" id="ContactPhone" name="ContactPhone" value="#Session.FormData.ContactPhone#" required="yes" placeholder="Enter Your Name"></div>
+						<div class="col-sm-9"><cfinput type="text" class="form-control" id="ContactPhone" name="ContactPhone" value="#Session.FormData.ContactPhone#" required="yes" placeholder="Enter Your Best Contact Number"></div>
 					</div>
 					<div class="form-group">
 						<label for="BestContactMethod" class="control-label col-sm-2">Best Contact Method:&nbsp;</label>

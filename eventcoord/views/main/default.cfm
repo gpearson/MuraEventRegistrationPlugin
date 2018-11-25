@@ -3,15 +3,17 @@
 
 This file is part of MuraFW1
 
-Copyright 2010-2013 Stephen J. Withington, Jr.
+Copyright 2010-2015 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
-
-<cfset GetAllUserGroups = #$.getBean( 'userManager' ).getUserGroups( rc.$.siteConfig('siteID'), 1 )#>
 
 --->
 </cfsilent>
 <cfoutput>
-	<h2>Welcome back, #Session.Mura.FName# #Session.Mura.LName#</h2>
-	<p>Please click on one of the navigation menu items above to proceed with your task regarding this system.</p>
+	<div class="panel panel-default">
+		<div class="panel-heading"><h1>Welcome Event Facilitator</h1></div>
+		<div class="panel-body">
+
+		</div>
+	</div>
 </cfoutput>
