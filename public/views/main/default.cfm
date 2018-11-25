@@ -38,6 +38,7 @@
 		<div class="panel-body">
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
+
 					<cfcase value="UserRegistered">
 						<cfif URL.Successfull EQ "true">
 							<div class="alert alert-success">You have successfully registered an individual for the event. Within the next few minutes, the registered participant will be receiving an electronic copy of the confirmation information for the event.</div>
@@ -52,9 +53,9 @@
 							<div class="alert alert-danger">Something happened during the registration process. Please contact us so that we can resolve the system error</div>
 						</cfif>
 					</cfcase>
-					<cfcase value="UserRegistraton">
+					<cfcase value="UserRegistration">
 						<cfif URL.Successfull EQ "true">
-							<div class="alert alert-success">You have successfully registered for an account on this event registration system.</div>
+							<div class="alert alert-success">You have successfully registered for an account on this event registration system. Within the next few minutes you will be receiving an email with a special link to click on that will activate your account. You will not be able to login to this system until your account has been activated.</div>
 						<cfelse>
 							<div class="alert alert-danger">Something happened during the registration process. Please contact us so that we can resolve the system error</div>
 						</cfif>

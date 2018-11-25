@@ -83,20 +83,9 @@
 								</thead>
 								<tbody>
 									<cfloop query="Session.getEventGroups">
-										<cfquery name="getUserMembership" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-											Select UserID, GroupID
-											From tusersmemb
-											Where UserID = <cfqueryparam value="#URL.UserID#" cfsqltype="cf_sql_varchar"> and
-												GroupID = <cfqueryparam value="#Session.getEventGroups.UserID#" cfsqltype="cf_sql_varchar">
-										</cfquery>
 										<tr>
 											<td>#Session.getEventGroups.GroupName#</td>
-											<td><cfif getUserMembership.RecordCount>
-													<input type="checkbox" name="MemberGroup" value="#Session.getEventGroups.UserID#" checked>
-												<cfelse>
-													<input type="checkbox" name="MemberGroup" value="#Session.getEventGroups.UserID#">
-												</cfif>
-											</td>
+											<td><input type="checkbox" name="MemberGroup" value="#Session.getEventGroups.UserID#"></td>
 										</tr>
 									</cfloop>
 								</tbody>

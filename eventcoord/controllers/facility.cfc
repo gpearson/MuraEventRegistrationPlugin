@@ -252,15 +252,16 @@
 			</cfif>
 
 			<cfquery name="updateFacilityInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				insert into p_EventRegistration_FacilityRooms(RoomName, Capacity, RoomFees, Active, dateCreated, lastUpdateBy, Site_ID, Facility_ID)
+				insert into p_EventRegistration_FacilityRooms(Site_ID, RoomName, Capacity, RoomFees, Active, dateCreated, lastUpdated, lastUpdateBy, Facility_ID)
 				values(
+				<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.RoomName#">,
 				<cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.RoomCapacity#">,
 				<cfqueryparam cfsqltype="cf_sql_double" value="#FORM.RoomFees#">,
 				<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
 				<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+				<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 				<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.Lname#">,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
 				<cfqueryparam cfsqltype="cf_sql_integer" value="#URL.FacilityID#">
 				)
 			</cfquery>
@@ -309,8 +310,9 @@
 				<cfset CombinedPhysicalAddress = #AddressGeoCoded[1].AddressStreetNumber# & " " & #AddressGeoCoded[1].AddressStreetNameShort#>
 
 				<cfquery name="updateFacilityInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					insert into p_EventRegistration_Facility(FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, dateCreataed, lastUpdateBy, Active)
+					insert into p_EventRegistration_Facility(Site_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, dateCreated, lastUpdateBy, Active)
 						VALUES(
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.FacilityName#">,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.CombinedPhysicalAddress#">,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.AddressGeoCoded[1].AddressCityName)#">,

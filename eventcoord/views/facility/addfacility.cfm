@@ -161,19 +161,19 @@
 					<div class="panel-heading"><h1>Optional Information</h1></div>
 					<div class="form-group">
 						<label for="PaymentTerms" class="control-label col-sm-3">Payment Terms:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="PaymentTerms" id="PaymentTerms" class="form-control" >#Session.FormInput.PaymentTerms#</textarea></div>
+						<div class="col-sm-8"><textarea name="PaymentTerms" id="PaymentTerms" class="form-control" ><cfif isDefined("Session.FormInput.PaymentTerms")>#Session.FormInput.PaymentTerms#</cfif></textarea></div>
 					</div>
 					<div class="form-group">
 						<label for="DeliveryInfo" class="control-label col-sm-3">Delivery Information:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="DeliveryInfo" id="DeliveryInfo" class="form-control" >#Session.FormInput.DeliveryInfo#</textarea></div>
+						<div class="col-sm-8"><textarea name="DeliveryInfo" id="DeliveryInfo" class="form-control" ><cfif isDefined("Session.FormInput.DeliveryInfo")>#Session.FormInput.DeliveryInfo#</cfif></textarea></div>
 					</div>
 					<div class="form-group">
 						<label for="GuaranteeInformation" class="control-label col-sm-3">Guarantee Information:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="GuaranteeInformation" id="GuaranteeInformation" class="form-control" >#Session.FormInput.GuaranteeInformation#</textarea></div>
+						<div class="col-sm-8"><textarea name="GuaranteeInformation" id="GuaranteeInformation" class="form-control" ><cfif isDefined("Session.FormInput.GuaranteeInformation")>#Session.FormInput.GuaranteeInformation#</cfif></textarea></div>
 					</div>
 					<div class="form-group">
 						<label for="AdditionalNotes" class="control-label col-sm-3">Additional Notes:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="AdditionalNotes" id="AdditionalNotes" class="form-control" >#Session.FormInput.AdditionalNotes#</textarea></div>
+						<div class="col-sm-8"><textarea name="AdditionalNotes" id="AdditionalNotes" class="form-control" ><cfif isDefined("Session.FormInput.AdditionalNotes")>#Session.FormInput.AdditionalNotes#</cfif></textarea></div>
 					</div>
 					<div class="form-group">
 						<label for="Active" class="control-label col-sm-3">Active:&nbsp;</label>

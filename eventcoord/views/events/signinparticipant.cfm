@@ -257,11 +257,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 								</cfdefaultcase>
 							</cfswitch>
 						</cfloop>
-						<cfswitch expression="#Variables.CurrentModRow#">
-							<cfcase value="0"></cfcase>
-							<cfcase value="1"><td colspan="3">&nbsp;</td></tr></cfcase>
-							<cfdefaultcase><td>&nbsp;</td></tr></cfdefaultcase>
-						</cfswitch>
 					</table>
 				</div>
 				<div class="panel-footer">

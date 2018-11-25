@@ -36,7 +36,7 @@
 		<cfquery name="getAdminGroup" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 			Select Email
 			From tusers
-			Where SiteID = <cfqueryparam value="#Session.FormData.PluginInfo.SiteID#" cfsqltype="cf_sql_varchar"> and
+			Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 				UserName = <cfqueryparam value="admin" cfsqltype="cf_sql_varchar">
 		</cfquery>
 		<cfinclude template="EmailTemplates/CommentFormInquiryTemplateToAdmin.cfm">
