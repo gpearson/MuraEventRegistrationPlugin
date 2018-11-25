@@ -3,91 +3,113 @@
 
 This file is part of MuraFW1
 
-Copyright 2010-2013 Stephen J. Withington, Jr.
+Copyright 2010-2015 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
 --->
 </cfsilent>
-<cfset PriorDate = #DateAdd("m", -2, Now())#>
-<cfquery name="getMembershipOrganizations" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-	Select TContent_ID, Site_ID, OrganizationName, OrganizationDomainName, Active
-	From eMembership
-	Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-	Order by Active DESC, OrganizationName ASC
-</cfquery>
-<cfif isDefined("URL.Successful")>
-	<cfswitch expression="#URL.Successful#">
-		<cfcase value="true">
+<cfoutput>
+	<script>
+		$.jgrid.defaults.responsive = true;
+		$.jgrid.defaults.styleUI = 'Bootstrap';
+	</script>
+	<div class="panel panel-default">
+		<div class="panel-heading"><h1>Available Membership Organizations</h1></div>
+		<div class="panel-body">
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
-					<cfcase value="AddedOrganization">
-						<cfoutput>
-							<div class="alert-box success">
-								<p>You have successfully added a new member organization to the system.</p>
+					<cfcase value="InformationUpdated">
+						<cfif URL.Successful EQ "true">
+							<div class="alert alert-success">
+								You have successfully updated the membership information for one client in the database.
 							</div>
-						</cfoutput>
-					</cfcase>
-					<cfcase value="DeactivatedOrganization">
-						<div class="alert-box success">
-							<p>You have successfully deactivated the organization from receiving membership pricing.</p>
-						</div>
-					</cfcase>
-					<cfcase value="ActivatedOrganization">
-						<div class="alert-box success">
-							<p>You have successfully activated the organization so they can receive membership pricing.</p>
-						</div>
-					</cfcase>
-					<cfcase value="UpdatedOrganization">
-						<div class="alert-box success">
-							<p>You have successfully updated the organization witin the registration system.</p>
-						</div>
+						<cfelse>
+							<div class="alert alert-danger">
+							</div>
+						</cfif>
 					</cfcase>
 				</cfswitch>
 			</cfif>
-		</cfcase>
-	</cfswitch>
-
-</cfif>
-<cfoutput>
-	<div class="art-block clearfix">
-		<div class="art-blockheader">
-			<h3 class="t">Membership Districts</h3>
+			<table id="jqGrid"></table>
+			<div id="jqGridPager"></div>
+			<div id="dialog" title="Feature not supported" style="display:none"><p>That feature is not supported.</p></div>
 		</div>
-		<div class="art-blockcontent">
-			<table class="art-article" style="width:100%;">
-				<thead>
-					<tr>
-						<th width="40%">Organization Name</th>
-						<th width="15%">Domain Name</th>
-						<th width="15%">Active Member</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<cfif getMembershipOrganizations.RecordCount>
-					<tfoot>
-						<tr>
-							<td colspan="4">Add new Membership Organization not listed above by clicking <a href="#buildURL('eventcoord:membership.addorganization')#" class="art-button">here</a></td>
-						</tr>
-					</tfoot>
-					<tbody>
-						<cfloop query="getMembershipOrganizations">
-							<tr bgcolor="###iif(currentrow MOD 2,DE('ffffff'),DE('efefef'))#">
-							<td>#getMembershipOrganizations.OrganizationName#</td>
-							<td>#getMembershipOrganizations.OrganizationDomainName#</td>
-							<td><cfif getMembershipOrganizations.Active EQ 1>Yes<cfelse>No</cfif></td>
-							<td><a href="#buildURL('eventcoord:membership.updateorganization')#&OrgID=#getMembershipOrganizations.TContent_ID#"><img src="/plugins/#variables.framework.package#/includes/assets/images/adminactions/imgUpdate.png" alt="Update Organization"></a><cfif getMembershipOrganizations.Active EQ 1><a href="#buildURL('eventcoord:membership.updateorganization_deactivate')#&OrgID=#getMembershipOrganizations.TContent_ID#"><img src="/plugins/#variables.framework.package#/includes/assets/images/adminactions/imgDeActivate.png" alt="Deactivate Organization"></a><cfelse><a href="#buildURL('eventcoord:membership.updateorganization_activate')#&OrgID=#getMembershipOrganizations.TContent_ID#"><img src="/plugins/#variables.framework.package#/includes/assets/images/adminactions/imgActivate.png" alt="Activate Organization"></a></cfif></td>
-							</tr>
-						</cfloop>
-					</tbody>
-				<cfelse>
-					<tbody>
-						<tr>
-							<td colspan="6"><div align="center" class="alert-box notice">No Member Organizations were located in the database. To add a member organization to the system click <a href="#buildURL('eventcoord:membership.addorganization')#" class="art-button">here</a></div></td>
-						</tr>
-					</tbody>
-				</cfif>
-			</table>
+		<div class="panel-footer">
+
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			var selectedRow = 0;
+			$("##jqGrid").jqGrid({
+				url: "/plugins/#rc.pc.getPackage()#/eventcoord/controllers/membership.cfc?method=getAllMembership",
+				// we set the changes to be made at client side using predefined word clientArray
+				datatype: "json",
+				colNames: ["Rec No","Facility Name","State","Phone Number","Active"],
+				colModel: [
+					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, editable: false },
+					{ label: 'Facility Name', name: 'FacilityName', editable: true },
+					{ label: 'State', name: 'PrimaryState', width: 75, editable: true },
+					{ label: 'Phone Number', name: 'PrimaryVoiceNumber', width: 75, editable: true },
+					{ label: 'Active', name: 'Active', width: 75, editable: true }
+				],
+				sortname: 'TContent_ID',
+				sortorder : 'asc',
+				viewrecords: true,
+				height: 500,
+				autowidth: true,
+				rowNum: 30,
+				pgText: " of ",
+				pager: "##jqGridPager",
+				jsonReader: {
+					root: "ROWS",
+					page: "PAGE",
+					total: "TOTAL",
+					records: "RECORDS",
+					cell: "",
+					id: "0"
+				},
+				onSelectRow: function(id){
+					//We verify a valid new row selection
+					if(id && id!==selectedRow) {
+						//If a previous row was selected, but the values were not saved, we restore it to the original data.
+						$('##jqGrid').restoreRow(selectedRow);
+						selectedRow=id;
+					}
+				}
+			});
+			$('##jqGrid').navGrid('##jqGridPager', {edit: false, add: false, del:false, search:false});
+
+			$('##jqGrid').navButtonAdd('##jqGridPager',
+				{
+					caption: "",
+					buttonicon: "glyphicon-plus",
+					onClickButton: function(id) {
+						var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:membership.addmembership";
+						window.open(urlToGo,"_self");
+					},
+					position: "last"
+				}
+			)
+
+			$('##jqGrid').navButtonAdd('##jqGridPager',
+				{
+					caption: "",
+					buttonicon: "glyphicon-pencil",
+					onClickButton: function(id) {
+						if (selectedRow == 0) {
+							alert("Please Select a Row to edit a Member Organizaation in the database");
+						} else {
+							var grid = $('##jqGrid');
+							var RowIDValue = grid.getCell(selectedRow, 'TContent_ID');
+							var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:membership.editmembership&MembershipID="+ RowIDValue;
+							window.open(urlToGo,"_self");
+						}
+						},
+					position: "last"
+				}
+			)
+		});
+	</script>
 </cfoutput>
