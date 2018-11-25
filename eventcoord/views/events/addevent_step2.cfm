@@ -85,11 +85,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="panel-heading"><h1>Event Pricing</h1></div>
 						<div class="form-group">
 							<label for="MemberCost" class="control-label col-sm-3">Member Pricing:&nbsp;</label>
-							<div class="col-sm-8"><cfinput type="text" class="form-control MemberCost" id="MemberCost" name="MemberCost" required="yes"></div>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" required="yes"></div>
 						</div>
 						<div class="form-group">
 							<label for="NonMemberCost" class="control-label col-sm-3">NonMember Pricing:&nbsp;</label>
-							<div class="col-sm-8"><cfinput type="text" class="form-control NonMemberCost" id="NonMemberCost" name="NonMemberCost" required="yes"></div>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" required="yes"></div>
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.EventFeatured EQ 1>
@@ -198,10 +198,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</cfif>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="RegisterAccount" class="btn btn-primary pull-right" value="Add Event - Step 3"><br /><br />
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-left" value="Back to Step 1">
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Add Event - Step 3"><br /><br />
 				</div>
 			</cfform>
-			<cfdump var="#Session#">
 		</div>
 	<cfelseif isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
@@ -240,29 +240,65 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="panel-heading"><h1>Additional Detail Information for Event or Workshop</h1></div>
 					<div class="form-group">
 						<label for="EventAgenda" class="control-label col-sm-3">Event Agenda:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="EventAgenda" id="EventAgenda" class="form-control">#Session.UserSuppliedInfo.EventAgenda#</textarea></div>
+						<div class="col-sm-8">
+							<cfif isDefined("Session.UserSuppliedInfo.EventAgenda")>
+								<textarea name="EventAgenda" id="EventAgenda" class="form-control">#Session.UserSuppliedInfo.EventAgenda#</textarea>
+							<cfelse>
+								<textarea name="EventAgenda" id="EventAgenda" class="form-control"></textarea>
+							</cfif>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="EventTargetAudience" class="control-label col-sm-3">Event Target Audience:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="EventTargetAudience" id="EventTargetAudience" class="form-control">#Session.UserSuppliedInfo.EventTargetAudience#</textarea></div>
+						<div class="col-sm-8">
+							<cfif isDefined("Session.UserSuppliedInfo.EventAgenda")>
+								<textarea name="EventTargetAudience" id="EventTargetAudience" class="form-control">#Session.UserSuppliedInfo.EventTargetAudience#</textarea>
+							<cfelse>
+								<textarea name="EventTargetAudience" id="EventTargetAudience" class="form-control"></textarea>
+							</cfif>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="EventStrategies" class="control-label col-sm-3">Event Strategies:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="EventStrategies" id="EventStrategies" class="form-control">#Session.UserSuppliedInfo.EventStrategies#</textarea></div>
+						<div class="col-sm-8">
+							<cfif isDefined("Session.UserSuppliedInfo.EventStrategies")>
+								<textarea name="EventStrategies" id="EventStrategies" class="form-control">#Session.UserSuppliedInfo.EventStrategies#</textarea>
+							<cfelse>
+								<textarea name="EventStrategies" id="EventStrategies" class="form-control"></textarea>
+							</cfif>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="EventSpecialInstructions" class="control-label col-sm-3">Event Special Instructions:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="EventSpecialInstructions" id="EventSpecialInstructions" class="form-control">#Session.UserSuppliedInfo.EventSpecialInstructions#</textarea></div>
+						<div class="col-sm-8">
+							<cfif isDefined("Session.UserSuppliedInfo.EventSpecialInstructions")>
+								<textarea name="EventSpecialInstructions" id="EventSpecialInstructions" class="form-control">#Session.UserSuppliedInfo.EventSpecialInstructions#</textarea>
+							<cfelse>
+								<textarea name="EventSpecialInstructions" id="EventSpecialInstructions" class="form-control"></textarea>
+							</cfif>
+						</div>
 					</div>
 					<cfif Session.UserSuppliedInfo.WebinarEvent EQ 0>
 						<div class="panel-heading"><h1>Event Pricing</h1></div>
 						<div class="form-group">
 							<label for="MemberCost" class="control-label col-sm-3">Member Pricing:&nbsp;</label>
-							<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" value="#Session.UserSuppliedInfo.MemberCost#" required="yes"></div>
+							<div class="col-sm-8">
+								<cfif isDefined("Session.UserSuppliedInfo.MemberCost")>
+									<cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" value="#Session.UserSuppliedInfo.MemberCost#" required="yes">
+								<cfelse>
+									<cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" required="yes">
+								</cfif>
+							</div>
 						</div>
 						<div class="form-group">
 							<label for="NonMemberCost" class="control-label col-sm-3">NonMember Pricing:&nbsp;</label>
-							<div class="col-sm-8"><cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" value="#Session.UserSuppliedInfo.NonMemberCost#" required="yes"></div>
+							<div class="col-sm-8">
+								<cfif isDefined("Session.UserSuppliedInfo.NonMemberCost")>
+									<cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" value="#Session.UserSuppliedInfo.NonMemberCost#" required="yes">
+								<cfelse>
+									<cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" required="yes">
+								</cfif>
+							</div>
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.EventFeatured EQ 1>
@@ -371,7 +407,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</cfif>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="RegisterAccount" class="btn btn-primary pull-right" value="Add Event - Step 3"><br /><br />
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-left" value="Back to Step 1">
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Add Event - Step 3"><br /><br />
 				</div>
 			</cfform>
 		</div>

@@ -28,7 +28,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="RegisterAccount" class="btn btn-primary pull-right" value="Add Event - Step 4"><br /><br />
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-left" value="Back to Step 2">
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Add Event - Step 4"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -56,7 +57,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="RegisterAccount" class="btn btn-primary pull-right" value="Add Event - Step 4"><br /><br />
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-left" value="Back to Step 2">
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Add Event - Step 4"><br /><br />
 				</div>
 			</cfform>
 		</div>

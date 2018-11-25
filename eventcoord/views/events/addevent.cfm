@@ -89,7 +89,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 						<div class="form-group">
 							<label for="LongDescription" class="control-label col-sm-3">Event Description:&nbsp;</label>
-							<div class="col-sm-8"><textarea name="LongDescription" id="LongDescription" class="form-control" ></textarea></div>
+							<div class="col-sm-8"><textarea name="LongDescription" id="LongDescription" class="form-control" ></textarea><span id="LongDescriptionCharacters"></span> Characters</div>
 						</div>
 						<div class="panel-heading"><h1>Event Specific Feature Information</h1></div>
 						<div class="alert alert-info">The default option for each one of the following is No unless you specifically select Yes on these questions.</div>
@@ -159,11 +159,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</div>
 					<div class="panel-footer">
-						<cfinput type="Submit" name="RegisterAccount" class="btn btn-primary pull-right" value="Add Event - Step 2"><br /><br />
+						<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-left" value="Back to Main Menu">
+						<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Add Event - Step 2"><br /><br />
 					</div>
 				</div>
 			</cfform>
 		</div>
+		<script type="text/javascript">
+			$('##LongDescription').keyup(LongDescriptionupdateCounter);
+			$('##LongDescription').keydown(LongDescriptionupdateCounter);
+
+			function LongDescriptionupdateCounter() {
+				var cs = $(this).val().length;
+				$('##LongDescriptionCharacters').text(cs);
+			}
+		</script>
 	<cfelseif isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
 			<div class="panel-heading"><h1>Add New Event or Workshop - Step 1</h1></div>
@@ -219,7 +229,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 						<div class="form-group">
 							<label for="LongDescription" class="control-label col-sm-3">Event Description:&nbsp;</label>
-							<div class="col-sm-8"><textarea name="LongDescription" id="LongDescription" class="form-control">#Session.UserSuppliedInfo.LongDescription#</textarea></div>
+							<div class="col-sm-8"><textarea name="LongDescription" id="LongDescription" class="form-control">#Session.UserSuppliedInfo.LongDescription#</textarea><span id="LongDescriptionCharacters"></span> Characters</div>
 						</div>
 						<div class="panel-heading"><h1>Event Specific Feature Information</h1></div>
 						<div class="alert alert-info">The default option for each one of the following is No unless you specifically select Yes on these questions.</div>
@@ -289,11 +299,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</div>
 					<div class="panel-footer">
-						<cfinput type="Submit" name="RegisterAccount" class="btn btn-primary pull-right" value="Add Event - Step 2"><br /><br />
+						<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-left" value="Back to Main Menu">
+						<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Add Event - Step 2"><br /><br />
 					</div>
 				</div>
 			</cfform>
 		</div>
+		<script type="text/javascript">
+			$('##LongDescription').keyup(LongDescriptionupdateCounter);
+			$('##LongDescription').keydown(LongDescriptionupdateCounter);
+
+			function LongDescriptionupdateCounter() {
+				var cs = $(this).val().length;
+				$('##LongDescriptionCharacters').text(cs);
+			}
+		</script>
 	</cfif>
 
 <!---

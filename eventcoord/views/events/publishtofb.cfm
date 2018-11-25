@@ -6,10 +6,12 @@ Copyright 2010-2013 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 --->
+<!---
 <cfset Session.UserSuppliedInfo.FB.AppID = "923408481055376">
 <cfset Session.UserSuppliedInfo.FB.AppSecretKey = "fb6fc196185850747a2250646ba378af">
 <cfset Session.UserSuppliedInfo.FB.PageID = "172096152818693">
 <cfset Session.UserSuppliedInfo.FB.AppScope = "publish_actions,publish_pages">
+--->
 </cfsilent>
 
 <cfif isDefined("URL.EventID") and isDefined("URL.AutomaticPost")>
@@ -19,20 +21,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 		userID = 0;
 
-		if (Session.UserSuppliedInfo.FB.AppID is "" or Session.UserSuppliedInfo.FB.AppSecretKey is "") {
+		if (Session.PostEventToFB.FacebookAppID is "" or Session.PostEventToFB.FacebookAppSecretKey is "") {
 			// Application Not Configured
 		} else {
 			// Create facebookApp instance
-			facebookApp = new FacebookApp(appId=Session.UserSuppliedInfo.FB.AppID, secretKey=Session.UserSuppliedInfo.FB.AppSecretKey);
+			facebookApp = new FacebookApp(appId=Session.PostEventToFB.FacebookAppID, secretKey=Session.PostEventToFB.FacebookAppSecretKey);
 
 			userId = facebookApp.getUserId();
 
 			if (userId) {
 				try {
 					userAccessToken = facebookApp.getUserAccessToken();
-					facebookGraphAPI = new FacebookGraphAPI(accessToken=userAccessToken, appId=Session.UserSuppliedInfo.FB.AppID);
-					pageAccessToken = FacebookGraphAPI.getPageAccessToken(Session.UserSuppliedInfo.FB.PageID);
-					facebookPageGraphAPI = new FacebookGraphAPI(accessToken=pageAccessToken, appId=Session.UserSuppliedInfo.FB.AppID);
+					facebookGraphAPI = new FacebookGraphAPI(accessToken=userAccessToken, appId=Session.PostEventToFB.FacebookAppID);
+					pageAccessToken = FacebookGraphAPI.getPageAccessToken(Session.PostEventToFB.FacebookPageID);
+					facebookPageGraphAPI = new FacebookGraphAPI(accessToken=pageAccessToken, appId=Session.PostEventToFB.FacebookAppID);
 					userObject = FacebookGraphAPI.getObject(id=userId);
 					userFriends = FacebookGraphAPI.getConnections(id=userId, type='taggable_friends', limit=10);
 					authenticated = true;
@@ -46,17 +48,15 @@ http://www.apache.org/licenses/LICENSE-2.0
 			}
 
 			if (userId eq 0) {
-				parameters = {scope=Session.UserSuppliedInfo.FB.AppScope};
+				parameters = {scope=Session.PostEventToFB.FacebookAppScope};
 				loginUrl = facebookApp.getLoginUrl(parameters);
 			};
 		}
 	</cfscript>
 	<cfoutput>
-		<div class="art-block clearfix">
-			<div class="art-blockheader">
-				<h3 class="t">Publish Event to Facebook: #Session.UserSuppliedInfo.PickedEvent.ShortTitle#</h3>
-			</div>
-			<div class="art-blockcontent">
+		<div class="panel panel-default">
+			<div class="panel-heading"><h1>Publish Event to Facebook: #Session.PostEventToFB.EventTitle#</h1></div>
+			<div class="panel-body">
 				<div id="fb-root"></div>
 				<script>
 					window.fbAsyncInit = function() {
@@ -92,12 +92,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 									WriteDump(response.authResponse);
 									// user cancelled login
 								}
-							}, {scope:'#Session.UserSuppliedInfo.FB.AppScope#'});
+							}, {scope:'#Session.PostEventToFB.FacebookAppScope#'});
 						}
 					</cfif>
 				</script>
 				<cfif userId eq 0>
-					<div class="alert-box notice">Please complete this form to post this event to the Organization's Facebook Wall</div>
+					<div class="alert alert-info">Please complete this form to post this event to the Organization's Facebook Wall</div>
 					<hr>
 					<h2 align="center">Login To Facebook</h2>
 					<div class="alert-box">Please click the Login To Facebook Link Below to allow this website the ability to publish this newly created event to the Organization's Facebook Page.<br>
@@ -105,68 +105,90 @@ http://www.apache.org/licenses/LICENSE-2.0
 				    </div>
 					<hr />
 				<cfelse>
-					<cfset FBMessagePost = "On " & #DateFormat(Session.UserSuppliedInfo.PickedEvent.EventDate, "full")# & " we will be hosting an event titled " & #Session.UserSuppliedInfo.PickedEvent.ShortTitle# & ". " & #Session.UserSuppliedInfo.PickedEvent.LongDescription# & " This event will be held at " & #Session.UserSuppliedInfo.FacilityInfo.FacilityName# & " (" & #Session.UserSuppliedInfo.FacilityInfo.PhysicalAddress# & " " & #Session.UserSuppliedInfo.FacilityInfo.PhysicalCity# & ", " & #Session.UserSuppliedInfo.FacilityInfo.PhysicalState# & " " & #Session.UserSuppliedInfo.FacilityInfo.PhysicalZipCode# & "). " & " For more information regarding this event or to register to attend this event, please visit our Event Registration System by clicking the link in this post.">
-					<cfset FBMessageRegLink = "http://" & #cgi.server_name# & "/plugins/EventRegistration/?EventRegistrationaction=public:events.eventinfo&EventID=#URL.EventID#">
+					<cfset FBMessagePost = "On " & #DateFormat(Session.PostEventToFB.EventDate, "full")# & " we will be hosting an event titled " & #Session.PostEventToFB.EventTitle# & ". " & #Session.PostEventToFB.LongDescription# & " This event will be held at " & #Session.PostEventToFB.FacilityName# & " (" & #Session.PostEventToFB.FacilityAddress# & " " & #Session.PostEventToFB.FacilityCity# & ", " & #Session.PostEventToFB.FacilityState# & " " & #Session.PostEventToFB.FacilityZipCode# & "). " & " For more information regarding this event or to register to attend this event, please visit our Event Registration System by clicking the link in this post.">
+					<cfset FBMessageRegLink = "http://" & #cgi.server_name# & "#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:events.eventinfo&EventID=#URL.EventID#">
 					<cfscript>
-						FBMsg = facebookPageGraphAPI.publishLink(profileId=Session.UserSuppliedInfo.FB.PageID, link="#Variables.FBMessageRegLink#", message='#Variables.FBMessagePost#');
+						FBMsg = facebookPageGraphAPI.publishLink(profileId=Session.PostEventToFB.FacebookPageID, link="#Variables.FBMessageRegLink#", message='#Variables.FBMessagePost#');
 					</cfscript>
 
 					<cfif FBMsg CONTAINS "172096152818693_">
-						<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default&UserAction=PostToFB&Successful=True" addtoken="false">
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default&UserAction=PostToFB&Successful=True" addtoken="false">
 					<cfelseif isNumeric(FBMsg)>
-						<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default&UserAction=PostToFB&Successful=True" addtoken="false">
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default&UserAction=PostToFB&Successful=True" addtoken="false">
 					<cfelse>
-						<div class="alert-box error">An error has occurred in posting this event to the organization's Facebook Page.</div>
+						<div class="alert alert-warning">An error has occurred in posting this event to the organization's Facebook Page.</div>
 					</cfif>
 				</cfif>
 			</div>
 		</div>
 	</cfoutput>
-<cfelseif isDefined("URL.EventID")>
-	<cfimport taglib="/plugins/EventRegistration/library/uniForm/tags/" prefix="uForm">
-	<cflock timeout="60" scope="SESSION" type="Exclusive">
-		<cfset Session.FormData = #StructNew()#>
-		<cfif not isDefined("Session.FormErrors")><cfset Session.FormErrors = #ArrayNew()#></cfif>
-	</cflock>
-	<cfscript>
-		timeConfig = structNew();
-		timeConfig['show24Hours'] = false;
-		timeConfig['showSeconds'] = false;
-	</cfscript>
+<cfelseif isDefined("URL.EventID") and not isDefined("URL.AutomaticPost")>
 	<cfoutput>
-		<div class="art-block clearfix">
-			<div class="art-blockheader">
-				<h3 class="t">Publish Event to Facebook: #Session.UserSuppliedInfo.PickedEvent.ShortTitle#</h3>
-			</div>
-			<div class="art-blockcontent">
-				<div class="alert-box notice">Please complete this form to send a message to those who have registered for this event.<br><Strong>Number of Registrations Currently: #Session.EventNumberRegistrations#</Strong></div>
-				<hr>
-				<uForm:form action="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.publishtofb&compactDisplay=false&EventID=#URL.EventID#&AutomaticPost=true" method="Post" id="EmailEventParticipants" errors="#Session.FormErrors#" errorMessagePlacement="both"
-					commonassetsPath="/plugins/EventRegistration/library/uniForm/" showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton"
-					cancelAction="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events&compactDisplay=false"
-					submitValue="Post Event to Facebook" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
-					<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-					<input type="hidden" name="formSubmit" value="true">
-					<input type="hidden" name="PerformAction" value="FacebookAuthenticate">
-					<uForm:fieldset legend="Event Date and Time">
-						<uform:field label="Primary Event Date" name="EventDate" isDisabled="true" value="#DateFormat(Session.UserSuppliedInfo.PickedEvent.EventDate, 'mm/dd/yyyy')#" type="text" inputClass="date" hint="Date of Event, First Date if event has multiple dates." />
-						<cfif Session.UserSuppliedInfo.PickedEvent.EventSpanDates EQ 1>
-							<uform:field label="Second Event Date" name="EventDate1" isDisabled="true" value="#DateFormat(Session.UserSuppliedInfo.PickedEvent.EventDate1, 'mm/dd/yyyy')#" type="text" inputClass="date" hint="Date of Event, Second Date if event has multiple dates." />
-							<uform:field label="Third Event Date" name="EventDate2" isDisabled="true" value="#DateFormat(Session.UserSuppliedInfo.PickedEvent.EventDate2, 'mm/dd/yyyy')#" type="text" inputClass="date" hint="Date of Event, Third Date if event has multiple dates." />
-							<uform:field label="Fourth Event Date" name="EventDate3" isDisabled="true" value="#DateFormat(Session.UserSuppliedInfo.PickedEvent.EventDate3, 'mm/dd/yyyy')#" type="text" inputClass="date" hint="Date of Event, Fourth Date if event has multiple dates." />
-							<uform:field label="Fifth Event Date" name="EventDate4" isDisabled="true" value="#DateFormat(Session.UserSuppliedInfo.PickedEvent.EventDate4, 'mm/dd/yyyy')#" type="text" inputClass="date" hint="Date of Event, Fifth Date if event has multiple dates." />
+		<div class="panel panel-default">
+			<div class="panel-heading"><h1>Publish Event to Facebook: #Session.PostEventToFB.EventTitle#</h1></div>
+			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="EventID" value="#URL.EventID#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfinput type="hidden" name="PerformAction" value="FacebookAuthenticate">
+				<div class="panel-body">
+					<div class="alert alert-info">Please review this form to post the following event to the Organization's Facebook Page</div>
+					<h2 class="panel-title">Event Date and Time Information</h2>
+					<div class="form-group">
+						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#Session.getSelectedEvent.EventDate#" isDisabled="yes"></div>
+					</div>
+					<cfif LEN(Session.GetSelectedEvent.EventDate1) or LEN(Session.GetSelectedEvent.EventDate2) or LEN(Session.GetSelectedEvent.EventDate3) or LEN(Session.GetSelectedEvent.EventDate4)>
+						<cfif isDate(Session.GetSelectedEvent.EventDate1)>
+							<div class="form-group">
+								<label for="EventDate" class="control-label col-sm-3">2nd Event Date:&nbsp;</label>
+								<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#Session.getSelectedEvent.EventDate1#" isDisabled="yes"></div>
+							</div>
 						</cfif>
-						<uform:field label="Registration Deadline" name="Registration_Deadline" isDisabled="true" value="#DateFormat(Session.UserSuppliedInfo.PickedEvent.Registration_Deadline, 'mm/dd/yyyy')#" type="text" inputClass="date" hint="Accept Registration up to this date" />
-						<uform:field label="Registration Start Time" name="Registration_BeginTime" isDisabled="true" value="#TimeFormat(Session.UserSuppliedInfo.PickedEvent.Registration_BeginTime, 'hh:mm tt')#" type="text" pluginSetup="#timeConfig#" hint="The Beginning Time onSite Registration begins" />
-						<uform:field label="Event Start Time" name="Event_StartTime" isDisabled="true" type="text" value="#TimeFormat(Session.UserSuppliedInfo.PickedEvent.Event_StartTime, 'hh:mm tt')#" pluginSetup="#timeConfig#" hint="The starting time of this event" />
-						<uform:field label="Event End Time" name="Event_EndTime" isDisabled="true" type="text" value="#TimeFormat(Session.UserSuppliedInfo.PickedEvent.Event_EndTime, 'hh:mm tt')#" pluginSetup="#timeConfig#" hint="The ending time of this event" />
-					</uForm:fieldset>
-					<uForm:fieldset legend="Event Description">
-						<uform:field label="Event Short Title" name="ShortTitle" isDisabled="true" value="#Session.UserSuppliedInfo.PickedEvent.ShortTitle#" maxFieldLength="50" type="text" hint="Short Event Title of Event" />
-						<uform:field label="Event Description" name="LongDescription" isDisabled="true" value="#Session.UserSuppliedInfo.PickedEvent.LongDescription#" type="textarea" hint="Description of this meeting or event" />
-					</uForm:fieldset>
-				</uForm:form>
-			</div>
+						<cfif isDate(Session.GetSelectedEvent.EventDate2)>
+							<div class="form-group">
+								<label for="EventDate" class="control-label col-sm-3">3rd Event Date:&nbsp;</label>
+								<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#Session.getSelectedEvent.EventDate2#" isDisabled="yes"></div>
+							</div>
+						</cfif>
+						<cfif isDate(Session.GetSelectedEvent.EventDate3)>
+							<div class="form-group">
+								<label for="EventDate" class="control-label col-sm-3">4th Event Date:&nbsp;</label>
+								<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#Session.getSelectedEvent.EventDate3#" isDisabled="yes"></div>
+							</div>
+						</cfif>
+						<cfif isDate(Session.GetSelectedEvent.EventDate4)>
+							<div class="form-group">
+								<label for="EventDate" class="control-label col-sm-3">5th Event Date:&nbsp;</label>
+								<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#Session.getSelectedEvent.EventDate4#" isDisabled="yes"></div>
+							</div>
+						</cfif>
+					</cfif>
+					<div class="form-group">
+						<label for="EventTitle" class="control-label col-sm-3">Event Title:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#Session.getSelectedEvent.ShortTitle#" isDisabled="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="EventLongDescription" class="control-label col-sm-3">Full Description:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#Session.getSelectedEvent.LongDescription#" isDisabled="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="EventRegistrationDeadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#Session.getSelectedEvent.Registration_Deadline#" isDisabled="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="EventBeginTime" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#Session.getSelectedEvent.Event_StartTime#" isDisabled="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="EventEndTime" class="control-label col-sm-3">Event End Time:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#Session.getSelectedEvent.Event_EndTime#" isDisabled="yes"></div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Publish To Facebook"><br /><br />
+				</div>
+			</cfform>
 		</div>
 	</cfoutput>
 </cfif>

@@ -13,6 +13,41 @@ http://www.apache.org/licenses/LICENSE-2.0
 	<div class="panel panel-default">
 		<div class="panel-heading"><h1>Available Events and/or Workshops</h1></div>
 		<div class="panel-body">
+			<cfif isDefined("Session.FormErrors")>
+				<cfif ArrayLen(Session.FormErrors) GTE 1>
+					<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
+				</cfif>
+			</cfif>
+			<cfif isDefined("URL.UserAction")>
+				<div class="panel-body">
+					<cfswitch expression="#URL.UserAction#">
+						<cfcase value="PostToFB">
+							<cfif isDefined("URL.Successful")>
+								<cfif URL.Successful EQ "true">
+									<div class="alert alert-success"><p>You have successfully posted the event to the Organization's Facebook Page</p></div>
+								</cfif>
+							</cfif>
+						</cfcase>
+						<cfcase value="EventCancelled">
+							<cfif isDefined("URL.Successful")>
+								<cfif URL.Successful EQ "False">
+									<div class="alert alert-info"><p>Event was not cancelled due to selecting the 'No' option when asked if you really want to cancel this event.</p></div>
+								</cfif>
+							</cfif>
+						</cfcase>
+						<cfcase value="AddedEvent">
+							<cfif isDefined("URL.Successful")>
+								<cfif URL.Successful EQ "true">
+									<div class="alert alert-success"><p>You have successfully added a new event to the database.</p></div>
+									<cfif isDefined("URL.FacebookPost")>
+										<div class="alert alert-warning"><p>The event was not posted to Facebook even though the option was selected to post this event to Facebook. Within the Site Configuration, the necessary information needed to post to Facebook was not entered.</p></div>
+									</cfif>
+								</cfif>
+							</cfif>
+						</cfcase>
+					</cfswitch>
+				</div>
+			</cfif>
 			<table class="table table-striped table-bordered">
 				<cfif Session.getAvailableEvents.RecordCount>
 					<thead class="thead-default">

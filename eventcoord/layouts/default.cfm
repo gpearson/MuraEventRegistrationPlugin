@@ -45,20 +45,60 @@
 								</li>
 							</ul>
 						</li>
-						<li class="<cfif rc.action contains 'eventcoord:catering'>active</cfif>">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('eventcoord:catering.default')#">Catering Menu <span class="caret"></span></a>
+						<li class="<cfif rc.action contains 'eventcoord:caterers'>active</cfif>">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('eventcoord:caterers.default')#">Catering Menu <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li class="<cfif rc.action eq 'eventcoord:caterers.default'>active</cfif>">
+									<a href="#buildURL('eventcoord:caterers.default')#">List Caterers</a>
+								</li>
+								<li class="<cfif rc.action eq 'eventcoord:caterers.addevent'>active</cfif>">
+									<a href="#buildURL('eventcoord:caterers.addcaterer')#">Add New Caterer</a>
+								</li>
+							</ul>
 						</li>
 						<li class="<cfif rc.action contains 'eventcoord:facilities'>active</cfif>">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('eventcoord:facilities.default')#">Facility Menu <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li class="<cfif rc.action eq 'eventcoord:facilities.default'>active</cfif>">
+									<a href="#buildURL('eventcoord:facilities.default')#">List Facilities</a>
+								</li>
+								<li class="<cfif rc.action eq 'eventcoord:facilities.addevent'>active</cfif>">
+									<a href="#buildURL('eventcoord:facilities.addcaterer')#">Add New Facility</a>
+								</li>
+							</ul>
 						</li>
 						<li class="<cfif rc.action contains 'eventcoord:membership'>active</cfif>">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('eventcoord:membership.default')#">Membership Menu <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li class="<cfif rc.action eq 'eventcoord:membership.default'>active</cfif>">
+									<a href="#buildURL('eventcoord:membership.default')#">List Membership</a>
+								</li>
+								<li class="<cfif rc.action eq 'eventcoord:membership.addevent'>active</cfif>">
+									<a href="#buildURL('eventcoord:membership.addmembership')#">Add New Membership</a>
+								</li>
+							</ul>
 						</li>
 						<li class="<cfif rc.action contains 'eventcoord:presenters'>active</cfif>">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('eventcoord:presenters.default')#">Presenters Menu <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li class="<cfif rc.action eq 'eventcoord:presenters.default'>active</cfif>">
+									<a href="#buildURL('eventcoord:presenters.default')#">List Presenters</a>
+								</li>
+								<li class="<cfif rc.action eq 'eventcoord:presenters.addevent'>active</cfif>">
+									<a href="#buildURL('eventcoord:presenters.addmembership')#">Add New Presenter</a>
+								</li>
+							</ul>
 						</li>
 						<li class="<cfif rc.action contains 'eventcoord:users'>active</cfif>">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('eventcoord:users.default')#">Users Menu <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li class="<cfif rc.action eq 'eventcoord:users.default'>active</cfif>">
+									<a href="#buildURL('eventcoord:users.default')#">List Users</a>
+								</li>
+								<li class="<cfif rc.action eq 'eventcoord:users.addevent'>active</cfif>">
+									<a href="#buildURL('eventcoord:users.addmembership')#">Add New User</a>
+								</li>
+							</ul>
 						</li>
 					</ul>
 					<!---

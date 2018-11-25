@@ -13,6 +13,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 	<div class="panel panel-default">
 		<div class="panel-heading"><h1>Welcome Event Facilitator</h1></div>
 		<div class="panel-body">
+			<cfif isDefined("URL.UserAction")>
+				<cfswitch expression="#URL.UserAction#">
+					<cfcase value="EventAdded">
+						<cfif URL.Successful EQ "False">
+							<cfif ArrayLen(Session.FormErrors) GTE 1>
+								<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
+							</cfif>
+						</cfif>
+					</cfcase>
+				</cfswitch>
+			</cfif>
 
 		</div>
 	</div>
