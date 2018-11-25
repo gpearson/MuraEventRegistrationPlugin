@@ -114,15 +114,13 @@
 						</td>
 						<td colspan="1" rowspan="4" style="width: 475px; text-align: center; vertical-align: top;">
 						<link rel="stylesheet" href="/plugins/#Variables.Framework.Package#/library/LeafLet/leaflet.css" />
-						<!--[if lte IE 8]> <link rel="stylesheet" href="/plugins/#Variables.Framework.Package#/library/LeafLet/leaflet.ie.css" /> <![endif]-->
 						<script src="/plugins/#Variables.Framework.Package#/library/LeafLet/leaflet.js"></script>
-						<script src="/plugins/#Variables.Framework.Package#/library/LeafLet/KML.js"></script>
 						<div id="map" style="width: 475px; height: 300px;"></div>
 						<script>
 							var facilitymarker;
 							var map = L.map('map');
 							map.setView(new L.LatLng(#Session.EventInfo.EventFacility.GeoCode_Latitude#, #Session.EventInfo.EventFacility.GeoCode_Longitude#), 12);
-							L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '', maxZoom: 9 }).addTo(map);
+							L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '', maxZoom: 16 }).addTo(map);
 							var FacilityMarker = L.icon({
 								iconUrl: '/plugins/#Variables.Framework.Package#/library/LeafLet/images/conference.png'
 							});
@@ -253,6 +251,8 @@
 					<cfelse>
 						<br /><br />
 					</cfif>
+				<cfelse>
+					<br /><br />
 				</cfif>
 			</cfif>
 		</div>
