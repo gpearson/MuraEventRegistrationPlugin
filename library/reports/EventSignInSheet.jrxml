@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
+<!-- 2015-07-23T13:08:53 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="getRegisteredParticipants" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="10601a87-fe87-435b-bb5c-dcfb6a66fa53">
+	<style name="Title" fontName="Serif" fontSize="50" isBold="true"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#E6DAC3"/>
+		</conditionalStyle>
+	</style>
+	<field name="RequestsMeal" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="IVCParticipant" class="java.lang.Number">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Fname" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Lname" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Company" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Email" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Domain" class="java.lang.String"/>
+	<field name="ShortTitle" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="EventDateFormat" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="NIESCLogoPath" class="java.lang.String"/>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{Domain}]]></groupExpression>
+		<groupHeader>
+			<band height="31">
+				<frame>
+					<reportElement mode="Opaque" x="-21" y="7" width="597" height="24" forecolor="#000040" backcolor="#000040" uuid="d201aa4a-2a5e-45ff-a994-98f9216ea170"/>
+					<textField>
+						<reportElement style="SubTitle" x="22" y="0" width="279" height="24" forecolor="#FFFFFF" uuid="10681561-91be-4ed3-9856-85fadb57cafd"/>
+						<textElement>
+							<font fontName="Serif" isBold="true"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{Domain}]]></textFieldExpression>
+					</textField>
+					<staticText>
+						<reportElement style="SubTitle" x="468" y="0" width="105" height="24" forecolor="#FFFFFF" uuid="cdc3ef2f-cc7b-4e5c-9cea-1df26be71134"/>
+						<textElement>
+							<font fontName="Serif"/>
+						</textElement>
+						<text><![CDATA[Attendance]]></text>
+					</staticText>
+					<staticText>
+						<reportElement style="SubTitle" x="309" y="0" width="84" height="24" forecolor="#FFFFFF" uuid="6e6f4df5-d3b5-4227-b3f3-44b161fc31c3"/>
+						<textElement>
+							<font fontName="Serif"/>
+						</textElement>
+						<text><![CDATA[Meal]]></text>
+					</staticText>
+				</frame>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="174" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<staticText>
+				<reportElement style="Title" x="120" y="0" width="435" height="30" uuid="2e920793-6a25-4289-97e3-7b92a44314c6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Serif" size="20" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[Northern Indiana Educational Services Center]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="120" y="97" width="434" height="22" uuid="8a1557b6-8b4c-4b9d-a1a9-2fb4be4fb86e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EventDateFormat}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="120" y="75" width="432" height="22" uuid="21bb45c8-710c-4273-a19b-77eca11600ac"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif" size="16" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ShortTitle}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="3" y="130" width="552" height="40" uuid="7326ccc2-f03a-43eb-b76e-e92a3012189d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif" size="10"/>
+				</textElement>
+				<text><![CDATA[Please check off the Participant's Name when they have signed in to attend this event.
+If participants need to make changes to Name, Email they must update their account on website.]]></text>
+			</staticText>
+			<image evaluationTime="Report">
+				<reportElement x="3" y="0" width="167" height="130" uuid="87255935-393b-4ff7-a783-d540b1d405f7"/>
+				<imageExpression><![CDATA[$F{NIESCLogoPath}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="120" y="33" width="434" height="26" uuid="dc1f72dd-d1e6-4947-8e3f-93f605a52659"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif" size="20"/>
+				</textElement>
+				<text><![CDATA[Event Sign In Sheet]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="8" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="57" splitType="Stretch">
+			<textField>
+				<reportElement style="Detail" x="0" y="2" width="280" height="20" forecolor="#000000" uuid="2464ab79-a4dc-414b-bea1-386b8960fec7"/>
+				<textElement>
+					<font fontName="Serif" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Lname} + ", " + $F{Fname}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="36" y="24" width="264" height="22" forecolor="#000000" uuid="dd4d7032-115b-4a66-9f8d-cb7b99037383"/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Email}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement key="" x="466" y="2" width="64" height="20" uuid="69ac4b41-7593-461b-856a-9a04d4c15b7c"/>
+				<box padding="0">
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-20" y="48" width="593" height="1" uuid="ddcac033-b30b-48ef-ae0b-72cc1f2b713d">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<textField>
+				<reportElement x="287" y="2" width="63" height="20" uuid="e553d855-38d2-4381-b50d-0a4f70b5e6e7"/>
+				<textFieldExpression><![CDATA[$F{RequestsMeal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="2b6d75be-d0db-4b06-8b6e-267cfd3ec815"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="-21" y="1" width="597" height="24" forecolor="#A10000" backcolor="#A10000" uuid="6d11ac14-fe70-426c-917e-abb8d86cbe42"/>
+				<textField evaluationTime="Report">
+					<reportElement style="Column header" x="533" y="0" width="40" height="20" forecolor="#FFFFFF" uuid="894db33a-2b99-48a7-ad69-36084c0680da"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Serif" size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Column header" x="453" y="0" width="80" height="20" forecolor="#FFFFFF" uuid="1058fdc2-81d4-4676-9eff-3c1e58988da6"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Serif" size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement style="Column header" x="22" y="1" width="197" height="20" forecolor="#FFFFFF" uuid="9e200a2d-9201-415e-bb2f-7b056fd968d8"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Serif" size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>
