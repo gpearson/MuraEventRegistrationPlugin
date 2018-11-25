@@ -38,27 +38,27 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<div class="panel-body">
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" value="#Session.getSelectedEvent.Registration_Deadline#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#DateFormat(Session.getSelectedEvent.EventDate, 'mm/dd/yyyy')#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate1" class="control-label col-sm-3">Second Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate1" name="EventDate1" value="#Session.getSelectedEvent.EventDate1#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate1" name="EventDate1" value="#DateFormat(Session.getSelectedEvent.EventDate1, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate2" class="control-label col-sm-3">Third Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate2" name="EventDate2" value="#Session.getSelectedEvent.EventDate2#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate2" name="EventDate2" value="#DateFormat(Session.getSelectedEvent.EventDate2, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate3" class="control-label col-sm-3">Fourth Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate3" name="EventDate3" value="#Session.getSelectedEvent.EventDate3#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate3" name="EventDate3" value="#DateFormat(Session.getSelectedEvent.EventDate3, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate4" class="control-label col-sm-3">Fifth Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate4" name="EventDate4" value="#Session.getSelectedEvent.EventDate4#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate4" name="EventDate4" value="#DateFormat(Session.getSelectedEvent.EventDate4, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate5" class="control-label col-sm-3">Sixth Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate5" name="EventDate5" value="#Session.getSelectedEvent.EventDate5#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate5" name="EventDate5" value="#DateFormat(Session.getSelectedEvent.EventDate5, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -77,29 +77,30 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<div class="panel-body">
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" value="#Session.getSelectedEvent.Registration_Deadline#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#DateFormat(Session.getSelectedEvent.EventDate, 'mm/dd/yyyy')#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate1" class="control-label col-sm-3">Second Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate1" name="EventDate1" value="#Session.getSelectedEvent.EventDate1#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate1" name="EventDate1" value="#DateFormat(Session.getSelectedEvent.EventDate1, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate2" class="control-label col-sm-3">Third Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate2" name="EventDate2" value="#Session.getSelectedEvent.EventDate2#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate2" name="EventDate2" value="#DateFormat(Session.getSelectedEvent.EventDate2, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate3" class="control-label col-sm-3">Fourth Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate3" name="EventDate3" value="#Session.getSelectedEvent.EventDate3#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate3" name="EventDate3" value="#DateFormat(Session.getSelectedEvent.EventDate3, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate4" class="control-label col-sm-3">Fifth Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate4" name="EventDate4" value="#Session.getSelectedEvent.EventDate4#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate4" name="EventDate4" value="#DateFormat(Session.getSelectedEvent.EventDate4, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate5" class="control-label col-sm-3">Sixth Event Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate5" name="EventDate5" value="#Session.getSelectedEvent.EventDate5#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate5" name="EventDate5" value="#DateFormat(Session.getSelectedEvent.EventDate5, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 				</div>
+
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Event Section"><br /><br />

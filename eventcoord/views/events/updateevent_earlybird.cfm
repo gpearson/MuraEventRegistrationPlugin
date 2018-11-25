@@ -42,7 +42,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
 						<label for="EarlyBird_RegistrationDeadline" class="control-label col-sm-3">Member Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_RegistrationDeadline" name="EarlyBird_RegistrationDeadline" value="#Session.getSelectedEvent.EarlyBird_RegistrationDeadline#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_RegistrationDeadline" name="EarlyBird_RegistrationDeadline" value="#DateFormat(Session.getSelectedEvent.EarlyBird_RegistrationDeadline, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EarlyBird_MemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>

@@ -170,7 +170,7 @@
 
 		<cfif getRegistration.WebinarParticipant EQ 1 and getEvent.WebinarAvailable EQ 1>
 			<cfset FacilityEventLocationText = "Online Webinar: Connection Details to follow in email from presenter.">
-		<cfelseif getEvent.WebinarAvailable EQ 0>
+		<cfelseif getEvent.WebinarAvailable EQ 0 OR getRegistration.WebinarParticipant EQ 0>
 			<cfset FacilityLocationMapURL = "https://maps.google.com/maps?q=#getEventLocation.GeoCode_Latitude#,#getEventLocation.GeoCode_Longitude#">
 			<cfset FacilityLocationFileName = #reReplace(getEventLocation.FacilityName, "[[:space:]]", "", "ALL")#>
 			<cfset FacilityLocationFileName = #reReplace(Variables.FacilityLocationFileName, "'", "", "ALL")#>
@@ -424,6 +424,15 @@
 		</cfif>
 
 
+	</cffunction>
+
+	<cffunction name="SendInvoiceToCompanyAccountsPayable" returntype="Any" Output="False">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="ReportLocFilename" required="true" type="String">
+		<cfargument name="ShortTitle" required="true" type="String">
+		<cfargument name="ActPayableContactName" required="true" type="String">
+		<cfargument name="ActPayableContactEmail" required="true" type="String">
+		<cfinclude template="EmailTemplates/SendEmailInvoiceToAccountsPayable.cfm">
 	</cffunction>
 
 

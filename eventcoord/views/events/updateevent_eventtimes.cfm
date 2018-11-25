@@ -45,19 +45,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<div class="panel-body">
 					<div class="form-group">
 						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" value="#Session.getSelectedEvent.Registration_Deadline#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" value="#DateFormat(Session.getSelectedEvent.Registration_Deadline, 'mm/dd/yyyy')#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Registration_BeginTime" class="control-label col-sm-3">Begin Time of OnSite Registrations:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_BeginTime" name="Registration_BeginTime" value="#Session.getSelectedEvent.Registration_BeginTime#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_BeginTime" name="Registration_BeginTime" value="#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, 'HH:MM tt')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="Event_StartTime" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_StartTime" name="Event_StartTime" value="#Session.getSelectedEvent.Event_StartTime#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_StartTime" name="Event_StartTime" value="#TimeFormat(Session.getSelectedEvent.Event_StartTime, 'HH:MM tt')#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Event_EndTime" class="control-label col-sm-3">Event End Time:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_EndTime" name="Event_EndTime" value="#Session.getSelectedEvent.Event_EndTime#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_EndTime" name="Event_EndTime" value="#TimeFormat(Session.getSelectedEvent.Event_EndTime, 'HH:MM tt')#" required="yes"></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -76,19 +76,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<div class="panel-body">
 					<div class="form-group">
 						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" value="#Session.getSelectedEvent.Registration_Deadline#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" value="#DateFormat(Session.getSelectedEvent.Registration_Deadline, 'mm/dd/yyyy')#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Registration_BeginTime" class="control-label col-sm-3">Begin Time of OnSite Registrations:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_BeginTime" name="Registration_BeginTime" value="#Session.getSelectedEvent.Registration_BeginTime#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_BeginTime" name="Registration_BeginTime" value="#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, 'HH:MM tt')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="Event_StartTime" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_StartTime" name="Event_StartTime" value="#Session.getSelectedEvent.Event_StartTime#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_StartTime" name="Event_StartTime" value="#TimeFormat(Session.getSelectedEvent.Event_StartTime, 'HH:MM tt')#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Event_EndTime" class="control-label col-sm-3">Event End Time:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_EndTime" name="Event_EndTime" value="#Session.getSelectedEvent.Event_EndTime#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_EndTime" name="Event_EndTime" value="#TimeFormat(Session.getSelectedEvent.Event_EndTime, 'HH:MM tt')#" required="yes"></div>
 					</div>
 				</div>
 				<div class="panel-footer">

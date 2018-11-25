@@ -25,19 +25,19 @@
 					<cfif Session.getSelectedEvent.MealProvided EQ 1>
 						<div class="form-group">
 						<label for="StayForMeal" class="control-label col-sm-4">Will All New Participants be Staying for Meal?:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="StayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Everyone Registering be staying for Meal</option></cfselect></div>
+						<div class="col-sm-8"><cfselect name="StayForMeal" class="form-control" Selected="#Session.FormInput.StayForMeal#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Everyone Registering be staying for Meal</option></cfselect></div>
 						</div>
 					</cfif>
 					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
 						<div class="form-group">
 						<label for="AttendViaWebinar" class="control-label col-sm-4">Will All New Participants be Attending via Webinar?:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="AttendViaWebinar" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Everyone Registering attend via Webinar Option</option></cfselect></div>
+						<div class="col-sm-8"><cfselect name="AttendViaWebinar" class="form-control" Selected="#Session.FormInput.AttendViaWebinar#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Everyone Registering attend via Webinar Option</option></cfselect></div>
 						</div>
 					</cfif>
 					<cfif Session.UserRegistrationInfo.VideoConferenceOption EQ "True">
 						<div class="form-group">
 						<label for="AttendViaIVC" class="control-label col-sm-4">Will All New Participants be Attending via Video Conference?:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="AttendViaIVC" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Will Everyone Registering attend via Video Conferencing Equipment</option></cfselect></div>
+						<div class="col-sm-8"><cfselect name="AttendViaIVC" class="form-control" Selected="#Session.FormInput.AttendViaIVC#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Will Everyone Registering attend via Video Conferencing Equipment</option></cfselect></div>
 						</div>
 					</cfif>
 					<table class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
@@ -252,6 +252,28 @@
 							<cfcase value="1"><td colspan="3">&nbsp;</td></tr></cfcase>
 							<cfdefaultcase><td>&nbsp;</td></tr></cfdefaultcase>
 						</cfswitch>
+					</table>
+					<hr>
+					<div class="alert alert-info"><p>Complete the below form to add anyone in your organization who is not listed above. Please make sure the information entered is accurate as this system will communicate to individuals electronically. Be sure to click the Add button after entering First Name, Last Name and EMail Address to add them to the list above</p></div>
+					<table id="NewParticipantRows" class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
+						<thead>
+							<tr>
+								<td>Row</td>
+								<td class="col-sm-3">Participant First Name</td>
+								<td class="col-sm-4">Participant Last Name</td>
+								<td class="col-sm-3">Participant Email</td>
+								<td class="col-sm-3">Actions</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td><cfinput type="text" class="form-control" id="ParticipantFirstName" name="ParticipantFirstName" required="no"></td>
+								<td><cfinput type="text" class="form-control" id="ParticipantLastName" name="ParticipantLastName" required="no"></td>
+								<td><cfinput type="text" class="form-control" id="ParticipantEmail" name="ParticipantEmail" required="no"></td>
+								<td><input type="button" id="addParticipantRow" class="btn btn-primary btn-sm" value="Add" onclick="AddRow()"></td>
+							</tr>
+						</tbody>
 					</table>
 				</div>
 				<div class="panel-footer">
@@ -506,6 +528,28 @@
 							<cfdefaultcase><td>&nbsp;</td></tr></cfdefaultcase>
 						</cfswitch>
 					</table>
+					<hr>
+					<div class="alert alert-info"><p>Complete the below form to add anyone in your organization who is not listed above. Please make sure the information entered is accurate as this system will communicate to individuals electronically. Be sure to click the Add button after entering First Name, Last Name and EMail Address to add them to the list above</p></div>
+					<table id="NewParticipantRows" class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
+						<thead>
+							<tr>
+								<td>Row</td>
+								<td class="col-sm-3">Participant First Name</td>
+								<td class="col-sm-4">Participant Last Name</td>
+								<td class="col-sm-3">Participant Email</td>
+								<td class="col-sm-3">Actions</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td><cfinput type="text" class="form-control" id="ParticipantFirstName" name="ParticipantFirstName" required="no"></td>
+								<td><cfinput type="text" class="form-control" id="ParticipantLastName" name="ParticipantLastName" required="no"></td>
+								<td><cfinput type="text" class="form-control" id="ParticipantEmail" name="ParticipantEmail" required="no"></td>
+								<td><input type="button" id="addParticipantRow" class="btn btn-primary btn-sm" value="Add" onclick="AddRow()"></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
@@ -514,4 +558,44 @@
 			</cfform>
 		</div>
 	</cfif>
+	<script type="text/javascript">
+		function AddRow() {
+			var msg;
+
+			structvar = {
+				Datasource: "#rc.$.globalConfig('datasource')#",
+				DBUsername: "#rc.$.globalConfig('dbusername')#",
+				DBPassword: "#rc.$.globalConfig('dbpassword')#",
+				PackageName: "#rc.pc.getPackage()#",
+				CGIScriptName: "#CGI.Script_name#",
+				CGIPathInfo: "#CGI.path_info#",
+				SiteID: "#rc.$.siteConfig('siteID')#",
+				EventID: "#Session.FormInput.EventID#"
+			};
+
+			newuser = {
+				Email: document.getElementById("ParticipantEmail").value,
+				Fname: document.getElementById("ParticipantFirstName").value,
+				Lname: document.getElementById("ParticipantLastName").value
+			};
+
+			$.ajax({
+				url: "/plugins/#rc.pc.getPackage()#/library/components/EventServices.cfc?method=AddParticipantToDatabase",
+				type: "POST",
+				dataType: "json",
+				data: {
+					returnFormat: "json",
+					jrStruct: JSON.stringify({"DBInfo": structvar, "UserInfo": newuser})
+				},
+				success: function(data){
+					setTimeout(function(){
+						window.location.reload();
+					},100);
+				},
+
+				error: function(){
+				}
+			});
+		};
+	</script>
 </cfoutput>

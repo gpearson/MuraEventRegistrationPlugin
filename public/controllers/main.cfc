@@ -18,8 +18,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfquery name="updateExpiredFeaturedEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Update p_EventRegistration_Events
 					Set EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer">
-					Where DateDiff("d", "Featured_StartDate, Now()) > <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-						DateDiff("d", "Featured_EndDate, Now()) > <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+					Where DateDiff(Featured_StartDate, Now()) > <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+						DateDiff(Featured_EndDate, Now()) > <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 						EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
 						Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
 				</cfquery>
@@ -27,27 +27,27 @@ http://www.apache.org/licenses/LICENSE-2.0
 					Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, TContent_ID, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, AcceptRegistrations, Registration_Deadline, MaxParticipants, PGPAvailable, AllowVideoConference, WebinarAvailable
 					From p_EventRegistration_Events
 					Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-						DateDiff("d", EventDate, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+						DateDiff(EventDate, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 						EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 						Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
 							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-							DateDiff("d",EventDate1, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							DateDiff(EventDate1, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
 							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-							DateDiff("d",EventDate2, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							DateDiff(EventDate2, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
 							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-							DateDiff("d",EventDate3, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							DateDiff(EventDate3, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
 							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-							DateDiff("d",EventDate4, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							DateDiff(EventDate4, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
 							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-							DateDiff("d",EventDate5, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							DateDiff(EventDate5, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							EventFeatured = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
 					Order By EventDate
@@ -56,27 +56,27 @@ http://www.apache.org/licenses/LICENSE-2.0
 					Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, TContent_ID, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, AcceptRegistrations, Registration_Deadline, MaxParticipants, PGPAvailable, AllowVideoConference, WebinarAvailable
 					From p_EventRegistration_Events
 					Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-						DateDiff("d",EventDate, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+						DateDiff(EventDate, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 						EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
 						Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
 							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-							DateDiff("d",EventDate1, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							DateDiff(EventDate1, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
 							Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
 							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-							DateDiff("d",EventDate2, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							DateDiff(EventDate2, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
 							Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
 							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-							DateDiff("d",EventDate3, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							DateDiff(EventDate3, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
 							Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
 							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-							DateDiff("d",EventDate4, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							DateDiff(EventDate4, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
 							Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> or
 							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-							DateDiff("d",EventDate5, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
+							DateDiff(EventDate5, Now()) >= <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
 							EventFeatured = <cfqueryparam value="1" cfsqltype="cf_sql_integer"> and
 							Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
 					Order By Featured_SortOrder ASC, EventDate ASC

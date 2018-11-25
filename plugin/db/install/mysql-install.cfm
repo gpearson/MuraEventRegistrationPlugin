@@ -48,7 +48,7 @@
 		`StateDOE_State` tinytext, `Active` bit(1) NOT NULL DEFAULT b'0', `dateCreated` date NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, `lastUpdated` datetime NOT NULL, `Mailing_Address` tinytext,
 		`Mailing_City` tinytext, `Mailing_State` tinytext, `Mailing_ZipCode` tinytext, `Primary_PhoneNumber` tinytext, `Primary_FaxNumber` tinytext, `Physical_Address` tinytext, `Physical_City` tinytext,
 		`Physical_State` tinytext, `Physical_ZipCode` tinytext, `AccountsPayable_EmailAddress` tinytext, `AccountsPayable_ContactName` tinytext, `ReceiveInvoicesByEmail` bit(1) NOT NULL DEFAULT b'0',
-		PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=400 DEFAULT CHARSET=latin1;
+		PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 </cfquery>
 
 <cfquery name="Create-p_EventRegistration_SiteConfig" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
@@ -73,6 +73,7 @@
 		`AttendedEventDate6` bit(1) NOT NULL DEFAULT b'0', `AttendedEventSessionAM` bit(1) NOT NULL DEFAULT b'0', `AttendedEventSessionPM` bit(1) NOT NULL DEFAULT b'0', `Comments` varchar(255) DEFAULT NULL,
 		`WebinarParticipant` bit(1) NOT NULL DEFAULT b'0', `AttendeePriceVerified` bit(1) NOT NULL DEFAULT b'0', `RegisterForEventDate1` bit(1) NOT NULL DEFAULT b'0', `RegisterForEventDate2` bit(1) NOT NULL DEFAULT b'0',
 		`RegisterForEventDate3` bit(1) NOT NULL DEFAULT b'0', `RegisterForEventDate4` bit(1) NOT NULL DEFAULT b'0', `RegisterForEventDate5` bit(1) NOT NULL DEFAULT b'0', `RegisterForEventDate6` bit(1) NOT NULL DEFAULT b'0',
+		`RegisterForEventSessionAM` bit(1) NOT NULL DEFAULT b'0', `RegisterForEventSessionPM` bit(1) NOT NULL DEFAULT b'0',
 		PRIMARY KEY (`TContent_ID`,`Site_ID`,`User_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 </cfquery>
 
@@ -95,12 +96,12 @@
 	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 </cfquery>
 
-<cfquery name="CheckGroup-EventFacilitator" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+<cfquery name="CheckGroups" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
 	Select UserID, GroupName
 	From tusers
-	Where GroupName LIKE '%Event Facilitator%'
+	Where GroupName LIKE '%Event%'
 </cfquery>
-<cfif CheckGroup-EventFacilitator.RecordCount EQ 0>
+<cfif CheckGroups.RecordCount EQ 0>
 	<cfscript>
 		var NewGroupEventFacilitator = #application.userManager.read("")#;
 		NewGroupEventFacilitator.setSiteID(Session.SiteID);
@@ -109,14 +110,6 @@
 		NewGroupEventFacilitator.setIsPublic(1);
 		NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
 	</cfscript>
-</cfif>
-
-<cfquery name="CheckGroup-EventPresenter" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	Select UserID, GroupName
-	From tusers
-	Where GroupName LIKE '%Event Presenter%'
-</cfquery>
-<cfif CheckGroup-EventFacilitator.RecordCount EQ 0>
 	<cfscript>
 		var NewGroupEventFacilitator = #application.userManager.read("")#;
 		NewGroupEventFacilitator.setSiteID(Session.SiteID);
@@ -125,4 +118,35 @@
 		NewGroupEventFacilitator.setIsPublic(1);
 		NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
 	</cfscript>
+<cfelse>
+	<cfset GroupPresenterExists = 0>
+	<cfset GroupFacilitatorExists = 0>
+	<cfloop query="CheckGroups">
+		<cfif CheckGroups.GroupName EQ "Event Facilitator">
+			<cfset GroupFacilitatorExists = 1>
+		</cfif>
+		<cfif CheckGroups.GroupName EQ "Event Presenter">
+			<cfset GroupPresenterExists = 1>
+		</cfif>
+	</cfloop>
+	<cfif GroupFacilitatorExists EQ 0>
+		<cfscript>
+		var NewGroupEventFacilitator = #application.userManager.read("")#;
+		NewGroupEventFacilitator.setSiteID(Session.SiteID);
+		NewGroupEventFacilitator.setGroupName("Event Facilitator");
+		NewGroupEventFacilitator.setType(1);
+		NewGroupEventFacilitator.setIsPublic(1);
+		NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
+		</cfscript>
+	</cfif>
+	<cfif GroupPresenterExists EQ 0>
+		<cfscript>
+		var NewGroupEventFacilitator = #application.userManager.read("")#;
+		NewGroupEventFacilitator.setSiteID(Session.SiteID);
+		NewGroupEventFacilitator.setGroupName("Event Presenter");
+		NewGroupEventFacilitator.setType(1);
+		NewGroupEventFacilitator.setIsPublic(1);
+		NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
+		</cfscript>
+	</cfif>
 </cfif>

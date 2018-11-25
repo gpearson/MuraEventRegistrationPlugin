@@ -9,7 +9,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 --->
 </cfsilent>
-<cfif Session.UserSuppliedInfo.WebinarEvent EQ 1><cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_step4&SiteID=#rc.$.siteConfig('siteID')#" addtoken="false"></cfif>
+<cfif Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 1><cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_step4&SiteID=#rc.$.siteConfig('siteID')#" addtoken="false"></cfif>
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
