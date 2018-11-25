@@ -1,6 +1,6 @@
 <cfoutput>
 	<div class="panel panel-default">
-		<div class="panel-heading"><h1>Event Indformation: #Session.EventInfo.SelectedEvent.ShortTitle#</h1></div>
+		<div class="panel-heading"><h1>Event Information: #Session.EventInfo.SelectedEvent.ShortTitle#</h1></div>
 		<div class="panel-body">
 			<table class="table" width="100%" cellspacing="0" cellpadding="0">
 				<tbody>

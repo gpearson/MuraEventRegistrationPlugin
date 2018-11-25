@@ -18,11 +18,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 
 <cfoutput>
-	<script>
-		$(function() {
-			$("##EarlyBird_RegistrationDeadline").datepicker();
-		});
-	</script>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
 			<div class="panel-heading"><h1>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h1></div>
@@ -32,12 +27,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<div class="form-group">
-						<label for="MemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" value="#Session.getSelectedEvent.MemberCost#" required="yes"></div>
-					</div>
-					<div class="form-group">
-						<label for="NonMemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" value="#Session.getSelectedEvent.NonMemberCost#" required="yes"></div>
+						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="AcceptRegistrations" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.AcceptRegistrations#" Display="OptionName"  queryposition="below">
+								<option value="----">Allow Registrations</option>
+							</cfselect>
+						</div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -55,12 +50,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<div class="form-group">
-						<label for="MemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" value="#Session.getSelectedEvent.MemberCost#" required="yes"></div>
-					</div>
-					<div class="form-group">
-						<label for="NonMemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" value="#Session.getSelectedEvent.NonMemberCost#" required="yes"></div>
+						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="AcceptRegistrations" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormData.AcceptRegistrations#" Display="OptionName"  queryposition="below">
+								<option value="----">Allow Registrations</option>
+							</cfselect>
+						</div>
 					</div>
 				</div>
 				<div class="panel-footer">

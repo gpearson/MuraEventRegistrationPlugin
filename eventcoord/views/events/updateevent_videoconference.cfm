@@ -27,24 +27,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<div class="form-group">
-						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
+						<label for="AllowVideoConference" class="control-label col-sm-3">Video Conference Available:&nbsp;</label>
 						<div class="col-sm-8">
-							<cfselect name="MealProvided" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.MealProvided#" Display="OptionName"  queryposition="below">
-								<option value="----">Provide Meal to Participants</option>
+							<cfselect name="AllowVideoConference" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.AllowVideoConference#" Display="OptionName"  queryposition="below">
+								<option value="----">Allow Video Conference</option>
 							</cfselect>
 						</div>
 					</div>
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
-						<label for="MealProvidedBy" class="control-label col-sm-3">Who's Providing Meal:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="MealProvidedBy" class="form-control" Required="Yes" Multiple="No" query="Session.getMealProviders" value="TContent_ID" selected="#Session.getSelectedEvent.MealProvidedBy#" Display="FacilityName"  queryposition="below">
-								<option value="----">Select Meal Provider</option>
-							</cfselect>
-						</div>
+						<label for="VideoConferenceInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
+						<div class="col-sm-8"><textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control">#Session.getSelectedEvent.VideoConferenceInfo#</textarea></div>
 					</div>
 					<div class="form-group">
-						<label for="MealCost_Estimated" class="control-label col-sm-3">Estimated Cost Per Meal:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MealCost_Estimated" name="MealCost_Estimated" value="#Session.getSelectedEvent.MealCost_Estimated#" required="no"></div>
+						<label for="VideoConferenceCost" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="VideoConferenceCost" name="VideoConferenceCost" value="#Session.getSelectedEvent.VideoConferenceCost#" required="no"></p></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -62,24 +59,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<div class="form-group">
-						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
+						<label for="AllowVideoConference" class="control-label col-sm-3">Video Conference Available:&nbsp;</label>
 						<div class="col-sm-8">
-							<cfselect name="MealProvided" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.MealProvided#" Display="OptionName"  queryposition="below">
-								<option value="----">Provide Meal to Participants</option>
+							<cfselect name="AllowVideoConference" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.AllowVideoConference#" Display="OptionName"  queryposition="below">
+								<option value="----">Allow Video Conference</option>
 							</cfselect>
 						</div>
 					</div>
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
-						<label for="MealProvidedBy" class="control-label col-sm-3">Who's Providing Meal:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="MealProvidedBy" class="form-control" Required="Yes" Multiple="No" query="Session.getMealProviders" value="TContent_ID" selected="#Session.getSelectedEvent.MealProvidedBy#" Display="FacilityName"  queryposition="below">
-								<option value="----">Select Meal Provider</option>
-							</cfselect>
-						</div>
+						<label for="VideoConferenceInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control">#Session.getSelectedEvent.VideoConferenceInfo#</textarea></p></div>
 					</div>
 					<div class="form-group">
-						<label for="MealCost_Estimated" class="control-label col-sm-3">Estimated Cost Per Meal:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MealCost_Estimated" name="MealCost_Estimated" value="#Session.getSelectedEvent.MealCost_Estimated#" required="no"></div>
+						<label for="VideoConferenceCost" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="VideoConferenceCost" name="VideoConferenceCost" value="#Session.getSelectedEvent.VideoConferenceCost#" required="no"></p></div>
 					</div>
 				</div>
 				<div class="panel-footer">

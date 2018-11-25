@@ -27,24 +27,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<div class="form-group">
-						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
+						<label for="PGPAvailable" class="control-label col-sm-3">PGP Certificate Available:&nbsp;</label>
 						<div class="col-sm-8">
-							<cfselect name="MealProvided" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.MealProvided#" Display="OptionName"  queryposition="below">
-								<option value="----">Provide Meal to Participants</option>
+							<cfselect name="PGPAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.PGPAvailable#" Display="OptionName"  queryposition="below">
+								<option value="----">Offer PGP Certificates</option>
 							</cfselect>
 						</div>
 					</div>
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
-						<label for="MealProvidedBy" class="control-label col-sm-3">Who's Providing Meal:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="MealProvidedBy" class="form-control" Required="Yes" Multiple="No" query="Session.getMealProviders" value="TContent_ID" selected="#Session.getSelectedEvent.MealProvidedBy#" Display="FacilityName"  queryposition="below">
-								<option value="----">Select Meal Provider</option>
-							</cfselect>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="MealCost_Estimated" class="control-label col-sm-3">Estimated Cost Per Meal:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MealCost_Estimated" name="MealCost_Estimated" value="#Session.getSelectedEvent.MealCost_Estimated#" required="no"></div>
+						<label for="PGPPoints" class="control-label col-sm-3">Number PGP Points for Event:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PGPPoints" name="PGPPoints" value="#Session.getSelectedEvent.PGPPoints#" required="no"></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -62,24 +55,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<div class="form-group">
-						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
+						<label for="PGPAvailable" class="control-label col-sm-3">PGP Certificate Available:&nbsp;</label>
 						<div class="col-sm-8">
-							<cfselect name="MealProvided" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.MealProvided#" Display="OptionName"  queryposition="below">
-								<option value="----">Provide Meal to Participants</option>
+							<cfselect name="PGPAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.PGPAvailable#" Display="OptionName"  queryposition="below">
+								<option value="----">Offer PGP Certificates</option>
 							</cfselect>
 						</div>
 					</div>
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
-						<label for="MealProvidedBy" class="control-label col-sm-3">Who's Providing Meal:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="MealProvidedBy" class="form-control" Required="Yes" Multiple="No" query="Session.getMealProviders" value="TContent_ID" selected="#Session.getSelectedEvent.MealProvidedBy#" Display="FacilityName"  queryposition="below">
-								<option value="----">Select Meal Provider</option>
-							</cfselect>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="MealCost_Estimated" class="control-label col-sm-3">Estimated Cost Per Meal:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MealCost_Estimated" name="MealCost_Estimated" value="#Session.getSelectedEvent.MealCost_Estimated#" required="no"></div>
+						<label for="PGPPoints" class="control-label col-sm-3">Number PGP Points for Event:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PGPPoints" name="PGPPoints" value="#Session.getSelectedEvent.PGPPoints#" required="no"></div>
 					</div>
 				</div>
 				<div class="panel-footer">

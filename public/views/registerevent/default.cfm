@@ -1,265 +1,332 @@
-<cfif not isDefined("Session.Mura")><cflocation url="http://www.niesc.k12.in.us" addtoken="false"></cfif>
-<cfif isDefined("URL.EventID") and isNumeric(URL.EventID) and Session.Mura.IsLoggedIn EQ "true">
-	<cfquery name="getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, EventFeatured, Featured_StartDate, Featured_EndDate, MemberCost, NonMemberCost,  EarlyBird_RegistrationAvailable, EarlyBird_RegistrationDeadline, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints, MealProvided, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationType, LocationID, LocationRoomID, Presenters, Facilitator, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
-		From eEvents
-		Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
-	</cfquery>
-	<cfquery name="getEventFacility" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, BusinessWebsite, GeoCode_Latitude, GeoCode_Longitude, GeoCode_StateLongName
-		From eFacility
-		Where FacilityType = <cfqueryparam value="#getSelectedEvent.LocationType#" cfsqltype="cf_sql_varchar"> and
-			TContent_ID = <cfqueryparam value="#getSelectedEvent.LocationID#" cfsqltype="cf_sql_integer">
-	</cfquery>
-	<cfquery name="getEventFacilityRoom" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		Select RoomName, Capacity
-		From eFacilityRooms
-		Where TContent_ID = <cfqueryparam value="#getSelectedEvent.LocationRoomID#" cfsqltype="cf_sql_integer"> and
-			Facility_ID = <cfqueryparam value="#getSelectedEvent.LocationID#" cfsqltype="cf_sql_integer">
-	</cfquery>
-	<cfquery name="getFacilitator" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		Select FName, Lname, Email
-		From tusers
-		Where UserID = <cfqueryparam value="#getSelectedEvent.Facilitator#" cfsqltype="cf_sql_varchar">
-	</cfquery>
+<cfsilent>
+	<cfset YesNoQuery = QueryNew("ID,OptionName", "Integer,VarChar")>
+	<cfset temp = QueryAddRow(YesNoQuery, 1)>
+	<cfset temp = #QuerySetCell(YesNoQuery, "ID", 0)#>
+	<cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "No")#>
+	<cfset temp = QueryAddRow(YesNoQuery, 1)>
+	<cfset temp = #QuerySetCell(YesNoQuery, "ID", 1)#>
+	<cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 
-	<cfset UserEmailDomain = #Right(Session.Mura.EMail, Len(Session.Mura.Email) - Find("@", Session.Mura.Email))#>
-
-	<cfquery name="getActiveMembership" datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		Select TContent_ID, OrganizationName, OrganizationDomainName, Active
-		From eMembership
-		Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-			OrganizationDomainName = <cfqueryparam value="#Variables.UserEmailDomain#" cfsqltype="cf_sql_varchar">
-	</cfquery>
-
-	<cfif getSelectedEvent.EarlyBird_RegistrationAvailable EQ 1>
-		<cfif DateDiff("d", Now(), getSelectedEvent.EarlyBird_RegistrationDeadline) GTE 0>
-			<cfset Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration = True>
-		<cfelse>
-			<cfset Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration = False>
-		</cfif>
+	<cfif Session.getActiveMembership.RecordCount EQ 1>
+		<cfset UserActiveMembership = "Yes">
 	<cfelse>
-		<cfset Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration = False>
+		<cfset UserActiveMembership = "No">
 	</cfif>
-
-	<cfif getSelectedEvent.ViewSpecialPricing EQ 1>
-		<cfset Session.UserRegistrationInfo.SpecialPricingAvailable = True>
-		<cfset Session.UserRegistrationInfo.SpecialPriceRequirements = #getSelectedEvent.SpecialPriceRequirements#>
-		<cfif getActiveMembership.RecordCount GTE 1>
-			<cfset Session.UserRegistrationInfo.SpecialPriceEventCost = #getSelectedEvent.SpecialMemberCost#>
-		<cfelse>
-			<cfset Session.UserRegistrationInfo.SpecialPriceEventCost = #getSelectedEvent.SpecialNonMemberCost#>
-		</cfif>
-	<cfelse>
-		<cfset Session.UserRegistrationInfo.SpecialPricingAvailable = False>
-	</cfif>
-
-	<cfif getSelectedEvent.WebinarAvailable EQ 1>
-		<cfset Session.UserRegistrationInfo.WebinarPricingAvailable = True>
-		<cfif getActiveMembership.RecordCount GTE 1>
-			<cfset Session.UserRegistrationInfo.WebinarPricingEventCost = #getSelectedEvent.WebinarMemberCost#>
-		<cfelse>
-			<cfset Session.UserRegistrationInfo.WebinarPricingEventCost = #getSelectedEvent.WebinarNonMemberCost#>
-		</cfif>
-	<cfelse>
-		<cfset Session.UserRegistrationInfo.WebinarPricingAvailable = False>
-	</cfif>
-
-	<cfif getSelectedEvent.MealProvided EQ 1>
-		<cfset Session.UserRegistrationInfo.MealOptionAvailable = True>
-	<cfelse>
-		<cfset Session.UserRegistrationInfo.MealOptionAvailable = False>
-	</cfif>
-
-	<cfif getSelectedEvent.AllowVideoConference EQ 1>
-		<cfset Session.UserRegistrationInfo.VideoConferenceOption = True>
-		<cfset Session.UserRegistrationInfo.VideoConferenceInfo = #getSelectedEvent.VideoConferenceInfo#>
-		<cfset Session.UserRegistrationInfo.VideoConferenceCost = #getSelectedEvent.VideoConferenceCost#>
-	<cfelse>
-		<cfset Session.UserRegistrationInfo.VideoConferenceOption = False>
-	</cfif>
-
-	<cfif getSelectedEvent.PGPAvailable EQ 1>
-		<cfset Session.UserRegistrationInfo.PGPPointsAvailable = True>
-		<cfset Session.UserRegistrationInfo.PGPPoints = #getSelectedEvent.PGPPoints#>
-	<cfelse>
-		<cfset Session.UserRegistrationInfo.PGPPointsAvailable = False>
-	</cfif>
-
-	<cfif getActiveMembership.RecordCount EQ 1>
-		<cfset Session.UserRegistrationInfo.UserGetsMembershipPrice = True>
-		<cfset Session.UserRegistrationInfo.UserEventPrice = #getSelectedEvent.MemberCost#>
-		<cfif Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration EQ "True">
-			<cfset Session.UserRegistrationInfo.UserEventEarlyBirdPrice = #getSelectedEvent.EarlyBird_MemberCost#>
-		</cfif>
-	<cfelse>
-		<cfset Session.UserRegistrationInfo.UserGetsMembershipPrice = False>
-		<cfset Session.UserRegistrationInfo.UserEventPrice = #getSelectedEvent.NonMemberCost#>
-		<cfif Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration EQ "True">
-			<cfset Session.UserRegistrationInfo.UserEventEarlyBirdPrice = #getSelectedEvent.EarlyBird_NonMemberCost#>
-		</cfif>
-	</cfif>
-
-	<cfimport taglib="/plugins/EventRegistration/library/uniForm/tags/" prefix="uForm">
-	<cfif not isDefined("URL.RegistrationSuccessfull")>
-		<cflock timeout="60" scope="SESSION" type="Exclusive">
-			<cfset Session.FormData = #StructNew()#>
-			<cfset Session.FormErrors = #ArrayNew()#>
-			<cfset Session.UserSuppliedInfo = #StructNew()#>
-		</cflock>
-		<cfoutput>
-			<h2>Register for Event: #getSelectedEvent.ShortTitle#</h2>
-			<p class="alert-box notice">Please complete the following information to register for this event. All electronic communication from this system will be sent to the Participant's Email Address</p>
-			<hr>
-			<uForm:form action="" method="Post" id="RegisterEvent" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
-				showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:events.viewavailableevents&Return=True"
-				submitValue="Register for Event" loadValidation="true" loadMaskUI="true" loadDateUI="true" loadTimeUI="true">
-				<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-				<input type="hidden" name="EventID" value="#URL.EventID#">
-				<input type="hidden" name="formSubmit" value="true">
-				<uForm:fieldset legend="Required Fields">
-					<uForm:field label="Participant's Name" style="font-family: Arial; font-size: 12px; font-weight:bold;" name="ParticipantName" isRequired="false" isDisabled="True" value="#Session.Mura.FName# #Session.Mura.LName#" maxFieldLength="50" type="text" hint="Name of Participant" />
-					<uForm:field label="Participant's Email Address" name="ParticipantEmail" isRequired="false" isDisabled="True" value="#Session.Mura.Email#" maxFieldLength="50" type="text" hint="Email Address of Participant" />
-					<cfif Session.UserRegistrationInfo.MealOptionAvailable EQ "True">
-						<uform:field label="Staying for Meal" name="WantsMeal" type="select" isRequired="True" hint="Will you be staying for the Provided Meal?">
-							<uform:option display="Please Select Option" value="" isSelected="true"/>
-							<uform:option display="Yes" value="1" />
-							<uform:option display="No" value="0"/>
-						</uform:field>
+</cfsilent>
+<cfoutput>
+	<cfif not isDefined("URL.FormRetry")>
+		<div class="panel panel-default">
+			<div class="panel-heading"><h1>Registering for Event: #Session.getSelectedEvent.ShortTitle#</h1></div>
+			<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfinput type="hidden" name="EventID" value="#Session.UserRegistrationInfo.EventID#">
+				<div class="panel-body">
+					<p class="alert alert-info">Please complete the following information to register for this event. All electronic communication from this system will be sent to the Participant's Email Address</p>
+					<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
+						<p class="alert alert-info">You will be registered for the First Date of this event by default.<br>Event Date: #DateFormat(Session.getSelectedEvent.EventDate, "mmm dd, yyyy")#<br>
+							<cfif isDate(Session.getSelectedEvent.EventDate1)>
+							Second Date: #DateFormat(Session.getSelectedEvent.EventDate1, "mmm dd, yyyy")#<br>
+							</cfif>
+							<cfif isDate(Session.getSelectedEvent.EventDate2)>
+							Third Date: #DateFormat(Session.getSelectedEvent.EventDate2, "mmm dd, yyyy")#<br>
+							</cfif>
+							<cfif isDate(Session.getSelectedEvent.EventDate3)>
+							Fourth Date: #DateFormat(Session.getSelectedEvent.EventDate3, "mmm dd, yyyy")#<br>
+							</cfif>
+							<cfif isDate(Session.getSelectedEvent.EventDate4)>
+							Fifth Date: #DateFormat(Session.getSelectedEvent.EventDate4, "mmm dd, yyyy")#<br>
+							</cfif>
+							<cfif isDate(Session.getSelectedEvent.EventDate5)>
+							Sixth Date: #DateFormat(Session.getSelectedEvent.EventDate5, "mmm dd, yyyy")#<br>
+							</cfif>
+						</p>
 					</cfif>
-					<cfif Session.UserRegistrationInfo.PGPPointsAvailable EQ "True">
-						<uForm:field label="Professional Growth Points" name="PGPPoints" isRequired="false" isDisabled="True" value="#NumberFormat(Session.UserRegistrationInfo.PGPPoints, '99.99')#" maxFieldLength="50" type="text" hint="Number of Points upon Successfully completing workshop" />
+					<div class="form-group">
+						<label for="RegistrationName" class="control-label col-sm-3">Your Name:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.Mura.FName# #Session.Mura.LName#</p></div>
+					</div>
+					<div class="form-group">
+						<label for="RegistrationEmail" class="control-label col-sm-3">Your Email:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.Mura.Email#</p></div>
+					</div>
+					<cfif Session.getSelectedEvent.PGPAvailable EQ 1>
+						<div class="form-group">
+							<label for="RegistrationEmail" class="control-label col-sm-3">PGP Points:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#NumberFormat(Session.getSelectedEvent.PGPPoints, "999.99")#</p></div>
+						</div>
 					</cfif>
-					<cfif getActiveMembership.RecordCount EQ 1><cfset UserActiveMembership = True><cfelse><cfset UserActiveMembership = False></cfif>
-					<uForm:field label="Active Membership" name="ActiveMembership" isRequired="false" isDisabled="True" value="#Variables.UserActiveMembership#" maxFieldLength="50" type="text" hint="Active Membership based on Current Email Address" />
-					<uform:field label="Register Additional Individuals" name="RegisterAdditionalParticipants" type="select" isRequired="True" hint="Will you also be registering additional participants for this event?">
-						<uform:option display="Please Select Option" value="" isSelected="true"/>
-						<uform:option display="Yes" value="1" />
-						<uform:option display="No" value="0"/>
-					</uform:field>
-					<cfif isDate(getSelectedEvent.EventDate1) or isDate(getSelectedEvent.EventDate2) or isDate(getSelectedEvent.EventDate3) or isDate(getSelectedEvent.EventDate4) or isDate(getSelectedEvent.EventDate5)>
-						<uform:field label="Register for All Event Dates" name="RegisterAllDays" type="select" isRequired="True" hint="Do you want to register for all of the event dates at this time?">
-							<uform:option display="Please Select Option" value="" isSelected="true"/>
-							<uform:option display="Yes" value="1" />
-							<uform:option display="No" value="0"/>
-						</uform:field>
+					<div class="form-group">
+						<label for="EventDate" class="control-label col-sm-3">Active Membership:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Variables.UserActiveMembership#</p></div>
+					</div>
+					<div class="form-group">
+						<label for="RegisterAdditionalIndividuals" class="control-label col-sm-3">Register Additional Individuals?:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="RegisterAdditionalIndividuals" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Do you want to Register Additional Individuals</option></cfselect></div>
+					</div>
+					<cfif Session.getSelectedEvent.MealProvided EQ 1>
+						<div class="form-group">
+						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="StayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect></div>
+						</div>
 					</cfif>
-				</uForm:fieldset>
-				<cfif getSelectedEvent.WebinarAvailable EQ 1>
-					<uForm:fieldset legend="Webinar Option">
-						<input type="Hidden" Name="WebinarParticipant" Value="1">
-						<uForm:field label="Webinar Information" name="WebinarConnectInfo" isRequired="false" isDisabled="True" value="#getSelectedEvent.WebinarConnectInfo#" type="textarea" hint="Information about Event's Webinar Option" />
-						<uForm:field label="Cost to Participate" name="WebinarEventPrice" isRequired="false" isDisabled="True" value="#DollarFormat(Session.UserRegistrationInfo.WebinarPricingEventCost)#" maxFieldLength="50" type="text" hint="Event Cost to Participate with Webinar Technology for this event" />
-					</uForm:fieldset>
-				</cfif>
-				<cfif Session.UserRegistrationInfo.VideoConferenceOption EQ "True">
-					<uForm:fieldset legend="Video Conferencing Option">
-						<uForm:field label="Video Conference Information" name="IVCEventInfo" isRequired="false" isDisabled="True" value="#getSelectedEvent.VideoConferenceInfo#" type="textarea" hint="Information about Event's Video Conference Option" />
-						<uForm:field label="Cost to Participate" name="IVCEventCost" isRequired="false" isDisabled="True" value="#DollarFormat(getSelectedEvent.VideoConferenceCost)#" maxFieldLength="50" type="text" hint="Event Cost to Participate with Video Conference Equipment for this event" />
-						<uform:field label="Participate via Video Conference" name="IVCParticipant" type="select" isRequired="True" hint="Will you be participating through Video Conferencing for this event?">
-							<uform:option display="Please Select Option" value="" isSelected="true"/>
-							<uform:option display="Yes" value="1" />
-							<uform:option display="No" value="0"/>
-						</uform:field>
-					</uForm:fieldset>
-				</cfif>
-
-				<cfif getSelectedEvent.WebinarAvailable EQ 0>
-					<uForm:fieldset legend="Cost to attend Event">
-						<cfif Session.UserRegistrationInfo.SpecialPricingAvailable EQ "True">
-							<cfif Session.UserRegistrationInfo.SpecialPricingAvailable EQ "True"><cfset SpecialPriceAvailable = "Yes"><cfelse><cfset SpecialPriceAvailable = "No"></cfif>
-							<uForm:field label="Special Price Available" name="SpecialPriceAvailable" isRequired="false" isDisabled="True" value="#Variables.SpecialPriceAvailable#" maxFieldLength="50" type="text" hint="Does Event allow for Special Pricing if Requirements are met?" />
-							<uForm:field label="Special Price Requirements" name="SpecialPriceInfo" isRequired="false" isDisabled="True" value="#Session.UserRegistrationInfo.SpecialPriceRequirements#" type="textarea" hint="Requirements to must be met to receive this special price for attending this event." />
-							<uForm:field label="Special Price for Event" name="SpecialPriceInfo" isRequired="false" isDisabled="True" value="#DollarFormat(Session.UserRegistrationInfo.SpecialPriceEventCost)#" maxFieldLength="50" type="text" hint="Event Price if Special Requirements are met" />
+					<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
+						<div class="form-group">
+						<label for="RegisterAllDates" class="control-label col-sm-3">Register for All Dates?:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="RegisterAllDates" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend all Event Dates</option></cfselect></div>
+						</div>
+						<cfif isDate(Session.getSelectedEvent.EventDate1)>
+							<div class="form-group">
+							<label for="RegisterDate2" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate1, "mmm dd, yyyy")#?:&nbsp;</label>
+							<div class="col-sm-8"><cfselect name="RegisterDate2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you this event date</option></cfselect></div>
+							</div>
 						</cfif>
+						<cfif isDate(Session.getSelectedEvent.EventDate2)>
+							<div class="form-group">
+							<label for="RegisterDate3" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate2, "mmm dd, yyyy")#?:&nbsp;</label>
+							<div class="col-sm-8"><cfselect name="RegisterDate3" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you this event date</option></cfselect></div>
+							</div>
+						</cfif>
+						<cfif isDate(Session.getSelectedEvent.EventDate3)>
+							<div class="form-group">
+							<label for="RegisterDate4" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate3, "mmm dd, yyyy")#?:&nbsp;</label>
+							<div class="col-sm-8"><cfselect name="RegisterDate4" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you this event date</option></cfselect></div>
+							</div>
+						</cfif>
+						<cfif isDate(Session.getSelectedEvent.EventDate4)>
+							<div class="form-group">
+							<label for="RegisterDate5" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate4, "mmm dd, yyyy")#?:&nbsp;</label>
+							<div class="col-sm-8"><cfselect name="RegisterDate5" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you this event date</option></cfselect></div>
+							</div>
+						</cfif>
+						<cfif isDate(Session.getSelectedEvent.EventDate5)>
+							<div class="form-group">
+							<label for="RegisterDate6" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate5, "mmm dd, yyyy")#?:&nbsp;</label>
+							<div class="col-sm-8"><cfselect name="RegisterDate6" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you this event date</option></cfselect></div>
+							</div>
+						</cfif>
+					</cfif>
+					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
+						<div class="form-group">
+						<label for="AttendViaWebinar" class="control-label col-sm-3">Attend via Webinar?:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="AttendViaWebinar" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend via Webinar Option</option></cfselect></div>
+						</div>
+						<div class="form-group">
+						<label for="RegistrationEmail" class="control-label col-sm-3">Webinar Price:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.UserRegistrationInfo.WebinarPricingEventCost#</p></div>
+						</div>
+					<cfelseif Session.getSelectedEvent.WebinarAvailable EQ 0>
 						<cfif Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration EQ "True">
-							<uForm:field label="Cost to Participate" name="EventEarlyBirdPrice" isRequired="false" isDisabled="True" value="#DollarFormat(Session.UserRegistrationInfo.UserEventEarlyBirdPrice)#" maxFieldLength="50" type="text" hint="Event Cost to Physically Attend this event at the location where event is to be held" />
+							<div class="form-group">
+							<label for="RegistrationEmail" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.UserEventEarlyBirdPrice)#</p></div>
+							</div>
+						<cfelseif Session.UserRegistrationInfo.SpecialPricingAvailable EQ "True">
+							<div class="form-group">
+								<p class="alert alert-info">This Pricing will be updated by the Facilitator once the Special Pricing Requirements have been met. If Special Requirements have not been met, then Event Pricing will be #DollarFormat(Session.UserRegistrationInfo.UserEventPrice)# to attend this event.</p>
+								<label for="RegistrationEmail" class="control-label col-sm-3">Special Requirements:&nbsp;</label>
+								<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.SpecialPriceRequirements#</p></div>
+							</div>
+							<div class="form-group">
+							<label for="RegistrationEmail" class="control-label col-sm-3">Special Pricing:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.SpecialEventPrice)#</p></div>
+							</div>
 						<cfelse>
-							<uForm:field label="Cost to Participate" name="EventPrice" isRequired="false" isDisabled="True" value="#DollarFormat(Session.UserRegistrationInfo.UserEventPrice)#" maxFieldLength="50" type="text" hint="Event Cost to Physically Attend this event at the location where event is to be held" />
+							<div class="form-group">
+							<label for="RegistrationEmail" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.UserEventPrice)#</p></div>
+							</div>
 						</cfif>
-					</uForm:fieldset>
-				</cfif>
-			</uForm:form>
-		</cfoutput>
-	<cfelseif isDefined("URL.RegistrationSuccessfull")>
-		<cfoutput>
-			<h2>Register for Event: #getSelectedEvent.ShortTitle#</h2>
-			<p class="alert-box notice">Please complete the following information to register for this event. All electric communications from this system will be sent to the Participant's Email Address</p>
-			<hr>
-			<uForm:form action="" method="Post" id="RegisterEvent" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
-				showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton" cancelAction="/index.cfm?EventRegistrationaction=public:events.viewavailableevents&Return=True"
-				submitValue="Register for Event" loadValidation="true" loadMaskUI="true" loadDateUI="true" loadTimeUI="true">
-				<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-				<input type="hidden" name="EventID" value="#URL.EventID#">
-				<input type="hidden" name="formSubmit" value="true">
-				<uForm:fieldset legend="Required Fields">
-					<uForm:field label="Participant's Name" name="ParticipantName" isRequired="false" isDisabled="True" value="#Session.Mura.FName# #Session.Mura.LName#" maxFieldLength="50" type="text" hint="Name of Participant" />
-					<uForm:field label="Participant's Email Address" name="ParticipantEmail" isRequired="false" isDisabled="True" value="#Session.Mura.Email#" maxFieldLength="50" type="text" hint="Email Address of Participant" />
-					<cfif Session.UserRegistrationInfo.MealOptionAvailable EQ "True">
-						<uform:field label="Staying for Meal" name="WantsMeal" type="select" isRequired="True" hint="Will you be staying for the Provided Meal?">
-							<uform:option display="Yes" value="1" />
-							<uform:option display="No" value="0" isSelected="true"/>
-						</uform:field>
 					</cfif>
-					<cfif Session.UserRegistrationInfo.PGPPointsAvailable EQ "True">
-						<uForm:field label="Professional Growth Points" name="PGPPoints" isRequired="false" isDisabled="True" value="#NumberFormat(Session.UserRegistrationInfo.PGPPoints, '99.99')#" maxFieldLength="50" type="text" hint="Number of Points upon Successfully completing workshop" />
+					<cfif Session.UserRegistrationInfo.VideoConferenceOption EQ "True">
+						<div class="form-group">
+						<label for="AttendViaIVC" class="control-label col-sm-3">Attend via Video Conference?:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="AttendViaIVC" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Will you attend via Video Conferencing Equipment</option></cfselect></div>
+						</div>
+						<div class="form-group">
+						<label for="EventDate" class="control-label col-sm-3">Video Conferencing Info:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.VideoConferenceInfo#</p></div>
+						</div>
+						<div class="form-group">
+						<label for="EventDate" class="control-label col-sm-3">Video Conferencing Cost:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.VideoConferenceCost)#</p></div>
+						</div>
 					</cfif>
-					<cfif getActiveMembership.RecordCount EQ 1><cfset UserActiveMembership = True><cfelse><cfset UserActiveMembership = False></cfif>
-					<uForm:field label="Active Membership" name="ActiveMembership" isRequired="false" isDisabled="True" value="#Variables.UserActiveMembership#" maxFieldLength="50" type="text" hint="Active Membership based on Current Email Address" />
-					<uform:field label="Register Additional Participants" name="RegisterAdditionalParticipants" type="select" isRequired="True" hint="Will you also be registering additional participants for this event?">
-							<uform:option display="Yes" value="1" />
-							<uform:option display="No" value="0" isSelected="true"/>
-						</uform:field>
-				</uForm:fieldset>
-				<cfif getSelectedEvent.WebinarAvailable EQ 1>
-					<uForm:fieldset legend="Webinar Option">
-						<input type="Hidden" Name="WebinarParticipant" Value="1">
-						<uForm:field label="Webinar Information" name="WebinarConnectInfo" isRequired="false" isDisabled="True" value="#getSelectedEvent.WebinarConnectInfo#" type="textarea" hint="Information about Event's Webinar Option" />
-						<uForm:field label="Cost to Participate" name="WebinarEventPrice" isRequired="false" isDisabled="True" value="#DollarFormat(Session.UserRegistrationInfo.WebinarPricingEventCost)#" maxFieldLength="50" type="text" hint="Event Cost to Participate with Webinar Technology for this event" />
-					</uForm:fieldset>
-				</cfif>
-				<cfif Session.UserRegistrationInfo.VideoConferenceOption EQ "True">
-					<uForm:fieldset legend="Video Conferencing Option">
-						<uForm:field label="Video Conference Information" name="IVCEventInfo" isRequired="false" isDisabled="True" value="#getSelectedEvent.VideoConferenceInfo#" type="textarea" hint="Information about Event's Video Conference Option" />
-						<uForm:field label="Cost to Participate" name="IVCEventCost" isRequired="false" isDisabled="True" value="#DollarFormat(getSelectedEvent.VideoConferenceCost)#" maxFieldLength="50" type="text" hint="Event Cost to Participate with Video Conference Equipment for this event" />
-						<uform:field label="Participate via Video Conference" name="IVCParticipant" type="select" isRequired="True" hint="Will you be participating through Video Conferencing for this event?">
-							<uform:option display="Yes" value="1" />
-							<uform:option display="No" value="0" isSelected="true"/>
-						</uform:field>
-					</uForm:fieldset>
-				</cfif>
-				<cfif getSelectedEvent.WebinarAvailable EQ 0>
-					<uForm:fieldset legend="Cost to attend Event">
-						<cfif Session.UserRegistrationInfo.SpecialPricingAvailable EQ "True">
-							<cfif UserRegistrationInfo.SpecialPricingAvailable EQ "True"><cfset SpecialPriceAvailable = "Yes"><cfelse><cfset SpecialPriceAvailable = "No"></cfif>
-							<uForm:field label="Special Price Available" name="SpecialPriceAvailable" isRequired="false" isDisabled="True" value="#Variables.SpecialPriceAvailable#" maxFieldLength="50" type="text" hint="Does Event allow for Special Pricing if Requirements are met?" />
-							<uForm:field label="Special Price Requirements" name="SpecialPriceInfo" isRequired="false" isDisabled="True" value="#Session.UserRegistrationInfo.SpecialPriceRequirement#" type="textarea" hint="Requirements to must be met to receive this special price for attending this event." />
-							<uForm:field label="Special Price for Event" name="SpecialPriceInfo" isRequired="false" isDisabled="True" value="$ #DollarFormat(Session.UserRegistrationInfo.SpecialPriceEventCost)#" maxFieldLength="50" type="text" hint="Event Price if Special Requirements are met" />
+				</div>
+				<div class="panel-footer">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Register For Event"><br /><br />
+				</div>
+			</cfform>
+		</div>
+	<cfelseif isDefined("URL.FormRetry")>
+		<div class="panel panel-default">
+			<div class="panel-heading"><h1>Registering for Event: #Session.getSelectedEvent.ShortTitle#</h1></div>
+			<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfinput type="hidden" name="EventID" value="#Session.FormInput.EventID#">
+				<cfif isDefined("Session.FormErrors")>
+					<div class="panel-body">
+						<cfif ArrayLen(Session.FormErrors) GTE 1>
+							<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
 						</cfif>
+					</div>
+				</cfif>
+				<cfif isDefined("URL.UserAction")>
+					<div class="panel-body">
+						<cfswitch expression="#URL.UserAction#">
+							<cfcase value="UserAlreadyRegistered">
+								<div class="alert alert-danger"><p>You are currently registered for this event. If you would like to register additional individuals, simply select the option to Register Additional Indivduals. If you would like to cancel your registration you can do that from the User Menu and select Manage Registrations.</p></div>
+							</cfcase>
+						</cfswitch>
+					</div>
+				</cfif>
+				<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
+					<div class="panel-body">
+						<p class="alert alert-info">You will be registered for the First Date of this event by default.<br>Event Date: #DateFormat(Session.getSelectedEvent.EventDate, "mmm dd, yyyy")#<br>
+							<cfif isDate(Session.getSelectedEvent.EventDate1)>
+							Second Date: #DateFormat(Session.getSelectedEvent.EventDate1, "mmm dd, yyyy")#<br>
+							</cfif>
+							<cfif isDate(Session.getSelectedEvent.EventDate2)>
+							Third Date: #DateFormat(Session.getSelectedEvent.EventDate2, "mmm dd, yyyy")#<br>
+							</cfif>
+							<cfif isDate(Session.getSelectedEvent.EventDate3)>
+							Fourth Date: #DateFormat(Session.getSelectedEvent.EventDate3, "mmm dd, yyyy")#<br>
+							</cfif>
+							<cfif isDate(Session.getSelectedEvent.EventDate4)>
+							Fifth Date: #DateFormat(Session.getSelectedEvent.EventDate4, "mmm dd, yyyy")#<br>
+							</cfif>
+							<cfif isDate(Session.getSelectedEvent.EventDate5)>
+							Sixth Date: #DateFormat(Session.getSelectedEvent.EventDate5, "mmm dd, yyyy")#<br>
+							</cfif>
+						</p>
+					</div>
+				</cfif>
+				<div class="panel-body">
+					<p class="alert alert-info">Please complete the following information to register for this event. All electronic communication from this system will be sent to the Participant's Email Address</p>
+					<div class="form-group">
+						<label for="RegistrationName" class="control-label col-sm-3">Your Name:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.Mura.FName# #Session.Mura.LName#</p></div>
+					</div>
+					<div class="form-group">
+						<label for="RegistrationEmail" class="control-label col-sm-3">Your Email:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.Mura.Email#</p></div>
+					</div>
+					<cfif Session.getSelectedEvent.PGPAvailable EQ 1>
+						<div class="form-group">
+							<label for="RegistrationEmail" class="control-label col-sm-3">PGP Points:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#NumberFormat(Session.getSelectedEvent.PGPPoints, "999.99")#</p></div>
+						</div>
+					</cfif>
+					<div class="form-group">
+						<label for="EventDate" class="control-label col-sm-3">Active Membership:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Variables.UserActiveMembership#</p></div>
+					</div>
+					<div class="form-group">
+						<label for="RegisterAdditionalIndividuals" class="control-label col-sm-3">Register Additional Individuals?:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="RegisterAdditionalIndividuals" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Do you want to Register Additional Individuals</option></cfselect></div>
+					</div>
+					<cfif Session.getSelectedEvent.MealProvided EQ 1>
+						<div class="form-group">
+						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfif isDefined("FORM.StayForMeal")>
+								<cfselect name="StayForMeal" selected="#Session.FormInput.StayForMeal#" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect>
+							<cfelse>
+								<cfselect name="StayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect>
+							</cfif>
+							</div>
+						</div>
+					</cfif>
+					<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
+						<div class="form-group">
+						<label for="RegisterAllDates" class="control-label col-sm-3">Register for All Dates?:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="RegisterAllDates" selected="#Session.FormInput.RegisterAllDates#" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend all Event Dates</option></cfselect></div>
+						</div>
+						<cfif isDate(Session.getSelectedEvent.EventDate1)>
+							<div class="form-group">
+							<label for="RegisterDate2" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate1, "mmm dd, yyyy")#?:&nbsp;</label>
+							<div class="col-sm-8"><cfselect name="RegisterDate2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you this event date</option></cfselect></div>
+							</div>
+						</cfif>
+						<cfif isDate(Session.getSelectedEvent.EventDate2)>
+							<div class="form-group">
+							<label for="RegisterDate3" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate2, "mmm dd, yyyy")#?:&nbsp;</label>
+							<div class="col-sm-8"><cfselect name="RegisterDate3" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you this event date</option></cfselect></div>
+							</div>
+						</cfif>
+						<cfif isDate(Session.getSelectedEvent.EventDate3)>
+							<div class="form-group">
+							<label for="RegisterDate4" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate3, "mmm dd, yyyy")#?:&nbsp;</label>
+							<div class="col-sm-8"><cfselect name="RegisterDate4" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you this event date</option></cfselect></div>
+							</div>
+						</cfif>
+						<cfif isDate(Session.getSelectedEvent.EventDate4)>
+							<div class="form-group">
+							<label for="RegisterDate5" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate4, "mmm dd, yyyy")#?:&nbsp;</label>
+							<div class="col-sm-8"><cfselect name="RegisterDate5" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you this event date</option></cfselect></div>
+							</div>
+						</cfif>
+						<cfif isDate(Session.getSelectedEvent.EventDate5)>
+							<div class="form-group">
+							<label for="RegisterDate6" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate5, "mmm dd, yyyy")#?:&nbsp;</label>
+							<div class="col-sm-8"><cfselect name="RegisterDate6" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you this event date</option></cfselect></div>
+							</div>
+						</cfif>
+					</cfif>
+					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
+						<div class="form-group">
+						<label for="AttendViaWebinar" class="control-label col-sm-3">Attend via Webinar?:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="AttendViaWebinar" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend via Webinar Option</option></cfselect></div>
+						</div>
+						<div class="form-group">
+						<label for="RegistrationEmail" class="control-label col-sm-3">Webinar Price:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.UserRegistrationInfo.WebinarPricingEventCost#</p></div>
+						</div>
+					<cfelseif Session.getSelectedEvent.WebinarAvailable EQ 0>
 						<cfif Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration EQ "True">
-							<uForm:field label="Cost to Participate" name="EventEarlyBirdPrice" isRequired="false" isDisabled="True" value="#DollarFormat(Session.UserRegistrationInfo.UserEventEarlyBirdPrice)#" maxFieldLength="50" type="text" hint="Event Cost to Physically Attend this event at the location where event is to be held" />
+							<div class="form-group">
+							<label for="RegistrationEmail" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.UserEventEarlyBirdPrice)#</p></div>
+							</div>
+						<cfelseif Session.UserRegistrationInfo.SpecialPricingAvailable EQ "True">
+							<div class="form-group">
+								<p class="alert alert-info">This Pricing will be updated by the Facilitator once the Special Pricing Requirements have been met. If Special Requirements have not been met, then Event Pricing will be #DollarFormat(Session.UserRegistrationInfo.UserEventPrice)# to attend this event.</p>
+								<label for="RegistrationEmail" class="control-label col-sm-3">Special Requirements:&nbsp;</label>
+								<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.SpecialPriceRequirements#</p></div>
+							</div>
+							<div class="form-group">
+							<label for="RegistrationEmail" class="control-label col-sm-3">Special Pricing:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.SpecialEventPrice)#</p></div>
+							</div>
 						<cfelse>
-							<uForm:field label="Cost to Participate" name="EventPrice" isRequired="false" isDisabled="True" value="#DollarFormat(Session.UserRegistrationInfo.UserEventPrice)#" maxFieldLength="50" type="text" hint="Event Cost to Physically Attend this event at the location where event is to be held" />
+							<div class="form-group">
+							<label for="RegistrationEmail" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.UserEventPrice)#</p></div>
+							</div>
 						</cfif>
-					</uForm:fieldset>
-				</cfif>
-			</uForm:form>
-		</cfoutput>
+					</cfif>
+					<cfif Session.UserRegistrationInfo.VideoConferenceOption EQ "True">
+						<div class="form-group">
+						<label for="AttendViaIVC" class="control-label col-sm-3">Attend via Video Conference?:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="AttendViaIVC" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Will you attend via Video Conferencing Equipment</option></cfselect></div>
+						</div>
+						<div class="form-group">
+						<label for="EventDate" class="control-label col-sm-3">Video Conferencing Info:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.VideoConferenceInfo#</p></div>
+						</div>
+						<div class="form-group">
+						<label for="EventDate" class="control-label col-sm-3">Video Conferencing Cost:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.VideoConferenceCost)#</p></div>
+						</div>
+					</cfif>
+				</div>
+				<div class="panel-footer">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Register For Event"><br /><br />
+				</div>
+			</cfform>
+		</div>
 	</cfif>
-<cfelseif isDefined("URL.EventID") and isNumeric(URL.EventID) and Session.Mura.IsLoggedIn EQ "false">
-	<cflock timeout="60" scope="SESSION" type="Exclusive">
-		<cfif isDefined("Session.UserRegistrationInfo")>
-			<cfset Session.UserRegistrationInfo.EventID = #URL.EventID#>
-			<cfset Session.UserRegistrationInfo.DateRegistered = #Now()#>
-		<cfelse>
-			<cfset Session.UserRegistrationInfo = StructNew()>
-			<cfset Session.UserRegistrationInfo.EventID = #URL.EventID#>
-			<cfset Session.UserRegistrationInfo.DateRegistered = #Now()#>
-		</cfif>
-	</cflock>
-	<cflocation addtoken="true" url="/index.cfm?display=login">
-	<!--- <cflocation addtoken="false" url="/index.cfm?display=login"> --->
-<cfelse>
-	<cfdump var="#Session#">
-	Here We Go Again
-</cfif>
+</cfoutput>

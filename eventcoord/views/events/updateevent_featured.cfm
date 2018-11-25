@@ -1,17 +1,21 @@
 <cfsilent>
 <!---
+
 This file is part of MuraFW1
 
 Copyright 2010-2013 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
+
 --->
 </cfsilent>
-<cfimport taglib="/plugins/EventRegistration/library/uniForm/tags/" prefix="uForm">
-<cflock timeout="60" scope="SESSION" type="Exclusive">
-	<cfset Session.FormData = #StructNew()#>
-	<cfif not isDefined("Session.FormErrors")><cfset Session.FormErrors = #ArrayNew()#></cfif>
-</cflock>
+<cfset YesNoQuery = QueryNew("ID,OptionName", "Integer,VarChar")>
+<cfset temp = QueryAddRow(YesNoQuery, 1)>
+<cfset temp = #QuerySetCell(YesNoQuery, "ID", 0)#>
+<cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "No")#>
+<cfset temp = QueryAddRow(YesNoQuery, 1)>
+<cfset temp = #QuerySetCell(YesNoQuery, "ID", 1)#>
+<cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 
 <cfoutput>
 	<script>
@@ -20,52 +24,77 @@ http://www.apache.org/licenses/LICENSE-2.0
 			$("##Featured_EndDate").datepicker();
 		});
 	</script>
-	<div class="art-block clearfix">
-		<div class="art-blockheader">
-			<h3 class="t">Add New Caterer</h3>
+	<cfif not isDefined("URL.FormRetry")>
+		<div class="panel panel-default">
+			<div class="panel-heading"><h1>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h1></div>
+			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="EventID" value="#URL.EventID#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<div class="panel-body">
+					<div class="form-group">
+						<label for="EventFeatured" class="control-label col-sm-3">Feature Event:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="EventFeatured" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.EventFeatured#" Display="OptionName"  queryposition="below">
+								<option value="----">Feature this Event on Front Page of Site</option>
+							</cfselect>
+						</div>
+					</div>
+					<div class="alert alert-info">Complete the following if you selected the Yes Option above. Featured Sort Order will be displayed in Assending Order from Smallest to Largest Number</div>
+					<div class="form-group">
+						<label for="Featured_StartDate" class="control-label col-sm-3">Start Date of Featuring Event:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_StartDate" name="Featured_StartDate" value="#Session.getSelectedEvent.Featured_StartDate#" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="Featured_EndDate" class="control-label col-sm-3">End Date of Featuring Event:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_EndDate" name="Featured_EndDate" value="#Session.getSelectedEvent.featured_EndDate#" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="Featured_SortOrder" class="control-label col-sm-3">Sort Order of Featured Events:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_SortOrder" name="Featured_SortOrder" value="#Session.getSelectedEvent.Featured_SortOrder#" required="no"></div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Event Section"><br /><br />
+				</div>
+			</cfform>
 		</div>
-		<div class="art-blockcontent">
-			<p class="alert-box notice">Please make changes to the information listed below so this event displays accurate information.</p>
-			<hr>
-			<uForm:form action="" method="Post" id="UpdateEvent" errors="#Session.FormErrors#" errorMessagePlacement="both"
-				commonassetsPath="/plugins/EventRegistration/library/uniForm/" showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton"
-				cancelAction="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events&compactDisplay=false"
-				submitValue="Update Event" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
-				<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-				<input type="hidden" name="formSubmit" value="true">
-				<input type="hidden" name="PerformAction" value="UpdateEvent">
-				<uForm:fieldset legend="Event Featured">
-					<uform:field label="Event Featured" name="EventFeatured" type="select" hint="Would this event be featured on the website?">
-						<cfif isDefined("Session.UserSuppliedInfo.EventFeatured")>
-							<cfif Session.UserSuppliedInfo.EventFeatured EQ 1>
-								<uform:option display="Yes" value="1" isSelected="true" />
-								<uform:option display="No" value="0" />
-							<cfelse>
-								<uform:option display="Yes" value="1" />
-								<uform:option display="No" value="0" isSelected="true" />
-							</cfif>
-						<cfelse>
-							<uform:option display="Yes" value="1" />
-							<uform:option display="No" value="0" isSelected="true" />
-						</cfif>
-					</uform:field>
-					<cfif isDefined("Session.UserSuppliedInfo.Featured_StartDate")>
-						<uform:field label="Start Date" name="Featured_StartDate" isRequired="true" value="#Session.UserSuppliedInfo.Featured_StartDate#" type="date" inputClass="date" hint="The start date of this event being featured" />
-					<cfelse>
-						<uform:field label="Start Date" name="Featured_StartDate" isRequired="true" type="date" inputClass="date" hint="The start date of this event being featured" />
-					</cfif>
-					<cfif isDefined("Session.UserSuppliedInfo.Featured_EndDate")>
-						<uform:field label="End Date" name="Featured_EndDate" isRequired="true" type="date" value="#Session.UserSuppliedInfo.Featured_EndDate#" inputClass="date" hint="The ending date of this event being featured" />
-					<cfelse>
-						<uform:field label="End Date" name="Featured_EndDate" isRequired="true" type="date" inputClass="date" hint="The ending date of this event being featured" />
-					</cfif>
-					<cfif isDefined("Session.UserSuppliedInfo.Featured_SortOrder")>
-						<uform:field label="Sort Order" name="Featured_SortOrder" isRequired="true" maxFieldLength="3" value="#Session.UserSuppliedInfo.Featured_SortOrder#" type="text" hint="The Sort Order of this featured event. Lower the number higher in the listing" />
-					<cfelse>
-						<uform:field label="Sort Order" name="Featured_SortOrder" isRequired="true" maxFieldLength="3" value="100" type="text" hint="The Sort Order of this featured event. Lower the number higher in the listing" />
-					</cfif>
-				</uForm:fieldset>
-			</uForm:form>
+	<cfelseif isDefined("URL.FormRetry")>
+		<div class="panel panel-default">
+			<div class="panel-heading"><h1>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h1></div>
+			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="EventID" value="#Session.FormData.EventID#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<div class="panel-body">
+					<div class="form-group">
+						<label for="EventFeatured" class="control-label col-sm-3">Feature Event:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="EventFeatured" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.EventFeatured#" Display="OptionName"  queryposition="below">
+								<option value="----">Feature this Event on Front Page of Site</option>
+							</cfselect>
+						</div>
+					</div>
+					<div class="alert alert-info">Complete the following if you selected the Yes Option above. Featured Sort Order will be displayed in Assending Order from Smallest to Largest Number</div>
+					<div class="form-group">
+						<label for="Featured_StartDate" class="control-label col-sm-3">Start Date of Featuring Event:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_StartDate" name="Featured_StartDate" value="#Session.getSelectedEvent.Featured_StartDate#" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="Featured_EndDate" class="control-label col-sm-3">End Date of Featuring Event:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_EndDate" name="Featured_EndDate" value="#Session.getSelectedEvent.featured_EndDate#" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="Featured_SortOrder" class="control-label col-sm-3">Sort Order of Featured Events:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_SortOrder" name="Featured_SortOrder" value="#Session.getSelectedEvent.Featured_SortOrder#" required="no"></div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Event Section"><br /><br />
+				</div>
+			</cfform>
 		</div>
-	</div>
+	</cfif>
 </cfoutput>
