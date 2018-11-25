@@ -398,10 +398,19 @@
 	<cffunction name="SendEventCancellationByFacilitatorToSingleParticipant" returntype="Any" Output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 		<cfargument name="Info" type="Struct" Required="True">
-
 		<cfinclude template="EmailTemplates/EventRegistrationCancellationByFacilitatorToIndividual.cfm">
-
 	</cffunction>
+
+	<cffunction name="SendPGPCertificateToIndividual" returntype="Any" output="False">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="ParticipantInfo" type="struct" Required="True">
+		<cfinclude template="EmailTemplates/SendEventPGPCertificateToIndividual.cfm">
+	</cffunction>
+
+
+
+
+
 
 
 
@@ -522,10 +531,7 @@
 		<cfinclude template="EmailTemplates/SendTemporaryPasswordToUser.cfm">
 	</cffunction>
 
-	<cffunction name="SendPGPCertificateToIndividual" returntype="Any" output="False">
-		<cfargument name="ParticipantInfo" type="struct" Required="True">
-		<cfinclude template="EmailTemplates/SendEventPGPCertificateToIndividual.cfm">
-	</cffunction>
+
 
 
 

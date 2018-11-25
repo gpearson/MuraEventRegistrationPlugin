@@ -21,6 +21,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfif isDefined("URL.UserAction")>
 				<div class="panel-body">
 					<cfswitch expression="#URL.UserAction#">
+						<cfcase value="SentPGPCertificates">
+							<cfif isDefined("URL.Successful")>
+								<cfif URL.Successful EQ "true">
+									<div class="alert alert-success"><p>You have successfully scheduled PGP Certificates to be sent to anyone who has attended the event. Depending on the number of PGP Certificates will depend on how fast they are electronically tramsferred to the participants inbox.</p></div>
+								</cfif>
+							</cfif>
+						</cfcase>
 						<cfcase value="RemovedParticipants">
 							<cfif isDefined("URL.Successful")>
 								<cfif URL.Successful EQ "true">
@@ -32,6 +39,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<cfif isDefined("URL.Successful")>
 								<cfif URL.Successful EQ "true">
 									<div class="alert alert-success"><p>You have successfully send registered participants an email message regarding the event. The system in in process of delivering these messages and depending on how many registered participants will depend on how much time will pass</p></div>
+								</cfif>
+							</cfif>
+						</cfcase>
+						<cfcase value="EmailAttended">
+							<cfif isDefined("URL.Successful")>
+								<cfif URL.Successful EQ "true">
+									<div class="alert alert-success"><p>You have successfully send attended participants an email message regarding the event. The system in in process of delivering these messages and depending on how many attended participants will depend on how much time will pass</p></div>
 								</cfif>
 							</cfif>
 						</cfcase>
@@ -177,15 +191,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 										<a href="#buildURL('eventcoord:events.namebadges')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Name Badges</small></a>
 									</cfif>
 									<cfif getAttendedParticipantsForEvent.RecordCount>
-										<a href="#buildURL('eventcoord:events.emailattended')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Email Attended</small></a>&nbsp;
+										<a href="#buildURL('eventcoord:events.emailattended')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Email Attended</small></a>
+										<cfif Session.getAvailableEvents.PGPAvailable EQ 1><a href="#buildURL('eventcoord:events.sendpgpcertificates')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Send PGP Certificates</small></a></cfif>
+										<a href="#buildURL('eventcoord:events.enterexpenses')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Enter Expenses</small></a>
 									</cfif>
 									<a href="#buildURL('eventcoord:events.publishtofb')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small small"><small>Post to Facebook</small></a><br>
-									<cfif getAttendedParticipantsForEvent.RecordCount and Session.getAvailableEvents.PGPAvailable EQ 1>
-										&nbsp;<a href="#buildURL('eventcoord:events.sendpgpcertificates')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Send PGP Certificates</small></a>
-										&nbsp;<a href="#buildURL('eventcoord:events.enterexpenses')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Enter Event Expenses</small></a>
-									<cfelseif getAttendedParticipantsForEvent.RecordCount and Session.getAvailableEvents.PGPAvailable EQ 0>
-										&nbsp;<a href="#buildURL('eventcoord:events.enterexpenses')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Enter Event Expenses</small></a>
-									</cfif>
 									<cfif getEventExpenses.RecordCount>
 										&nbsp;<a href="#buildURL('eventcoord:events.generateprofitlossreport')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Generate Profit/Loss Report</small></a><br />
 									</cfif>

@@ -7,30 +7,26 @@ Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 --->
 </cfsilent>
-<cflock timeout="60" scope="SESSION" type="Exclusive">
-	<cfset Session.FormData = #StructNew()#>
-	<cfif not isDefined("Session.FormErrors")><cfset Session.FormErrors = #ArrayNew()#></cfif>
-</cflock>
-<cfimport taglib="/plugins/EventRegistration/library/uniForm/tags/" prefix="uForm">
 <cfoutput>
-	<div class="art-block clearfix">
-		<div class="art-blockheader">
-			<h3 class="t">Sending an Email to Attended Participants with Professional Growth Point Certificates:<br>#DateFormat(Session.UserSuppliedInfo.PickedEvent.EventDate, 'mm/dd/yyyy')# - #Session.UserSuppliedInfo.PickedEvent.ShortTitle#</h3>
+	<div class="panel panel-default">
+		<div class="panel-heading"><h1>Send PGP Certificate to Participant who attended event titled:<br>#Session.getSelectedEvent.ShortTitle#</h1><br><p>Number of Attended Participants Receiving Certificate: #Session.EventNumberRegistrations#</p></div>
+		<cfform action="" method="post" id="AddEvent" class="form-horizontal">
+			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+			<cfinput type="hidden" name="formSubmit" value="true">
+			<cfinput type="hidden" name="EventID" value="#URL.EventID#">
+			<div class="panel-body">
+				<div class="alert alert-info"><p>PGP Certificates will be attached to the Email message sent as a PDF Document.</p></div>
+				<div class="form-group">
+					<label for="MsgToparticipants" class="control-label col-sm-3">Message to Attended Participants:&nbsp;</label>
+					<div class="col-sm-8">
+					<textarea height="15" width="250" class="form-control" id="EmailMsg" name="EmailMsg"></textarea><br>
+				</div>
+			</div>
 		</div>
-		<div class="art-blockcontent">
-			<div class="alert-box notice">Please complete this form to send out the Professional Growth Points to those who attended this event.<br><Strong>Number of Registered Participants: #Session.EventNumberRegistrations#</Strong><br><strong>Number of PGP Certificates to Send: #Session.EventNumberPGPCertificataes#</strong></div>
-			<hr>
-			<uForm:form action="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.sendpgpcertificates&compactDisplay=false&EventID=#URL.EventID#" method="Post" id="EmailEventParticipants" errors="#Session.FormErrors#" errorMessagePlacement="both"
-				commonassetsPath="/plugins/EventRegistration/library/uniForm/" showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton"
-				cancelAction="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events&compactDisplay=false"
-				submitValue="Email PGP Certificates" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
-				<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-				<input type="hidden" name="formSubmit" value="true">
-				<input type="hidden" name="PerformAction" value="SendEmail">
-				<uForm:fieldset legend="Message to Participants">
-					<uform:field label="Email Body Message" isRequired="true" name="EmailMsg" isDisabled="false" type="textarea" hint="The Email Message Body for Participants" />
-				</uForm:fieldset>
-			</uForm:form>
+		<div class="panel-footer">
+			<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+			<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Send PGP Certificates"><br /><br />
 		</div>
-	</div>
+	</cfform>
+</div>
 </cfoutput>

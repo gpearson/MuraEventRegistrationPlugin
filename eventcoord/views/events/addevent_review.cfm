@@ -275,7 +275,7 @@
 					</div>
 					<cfif Session.UserSuppliedInfo.PGPAvailable EQ 1>
 						<div class="form-group">
-							<label for="PGPPoints" class="control-label col-sm-3">Number of PGP Points:&nbsp;</label>
+							<label for="PGPPoints" class="control-label col-sm-3">Number of PGP Points Per Day:&nbsp;</label>
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="PGPPoints" name="PGPPoints" value="#Session.UserSuppliedInfo.PGPPoints#" required="yes"></div>
 						</div>
 					</cfif>

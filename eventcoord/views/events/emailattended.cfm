@@ -7,84 +7,211 @@ Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 --->
 </cfsilent>
-
-<cfimport taglib="/plugins/EventRegistration/library/uniForm/tags/" prefix="uForm">
-<cflock timeout="60" scope="SESSION" type="Exclusive">
-	<cfset Session.FormData = #StructNew()#>
-	<cfif not isDefined("Session.FormErrors")><cfset Session.FormErrors = #ArrayNew()#></cfif>
-</cflock>
-
-<cfscript>
-	timeConfig = structNew();
-	timeConfig['show24Hours'] = false;
-	timeConfig['showSeconds'] = false;
-</cfscript>
+<cfset YesNoQuery = QueryNew("ID,OptionName", "Integer,VarChar")>
+<cfset temp = QueryAddRow(YesNoQuery, 1)>
+<cfset temp = #QuerySetCell(YesNoQuery, "ID", 0)#>
+<cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "No")#>
+<cfset temp = QueryAddRow(YesNoQuery, 1)>
+<cfset temp = #QuerySetCell(YesNoQuery, "ID", 1)#>
+<cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 <cfoutput>
-	<div class="art-block clearfix">
-		<div class="art-blockheader">
-			<h3 class="t">Sending an Email to Workshop/Event Attended Participants:<br>#DateFormat(Session.UserSuppliedInfo.EventDate, 'mm/dd/yyyy')# - #Session.UserSuppliedInfo.ShortTitle#</h3>
-		</div>
-		<div class="art-blockcontent">
-			<div class="alert-box notice">Please complete this form to send a message to those who attended this event.<br><Strong>Number of Registrations Currently: #Session.EventNumberAttended#</Strong></div>
-			<hr>
-			<uForm:form action="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.emailattended&compactDisplay=false&EventID=#URL.EventID#&EventStatus=EmailParticipants" method="Post" id="EmailEventParticipants" errors="#Session.FormErrors#" errorMessagePlacement="both"
-				commonassetsPath="/plugins/EventRegistration/library/uniForm/" showCancel="yes" cancelValue="<--- Return to Menu" cancelName="cancelButton"
-				cancelAction="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events&compactDisplay=false"
-				submitValue="Email Event Participants" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
-				<input type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-				<input type="hidden" name="formSubmit" value="true">
-				<input type="hidden" name="PerformAction" value="CancelEvent">
-				<uForm:fieldset legend="Message to Participants">
-					<uform:field label="Email Body Message" name="EmailMsg" isDisabled="false" type="textarea" hint="The Email Message Body for Participants" />
-					<uform:field label="Include File Links" name="IncludeFileLinks" type="select" hint="Include Links to Event Documents in Email Message?">
-						<uform:option display="Yes" value="1" isSelected="true" />
-						<uform:option display="No" value="0" />
-					</uform:field>
-				</uForm:fieldset>
-				<uForm:fieldset legend="Participant Materials">
-					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameSix)>
-						<input type="Hidden" Name="FirstDocumentToSend" Value="">
-						<uform:field label="First Document" name="FirstDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameSix#" type="text" isDisabled="true" />
-					<cfelse>
-						<uform:field label="First Document" name="FirstDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameSix#" />
+	<script type="text/javascript" src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/field-wordcounter.js"></script>
+	<div class="panel panel-default">
+		<div class="panel-heading"><h2>Send Attended Participants Email: #Session.getSelectedEvent.ShortTitle#</h2><br><p>Number of Attended Participants: #Session.EventNumberRegistrations#</p></div>
+		<cfform action="" method="post" id="AddEvent" class="form-horizontal" enctype="multipart/form-data">
+			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+			<cfinput type="hidden" name="EventID" value="#URL.EventID#">
+			<cfinput type="hidden" name="formSubmit" value="true">
+			<cfif not isDefined("URL.FormRetry")>
+				<div class="panel-body">
+					<div class="panel-heading"><h1>Message to Participants</h1></div>
+					<div class="form-group">
+						<label for="MsgToparticipants" class="control-label col-sm-3">Message to Attended Participants:&nbsp;</label>
+						<div class="col-sm-8">
+							<textarea height="15" width="250" class="form-control" id="EmailMsg" name="EmailMsg"></textarea><br>
+							<script type="text/javascript">
+								$("textarea").textareaCounter({limit: 250});
+							</script>
+						</div>
+					</div>
+					<div class="panel-heading"><h1>Event Website Resource Links</h1></div>
+					<div class="form-group">
+						<label for="FirstWebLink" class="control-label col-sm-3">First Website Link (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FirstWebLink" name="FirstWebLink" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="SecondWebLink" class="control-label col-sm-3">Second Website Link (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="SecondWebLink" name="SecondWebLink" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="ThirdWebLink" class="control-label col-sm-3">Third Website Link (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ThirdWebLink" name="ThirdWebLink" required="no"></div>
+					</div>
+					<cfif Session.EventDocuments.RecordCount>
+						<div class="panel-heading"><h1>Previous Event Document Resources</h1></div>
+						<div class="form-group">
+							<label for="FirstDocument" class="control-label col-sm-3">Previous Documents (if Any):&nbsp;</label>
+							<div class="col-sm-8">
+								<table class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
+									<thead class="thead-default">
+										<tr>
+											<th width="50%">Document Name</th>
+											<th  width="25%">Size</th>
+											<th width="25%">Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										<cfloop query="#Session.EventDocuments#">
+											<tr>
+												<td>#Session.EventDocuments.name#</td>
+												<td>#Session.EventDocuments.size#</td>
+												<td><a href="#Session.WebEventDirectory##Session.EventDocuments.name#" class="btn btn-primary btn-small" target="_blank">View</a><a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.emailattended&EventID=#URL.EventID#&UserAction=DeleteEventDocument&DocumentName=#HTMLEditFormat(Session.EventDocuments.name)#" class="btn btn-primary btn-small" target="_blank">Delete</a></td>
+											</tr>
+										</cfloop>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="form-group">
+						<label for="IncludePreviousDocumentsInEmail" class="control-label col-sm-3">Include These Documents in Email:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="IncludePreviousDocumentsInEmail" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
+								<option value="----">Include These Documents in Email?</option>
+							</cfselect>
+						</div>
+					</div>
 					</cfif>
-					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameSeven)>
-						<input type="Hidden" Name="SecondDocumentToSend" Value="">
-						<uform:field label="Second Document, if needed" name="SecondDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameSeven#" type="text" isDisabled="true" />
-					<cfelse>
-						<uform:field label="Second Document, if needed" name="SecondDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameSeven#" />
-					</cfif>
-					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameEight)>
-						<input type="Hidden" Name="ThirdDocumentToSend" Value="">
-						<uform:field label="Third Document, if needed" name="ThirdDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameEight#" type="text" isDisabled="true" />
-					<cfelse>
-						<uform:field label="Third Document, if needed" name="ThirdDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameEight#" />
-					</cfif>
-					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameNine)>
-						<input type="Hidden" Name="FourthDocumentToSend" Value="">
-						<uform:field label="Fourth Document, if needed" name="FourthDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameNine#" type="text" isDisabled="true" />
-					<cfelse>
-						<uform:field label="Fourth Document, if needed" name="FourthDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameNine#" />
-					</cfif>
-					<cfif LEN(Session.UserSuppliedInfo.EventDoc_FileNameTen)>
-						<input type="Hidden" Name="FifthDocumentToSend" Value="">
-						<uform:field label="Fifth Document, if needed" name="FifthDocument" value="#Session.UserSuppliedInfo.EventDoc_FileNameTen#" type="text" isDisabled="true" />
-					<cfelse>
-						<uform:field label="Fifth Document, if needed" name="FifthDocumentToSend" type="file" value="#Session.UserSuppliedInfo.EventDoc_FileNameTen#" />
-					</cfif>
-				</uForm:fieldset>
-				<cfif Session.EventNumberAttended GT 0>
-					<uForm:fieldset legend="Send Email?">
-						<uform:field label="Send Email Message" name="SendEmail" isDisabled="false" type="select" hint="Are you ready to send this email to participants?">
-							<uform:option display="Yes, Send It" value="True" isSelected="true" />
-							<uform:option display="No, Do not Send" value="False" />
-						</uform:field>
-					</uForm:fieldset>
-				<cfelse>
-					<input type="Hidden" Name="SendEMail" Value="False">
-					<input type="Hidden" Name="EmailMsg" Value=" ">
+					<div class="panel-heading"><h1>New Event Document Resources</h1></div>
+					<div class="form-group">
+						<label for="FirstDocument" class="control-label col-sm-3">First Document (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="file" class="form-control" id="FirstDocument" name="FirstDocument" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="SecondDocument" class="control-label col-sm-3">Second Document (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="file" class="form-control" id="SecondDocument" name="SecondDocument" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="ThirdDocument" class="control-label col-sm-3">Third Document (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="file" class="form-control" id="ThirdDocument" name="ThirdDocument" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="FourthDocument" class="control-label col-sm-3">Fourth Document (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="file" class="form-control" id="FourthDocument" name="FourthDocument" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="FifthDocument" class="control-label col-sm-3">Fifth Document (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="file" class="form-control" id="FifthDocument" name="FifthDocument" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="SendEmail" class="control-label col-sm-3">Send Email to Participants:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="SendEmail" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
+								<option value="----">Send Email?</option>
+							</cfselect>
+						</div>
+					</div>
+				</div>
+			<cfelseif isDefined("URL.FormRetry")>
+				<cfif isDefined("Session.FormErrors")>
+					<div class="panel-body">
+						<cfif ArrayLen(Session.FormErrors) GTE 1>
+							<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
+						</cfif>
+					</div>
 				</cfif>
-			</uForm:form>
-		</div>
+				<div class="panel-body">
+					<div class="panel-heading"><h1>Message to Participants</h1></div>
+					<div class="form-group">
+						<label for="MsgToparticipants" class="control-label col-sm-3">Message to Registered Participants:&nbsp;</label>
+						<div class="col-sm-8">
+							<textarea height="15" width="250" class="form-control" id="EmailMsg" name="EmailMsg">#Session.FormInput.EmailMsg#</textarea><br>
+							<script type="text/javascript">
+								$("textarea").textareaCounter({limit: 250});
+							</script>
+						</div>
+					</div>
+					<div class="panel-heading"><h1>Event Website Resource Links</h1></div>
+					<div class="form-group">
+						<label for="FirstWebLink" class="control-label col-sm-3">First Website Link (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" value="#Session.FormInput.FirstWebLink#" id="FirstWebLink" name="FirstWebLink" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="SecondWebLink" class="control-label col-sm-3">Second Website Link (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" value="#Session.FormInput.SecondWebLink#" id="SecondWebLink" name="SecondWebLink" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="ThirdWebLink" class="control-label col-sm-3">Third Website Link (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" value="#Session.FormInput.ThirdWebLink#" id="ThirdWebLink" name="ThirdWebLink" required="no"></div>
+					</div>
+					<cfif Session.EventDocuments.RecordCount>
+						<div class="panel-heading"><h1>Previous Event Document Resources</h1></div>
+						<div class="form-group">
+							<label for="FirstDocument" class="control-label col-sm-3">Previous Documents (if Any):&nbsp;</label>
+							<div class="col-sm-8">
+								<table class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
+									<thead class="thead-default">
+										<tr>
+											<th width="50%">Document Name</th>
+											<th  width="25%">Size</th>
+											<th width="25%">Actions</th>
+										</tr>
+									</thead>
+									<tbody>
+										<cfloop query="#Session.EventDocuments#">
+											<tr>
+												<td>#Session.EventDocuments.name#</td>
+												<td>#Session.EventDocuments.size#</td>
+												<td><a href="#Session.WebEventDirectory##Session.EventDocuments.name#" class="btn btn-primary btn-small" target="_blank">View</a><a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.emailattended&EventID=#URL.EventID#&UserAction=DeleteEventDocument&DocumentName=#HTMLEditFormat(Session.EventDocuments.name)#" class="btn btn-primary btn-small" target="_blank">Delete</a></td>
+											</tr>
+										</cfloop>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="form-group">
+						<label for="IncludePreviousDocumentsInEmail" class="control-label col-sm-3">Include These Documents in Email:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="IncludePreviousDocumentsInEmail" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
+								<option value="----">Include These Documents in Email?</option>
+							</cfselect>
+						</div>
+					</div>
+					</cfif>
+					<div class="panel-heading"><h1>New Event Document Resources</h1></div>
+					<div class="form-group">
+						<label for="FirstDocument" class="control-label col-sm-3">First Document (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="file" class="form-control" value="#Session.FormInput.FirstDocument#" id="FirstDocument" name="FirstDocument" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="SecondDocument" class="control-label col-sm-3">Second Document (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="file" class="form-control" value="#Session.FormInput.SecondDocument#" id="SecondDocument" name="SecondDocument" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="ThirdDocument" class="control-label col-sm-3">Third Document (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="file" class="form-control" value="#Session.FormInput.ThirdDocument#" id="ThirdDocument" name="ThirdDocument" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="FourthDocument" class="control-label col-sm-3">Fourth Document (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="file" class="form-control" value="#Session.FormInput.FourthDocument#" id="FourthDocument" name="FourthDocument" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="FifthDocument" class="control-label col-sm-3">Fifth Document (if Any):&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="file" class="form-control" value="#Session.FormInput.FifthDocument#" id="FifthDocument" name="FifthDocument" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="SendEmail" class="control-label col-sm-3">Send Email to Participants:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="SendEmail" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
+								<option value="----">Send Email?</option>
+							</cfselect>
+						</div>
+					</div>
+				</div>
+			</cfif>
+			<div class="panel-footer">
+				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Send Email Message"><br /><br />
+				</div>
+		</cfform>
 	</div>
 </cfoutput>
