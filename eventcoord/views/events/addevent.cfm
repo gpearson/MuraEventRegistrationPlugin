@@ -113,7 +113,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<label for="ViewSpecialPricing" class="control-label col-sm-3">Special Pricing Available:&nbsp;</label>
 							<div class="col-sm-8">
 								<cfselect name="ViewSpecialPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-									<option value="----">Will Event have special pricing avialable</option>
+									<option value="----">Will Event have special pricing available</option>
 								</cfselect>
 							</div>
 						</div>

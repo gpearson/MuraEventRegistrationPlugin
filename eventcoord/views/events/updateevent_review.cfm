@@ -204,7 +204,7 @@
 					<h2 class="panel-title">Webinar Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_webinar&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
 					<div class="form-group">
 						<label for="WebinarAvailable" class="control-label col-sm-3">Webinar Available:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.WebinarAvailable#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
+						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.WebinarAvailable#"><cfdefaultcase>No</cfdefaultcase><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
 					</div>
 					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
 						<div class="form-group">
@@ -242,7 +242,8 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Submit Changes"><br /><br />
 				</div>
 			</cfform>
 		</div>

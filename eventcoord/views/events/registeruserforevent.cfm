@@ -497,11 +497,12 @@
 									</cfdefaultcase>
 								</cfswitch>
 							</cfloop>
-							<cfswitch expression="#Variables.CurrentModRow#">
+							<!--- <cfswitch expression="#Variables.CurrentModRow#">
 								<cfcase value="0"></cfcase>
 								<cfcase value="1"><td colspan="3">&nbsp;</td></tr></cfcase>
 								<cfdefaultcase><td>&nbsp;</td></tr></cfdefaultcase>
 							</cfswitch>
+							--->
 							</table>
 							<hr>
 							<table id="NewParticipantRows" class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
@@ -530,6 +531,7 @@
 							<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Register Participants"><br /><br />
 						</div>
 						<script>
+							var msg;
 							function AddRow() {
 								structvar = {
 									Datasource: "#rc.$.globalConfig('datasource')#",
@@ -541,20 +543,25 @@
 									SiteID: "#rc.$.siteConfig('siteID')#",
 									EventID: "#URL.EventID#"
 								};
+								newuser = {
+									Email: document.getElementById("ParticipantEmail").value,
+									Fname: document.getElementById("ParticipantFirstName").value,
+									Lname: document.getElementById("ParticipantLastName").value
+								};
 
 								$.ajax({
-									url: '/plugins/#rc.pc.getPackage()#/library/components/EventServices.cfc',
+									url: '/plugins/#rc.pc.getPackage()#/library/components/EventServices.cfc?method=AddParticipantToDatabase',
 									type: "POST",
 									dataType: "json",
 									data: {
-										method: "AddParticipantToDatabase",
 										returnFormat: "json",
-										jrStruct: JSON.stringify({"DBInfo": structvar, "EMail": document.getElementById("ParticipantEmail").value, "Fname": document.getElementByID("ParticipantFirstName").value, "Lname": document.getElementByID("ParticipantLastName").value})
+										jrStruct: JSON.stringify({"DBInfo": structvar, "UserInfo": newuser})
 									},
-									success: function (msg) {
-										windows.location.reload(true);
-									}
-								});
+									success: handleDataFromServer(msg)
+								})
+								function handleDataFromServer(msg) {
+									location.reload(true);
+								}
 							};
 						</script>
 					</cfform>

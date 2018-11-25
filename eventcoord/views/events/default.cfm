@@ -101,7 +101,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</cfswitch>
 				</div>
 			</cfif>
-			<table class="table table-striped table-bordered">
+			<table class="table table-bordered table-striped">
 				<cfif Session.getAvailableEvents.RecordCount>
 					<thead class="thead-default">
 						<tr>
@@ -214,5 +214,4 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</table>
 		</div>
 	</div>
-	<cfdump var="#Application.configBean.getPluginManager()#">
 </cfoutput>

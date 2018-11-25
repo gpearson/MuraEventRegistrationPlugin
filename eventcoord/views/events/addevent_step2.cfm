@@ -399,9 +399,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="form-group">
 							<label for="LocationID" class="control-label col-sm-3">Location of Event:&nbsp;</label>
 							<div class="col-sm-8">
-								<cfselect name="LocationID" class="form-control" Required="Yes" Multiple="No" query="Session.getFacilityInformation" selected="#Session.UserSuppliedInfo.LocationID#" value="TContent_ID" Display="FacilityName"  queryposition="below">
-									<option value="----">Select Location of Event</option>
-								</cfselect>
+								<cfif isDefined("Session.UserSuppliedInfo.LocationID")>
+									<cfselect name="LocationID" class="form-control" Required="Yes" Multiple="No" query="Session.getFacilityInformation" selected="#Session.UserSuppliedInfo.LocationID#" value="TContent_ID" Display="FacilityName"  queryposition="below">
+										<option value="----">Select Location of Event</option>
+									</cfselect>
+								<cfelse>
+									<cfselect name="LocationID" class="form-control" Required="Yes" Multiple="No" query="Session.getFacilityInformation" value="TContent_ID" Display="FacilityName"  queryposition="below">
+										<option value="----">Select Location of Event</option>
+									</cfselect>
+								</cfif>
+
 							</div>
 						</div>
 					</cfif>
