@@ -211,7 +211,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 					// Database Table Exists, We must Drop it to create it again
 					var dbDropTable = new query();
 					dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-					dbDropTable.setSQL("DROP TABLE p_EventRegistration_Facility");
+					dbDropTable.setSQL("DROP TABLE p_EventRegistration_FacilityRooms");
 					var dbDropTableResults = dbDropTable.execute();
 
 					if (len(dbDropTableResults.getResult()) eq 0) {
@@ -296,27 +296,25 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		NewGroupEventFacilitator.setGroupName("Event Facilitator");
 		NewGroupEventFacilitator.setType(1);
 		NewGroupEventFacilitator.setIsPublic(1);
-		NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupAuctionAdmin)#;
+		NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
 
 		var NewGroupEventPresentator = #application.userManager.read("")#;
 		NewGroupEventPresentator.setSiteID(Session.SiteID);
 		NewGroupEventPresentator.setGroupName("Event Presentator");
 		NewGroupEventPresentator.setType(1);
 		NewGroupEventPresentator.setIsPublic(1);
-		NewGroupEventPresentatorStatus = #Application.userManager.create(NewGroupAuctionAdmin)#;
+		NewGroupEventPresentatorStatus = #Application.userManager.create(NewGroupEventPresentator)#;
 
-		insertSiteConfig = arrayNew(1);
-		insertSiteConfig[1] = "#Session.SiteID#, #Now()#, System, #Now()#, 0, 1";
-
-		var dbInsertSiteConfigQuery = new query();
+		Var dbInsertSiteConfigQuery = new query();
 		dbInsertSiteConfigQuery.setDatasource("#application.configBean.getDatasource()#");
-
-		for (i=1; i LTE ArrayLen(insertSiteConfig);i=i+1) {
-			dbInsertSiteConfigQuery.setSQL("Insert into p_EventRegistration_SiteConfig(Site_ID, DateCreated, lastUpdateBy, lastUpdated, ProcessPayments_Stripe, Stripe_TestMode) Values(:RecordRow)");
-			dbInsertSiteConfigQuery.addParam(name="RecordRow", value=insertSiteConfig[i]);
-			dbInsertSiteConfigQuery.execute();
-			dbInsertSiteConfigQuery.clearParams();
-		}
+		dbInsertSiteConfigQuery.addparam(name="SiteID", value="#Session.SiteID#", cfsqltype="varchar");
+		dbInsertSiteConfigQuery.addparam(name="DateCreated", value="#Now()#", cfsqltype="timestamp");
+		dbInsertSiteConfigQuery.addparam(name="LastUpdateBy", value="System", cfsqltype="varchar");
+		dbInsertSiteConfigQuery.addparam(name="LastUpdated", value="#Now()#", cfsqltype="timestamp");
+		dbInsertSiteConfigQuery.addparam(name="ProcessStripe", value="0", cfsqltype="bit");
+		dbInsertSiteConfigQuery.addparam(name="TestStripe", value="1", cfsqltype="bit");
+		dbInsertSiteConfigQuery.setSQL("Insert into p_EventRegistration_SiteConfig(Site_ID, DateCreated, lastUpdateBy, lastUpdated, ProcessPayments_Stripe, Stripe_TestMode) Values(:SiteID, :DateCreated, :LastUpdateBy, :LastUpdated, :ProcessStripe, :TestStripe)");
+		dbInsertSiteConfigQuery.execute();
 	}
 
 	public void function update() {
