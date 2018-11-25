@@ -20,7 +20,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		application.appInitialized = false;
 
 		// #rc.$.globalConfig('dbtype')#
-		switch(application.configbean.getDBType) {
+		switch(application.configbean.getDBType()) {
 			case "mysql":
 				var dbCheckTables = new query();
 				dbCheckTables.setDatasource("#application.configBean.getDatasource()#");
@@ -282,7 +282,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 						abort;
 					}
 				}
-				break;
+			break;
 		}
 
 
@@ -306,14 +306,14 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		NewGroupEventPresentatorStatus = #Application.userManager.create(NewGroupAuctionAdmin)#;
 
 		insertSiteConfig = arrayNew(1);
-		insertSiteConfig[1] = "'#Session.SiteID#', #Now()#, 'System', #Now()#, 0, 1";
+		insertSiteConfig[1] = "#Session.SiteID#, #Now()#, System, #Now()#, 0, 1";
 
 		var dbInsertSiteConfigQuery = new query();
 		dbInsertSiteConfigQuery.setDatasource("#application.configBean.getDatasource()#");
 
 		for (i=1; i LTE ArrayLen(insertSiteConfig);i=i+1) {
 			dbInsertSiteConfigQuery.setSQL("Insert into p_EventRegistration_SiteConfig(Site_ID, DateCreated, lastUpdateBy, lastUpdated, ProcessPayments_Stripe, Stripe_TestMode) Values(:RecordRow)");
-			dbInsertSiteConfigQuery.addParam(name="RecordRow", value=i);
+			dbInsertSiteConfigQuery.addParam(name="RecordRow", value=insertSiteConfig[i]);
 			dbInsertSiteConfigQuery.execute();
 			dbInsertSiteConfigQuery.clearParams();
 		}
@@ -322,6 +322,693 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	public void function update() {
 		// triggered by the pluginManager when the plugin is UPDATED.
 		application.appInitialized = false;
+
+		switch(application.configbean.getDBType()) {
+			case "mysql":
+				var dbCheckTables = new query();
+				dbCheckTables.setDatasource("#application.configBean.getDatasource()#");
+				dbCheckTables.setSQL("Show Tables LIKE 'eCaterers'");
+				var dbCheckTablesResults = dbCheckTables.execute();
+				if (dbCheckTablesResults.getResult().recordcount eq 1) {
+					var dbChangeTableName = new query();
+					dbChangeTableName.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableName.setSQL("ALTER TABLE eCaterers RENAME p_EventRegistration_Caterers");
+					var dbChangeTableNameResults = dbChangeTableName.execute();
+
+					var dbChangeTableFields = new query();
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Caterers MODIFY COLUMN dateCreated datetime DEFAULT NULL");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+					dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Caterers MODIFY COLUMN lastUpdated timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				} else {
+					var dbChangeTableFields = new query();
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Caterers MODIFY COLUMN dateCreated datetime DEFAULT NULL");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+					dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Caterers MODIFY COLUMN lastUpdated timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				}
+
+				dbCheckTables.setSQL("Show Tables LIKE 'eEvent_ExpenseList'");
+				dbCheckTables.setDatasource("#application.configBean.getDatasource()#");
+				var dbCheckTablesResults = dbCheckTables.execute();
+				if (dbCheckTablesResults.getResult().recordcount eq 1) {
+					var dbChangeTableName = new query();
+					dbChangeTableName.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableName.setSQL("ALTER TABLE eEvent_ExpenseList RENAME p_EventRegistration_ExpenseList");
+					var dbChangeTableNameResults = dbChangeTableName.execute();
+				} else {
+
+				}
+
+				dbCheckTables.setSQL("Show Tables LIKE 'eEvent_Expenses'");
+				dbCheckTables.setDatasource("#application.configBean.getDatasource()#");
+				var dbCheckTablesResults = dbCheckTables.execute();
+				if (dbCheckTablesResults.getResult().recordcount eq 1) {
+					var dbChangeTableName = new query();
+					dbChangeTableName.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableName.setSQL("ALTER TABLE eEvent_Expenses RENAME p_EventRegistration_EventExpenses");
+					var dbChangeTableNameResults = dbChangeTableName.execute();
+				} else {
+
+				}
+
+				dbCheckTables.setSQL("Show Tables LIKE 'eFacility'");
+				dbCheckTables.setDatasource("#application.configBean.getDatasource()#");
+				var dbCheckTablesResults = dbCheckTables.execute();
+				if (dbCheckTablesResults.getResult().recordcount eq 1) {
+					var dbChangeTableName = new query();
+					dbChangeTableName.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableName.setSQL("ALTER TABLE eFacility RENAME p_EventRegistration_Facility");
+					var dbChangeTableNameResults = dbChangeTableName.execute();
+				} else {
+
+				}
+
+				dbCheckTables.setSQL("Show Tables LIKE 'eFacilityRooms'");
+				dbCheckTables.setDatasource("#application.configBean.getDatasource()#");
+				var dbCheckTablesResults = dbCheckTables.execute();
+				if (dbCheckTablesResults.getResult().recordcount eq 1) {
+					var dbChangeTableName = new query();
+					dbChangeTableName.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableName.setSQL("ALTER TABLE eFacilityRooms RENAME p_EventRegistration_FacilityRooms");
+					var dbChangeTableNameResults = dbChangeTableName.execute();
+				} else {
+
+				}
+
+				dbCheckTables.setSQL("Show Tables LIKE 'eUserMatrix'");
+				dbCheckTables.setDatasource("#application.configBean.getDatasource()#");
+				var dbCheckTablesResults = dbCheckTables.execute();
+				if (dbCheckTablesResults.getResult().recordcount eq 1) {
+					var dbChangeTableName = new query();
+					dbChangeTableName.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableName.setSQL("ALTER TABLE eUserMatrix RENAME p_EventRegistration_UserMatrix");
+					var dbChangeTableNameResults = dbChangeTableName.execute();
+				} else {
+
+				}
+
+				dbCheckTables.setSQL("Show Tables LIKE 'eEvents'");
+				dbCheckTables.setDatasource("#application.configBean.getDatasource()#");
+				var dbCheckTablesResults = dbCheckTables.execute();
+				if (dbCheckTablesResults.getResult().recordcount eq 1) {
+					var dbChangeTableName = new query();
+					dbChangeTableName.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableName.setSQL("ALTER TABLE eEvents RENAME p_EventRegistration_Events");
+					var dbChangeTableNameResults = dbChangeTableName.execute();
+
+					if (LEN(dbChangeTableNameResults.getResult()) eq 0) {
+						var dbChangeTableFields = new query();
+						dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+						dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'LocationType'");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+						if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+							dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN LocationType");
+							var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+						}
+
+						dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+						dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeOne'");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+						if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+							dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeOne");
+							var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+						}
+
+						dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+						dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeTwo'");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+						if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+							dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeTwo");
+							var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+						}
+
+						dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+						dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeThree'");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+						if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+							dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeThree");
+							var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+						}
+
+						dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+						dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeFour'");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+						if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 				dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeFour");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeFive'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeFive");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeSix'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeSix");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeSeven'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeSeven");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeEight'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeEight");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeNine'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeNine");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeTen'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeTen");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+						}
+
+						dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+						dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameOne'");
+					 	var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameOne");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameTwo'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameTwo");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameThree'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameThree");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+						}
+
+						dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameFour'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameFour");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameFive'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameFive");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameSix'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameSix");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameSeven'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameSeven");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameEight'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameEight");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameNine'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameNine");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 			}
+
+			 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+			 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameTen'");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+				 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+				 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameTen");
+					 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+						}
+
+					}
+				} else {
+					var dbChangeTableFields = new query();
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'LocationType'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN LocationType");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					}
+
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeOne'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeOne");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					}
+
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeTwo'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeTwo");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					}
+
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeThree'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeThree");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					}
+
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeFour'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+		 				dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeFour");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeFive'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeFive");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeSix'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeSix");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeSeven'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeSeven");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeEight'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeEight");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeNine'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeNine");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileTypeTen'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileTypeTen");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					}
+
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameOne'");
+				 	var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameOne");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameTwo'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameTwo");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameThree'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameThree");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					}
+
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameFour'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameFour");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameFive'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameFive");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameSix'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameSix");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameSeven'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameSeven");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameEight'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameEight");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameNine'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameNine");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+
+		 			dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+		 			dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'EventDoc_FileNameTen'");
+			 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+			 			dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Events DROP COLUMN EventDoc_FileNameTen");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					}
+				}
+
+				dbCheckTables.setSQL("Show Tables LIKE 'eMembership'");
+				dbCheckTables.setDatasource("#application.configBean.getDatasource()#");
+				var dbCheckTablesResults = dbCheckTables.execute();
+				if (dbCheckTablesResults.getResult().recordcount eq 1) {
+					var dbChangeTableName = new query();
+					dbChangeTableName.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableName.setSQL("ALTER TABLE eMembership RENAME p_EventRegistration_Membership");
+					var dbChangeTableNameResults = dbChangeTableName.execute();
+
+					dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Membership LIKE 'ReceiveInvoicesByEmail'");
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Membership Add COLUMN ReceiveInvoicesByEmail Bit(1) NOT NULL DEFAULT B'0' AFTER AccountsPayable_ContactName");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					}
+				} else {
+					dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_Membership LIKE 'ReceiveInvoicesByEmail'");
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_Membership Add COLUMN ReceiveInvoicesByEmail Bit(1) NOT NULL DEFAULT B'0' AFTER AccountsPayable_ContactName");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					}
+				}
+
+				dbCheckTables.setSQL("Show Tables LIKE 'eRegistrations'");
+				dbCheckTables.setDatasource("#application.configBean.getDatasource()#");
+				var dbCheckTablesResults = dbCheckTables.execute();
+				if (dbCheckTablesResults.getResult().recordcount eq 1) {
+					var dbChangeTableName = new query();
+					dbChangeTableName.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableName.setSQL("ALTER TABLE eRegistrations RENAME p_EventRegistration_UserRegistrations");
+					var dbChangeTableNameResults = dbChangeTableName.execute();
+
+					dbChangeTableFields.setDatasource("#application.configBean.getDatasource()#");
+					dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEvent'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations CHANGE COLUMN AttendedEvent AttendedEventDate1 Bit(1) NOT NULL DEFAULT B'0'");
+						var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					}
+
+					dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventDate2'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate2 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate1");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+		 			}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventDate3'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate3 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate2");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventDate4'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate4 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate3");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventDate5'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate5 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate4");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventDate6'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate6 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate5");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventSessionAM'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventSessionAM Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate6");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventSessionPM'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventSessionPM Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventSessionAM");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate1'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate1 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendeePriceVerified");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate2'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate2 Bit(1) NOT NULL DEFAULT B'0' AFTER RegisterForEventDate1");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate3'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate3 Bit(1) NOT NULL DEFAULT B'0' AFTER RegisterForEventDate2");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate4'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate4 Bit(1) NOT NULL DEFAULT B'0' AFTER RegisterForEventDate3");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate5'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate5 Bit(1) NOT NULL DEFAULT B'0' AFTER RegisterForEventDate4");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate6'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate6 Bit(1) NOT NULL DEFAULT B'0' AFTER RegisterForEventDate5");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+				} else {
+					dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEvent'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 1) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations CHANGE COLUMN AttendedEvent AttendedEventDate1 Bit(1) NOT NULL DEFAULT B'0'");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventDate2'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate2 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate1");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventDate3'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate3 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate2");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventDate4'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate4 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate3");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventDate5'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate5 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate4");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventDate6'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate6 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate5");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventSessionAM'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventSessionAM Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate6");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'AttendedEventSessionPM'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventSessionPM Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventSessionAM");
+				 		var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate1'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate1 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendeePriceVerified");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate2'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate2 Bit(1) NOT NULL DEFAULT B'0' AFTER RegisterForEventDate1");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate3'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate3 Bit(1) NOT NULL DEFAULT B'0' AFTER RegisterForEventDate2");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate4'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate4 Bit(1) NOT NULL DEFAULT B'0' AFTER RegisterForEventDate3");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate5'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate5 Bit(1) NOT NULL DEFAULT B'0' AFTER RegisterForEventDate4");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+			 		dbChangeTableFields.setSQL("SHOW COLUMNS FROM p_EventRegistration_UserRegistrations LIKE 'RegisterForEventDate6'");
+					var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+					if (dbChangeTableFieldsResults.getResult().recordcount eq 0) {
+						dbChangeTableFields.setSQL("ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN RegisterForEventDate6 Bit(1) NOT NULL DEFAULT B'0' AFTER RegisterForEventDate5");
+			 			var dbChangeTableFieldsResults = dbChangeTableFields.execute();
+			 		}
+				}
+
+				var dbCheckTables = new query();
+				dbCheckTables.setDatasource("#application.configBean.getDatasource()#");
+				dbCheckTables.setSQL("Show Tables LIKE 'p_EventRegistration_SiteConfig'");
+				var dbCheckTablesResults = dbCheckTables.execute();
+
+				if (dbCheckTablesResults.getResult().recordcount eq 0) {
+					// Since the Database Table does not exists, Lets Create it
+					var dbCreateTable = new query();
+					dbCreateTable.setDatasource("#application.configBean.getDatasource()#");
+					dbCreateTable.setSQL("CREATE TABLE `p_EventRegistration_SiteConfig` ( `TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` tinytext NOT NULL, `DateCreated` datetime NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, `lastUpdated` datetime NOT NULL, `ProcessPayments_Stripe` bit(1) NOT NULL DEFAULT b'0', `Stripe_TestMode` bit(1) NOT NULL DEFAULT b'1', `Stripe_TestAPIKey` tinytext, `Stripe_LiveAPIKey` tinytext, `Facbook_AppID` tinytext, `Facebook_AppSecretKey` tinytext, `Facebook_PageID` tinytext, `Facebook_AppScope` tinytext, PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;");
+					var dbCreateTableResults = dbCreateTable.execute();
+
+					Var dbInsertSiteConfigQuery = new query();
+					dbInsertSiteConfigQuery.setDatasource("#application.configBean.getDatasource()#");
+					dbInsertSiteConfigQuery.addparam(name="SiteID", value="#Session.SiteID#", cfsqltype="varchar");
+					dbInsertSiteConfigQuery.addparam(name="DateCreated", value="#Now()#", cfsqltype="timestamp");
+					dbInsertSiteConfigQuery.addparam(name="LastUpdateBy", value="System", cfsqltype="varchar");
+					dbInsertSiteConfigQuery.addparam(name="LastUpdated", value="#Now()#", cfsqltype="timestamp");
+					dbInsertSiteConfigQuery.addparam(name="ProcessStripe", value="0", cfsqltype="bit");
+					dbInsertSiteConfigQuery.addparam(name="TestStripe", value="1", cfsqltype="bit");
+					dbInsertSiteConfigQuery.setSQL("Insert into p_EventRegistration_SiteConfig(Site_ID, DateCreated, lastUpdateBy, lastUpdated, ProcessPayments_Stripe, Stripe_TestMode) Values(:SiteID, :DateCreated, :LastUpdateBy, :LastUpdated, :ProcessStripe, :TestStripe)");
+					dbInsertSiteConfigQuery.execute();
+				} else {
+
+
+				}
+			break;
+		}
 	}
 
 	public void function delete() {
@@ -419,7 +1106,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 					writedump(dbDropTableResults.getResult());
 					abort;
 				}
-				break;
+			break;
+		}
 	}
-
 }

@@ -43,13 +43,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 			Meta information. The name of the creator/organization that
 			developed the plugin.
 		-->
-		<provider>Steve Withington</provider>
+		<provider>Graham Pearson</provider>
 
 		<!--
 			ProviderURL :
 			URL of the creator/organization that developed the plugin.
 		-->
-		<providerURL>http://stephenwithington.com</providerURL>
+		<providerURL>http://www.yourcfpro.com</providerURL>
 
 		<!-- Category : Usually either 'Application' or 'Utility' -->
 		<category>Application</category>
