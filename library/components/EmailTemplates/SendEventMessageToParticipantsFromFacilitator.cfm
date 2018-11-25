@@ -8,14 +8,15 @@ Message Details Below
 
 #Arguments.ParticipantInfo.EmailMessageBody#
 
+<cfif Arguments.ParticipantInfo.WebLinksInEmail EQ 1><cfif LEN(Arguments.ParticipantInfo.WebLink1)>#Arguments.ParticipantInfo.WebLink1#</cfif>
+	<cfif LEN(Arguments.ParticipantInfo.WebLink2)>#Arguments.ParticipantInfo.WebLink2#</cfif>
+	<cfif LEN(Arguments.ParticipantInfo.WebLink3)>#Arguments.ParticipantInfo.WebLink3#</cfif>
+</cfif>
 
 <cfif isDefined("Arguments.ParticipantInfo.DocLinksInEmail")><cfif Arguments.ParticipantInfo.DocLinksInEmail EQ 1>Here are the links to the Event Documents for your reference:
-
-	<cfif isDefined("Arguments.ParticipantInfo.EmailFileOne")>http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameOne#</cfif>
-	<cfif isDefined("Arguments.ParticipantInfo.EmailFileTwo")>http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameTwo#</cfif>
-	<cfif isDefined("Arguments.ParticipantInfo.EmailFileThree")>http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameThree#</cfif>
-	<cfif isDefined("Arguments.ParticipantInfo.EmailFileFour")>http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFour#</cfif>
-	<cfif isDefined("Arguments.ParticipantInfo.EmailFileFive")>http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFive#</cfif>
+	<cfloop query="Arguments.ParticipantInfo.EventDocuments">
+		http://#cgi.server_name#/#Arguments.ParticipantInfo.WebEventDirectory##Arguments.ParticipantInfo.EventDocuments.name#
+	</cfloop>
 </cfif></cfif>
 
 
@@ -33,14 +34,19 @@ Note: This email address is not valid and is not read by a human individual. Thi
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#Arguments.ParticipantInfo.EmailMessageBody#</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">
+				<cfif Arguments.ParticipantInfo.WebLinksInEmail EQ 1>
+					<cfif LEN(Arguments.ParticipantInfo.WebLink1)><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.WebLink1#">#Arguments.ParticipantInfo.WebLink1#</a><br></cfif>
+					<cfif LEN(Arguments.ParticipantInfo.WebLink2)><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.WebLink2#">#Arguments.ParticipantInfo.WebLink2#</a><br></cfif>
+					<cfif LEN(Arguments.ParticipantInfo.WebLink3)><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.WebLink3#">#Arguments.ParticipantInfo.WebLink3#<a/><br></cfif>
+				</cfif>
+			</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;"><cfif isDefined("Arguments.ParticipantInfo.DocLinksInEmail")><cfif Arguments.ParticipantInfo.DocLinksInEmail EQ 1>Here are the links to the Event Documents for your reference:
 			<br />
-			<cfif isDefined("Arguments.ParticipantInfo.EmailFileOne")><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameOne#">http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameOne#</a><br /></cfif>
-			<cfif isDefined("Arguments.ParticipantInfo.EmailFileTwo")><A href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameTwo#">http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameTwo#</a><br /></cfif>
-			<cfif isDefined("Arguments.ParticipantInfo.EmailFileThree")><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameThree#">http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameThree#</a><br /></cfif>
-			<cfif isDefined("Arguments.ParticipantInfo.EmailFileFour")><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFour#">http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFour#</a><br /></cfif>
-			<cfif isDefined("Arguments.ParticipantInfo.EmailFileFive")><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFive#">http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.EmailFileNameFive#</a><br /></cfif>
+			<cfloop query="Arguments.ParticipantInfo.EventDocuments">
+				<a href="http://#cgi.server_name#/#Arguments.ParticipantInfo.WebEventDirectory##Arguments.ParticipantInfo.EventDocuments.name#">http://#cgi.server_name#/#Arguments.ParticipantInfo.WebEventDirectory##Arguments.ParticipantInfo.EventDocuments.name#</a><br />
+			</cfloop>
 			</cfif></cfif>
 			</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>

@@ -67,86 +67,48 @@
 
 	</cffunction>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-	<cffunction name="SendEventInquiryToFacilitator" ReturnType="Any" Output="False">
-		<cfargument name="EmailInfo" type="struct" Required="True">
-
-		<cfquery name="getEvent" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, MemberCost, NonMemberCost,  EarlyBird_RegistrationAvailable, EarlyBird_RegistrationDeadline, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationType, LocationID, LocationRoomID, Presenters, Facilitator
-			From eEvents
-			Where Site_ID = <cfqueryparam value="#Session.FormData.PluginInfo.SiteID#" cfsqltype="cf_sql_varchar"> and
-				TContent_ID = <cfqueryparam value="#Arguments.EmailInfo.EventID#" cfsqltype="cf_sql_integer">
-		</cfquery>
-
-		<cfinclude template="EmailTemplates/EventInquiryTemplateToFacilitator.cfm">
-	</cffunction>
-
-	<cffunction name="SendEventInquiryToIndividual" ReturnType="Any" Output="False">
-		<cfargument name="EmailInfo" type="struct" Required="True">
-
-		<cfquery name="getEvent" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, MemberCost, NonMemberCost,  EarlyBird_RegistrationAvailable, EarlyBird_RegistrationDeadline, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationType, LocationID, LocationRoomID, Presenters, Facilitator
-			From eEvents
-			Where Site_ID = <cfqueryparam value="#Session.FormData.PluginInfo.SiteID#" cfsqltype="cf_sql_varchar"> and
-				TContent_ID = <cfqueryparam value="#Arguments.EmailInfo.EventID#" cfsqltype="cf_sql_integer">
-		</cfquery>
-
-		<cfinclude template="EmailTemplates/EventInquiryTemplateToIndividual.cfm">
-	</cffunction>
-
 	<cffunction name="SendEventRegistrationToSingleParticipant" returntype="Any" Output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 		<cfargument name="RegistrationRecordID" type="String" Required="True">
 
-		<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(Session.FormData.PluginInfo.PackageName)#/library/components/EventServices")>
+		<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>
 
-		<cfquery name="getRegistration" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+		<cfquery name="getRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 			Select RegistrationID, RegistrationDate, User_ID, EventID, RequestsMeal, IVCParticipant, AttendeePrice, RegisterByUserID, OnWaitingList, Comments, WebinarParticipant
-			From eRegistrations
+			From p_EventRegistration_UserRegistrations
 			Where TContent_ID = <cfqueryparam value="#Arguments.RegistrationRecordID#" cfsqltype="cf_sql_integer">
 		</cfquery>
 
-		<cfquery name="getRegisteredUserInfo" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+		<cfquery name="getRegisteredUserInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 			Select Fname, Lname, Email
 			From tusers
 			Where UserID = <cfqueryparam value="#getRegistration.User_ID#" cfsqltype="cf_sql_varchar">
 		</cfquery>
 
 		<cfif getRegistration.User_ID NEQ getRegistration.RegisterByUserID>
-			<cfquery name="getRegisteredByUserInfo" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+			<cfquery name="getRegisteredByUserInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select Fname, Lname, Email
 				From tusers
 				Where UserID = <cfqueryparam value="#getRegistration.RegisterByUserID#" cfsqltype="cf_sql_varchar">
 			</cfquery>
 		</cfif>
 
-		<cfquery name="getEvent" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, LongDescription, Event_StartTime, Event_EndTime, PGPPoints, MealProvided, AllowVideoConference, VideoConferenceInfo, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, LocationType, LocationID, LocationRoomID, PGPAvailable, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
-			From eEvents
+		<cfquery name="getEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, LongDescription, Event_StartTime, Event_EndTime, PGPPoints, MealProvided, AllowVideoConference, VideoConferenceInfo, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, LocationID, LocationRoomID, PGPAvailable, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
+			From p_EventRegistration_Events
 			Where TContent_ID = <cfqueryparam value="#getRegistration.EventID#" cfsqltype="cf_sql_integer">
 		</cfquery>
 
-		<cfquery name="getEventLocation" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+		<cfquery name="getEventLocation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 			Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, GeoCode_Latitude, GeoCode_Longitude
-			From eFacility
+			From p_EventRegistration_Facility
 			Where TContent_ID = <cfqueryparam value="#getEvent.LocationID#" cfsqltype="cf_sql_integer">
 		</cfquery>
 
 		<cfif GetRegistration.User_ID EQ getRegistration.RegisterByUserID>
 			<cfset RegisteredBy = "self">
 		<cfelse>
-			<cfquery name="getRegisteredByUserInfo" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+			<cfquery name="getRegisteredByUserInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select Fname, Lname, Email
 				From tusers
 				Where UserID = <cfqueryparam value="#getRegistration.RegisterByUserID#" cfsqltype="cf_sql_varchar">
@@ -192,7 +154,168 @@
 		<cfelse>
 			<cfset FacilityLocationMapURL = "https://maps.google.com/maps?q=#getEventLocation.GeoCode_Latitude#,#getEventLocation.GeoCode_Longitude#">
 			<cfset FacilityLocationFileName = #reReplace(getEventLocation.FacilityName, "[[:space:]]", "", "ALL")#>
-			<cfset FacilityURLAndImage = #EventServicesComponent.QRCodeImage(Variables.FacilityLocationMapURL,HTMLEditFormat(Session.FormData.PluginInfo.PackageName),Variables.FacilityLocationFileName)#>
+			<cfset FacilityURLAndImage = #EventServicesComponent.QRCodeImage(Variables.FacilityLocationMapURL,HTMLEditFormat(rc.pc.getPackage()),Variables.FacilityLocationFileName)#>
+			<cfset FacilityEventLocationText = #getEventLocation.FacilityName# & " (" & #getEventLocation.PhysicalAddress# & " " & #getEventLocation.PhysicalCity# & ", " & #getEventLocation.PhysicalState# & " " & #getEventLocation.PhysicalZipCode# & ")">
+		</cfif>
+
+		<cfset CurLoc = #ExpandPath("/")#>
+		<cfset FileStoreLoc = #Variables.CurLoc# & "plugins/#HTMLEditFormat(rc.pc.getPackage())#">
+		<cfset UserRegistrationPDFFilename = #getRegistration.RegistrationID# & ".pdf">
+		<cfset UserRegistrationiCalFilename = #getRegistration.RegistrationID# & ".ics">
+		<cfset FileStoreLoc = #Variables.FileStoreLoc# & "/temp/">
+		<cfset UserRegistrationPDFAbsoluteFilename = #Variables.FileStoreLoc# & #Variables.UserRegistrationPDFFilename#>
+		<cfset UserRegistrationiCalAbsoluteFilename = #Variables.FileStoreLoc# & #Variables.UserRegistrationiCalFilename#>
+		<cfset PDFFormTemplateDir = #Variables.CurLoc# & "plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/PDFFormTemplates/">
+		<cfset EventConfirmationTemplateLoc = #Variables.PDFFormTemplateDir# & "EventConfirmationPage.pdf">
+
+		<cfif getRegistration.WebinarParticipant EQ 1 and getEvent.WebinarAvailable EQ 1>
+			<cfset FacilityEventLocationText = "Online Webinar: Connection Details to follow in email from presenter.">
+		<cfelseif getEvent.WebinarAvailable EQ 0>
+			<cfset FacilityLocationMapURL = "https://maps.google.com/maps?q=#getEventLocation.GeoCode_Latitude#,#getEventLocation.GeoCode_Longitude#">
+			<cfset FacilityLocationFileName = #reReplace(getEventLocation.FacilityName, "[[:space:]]", "", "ALL")#>
+			<cfset FacilityLocationFileName = #reReplace(Variables.FacilityLocationFileName, "'", "", "ALL")#>
+			<cfset FacilityURLAndImage = #EventServicesComponent.QRCodeImage(Variables.FacilityLocationMapURL,HTMLEditFormat(rc.pc.getPackage()),Variables.FacilityLocationFileName)#>
+			<cfset FacilityFileDirAndImage = #Variables.CurLoc# & #Variables.FacilityURLAndImage#>
+			<cfset FacilityEventLocationText = #getEventLocation.FacilityName# & " (" & #getEventLocation.PhysicalAddress# & " " & #getEventLocation.PhysicalCity# & ", " & #getEventLocation.PhysicalState# & " " & #getEventLocation.PhysicalZipCode# & ")">
+		</cfif>
+
+		<cfset UserRegistrationiCalData = #EventServicesComponent.iCalUS(rc, Arguments.RegistrationRecordID)#>
+
+		<cfif #DirectoryExists(Variables.FileStoreLoc)# EQ "True">
+			<cffile action="Write" file="#Variables.UserRegistrationiCalAbsoluteFilename#" output="#Variables.UserRegistrationiCalData#">
+		<cfelse>
+			<cfdirectory action="create" directory="#Variables.FileStoreLoc#">
+			<cffile action="Write" file="#Variables.UserRegistrationiCalAbsoluteFilename#" output="#Variables.UserRegistrationiCalData#">
+		</cfif>
+
+		<cfscript>
+			ReadPDF = Variables.EventConfirmationTemplateLoc;
+			WritePDF = Variables.UserRegistrationPDFAbsoluteFilename;
+			FileIO = CreateObject("java","java.io.FileOutputStream").init(WritePDF);
+			PDFReader = CreateObject("java","com.itextpdf.text.pdf.PdfReader").init(ReadPDF);
+			QRCodeImage = CreateObject("java","com.itextpdf.text.Image");
+			PDFStamper = CreateObject("java","com.itextpdf.text.pdf.PdfStamper").init(PDFReader, FileIO);
+			PDFContent = PDFStamper.getOverContent(PDFReader.getNumberOfPages());
+			PDFForm = PDFStamper.getAcroFields();
+
+			// Populate the PDF Fields with Confirmation Registration Information
+			PDFForm.setField("RegistrationNumber", "#getRegistration.RegistrationID#");
+			PDFForm.setField("ParticipantFirstName", "#getRegisteredUserInfo.Fname#");
+			PDFForm.setField("ParticipantLastName", "#getRegisteredUserInfo.LName#");
+			PDFForm.setField("RegisteredDate", "#variables.RegisteredDateFormatted#");
+			PDFForm.setField("RegisteredBy", "#Variables.RegisteredBy#");
+			PDFForm.setField("EventTitle", "#getEvent.ShortTitle#");
+			PDFForm.setField("RequestMeal", "#Variables.UserRequestMeal#");
+			PDFForm.setField("DistanceEducation", "#Variables.UserRequestDistanceEducation#");
+			PDFForm.setField("PGPPoints", "#Variables.PGPPointsFormatted#");
+			PDFForm.setField("EventCost", "#DollarFormat(getRegistration.AttendeePrice)#");
+			PDFForm.setField("EventLocationInformation", "#Variables.FacilityEventLocationText#");
+			PDFForm.setField("EventDates", "#Variables.DisplayEventDateInfo#");
+			PDFForm.setField("EventDescription", "#getEvent.LongDescription#");
+
+			// Place the QRCode on the Event Confirmation Page
+			if (getRegistration.WebinarParticipant EQ 0) {
+				img = QRCodeImage.getInstance(Variables.FacilityFileDirAndImage);
+				img.setAbsolutePosition(javacast("float","500"),javacast("float", "277"));
+				PDFContent.addImage(img);
+			}
+
+			PDFStamper.setFormFlattening(true);
+			PDFStamper.close();
+			PDFReader.close();
+			FileIO.close();
+		</cfscript>
+		<cfinclude template="EmailTemplates/EventRegistrationConfirmationToIndividual.cfm">
+	</cffunction>
+
+	<cffunction name="SendEventWaitingListToSingleParticipant" returntype="Any" Output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="RegistrationRecordID" type="numeric" Required="True">
+
+		<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>
+
+		<cfquery name="getRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select RegistrationID, RegistrationDate, User_ID, EventID, RequestsMeal, IVCParticipant, AttendeePrice, RegisterByUserID, OnWaitingList, Comments, WebinarParticipant
+			From p_EventRegistration_UserRegistrations
+			Where TContent_ID = <cfqueryparam value="#Arguments.RegistrationRecordID#" cfsqltype="cf_sql_integer">
+		</cfquery>
+
+		<cfquery name="getRegisteredUserInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select Fname, Lname, Email
+			From tusers
+			Where UserID = <cfqueryparam value="#getRegistration.User_ID#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+
+		<cfif getRegistration.User_ID NEQ getRegistration.RegisterByUserID>
+			<cfquery name="getRegisteredByUserInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select Fname, Lname, Email
+				From tusers
+				Where UserID = <cfqueryparam value="#getRegistration.RegisterByUserID#" cfsqltype="cf_sql_varchar">
+			</cfquery>
+		</cfif>
+
+		<cfquery name="getEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, LongDescription, Event_StartTime, Event_EndTime, PGPPoints, MealProvided, AllowVideoConference, VideoConferenceInfo, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, LocationID, LocationRoomID, PGPAvailable, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
+			From p_EventRegistration_Events
+			Where TContent_ID = <cfqueryparam value="#getRegistration.EventID#" cfsqltype="cf_sql_integer">
+		</cfquery>
+
+		<cfquery name="getEventLocation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, GeoCode_Latitude, GeoCode_Longitude
+			From p_EventRegistration_Facility
+			Where TContent_ID = #getEvent.LocationID#
+		</cfquery>
+
+		<cfif GetRegistration.User_ID EQ getRegistration.RegisterByUserID>
+			<cfset RegisteredBy = "self">
+		<cfelse>
+			<cfquery name="getRegisteredByUserInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select Fname, Lname, Email
+				From tusers
+				Where UserID = <cfqueryparam value="#getRegistration.RegisterByUserID#" cfsqltype="cf_sql_varchar">
+			</cfquery>
+			<cfset RegisteredBy = #getRegisteredByUserInfo.Lname# & ", " & #getRegisteredByUserInfo.Fname#>
+		</cfif>
+
+		<cfset RegisteredDateFormatted = #DateFormat(getRegistration.RegistrationDate, "full")#>
+
+		<cfif getRegistration.RequestsMeal EQ "1">
+			<cfset UserRequestMeal = "Yes">
+		<cfelse>
+			<cfset UserRequestMeal = "No">
+		</cfif>
+
+		<cfif getRegistration.IVCParticipant EQ "1">
+			<cfset UserRequestDistanceEducation = "Yes">
+		<cfelse>
+			<cfset UserRequestDistanceEducation = "No">
+		</cfif>
+
+		<cfif getRegistration.WebinarParticipant EQ "1">
+			<cfset UserRequestWebinar = "Yes">
+		<cfelse>
+			<cfset UserRequestWebinar = "No">
+		</cfif>
+
+		<cfif getEvent.PGPAvailable EQ 1>
+			<cfset PGPPointsFormatted = #NumberFormat(getEvent.PGPPoints, "99.99")#>
+		<cfelse>
+			<cfset NumberPGPPoints = 0>
+			<cfset PGPPointsFormatted = #NumberFormat(Variables.NumberPGPPoints, "99.99")#>>
+		</cfif>
+
+		<cfset DisplayEventDateInfo = #DateFormat(getEvent.EventDate, "ddd, mmm dd, yy")#>
+		<cfif LEN(getEvent.EventDate1)><cfset DisplayEventDateInfo = #Variables.DisplayEventDateInfo# & ", " & #DateFormat(getEvent.EventDate1, "ddd, mmm dd, yy")#></cfif>
+		<cfif LEN(getEvent.EventDate2)><cfset DisplayEventDateInfo = #Variables.DisplayEventDateInfo# & ", " & #DateFormat(getEvent.EventDate2, "ddd, mmm dd, yy")#></cfif>
+		<cfif LEN(getEvent.EventDate3)><cfset DisplayEventDateInfo = #Variables.DisplayEventDateInfo# & ", " & #DateFormat(getEvent.EventDate3, "ddd, mmm dd, yy")#></cfif>
+		<cfif LEN(getEvent.EventDate4)><cfset DisplayEventDateInfo = #Variables.DisplayEventDateInfo# & ", " & #DateFormat(getEvent.EventDate4, "ddd, mmm dd, yy")#></cfif>
+
+		<cfif getRegistration.WebinarParticipant EQ 1 and getEvent.WebinarAvailable EQ 1>
+			<cfset FacilityEventLocationText = "Online Webinar: Connection Details to follow in email from presenter.">
+		<cfelse>
+			<cfset FacilityLocationMapURL = "https://maps.google.com/maps?q=#getEventLocation.GeoCode_Latitude#,#getEventLocation.GeoCode_Longitude#">
+			<cfset FacilityLocationFileName = #reReplace(getEventLocation.FacilityName, "[[:space:]]", "", "ALL")#>
+			<cfset FacilityURLAndImage = #EventServicesComponent.QRCodeImage(Variables.FacilityLocationMapURL,HTMLEditFormat(rc.pc.getPackage()),Variables.FacilityLocationFileName)#>
 			<cfset FacilityEventLocationText = #getEventLocation.FacilityName# & " (" & #getEventLocation.PhysicalAddress# & " " & #getEventLocation.PhysicalCity# & ", " & #getEventLocation.PhysicalState# & " " & #getEventLocation.PhysicalZipCode# & ")">
 		</cfif>
 
@@ -263,8 +386,60 @@
 			PDFReader.close();
 			FileIO.close();
 		</cfscript>
-		<cfinclude template="EmailTemplates/EventRegistrationConfirmationToIndividual.cfm">
+		<cfinclude template="EmailTemplates/EventRegistrationConfirmationToIndividualOnWaitingList.cfm">
 	</cffunction>
+
+	<cffunction name="SendEventMessageToAllParticipants" returntype="Any" Output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="ParticipantInfo" type="struct" Required="True">
+		<cfinclude template="EmailTemplates/SendEventMessageToParticipantsFromFacilitator.cfm">
+	</cffunction>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<cffunction name="SendEventInquiryToFacilitator" ReturnType="Any" Output="False">
+		<cfargument name="EmailInfo" type="struct" Required="True">
+
+		<cfquery name="getEvent" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+			Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, MemberCost, NonMemberCost,  EarlyBird_RegistrationAvailable, EarlyBird_RegistrationDeadline, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationType, LocationID, LocationRoomID, Presenters, Facilitator
+			From eEvents
+			Where Site_ID = <cfqueryparam value="#Session.FormData.PluginInfo.SiteID#" cfsqltype="cf_sql_varchar"> and
+				TContent_ID = <cfqueryparam value="#Arguments.EmailInfo.EventID#" cfsqltype="cf_sql_integer">
+		</cfquery>
+
+		<cfinclude template="EmailTemplates/EventInquiryTemplateToFacilitator.cfm">
+	</cffunction>
+
+	<cffunction name="SendEventInquiryToIndividual" ReturnType="Any" Output="False">
+		<cfargument name="EmailInfo" type="struct" Required="True">
+
+		<cfquery name="getEvent" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+			Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, MemberCost, NonMemberCost,  EarlyBird_RegistrationAvailable, EarlyBird_RegistrationDeadline, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationType, LocationID, LocationRoomID, Presenters, Facilitator
+			From eEvents
+			Where Site_ID = <cfqueryparam value="#Session.FormData.PluginInfo.SiteID#" cfsqltype="cf_sql_varchar"> and
+				TContent_ID = <cfqueryparam value="#Arguments.EmailInfo.EventID#" cfsqltype="cf_sql_integer">
+		</cfquery>
+
+		<cfinclude template="EmailTemplates/EventInquiryTemplateToIndividual.cfm">
+	</cffunction>
+
+
 
 
 
@@ -550,175 +725,14 @@
 
 	</cffunction>
 
-	<cffunction name="SendEventMessageToAllParticipants" returntype="Any" Output="false">
-		<cfargument name="ParticipantInfo" type="struct" Required="True">
-		<cfinclude template="EmailTemplates/SendEventMessageToParticipantsFromFacilitator.cfm">
-	</cffunction>
+
 
 	<cffunction name="SendEventMessageToAllAttendedParticipants" returntype="Any" Output="false">
 		<cfargument name="ParticipantInfo" type="struct" Required="True">
 		<cfinclude template="EmailTemplates/SendEventMessageToAttendedParticipantsFromFacilitator.cfm">
 	</cffunction>
 
-	<cffunction name="SendEventWaitingListToSingleParticipant" returntype="Any" Output="false">
-		<cfargument name="RegistrationRecordID" type="numeric" Required="True">
 
-		<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(Session.FormData.PluginInfo.PackageName)#/library/components/EventServices")>
-
-		<cfquery name="getRegistration" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			Select RegistrationID, RegistrationDate, User_ID, EventID, RequestsMeal, IVCParticipant, AttendeePrice, RegisterByUserID, OnWaitingList, Comments, WebinarParticipant
-			From eRegistrations
-			Where TContent_ID = <cfqueryparam value="#Arguments.RegistrationRecordID#" cfsqltype="cf_sql_integer">
-		</cfquery>
-
-		<cfquery name="getRegisteredUserInfo" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			Select Fname, Lname, Email
-			From tusers
-			Where UserID = <cfqueryparam value="#getRegistration.User_ID#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-
-		<cfif getRegistration.User_ID NEQ getRegistration.RegisterByUserID>
-			<cfquery name="getRegisteredByUserInfo" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-				Select Fname, Lname, Email
-				From tusers
-				Where UserID = <cfqueryparam value="#getRegistration.RegisterByUserID#" cfsqltype="cf_sql_varchar">
-			</cfquery>
-		</cfif>
-
-		<cfquery name="getEvent" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, LongDescription, Event_StartTime, Event_EndTime, PGPPoints, MealProvided, AllowVideoConference, VideoConferenceInfo, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, LocationType, LocationID, LocationRoomID, PGPAvailable, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
-			From eEvents
-			Where TContent_ID = <cfqueryparam value="#getRegistration.EventID#" cfsqltype="cf_sql_integer">
-		</cfquery>
-
-		<cfquery name="getEventLocation" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, GeoCode_Latitude, GeoCode_Longitude
-			From eFacility
-			Where TContent_ID = #getEvent.LocationID#
-		</cfquery>
-
-		<cfif GetRegistration.User_ID EQ getRegistration.RegisterByUserID>
-			<cfset RegisteredBy = "self">
-		<cfelse>
-			<cfquery name="getRegisteredByUserInfo" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-				Select Fname, Lname, Email
-				From tusers
-				Where UserID = <cfqueryparam value="#getRegistration.RegisterByUserID#" cfsqltype="cf_sql_varchar">
-			</cfquery>
-			<cfset RegisteredBy = #getRegisteredByUserInfo.Lname# & ", " & #getRegisteredByUserInfo.Fname#>
-		</cfif>
-
-		<cfset RegisteredDateFormatted = #DateFormat(getRegistration.RegistrationDate, "full")#>
-
-		<cfif getRegistration.RequestsMeal EQ "1">
-			<cfset UserRequestMeal = "Yes">
-		<cfelse>
-			<cfset UserRequestMeal = "No">
-		</cfif>
-
-		<cfif getRegistration.IVCParticipant EQ "1">
-			<cfset UserRequestDistanceEducation = "Yes">
-		<cfelse>
-			<cfset UserRequestDistanceEducation = "No">
-		</cfif>
-
-		<cfif getRegistration.WebinarParticipant EQ "1">
-			<cfset UserRequestWebinar = "Yes">
-		<cfelse>
-			<cfset UserRequestWebinar = "No">
-		</cfif>
-
-		<cfif getEvent.PGPAvailable EQ 1>
-			<cfset PGPPointsFormatted = #NumberFormat(getEvent.PGPPoints, "99.99")#>
-		<cfelse>
-			<cfset NumberPGPPoints = 0>
-			<cfset PGPPointsFormatted = #NumberFormat(Variables.NumberPGPPoints, "99.99")#>>
-		</cfif>
-
-		<cfset DisplayEventDateInfo = #DateFormat(getEvent.EventDate, "ddd, mmm dd, yy")#>
-		<cfif LEN(getEvent.EventDate1)><cfset DisplayEventDateInfo = #Variables.DisplayEventDateInfo# & ", " & #DateFormat(getEvent.EventDate1, "ddd, mmm dd, yy")#></cfif>
-		<cfif LEN(getEvent.EventDate2)><cfset DisplayEventDateInfo = #Variables.DisplayEventDateInfo# & ", " & #DateFormat(getEvent.EventDate2, "ddd, mmm dd, yy")#></cfif>
-		<cfif LEN(getEvent.EventDate3)><cfset DisplayEventDateInfo = #Variables.DisplayEventDateInfo# & ", " & #DateFormat(getEvent.EventDate3, "ddd, mmm dd, yy")#></cfif>
-		<cfif LEN(getEvent.EventDate4)><cfset DisplayEventDateInfo = #Variables.DisplayEventDateInfo# & ", " & #DateFormat(getEvent.EventDate4, "ddd, mmm dd, yy")#></cfif>
-
-		<cfif getRegistration.WebinarParticipant EQ 1 and getEvent.WebinarAvailable EQ 1>
-			<cfset FacilityEventLocationText = "Online Webinar: Connection Details to follow in email from presenter.">
-		<cfelse>
-			<cfset FacilityLocationMapURL = "https://maps.google.com/maps?q=#getEventLocation.GeoCode_Latitude#,#getEventLocation.GeoCode_Longitude#">
-			<cfset FacilityLocationFileName = #reReplace(getEventLocation.FacilityName, "[[:space:]]", "", "ALL")#>
-			<cfset FacilityURLAndImage = #EventServicesComponent.QRCodeImage(Variables.FacilityLocationMapURL,HTMLEditFormat(Session.FormData.PluginInfo.PackageName),Variables.FacilityLocationFileName)#>
-			<cfset FacilityEventLocationText = #getEventLocation.FacilityName# & " (" & #getEventLocation.PhysicalAddress# & " " & #getEventLocation.PhysicalCity# & ", " & #getEventLocation.PhysicalState# & " " & #getEventLocation.PhysicalZipCode# & ")">
-		</cfif>
-
-		<cfset CurLoc = #ExpandPath("/")#>
-		<cfset FileStoreLoc = #Variables.CurLoc# & "plugins/#HTMLEditFormat(Session.FormData.PluginInfo.PackageName)#">
-		<cfset UserRegistrationPDFFilename = #getRegistration.RegistrationID# & ".pdf">
-		<cfset UserRegistrationiCalFilename = #getRegistration.RegistrationID# & ".ics">
-		<cfset FileStoreLoc = #Variables.FileStoreLoc# & "/temp/">
-		<cfset UserRegistrationPDFAbsoluteFilename = #Variables.FileStoreLoc# & #Variables.UserRegistrationPDFFilename#>
-		<cfset UserRegistrationiCalAbsoluteFilename = #Variables.FileStoreLoc# & #Variables.UserRegistrationiCalFilename#>
-		<cfset PDFFormTemplateDir = #Variables.CurLoc# & "plugins/#HTMLEditFormat(Session.FormData.PluginInfo.PackageName)#/library/components/PDFFormTemplates/">
-		<cfset EventConfirmationTemplateLoc = #Variables.PDFFormTemplateDir# & "EventConfirmationPage.pdf">
-
-		<cfif getRegistration.WebinarParticipant EQ 1 and getEvent.WebinarAvailable EQ 1>
-			<cfset FacilityEventLocationText = "Online Webinar: Connection Details to follow in email from presenter.">
-		<cfelseif getEvent.WebinarAvailable EQ 0>
-			<cfset FacilityLocationMapURL = "https://maps.google.com/maps?q=#getEventLocation.GeoCode_Latitude#,#getEventLocation.GeoCode_Longitude#">
-			<cfset FacilityLocationFileName = #reReplace(getEventLocation.FacilityName, "[[:space:]]", "", "ALL")#>
-			<cfset FacilityLocationFileName = #reReplace(Variables.FacilityLocationFileName, "'", "", "ALL")#>
-			<cfset FacilityURLAndImage = #EventServicesComponent.QRCodeImage(Variables.FacilityLocationMapURL,HTMLEditFormat(Session.FormData.PluginInfo.PackageName),Variables.FacilityLocationFileName)#>
-			<cfset FacilityFileDirAndImage = #Variables.CurLoc# & #Variables.FacilityURLAndImage#>
-			<cfset FacilityEventLocationText = #getEventLocation.FacilityName# & " (" & #getEventLocation.PhysicalAddress# & " " & #getEventLocation.PhysicalCity# & ", " & #getEventLocation.PhysicalState# & " " & #getEventLocation.PhysicalZipCode# & ")">
-		</cfif>
-
-		<cfset UserRegistrationiCalData = #EventServicesComponent.iCalUS(Arguments.RegistrationRecordID)#>
-
-		<cfif #DirectoryExists(Variables.FileStoreLoc)# EQ "True">
-			<cffile action="Write" file="#Variables.UserRegistrationiCalAbsoluteFilename#" output="#Variables.UserRegistrationiCalData#">
-		<cfelse>
-			<cfdirectory action="create" directory="#Variables.FileStoreLoc#">
-			<cffile action="Write" file="#Variables.UserRegistrationiCalAbsoluteFilename#" output="#Variables.UserRegistrationiCalData#">
-		</cfif>
-
-		<cfscript>
-			ReadPDF = Variables.EventConfirmationTemplateLoc;
-			WritePDF = Variables.UserRegistrationPDFAbsoluteFilename;
-			FileIO = CreateObject("java","java.io.FileOutputStream").init(WritePDF);
-			PDFReader = CreateObject("java","com.itextpdf.text.pdf.PdfReader").init(ReadPDF);
-			QRCodeImage = CreateObject("java","com.itextpdf.text.Image");
-			PDFStamper = CreateObject("java","com.itextpdf.text.pdf.PdfStamper").init(PDFReader, FileIO);
-			PDFContent = PDFStamper.getOverContent(PDFReader.getNumberOfPages());
-			PDFForm = PDFStamper.getAcroFields();
-
-			// Populate the PDF Fields with Confirmation Registration Information
-			PDFForm.setField("RegistrationNumber", "#getRegistration.RegistrationID#");
-			PDFForm.setField("ParticipantFirstName", "#getRegisteredUserInfo.Fname#");
-			PDFForm.setField("ParticipantLastName", "#getRegisteredUserInfo.LName#");
-			PDFForm.setField("RegisteredDate", "#variables.RegisteredDateFormatted#");
-			PDFForm.setField("RegisteredBy", "#Variables.RegisteredBy#");
-			PDFForm.setField("EventTitle", "#getEvent.ShortTitle#");
-			PDFForm.setField("RequestMeal", "#Variables.UserRequestMeal#");
-			PDFForm.setField("DistanceEducation", "#Variables.UserRequestDistanceEducation#");
-			PDFForm.setField("PGPPoints", "#Variables.PGPPointsFormatted#");
-			PDFForm.setField("EventCost", "#DollarFormat(getRegistration.AttendeePrice)#");
-			PDFForm.setField("EventLocationInformation", "#Variables.FacilityEventLocationText#");
-			PDFForm.setField("EventDates", "#Variables.DisplayEventDateInfo#");
-			PDFForm.setField("EventDescription", "#getEvent.LongDescription#");
-
-			// Place the QRCode on the Event Confirmation Page
-			if (getRegistration.WebinarParticipant EQ 0) {
-				img = QRCodeImage.getInstance(Variables.FacilityFileDirAndImage);
-				img.setAbsolutePosition(javacast("float","500"),javacast("float", "277"));
-				PDFContent.addImage(img);
-			}
-
-			PDFStamper.setFormFlattening(true);
-			PDFStamper.close();
-			PDFReader.close();
-			FileIO.close();
-		</cfscript>
-		<cfinclude template="EmailTemplates/EventRegistrationConfirmationToIndividualOnWaitingList.cfm">
-	</cffunction>
 
 	<cffunction name="SendNoticeToIndividualRegistrationRemovedFromWaitingList" returntype="Any" Output="false">
 		<cfargument name="RegistrationRecordID" type="numeric" Required="True">
