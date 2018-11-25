@@ -55,7 +55,7 @@
 					</cfcase>
 					<cfcase value="UserRegistration">
 						<cfif URL.Successfull EQ "true">
-							<div class="alert alert-success">You have successfully registered for an account on this event registration system.</div>
+							<div class="alert alert-success">You have successfully registered for an account on this event registration system. Within the next few minutes you will be receiving an email with a special link to click on that will activate your account. You will not be able to login to this system until your account has been activated.</div>
 						<cfelse>
 							<div class="alert alert-danger">Something happened during the registration process. Please contact us so that we can resolve the system error</div>
 						</cfif>
