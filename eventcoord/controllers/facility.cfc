@@ -2,24 +2,24 @@
 	<cffunction name="default" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
-		<cfquery name="Session.getCaterers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select TContent_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, DeliveryInfo, GuaranteeInformation, AdditionalNotes, dateCreated, lastUpdated, lastUpdateBy, isAddressVerified, GeoCode_Latitude, GeoCode_Longitude, GeoCode_Township, GeoCode_StateLongName, GeoCode_CountryShortName, GeoCode_Neighborhood, Active
-			From p_EventRegistration_Caterers
+		<cfquery name="Session.getFacilities" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select TContent_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, dateCreated, lastUpdated, lastUpdateBy, isAddressVerified, GeoCode_Latitude, GeoCode_Longitude, GeoCode_Township, GeoCode_StateLongName, GeoCode_CountryShortName, GeoCode_Neighborhood, Active
+			From p_EventRegistration_Facility
 			Where Site_ID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
 			Order by FacilityName ASC
 		</cfquery>
 	</cffunction>
 
-	<cffunction name="getAllCaterers" access="remote" returnformat="json">
+	<cffunction name="getAllFacilities" access="remote" returnformat="json">
 		<cfargument name="page" required="no" default="1" hint="Page user is on">
 		<cfargument name="rows" required="no" default="10" hint="Number of Rows to display per page">
 		<cfargument name="sidx" required="no" default="" hint="Sort Column">
 		<cfargument name="sord" required="no" default="ASC" hint="Sort Order">
 
 		<cfset var arrCaterers = ArrayNew(1)>
-		<cfquery name="getCaterers" dbtype="Query">
+		<cfquery name="getFacilities" dbtype="Query">
 			Select TContent_ID, FacilityName, PhysicalState, PrimaryVoiceNumber, Active
-			From Session.getCaterers
+			From Session.getFacilities
 			<cfif Arguments.sidx NEQ "">
 				Order By #Arguments.sidx# #Arguments.sord#
 			<cfelse>
@@ -37,7 +37,7 @@
 		<!--- When building the array --->
 		<cfset i = 1>
 
-		<cfloop query="getCaterers" startrow="#start#" endrow="#end#">
+		<cfloop query="getFacilities" startrow="#start#" endrow="#end#">
 			<!--- Array that will be passed back needed by jqGrid JSON implementation --->
 			<cfif #Active# EQ 1>
 				<cfset strActive = "Yes">
@@ -49,7 +49,7 @@
 		</cfloop>
 
 		<!--- Calculate the Total Number of Pages for your records. --->
-		<cfset totalPages = Ceiling(getCaterers.recordcount/arguments.rows)>
+		<cfset totalPages = Ceiling(getFacilities.recordcount/arguments.rows)>
 
 		<!--- The JSON return.
 			Total - Total Number of Pages we will have calculated above
@@ -57,10 +57,8 @@
 			Records - Total number of records
 			rows = our data
 		--->
-		<cfset stcReturn = {total=#totalPages#,page=#Arguments.page#,records=#getCaterers.recordcount#,rows=arrCaterers}>
+		<cfset stcReturn = {total=#totalPages#,page=#Arguments.page#,records=#getFacilities.recordcount#,rows=arrCaterers}>
 		<cfreturn stcReturn>
 	</cffunction>
-
-
 
 </cfcomponent>

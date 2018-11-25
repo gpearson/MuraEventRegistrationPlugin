@@ -15,7 +15,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 		$.jgrid.defaults.styleUI = 'Bootstrap';
 	</script>
 	<div class="panel panel-default">
-		<div class="panel-heading"><h1>Available Event Expenses</h1></div>
+		<div class="panel-heading"><h1>Available Facilities</h1></div>
 		<div class="panel-body">
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
@@ -44,16 +44,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 		$(document).ready(function () {
 			var selectedRow = 0;
 			$("##jqGrid").jqGrid({
-				url: "/plugins/#rc.pc.getPackage()#/eventcoord/controllers/events.cfc?method=getAllEventExpenses",
+				url: "/plugins/#rc.pc.getPackage()#/eventcoord/controllers/facility.cfc?method=getAllFacilities",
 				// we set the changes to be made at client side using predefined word clientArray
 				datatype: "json",
-				colNames: ["Rec No","Expense Name","Active","DateCreated","lastUpdated"],
+				colNames: ["Rec No","Facility Name","State","Phone Number","Active"],
 				colModel: [
 					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, editable: false },
-					{ label: 'Expense Name', name: 'Expense_Name', editable: true },
-					{ label: 'Active', name: 'Active', width: 75, editable: true },
-					{ label: 'Date Created', name: 'dateCreated', width: 75, editable: true },
-					{ label: 'Last Updated', name: 'lastUpdated', width: 75, editable: true }
+					{ label: 'Facility Name', name: 'FacilityName', editable: true },
+					{ label: 'State', name: 'PrimaryState', width: 75, editable: true },
+					{ label: 'Phone Number', name: 'PrimaryVoiceNumber', width: 75, editable: true },
+					{ label: 'Active', name: 'Active', width: 75, editable: true }
 				],
 				sortname: 'TContent_ID',
 				sortorder : 'asc',

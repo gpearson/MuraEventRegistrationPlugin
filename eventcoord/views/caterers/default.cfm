@@ -3,105 +3,114 @@
 
 This file is part of MuraFW1
 
-Copyright 2010-2013 Stephen J. Withington, Jr.
+Copyright 2010-2015 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
 --->
 </cfsilent>
-
-<cfquery name="getAllCaterers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-	Select TContent_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, dateCreated, lastUpdated, lastUpdateBy, isAddressVerified, GeoCode_Latitude, GeoCode_Longitude, GeoCode_Township, GeoCode_StateLongName, GeoCode_CountryShortName, GeoCode_Neighborhood, PaymentTerms, DeliveryInfo, GuaranteeInformation, AdditionalNotes
-	From eCaterers
-	Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and Active = 1
-	Order by FacilityName ASC
-</cfquery>
-
-<cflock timeout="60" scope="SESSION" type="Exclusive">
-	<cfset Session.FormData = #StructNew()#>
-	<cfset Session.FormErrors = #ArrayNew()#>
-	<cfset Session.UserSuppliedInfo = #structNew()#>
-</cflock>
-
 <cfoutput>
-	<div class="art-block clearfix">
-		<div class="art-blockheader">
-			<h3 class="t">Catering Locations</h3>
-		</div>
-		<div class="art-blockcontent">
-			<cfif isDefined("URL.Successful")>
-				<cfswitch expression="#URL.Successful#">
-					<cfcase value="false">
-						<cfswitch expression="#URL.UserAction#">
-							<cfcase value="ErrorDatabase">
-								<div class="alert-box error">
-									<p>An Error has occurred in the database. Please try your request again.</p>
-								</div>
-								<cfdump var="#Session#">
-							</cfcase>
-						</cfswitch>
-					</cfcase>
-					<cfcase value="true">
-						<cfif isDefined("URL.UserAction")>
-							<cfswitch expression="#URL.UserAction#">
-								<cfcase value="AddedCaterers">
-									<div class="alert-box success">
-										<p>You have successfully added a new caterer to the database.</p>
-									</div>
-								</cfcase>
-								<cfcase value="UpdatedFacility">
-									<div class="alert-box success">
-										<p>You have successfully updated a caterer in the database.</p>
-									</div>
-								</cfcase>
-								<cfcase value="DeleteFacility">
-									<div class="alert-box success">
-										<p>You have successfully removed a caterer from the database.</p>
-									</div>
-								</cfcase>
-							</cfswitch>
+	<script>
+		$.jgrid.defaults.responsive = true;
+		$.jgrid.defaults.styleUI = 'Bootstrap';
+	</script>
+	<div class="panel panel-default">
+		<div class="panel-heading"><h1>Available Caterers</h1></div>
+		<div class="panel-body">
+			<cfif isDefined("URL.UserAction")>
+				<cfswitch expression="#URL.UserAction#">
+					<cfcase value="GroupCreated">
+						<cfif URL.Successful EQ "true">
+							<div class="alert alert-success">
+								You have successfully created a new group that you will be able to put subscribers into.
+							</div>
+						<cfelse>
+							<div class="alert alert-danger">
+								An error has occurred and the group information was not added to the database.
+							</div>
 						</cfif>
 					</cfcase>
 				</cfswitch>
 			</cfif>
-			<table class="art-article" style="width:100%;">
-				<thead>
-					<tr>
-						<th>Facility Name</th>
-						<th>Address</th>
-						<th>City</th>
-						<th>State</th>
-						<th>Zip Code</th>
-						<th width="100">Actions</th>
-					</tr>
-				</thead>
-				<cfif getAllCaterers.RecordCount>
-					<tfoot>
-						<tr>
-							<td colspan="6">Add new Catering Business not listed above by clicking <a href="#buildURL('eventcoord:caterers.addcaterer')#" class="art-button">here</a></td>
-						</tr>
-					</tfoot>
-					<tbody>
-						<cfloop query="getAllCaterers">
-							<tr bgcolor="###iif(currentrow MOD 2,DE('ffffff'),DE('efefef'))#">
-							<td>#getAllCaterers.FacilityName#</td>
-							<td>#getAllCaterers.PhysicalAddress#</td>
-							<td>#getAllCaterers.PhysicalCity#</td>
-							<td>#getAllCaterers.PhysicalState#</td>
-							<td>#getAllCaterers.PhysicalZipCode#</td>
-							<td><a href="#buildURL('eventcoord:caterers.updatecaterer')#&PerformAction=Edit&RecNo=#getAllCaterers.TContent_ID#" class="btn btn-warning btn-small">U</a>&nbsp;<a href="#buildURL('eventcoord:caterers.updatecaterer')#&PerformAction=Delete&RecNo=#getAllCaterers.TContent_ID#" class="btn btn-danger btn-small">D</a></td>
-							</tr>
-						</cfloop>
-					</tbody>
-				<cfelse>
-					<tbody>
-						<tr>
-							<td colspan="6"><div align="center" class="alert-box notice">No Catering Business has been added to this website. Please click <a href="#buildURL('eventcoord:caterers.addcaterer')#" class="art-button">here</a> to add a new catering business.</div></td>
-						</tr>
-					</tbody>
-				</cfif>
-			</table>
+			<table id="jqGrid"></table>
+			<div id="jqGridPager"></div>
+			<div id="dialog" title="Feature not supported" style="display:none"><p>That feature is not supported.</p></div>
+		</div>
+		<div class="panel-footer">
+
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			var selectedRow = 0;
+			$("##jqGrid").jqGrid({
+				url: "/plugins/#rc.pc.getPackage()#/eventcoord/controllers/caterers.cfc?method=getAllCaterers",
+				// we set the changes to be made at client side using predefined word clientArray
+				datatype: "json",
+				colNames: ["Rec No","Facility Name","State","Phone Number","Active"],
+				colModel: [
+					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, editable: false },
+					{ label: 'Facility Name', name: 'FacilityName', editable: true },
+					{ label: 'State', name: 'PrimaryState', width: 75, editable: true },
+					{ label: 'Phone Number', name: 'PrimaryVoiceNumber', width: 75, editable: true },
+					{ label: 'Active', name: 'Active', width: 75, editable: true }
+				],
+				sortname: 'TContent_ID',
+				sortorder : 'asc',
+				viewrecords: true,
+				height: 500,
+				autowidth: true,
+				rowNum: 30,
+				pgText: " of ",
+				pager: "##jqGridPager",
+				jsonReader: {
+					root: "ROWS",
+					page: "PAGE",
+					total: "TOTAL",
+					records: "RECORDS",
+					cell: "",
+					id: "0"
+				},
+				onSelectRow: function(id){
+					//We verify a valid new row selection
+					if(id && id!==selectedRow) {
+						//If a previous row was selected, but the values were not saved, we restore it to the original data.
+						$('##jqGrid').restoreRow(selectedRow);
+						selectedRow=id;
+					}
+				}
+			});
+			$('##jqGrid').navGrid('##jqGridPager', {edit: false, add: false, del:false, search:false});
 
+			$('##jqGrid').navButtonAdd('##jqGridPager',
+				{
+					caption: "",
+					buttonicon: "glyphicon-plus",
+					onClickButton: function(id) {
+						var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:events.addeventexpense";
+						window.open(urlToGo,"_self");
+					},
+					position: "last"
+				}
+			)
+
+			$('##jqGrid').navButtonAdd('##jqGridPager',
+				{
+					caption: "",
+					buttonicon: "glyphicon-pencil",
+					onClickButton: function(id) {
+						if (selectedRow == 0) {
+							alert("Please Select a Row to edit an Expense in the database");
+						} else {
+							var grid = $('##jqGrid');
+							var RowIDValue = grid.getCell(selectedRow, 'TContent_ID');
+							var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:events.editeventexpense&ExpenseID="+ RowIDValue;
+							window.open(urlToGo,"_self");
+						}
+						},
+					position: "last"
+				}
+			)
+		});
+	</script>
 </cfoutput>

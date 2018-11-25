@@ -42,6 +42,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</cfcase>
 			</cfswitch>
 		</cfif>
+		<cfif isDefined("URL.FormRetry")>
+			<div class="panel-body">
+				<cfif ArrayLen(Session.FormErrors) GTE 1>
+					<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
+				</cfif>
+			</div>
+		</cfif>
 		<cfif isDefined("URL.UserAction")>
 			<cfif URL.UserAction EQ "UpdateExpense">
 				<div class="panel-heading"><h2>Update Expense for: #Session.getSelectedEvent.ShortTitle#</h2></div>

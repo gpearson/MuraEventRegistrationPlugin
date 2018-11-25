@@ -60,14 +60,14 @@
 								</li>
 							</ul>
 						</li>
-						<li class="<cfif rc.action contains 'eventcoord:facilities'>active</cfif>">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('eventcoord:facilities.default')#">Facility Menu <span class="caret"></span></a>
+						<li class="<cfif rc.action contains 'eventcoord:facility'>active</cfif>">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('eventcoord:facility.default')#">Facility Menu <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li class="<cfif rc.action eq 'eventcoord:facilities.default'>active</cfif>">
-									<a href="#buildURL('eventcoord:facilities.default')#">List Facilities</a>
+								<li class="<cfif rc.action eq 'eventcoord:facility.default'>active</cfif>">
+									<a href="#buildURL('eventcoord:facility.default')#">List Facilities</a>
 								</li>
-								<li class="<cfif rc.action eq 'eventcoord:facilities.addevent'>active</cfif>">
-									<a href="#buildURL('eventcoord:facilities.addcaterer')#">Add New Facility</a>
+								<li class="<cfif rc.action eq 'eventcoord:facility.addfacility'>active</cfif>">
+									<a href="#buildURL('eventcoord:facility.addfacility')#">Add New Facility</a>
 								</li>
 							</ul>
 						</li>

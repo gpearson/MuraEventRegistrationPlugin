@@ -18,14 +18,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="EventID" value="#URL.EventID#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
-					<div class="alert alert-info"><p>Review the Income Section of this Report by the Participants who attended</p></div>
-					<div class="alert alert-warning"><p>Review the Income Section of this Report by the Participants who attended</p></div>
-					<cfloop query="Session.GetSelectedEventRegistrations">
-						<div class="form-group">
-							<label for="ParticipantName" class="control-label col-sm-3">#Session.GetSelectedEventRegistrations.Lname#, #Session.GetSelectedEventRegistrations.FName#:&nbsp;</label>
-							<div class="col-sm-8"><cfinput type="text" class="form-control" id="Participants_#Session.GetSelectedEventRegistrations.TContent_ID#" name="Participants_#Session.GetSelectedEventRegistrations.TContent_ID#" value="#NumberFormat(Session.GetSelectedEventRegistrations.AttendeePrice, '9999.99')#" required="no"></div>
-						</div>
-					</cfloop>
+					<cfif Session.GetSelectedEventRegistrations.RecordCount GTE 1>
+						<div class="alert alert-info"><p>Review the Income Section of this Report by the Participants who attended</p></div>
+						<div class="alert alert-warning"><p>Review the Income Section of this Report by the Participants who attended</p></div>
+						<cfloop query="Session.GetSelectedEventRegistrations">
+							<div class="form-group">
+								<label for="ParticipantName" class="control-label col-sm-3">#Session.GetSelectedEventRegistrations.Lname#, #Session.GetSelectedEventRegistrations.FName#:&nbsp;</label>
+								<div class="col-sm-8"><cfinput type="text" class="form-control" id="Participants_#Session.GetSelectedEventRegistrations.TContent_ID#" name="Participants_#Session.GetSelectedEventRegistrations.TContent_ID#" value="#NumberFormat(Session.GetSelectedEventRegistrations.AttendeePrice, '9999.99')#" required="no"></div>
+							</div>
+						</cfloop>
+					<cfelse>
+						<div class="alert alert-warning"><p>All Income has previous been verified. Simply chick the Button Submit Income Section below to view the Profit/Loss Report for this event</p></div>
+					</cfif>
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">

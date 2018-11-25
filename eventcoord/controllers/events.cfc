@@ -3268,6 +3268,13 @@
 	<cffunction name="listeventexpenses" returntype="any" output="true">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
+		<cfquery name="Session.getEventExpenses" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select TContent_ID, Expense_Name, Active, dateCreated, lastUpdated
+			From p_EventRegistration_ExpenseList
+			Where Site_ID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
+			Order by Expense_Name ASC
+		</cfquery>
+
 	</cffunction>
 
 	<cffunction name="enterexpenses" returntype="any" output="true">
@@ -3360,6 +3367,11 @@
 			</cfquery>
 			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterexpenses&UserAction=ModifyExpenses&Successful=True&EventID=#URL.EventID#" addtoken="false">
 		<cfelseif isDefined("FORM.formSubmit") and isDefined("FORM.EventID") and not isDefined("FORM.EventRecID")>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfset Session.FormErrors = #ArrayNew()#>
+				<cfset Session.FormInput = #StructCopy(FORM)#>
+			</cflock>
+
 			<cfif FORM.UserAction EQ "Generate Profit/Loss Report">
 				<cfset temp = StructDelete(Session, "getSelectedEvent")>
 				<cfset temp = StructDelete(Session, "getAvailableExpenseList")>
@@ -3376,6 +3388,14 @@
 				<cfset temp = StructDelete(Session, "FormErrors")>
 				<cfif isDefined("Session.FormInput")><cfset temp = StructDelete(Session, "FormInput")></cfif>
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default" addtoken="false">
+			</cfif>
+
+			<cfif FORM.ExpenseID EQ "----">
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please Select one of the Expenses from the DropDown Box. If all expenses have been entered, simply click the button 'Generate Profit/Loss Report'"};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterexpenses&SiteID=#rc.$.siteConfig('siteID')#&EventID=#URL.EventID#&FormRetry=True" addtoken="false">
 			</cfif>
 
 			<cfquery name="InsertEventExpense" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
@@ -3480,11 +3500,152 @@
 					)
 				ORDER BY tusers.Lname ASC, tusers.Fname ASC
 			</cfquery>
-
-
-
 		</cfif>
 	</cffunction>
+
+	<cffunction name="getAllEventExpenses" access="remote" returnformat="json">
+		<cfargument name="page" required="no" default="1" hint="Page user is on">
+		<cfargument name="rows" required="no" default="10" hint="Number of Rows to display per page">
+		<cfargument name="sidx" required="no" default="" hint="Sort Column">
+		<cfargument name="sord" required="no" default="ASC" hint="Sort Order">
+
+		<cfset var arrExpenses = ArrayNew(1)>
+		<cfquery name="getExpenses" dbtype="Query">
+			Select TContent_ID, Expense_Name, Active, dateCreated, lastUpdated
+			From Session.getEventExpenses
+			<cfif Arguments.sidx NEQ "">
+				Order By #Arguments.sidx# #Arguments.sord#
+			<cfelse>
+				Order by Group_Name #Arguments.sord#
+			</cfif>
+		</cfquery>
+
+		<!--- Calculate the Start Position for the loop query. So, if you are on 1st page and want to display 4 rows per page, for first page you start at: (1-1)*4+1 = 1.
+				If you go to page 2, you start at (2-)1*4+1 = 5 --->
+		<cfset start = ((arguments.page-1)*arguments.rows)+1>
+
+		<!--- Calculate the end row for the query. So on the first page you go from row 1 to row 4. --->
+		<cfset end = (start-1) + arguments.rows>
+
+		<!--- When building the array --->
+		<cfset i = 1>
+
+		<cfloop query="getExpenses" startrow="#start#" endrow="#end#">
+			<!--- Array that will be passed back needed by jqGrid JSON implementation --->
+			<cfif #Active# EQ 1>
+				<cfset strActive = "Yes">
+			<cfelse>
+				<cfset strActive = "No">
+			</cfif>
+			<cfset arrExpenses[i] = [#TContent_ID#,#Expense_Name#,#strActive#,#dateCreated#,#lastUpdated#]>
+			<cfset i = i + 1>
+		</cfloop>
+
+		<!--- Calculate the Total Number of Pages for your records. --->
+		<cfset totalPages = Ceiling(getExpenses.recordcount/arguments.rows)>
+
+		<!--- The JSON return.
+			Total - Total Number of Pages we will have calculated above
+			Page - Current page user is on
+			Records - Total number of records
+			rows = our data
+		--->
+		<cfset stcReturn = {total=#totalPages#,page=#Arguments.page#,records=#getExpenses.recordcount#,rows=arrExpenses}>
+		<cfreturn stcReturn>
+	</cffunction>
+
+	<cffunction name="addeventexpense" returntype="any" output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfif not isDefined("FORM.formSubmit")>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfif not isDefined("Session.FormErrors")><cfset Session.FormErrors = #ArrayNew()#></cfif>
+			</cflock>
+		<cfelseif isDefined("FORM.formSubmit")>
+			<cfset Session.FormData = #StructCopy(FORM)#>
+			<cfset Session.FormErrors = #ArrayNew()#>
+
+			<cfif FORM.UserAction EQ "Back to Main Menu">
+				<cfset temp = StructDelete(Session, "FormData")>
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cfif isDefined("Session.FormInput")><cfset temp = StructDelete(Session, "FormInput")></cfif>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.listeventexpenses" addtoken="false">
+			</cfif>
+
+			<cfif FORM.ExpenseActive EQ "----">
+				<cflock timeout="60" scope="Session" type="Exclusive">
+					<cfscript>
+						address = {property="BusinessAddress",message="Please select one of the options as to whether this expense is is active or not."};
+						arrayAppend(Session.FormErrors, address);
+					</cfscript>
+				</cflock>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addeventexpense&FormRetry=True">
+			</cfif>
+			<cfquery name="insertEventExpense" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Insert into p_EventRegistration_ExpenseList(Expense_Name, dateCreated, lastUpdated, lastUpdateBy, Active, Site_ID)
+				Values(
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ExpenseName#">,
+					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.userid#">,
+					<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.ExpenseActive#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
+				)
+			</cfquery>
+			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.listeventexpenses&UserAction=ExpenseCreatead&Successful=True">
+		</cfif>
+	</cffunction>
+
+	<cffunction name="editeventexpense" returntype="any" output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif not isDefined("FORM.formSubmit")>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfif not isDefined("Session.FormErrors")>
+					<cfset Session.FormErrors = #ArrayNew()#>
+				</cfif>
+				<cfquery name="Session.getSelectedExpense" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select TContent_ID, Expense_Name, Active, dateCreated, lastUpdated, lastUpdateBy
+					From p_EventRegistration_ExpenseList
+					Where Site_ID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and
+						TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.ExpenseID#">
+				</cfquery>
+			</cflock>
+		<cfelseif isDefined("FORM.formSubmit")>
+			<cfset Session.FormData = #StructCopy(FORM)#>
+			<cfset Session.FormErrors = #ArrayNew()#>
+
+			<cfif FORM.UserAction EQ "Back to Main Menu">
+				<cfset temp = StructDelete(Session, "FormData")>
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cfif isDefined("Session.FormInput")><cfset temp = StructDelete(Session, "FormInput")></cfif>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.listeventexpenses" addtoken="false">
+			</cfif>
+
+			<cfif FORM.ExpenseActive EQ "----">
+				<cflock timeout="60" scope="SESSION" type="Exclusive">
+					<cfscript>
+						address = {property="BusinessAddress",message="Please select one of the options as to whether this expense is is active or not."};
+						arrayAppend(Session.FormErrors, address);
+					</cfscript>
+				</cflock>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.editeventexpense&FormRetry=True">
+			</cfif>
+
+			<cfquery name="updateOrganizationGroup" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Update p_EventRegistration_ExpenseList
+				Set Expense_Name = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ExpenseName#">,
+					lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+					lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
+					Active = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.ExpenseActive#">
+				Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.ExpenseID#">
+			</cfquery>
+			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.listeventexpenses&UserAction=ExpenseUpdated&Successful=True">
+		</cfif>
+	</cffunction>
+
+
+
+
 
 
 </cfcomponent>
