@@ -22,6 +22,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</cfif>
 						</cfif>
 					</cfcase>
+					<cfcase value="EventCopied">
+						<cfif URL.Successful EQ "False">
+							<cfif ArrayLen(Session.FormErrors) GTE 1>
+								<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
+								<cfdump var="#Session.FormErrors#">
+							</cfif>
+						</cfif>
+					</cfcase>
 				</cfswitch>
 			</cfif>
 		</div>
