@@ -52,13 +52,13 @@
 			WHERE p_EventRegistration_UserRegistrations.RegistrationID = <cfqueryparam value="#Arguments.Info.RegistrationID#" cfsqltype="cf_sql_varchar">
 		</cfquery>
 
-		<cfquery name="getRegisteredUserInfo" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+		<cfquery name="getRegisteredUserInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 			Select Fname, Lname, Email
 			From tusers
 			Where UserID = <cfqueryparam value="#GetRegisteredEvent.User_ID#" cfsqltype="cf_sql_varchar">
 		</cfquery>
 
-		<cfquery name="DeleteRegistration" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+		<cfquery name="DeleteRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 			Delete from p_EventRegistration_UserRegistrations
 			Where RegistrationID = <cfqueryparam value="#Arguments.Info.RegistrationID#" cfsqltype="cf_sql_varchar">
 		</cfquery>

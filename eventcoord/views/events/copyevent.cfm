@@ -17,7 +17,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Cancel Event: #Session.getSelectedEvent.ShortTitle#</h1></div>
+			<div class="panel-heading"><h1>Copying Workshop/Event: #Session.getSelectedEvent.ShortTitle#</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
@@ -63,22 +63,25 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.EventSpecialInstructions#</p></div>
 					</div>
 					<div class="form-group">
-						<label for="CancelEvent" class="control-label col-sm-3">Really Cancel Event?:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="CancelEvent" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Cancel Event and Notify Participants</option></cfselect>
+						<label for="CopyEvent" class="control-label col-sm-3">Copy Event to New Event?:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="CopyEvent" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Copy Event to new Event</option></cfselect>
 						</div>
 					</div>
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Cancel Event"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Copy Event"><br /><br />
 				</div>
 			</cfform>
 		</div>
 	<cfelseif isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Cancel Event: #Session.getSelectedEvent.ShortTitle#</h1></div>
+			<div class="panel-heading"><h1>Copying Workshop/Event: #Session.getSelectedEvent.ShortTitle#</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="AcceptRegistrations" value="0">
+				<cfinput type="hidden" name="Registration_EndTime" value="0">
+				<cfinput type="hidden" name="Facilitator" value="#Session.Mura.UserID#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<cfif isDefined("Session.FormErrors")>
 					<div class="panel-body">
@@ -129,14 +132,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.EventSpecialInstructions#</p></div>
 					</div>
 					<div class="form-group">
-						<label for="CancelEvent" class="control-label col-sm-3">Really Cancel Event?:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="CancelEvent" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Cancel Event and Notify Participants</option></cfselect>
+						<label for="CopyEvent" class="control-label col-sm-3">Copy Event to New Event?:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="CopyEvent" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Copy Event to new Event</option></cfselect>
 						</div>
 					</div>
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Cancel Event"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Copy Event"><br /><br />
 				</div>
 			</cfform>
 		</div>

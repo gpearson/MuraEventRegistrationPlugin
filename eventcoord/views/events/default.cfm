@@ -32,6 +32,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<cfif isDefined("URL.Successful")>
 								<cfif URL.Successful EQ "False">
 									<div class="alert alert-info"><p>Event was not cancelled due to selecting the 'No' option when asked if you really want to cancel this event.</p></div>
+								<cfelseif URL.Successful EQ "True">
+									<div class="alert alert-success"><p>You have successfully cancelled this event and anyone who was registered for this event is receiving an email message letting them know of this action.</p></div>
+								</cfif>
+							</cfif>
+						</cfcase>
+						<cfcase value="EventCopied">
+							<cfif isDefined("URL.Successful")>
+								<cfif URL.Successful EQ "False">
+									<div class="alert alert-info"><p>Event was not copied due to selecting the 'No' option when asked if you really want to copy this event to a new event.</p></div>
+								<cfelseif URL.Successful EQ "True">
+									<div class="alert alert-success"><p>You have successfully copied the event to a new event. Make the necessary changes to the new event as necessary.</p></div>
 								</cfif>
 							</cfif>
 						</cfcase>
@@ -89,8 +100,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<td>
 									<a href="#buildURL('eventcoord:events.updateevent_review')#&EventID=#Session.getAvailableEvents.TContent_ID#" role="button" class="btn btn-primary btn-small"><small>Update</small></a>&nbsp;
 									<a href="#buildURL('eventcoord:events.cancelevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Cancel</small></a>&nbsp;
+									<a href="#buildURL('eventcoord:events.copyevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Copy</small></a><br />
 									<a href="#buildURL('eventcoord:events.emailregistered')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Email Registered</small></a>&nbsp;
-									<a href="#buildURL('eventcoord:events.copypriorevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Copy</small></a><br />
 									<a href="#buildURL('eventcoord:events.emailattended')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Email Attended</small></a>&nbsp;
 									<a href="#buildURL('eventcoord:events.geteventinfo')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Info</small></a>&nbsp;
 									<a href="#buildURL('eventcoord:events.registeruserforevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Register</small></a>
