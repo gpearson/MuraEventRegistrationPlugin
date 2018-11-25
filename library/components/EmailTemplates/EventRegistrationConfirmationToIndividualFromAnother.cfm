@@ -1,5 +1,5 @@
 <cfif GetRegistration.User_ID EQ getRegistration.RegisterByUserID>
-<cfmail To="#getRegisteredUserInfo.FName# #getRegisteredUserInfo.LName# <#getRegisteredUserInfo.Email#>" from="Event Registration System <registrationsystem@niesc.k12.in.us>" subject="Confirmation Email for: #getEvent.ShortTitle#" server="127.0.0.1">
+<cfmail To="#getRegisteredUserInfo.FName# #getRegisteredUserInfo.LName# <#getRegisteredUserInfo.Email#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Confirmation Email for: #getEvent.ShortTitle#" server="127.0.0.1">
 	<cfmailparam file="#Variables.UserRegistrationPDFAbsoluteFilename#" type="application/pdf" disposition="attachment">
 	<cfmailparam file="#Variables.UserRegistrationiCalAbsoluteFilename#" type="text/calendar" disposition="attachment">
 <cfmailpart type="text/plain">

@@ -395,6 +395,20 @@
 		<cfinclude template="EmailTemplates/SendEventMessageToParticipantsFromFacilitator.cfm">
 	</cffunction>
 
+	<cffunction name="SendEventCancellationByFacilitatorToSingleParticipant" returntype="Any" Output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="Info" type="Struct" Required="True">
+
+		<cfinclude template="EmailTemplates/EventRegistrationCancellationByFacilitatorToIndividual.cfm">
+
+	</cffunction>
+
+
+
+
+
+
+
 
 
 
@@ -556,29 +570,7 @@
 
 	</cffunction>
 
-	<cffunction name="SendEventCancellationByFacilitatorToSingleParticipant" returntype="Any" Output="false">
-		<cfargument name="Info" type="Struct" Required="True">
 
-		<cfquery name="GetRegisteredEvent" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			SELECT eEvents.ShortTitle, eEvents.EventDate, eRegistrations.AttendedEvent, eRegistrations.User_ID, eRegistrations.RegistrationID,  eRegistrations.OnWaitingList, eRegistrations.EventID, eEvents.PGPAvailable, eEvents.PGPPoints
-			FROM eRegistrations INNER JOIN eEvents ON eEvents.TContent_ID = eRegistrations.EventID
-			WHERE eRegistrations.RegistrationID = <cfqueryparam value="#Arguments.Info.RegistrationID#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-
-		<cfquery name="getRegisteredUserInfo" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			Select Fname, Lname, Email
-			From tusers
-			Where UserID = <cfqueryparam value="#GetRegisteredEvent.User_ID#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-
-		<cfquery name="DeleteRegistration" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			Delete from eRegistrations
-			Where RegistrationID = <cfqueryparam value="#Arguments.Info.RegistrationID#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-
-		<cfinclude template="EmailTemplates/EventRegistrationCancellationByFacilitatorToIndividual.cfm">
-
-	</cffunction>
 
 	<cffunction name="SendEventRegistrationToParticipantFromAnother" returntype="Any" Output="false">
 		<cfargument name="RegistrationRecordID" type="string" Required="True">

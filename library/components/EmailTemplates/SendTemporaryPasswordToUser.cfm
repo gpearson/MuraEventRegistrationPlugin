@@ -1,4 +1,4 @@
-<cfmail To="#GetAccountUsername.fName# #GetAccountUsername.lName# <#GetAccountUsername.Email#>" from="Event Registration System <registrationsystem@niesc.k12.in.us>" subject="Event Registration - Account Temporary Password" server="127.0.0.1">
+<cfmail To="#GetAccountUsername.fName# #GetAccountUsername.lName# <#GetAccountUsername.Email#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Event Registration - Account Temporary Password" server="127.0.0.1">
 <cfmailpart type="text/plain">
 #GetAccountUsername.fName# #GetAccountUsername.lName#,
 

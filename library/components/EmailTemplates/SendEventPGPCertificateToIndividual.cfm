@@ -1,4 +1,4 @@
-<cfmail To="#Arguments.ParticipantInfo.FName# #Arguments.ParticipantInfo.LName# <#Arguments.ParticipantInfo.Email#>" from="Event Registration System <registrationsystem@niesc.k12.in.us>" subject="Event Registration: PGP Certificate on Completed Workshop" server="127.0.0.1">
+<cfmail To="#Arguments.ParticipantInfo.FName# #Arguments.ParticipantInfo.LName# <#Arguments.ParticipantInfo.Email#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Event Registration: PGP Certificate on Completed Workshop" server="127.0.0.1">
 <cfmailparam file="#Arguments.ParticipantInfo.PGPCertificateFilename#" type="application/pdf">
 <cfmailpart type="text/plain">
 #Arguments.ParticipantInfo.FName# #Arguments.ParticipantInfo.LName#,

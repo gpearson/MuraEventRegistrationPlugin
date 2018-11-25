@@ -21,6 +21,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfif isDefined("URL.UserAction")>
 				<div class="panel-body">
 					<cfswitch expression="#URL.UserAction#">
+						<cfcase value="RemovedParticipants">
+							<cfif isDefined("URL.Successful")>
+								<cfif URL.Successful EQ "true">
+									<div class="alert alert-success"><p>You have successfully removed participants from the event. If you selected the option to send confirmation email messages the participant will be receiving this communication within the next few minutes.</p></div>
+								</cfif>
+							</cfif>
+						</cfcase>
 						<cfcase value="EmailParticipants">
 							<cfif isDefined("URL.Successful")>
 								<cfif URL.Successful EQ "true">
@@ -100,14 +107,44 @@ http://www.apache.org/licenses/LICENSE-2.0
 								From p_EventRegistration_UserRegistrations
 								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
-									AttendedEvent = <cfqueryparam value="1" cfsqltype="cf_sql_boolean">
+									AttendedEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_boolean"> or
+									Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
+									AttendedEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_boolean"> or
+									Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
+									AttendedEventDate3 = <cfqueryparam value="1" cfsqltype="cf_sql_boolean"> or
+									Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
+									AttendedEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_boolean"> or
+									Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
+									AttendedEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_boolean"> or
+									Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
+									AttendedEventDate6 = <cfqueryparam value="1" cfsqltype="cf_sql_boolean">
 							</cfquery>
 							<cfquery name="getRegisteredParticipantsForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 								Select TContent_ID, User_ID
 								From p_EventRegistration_UserRegistrations
 								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
-									AttendedEvent = <cfqueryparam value="0" cfsqltype="cf_sql_boolean">
+									AttendedEventDate1 = <cfqueryparam value="0" cfsqltype="cf_sql_boolean"> or
+									Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
+									AttendedEventDate2 = <cfqueryparam value="0" cfsqltype="cf_sql_boolean"> or
+									Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
+									AttendedEventDate3 = <cfqueryparam value="0" cfsqltype="cf_sql_boolean"> or
+									Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
+									AttendedEventDate4 = <cfqueryparam value="0" cfsqltype="cf_sql_boolean"> or
+									Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
+									AttendedEventDate5 = <cfqueryparam value="0" cfsqltype="cf_sql_boolean"> or
+									Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
+									AttendedEventDate6 = <cfqueryparam value="0" cfsqltype="cf_sql_boolean">
 							</cfquery>
 							<cfquery name="getEventExpenses" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 								Select TContent_ID
@@ -117,7 +154,15 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</cfquery>
 							<tr>
 								<td width="50%">(<a href="http://#cgi.server_name#/?Info=#Session.getAvailableEvents.TContent_ID#">#Session.getAvailableEvents.TContent_ID#</a>) / #Session.getAvailableEvents.ShortTitle#</td>
-								<td width="15%">#DateFormat(Session.getAvailableEvents.EventDate, "mmm dd, yy")#</td>
+								<td width="15%"><cfif DateDiff("d", Now(), Session.getAvailableEvents.EventDate) GTE 0>#DateFormat(Session.getAvailableEvents.EventDate, "mmm dd, yy")#<br><cfelse></cfif>
+									<cfif LEN(Session.getAvailableEvents.EventDate1) OR LEN(Session.getAvailableEvents.EventDate2) OR LEN(Session.getAvailableEvents.EventDate3) OR LEN(Session.getAvailableEvents.EventDate4) OR LEN(Session.getAvailableEvents.EventDate5)>
+										<cfif LEN(Session.getAvailableEvents.EventDate1) and DateDiff("d", Now(), Session.getAvailableEvents.EventDate1) GTE 0>#DateFormat(Session.getAvailableEvents.EventDate1, "mmm dd, yy")#<br></cfif>
+										<cfif LEN(Session.getAvailableEvents.EventDate2) and DateDiff("d", Now(), Session.getAvailableEvents.EventDate2) GTE 0>#DateFormat(Session.getAvailableEvents.EventDate2, "mmm dd, yy")#<br></cfif>
+										<cfif LEN(Session.getAvailableEvents.EventDate3) and DateDiff("d", Now(), Session.getAvailableEvents.EventDate3) GTE 0>#DateFormat(Session.getAvailableEvents.EventDate3, "mmm dd, yy")#<br></cfif>
+										<cfif LEN(Session.getAvailableEvents.EventDate4) and DateDiff("d", Now(), Session.getAvailableEvents.EventDate4) GTE 0>#DateFormat(Session.getAvailableEvents.EventDate4, "mmm dd, yy")#<br></cfif>
+										<cfif LEN(Session.getAvailableEvents.EventDate5) and DateDiff("d", Now(), Session.getAvailableEvents.EventDate5) GTE 0>#DateFormat(Session.getAvailableEvents.EventDate5, "mmm dd, yy")#<br></cfif>
+									</cfif>
+								</td>
 								<td>
 									<a href="#buildURL('eventcoord:events.updateevent_review')#&EventID=#Session.getAvailableEvents.TContent_ID#" role="button" class="btn btn-primary btn-small"><small>Update</small></a>
 									<a href="#buildURL('eventcoord:events.cancelevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Cancel</small></a>
@@ -125,23 +170,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 									<a href="#buildURL('eventcoord:events.registeruserforevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Register</small></a>
 									<a href="#buildURL('eventcoord:events.geteventinfo')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Info</small></a><br />
 									<cfif getRegisteredParticipantsForEvent.RecordCount>
+										<a href="#buildURL('eventcoord:events.deregisteruserforevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>De-Register</small></a>
 										<a href="#buildURL('eventcoord:events.emailregistered')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Email Registered</small></a>
-										<a href="#buildURL('eventcoord:events.eventsigninsheet')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Sheet</small></a>
-										<br />
+										<a href="#buildURL('eventcoord:events.eventsigninsheet')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Sheet</small></a><br>
+										<a href="#buildURL('eventcoord:events.signinparticipant')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Participant</small></a>
+										<a href="#buildURL('eventcoord:events.eventnamebadges')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Name Badges</small></a>
 									</cfif>
 									<cfif getAttendedParticipantsForEvent.RecordCount>
 										<a href="#buildURL('eventcoord:events.emailattended')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Email Attended</small></a>&nbsp;
 									</cfif>
-
-									&nbsp;
-
 									<a href="#buildURL('eventcoord:events.publishtofb')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small small"><small>Post to Facebook</small></a><br>
-									<cfif getRegistrationsForEvent.RecordCount>
-										&nbsp;<a href="#buildURL('eventcoord:events.deregisteruserforevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>De-Register</small></a>
-										&nbsp;
-										&nbsp;<a href="#buildURL('eventcoord:events.eventsigninparticipant')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Participant</small></a>
-										&nbsp;<a href="#buildURL('eventcoord:events.eventnamebadges')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Participant Name Badges</small></a>
-									</cfif>
 									<cfif getAttendedParticipantsForEvent.RecordCount and Session.getAvailableEvents.PGPAvailable EQ 1>
 										&nbsp;<a href="#buildURL('eventcoord:events.sendpgpcertificates')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Send PGP Certificates</small></a>
 										&nbsp;<a href="#buildURL('eventcoord:events.enterexpenses')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Enter Event Expenses</small></a>

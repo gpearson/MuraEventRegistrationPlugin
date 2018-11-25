@@ -1,4 +1,4 @@
-<cfmail To="#getRegisteredUserInfo.FName# #getRegisteredUserInfo.LName# <#getRegisteredUserInfo.Email#>" from="Event Registration System <registrationsystem@niesc.k12.in.us>" subject="Registration Upgraded From Waiting List for: #getEvent.ShortTitle#" server="127.0.0.1">
+<cfmail To="#getRegisteredUserInfo.FName# #getRegisteredUserInfo.LName# <#getRegisteredUserInfo.Email#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Registration Upgraded From Waiting List for: #getEvent.ShortTitle#" server="127.0.0.1">
 <cfmailpart type="text/plain">
 #getRegisteredUserInfo.FName# #getRegisteredUserInfo.LName#,
 

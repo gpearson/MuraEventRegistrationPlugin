@@ -1,4 +1,4 @@
-<cfmail To="#getAdminGroup.Email# <#getAdminGroup.Email#>" from="Event Registration System <registrationsystem@niesc.k12.in.us>" subject="Event Registration Request Event Inquiry" server="127.0.0.1">
+<cfmail To="#getAdminGroup.Email# <#getAdminGroup.Email#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Event Registration Request Event Inquiry" server="127.0.0.1">
 <cfmailpart type="text/plain">
 Event Registration Administrator,
 

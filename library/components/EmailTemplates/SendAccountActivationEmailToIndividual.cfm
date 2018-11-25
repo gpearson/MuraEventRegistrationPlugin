@@ -1,4 +1,4 @@
-<cfmail To="#getUserAccount.fName# #getUserAccount.lName# <#getUserAccount.Email#>" from="Event Registration System <registrationsystem@niesc.k12.in.us>" subject="Event Registration - Account Activation Email" server="127.0.0.1">
+<cfmail To="#getUserAccount.fName# #getUserAccount.lName# <#getUserAccount.Email#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Event Registration - Account Activation Email" server="127.0.0.1">
 <cfmailpart type="text/plain">
 #getUserAccount.fName# #getUserAccount.lName#,
 
