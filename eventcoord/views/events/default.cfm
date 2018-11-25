@@ -21,6 +21,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfif isDefined("URL.UserAction")>
 				<div class="panel-body">
 					<cfswitch expression="#URL.UserAction#">
+						<cfcase value="EmailInvoicesSent">
+							<cfif isDefined("URL.Successful")>
+								<cfif URL.Successful EQ "true">
+									<div class="alert alert-success"><p>You have successfully sent invoices electronically for the selected event to the responsible individuals to process the payments.</p></div>
+								</cfif>
+							</cfif>
+						</cfcase>
 						<cfcase value="EmailUpComingEvents">
 							<cfif isDefined("URL.Successful")>
 								<cfif URL.Successful EQ "true">

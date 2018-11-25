@@ -43,11 +43,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above. Featured Sort Order will be displayed in Assending Order from Smallest to Largest Number</div>
 					<div class="form-group">
 						<label for="Featured_StartDate" class="control-label col-sm-3">Start Date of Featuring Event:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_StartDate" name="Featured_StartDate" value="#Session.getSelectedEvent.Featured_StartDate#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_StartDate" name="Featured_StartDate" value="#DateFormat(Session.getSelectedEvent.Featured_StartDate, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="Featured_EndDate" class="control-label col-sm-3">End Date of Featuring Event:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_EndDate" name="Featured_EndDate" value="#Session.getSelectedEvent.featured_EndDate#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_EndDate" name="Featured_EndDate" value="#DateFormat(Session.getSelectedEvent.featured_EndDate, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="Featured_SortOrder" class="control-label col-sm-3">Sort Order of Featured Events:&nbsp;</label>
@@ -79,11 +79,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above. Featured Sort Order will be displayed in Assending Order from Smallest to Largest Number</div>
 					<div class="form-group">
 						<label for="Featured_StartDate" class="control-label col-sm-3">Start Date of Featuring Event:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_StartDate" name="Featured_StartDate" value="#Session.getSelectedEvent.Featured_StartDate#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_StartDate" name="Featured_StartDate" value="#DateFormat(Session.getSelectedEvent.Featured_StartDate, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="Featured_EndDate" class="control-label col-sm-3">End Date of Featuring Event:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_EndDate" name="Featured_EndDate" value="#Session.getSelectedEvent.featured_EndDate#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_EndDate" name="Featured_EndDate" value="#DateFormat(Session.getSelectedEvent.featured_EndDate, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="Featured_SortOrder" class="control-label col-sm-3">Sort Order of Featured Events:&nbsp;</label>

@@ -32,9 +32,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 					EventCancelled = <cfqueryparam value="0" cfsqltype="cf_sql_bit">
 			</cfquery>
 
-			<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=action=public:registerevent.default&EventID=#URL.EventID#&display=login">
-		<cfelseif isDefined("URL.EventID") and isNumeric(URL.EventID) and Session.Mura.IsLoggedIn EQ "true">
+			<cflocation addtoken="false" url="#CGI.Script_name##CGI.path_info#?display=login">
+		<cfelseif isDefined("URL.EventID") and isNumeric(URL.EventID) and Session.Mura.IsLoggedIn EQ "true" and not isDefined("FORM.formSubmit")>
 			<cflock timeout="60" scope="SESSION" type="Exclusive">
+				<cfquery name="Session.getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Facilitator, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, Presenters
+					From p_EventRegistration_Events
+					Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+						TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
+						Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and
+						EventCancelled = <cfqueryparam value="0" cfsqltype="cf_sql_bit">
+				</cfquery>
 				<cfif isDefined("Session.UserRegistrationInfo")>
 					<cfset Session.UserRegistrationInfo.EventID = #URL.EventID#>
 					<cfset Session.UserRegistrationInfo.DateRegistered = #Now()#>
@@ -46,15 +54,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfset Session.UserRegistrationInfo.UserEmailDomain = #Right(Session.Mura.EMail, Len(Session.Mura.Email) - Find("@", Session.Mura.Email))#>
 				</cfif>
 
-				<cfquery name="Session.getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewSpecialPricing, SpecialMemberCost, SpecialNonMemberCost, SpecialPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Facilitator, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, Presenters
-					From p_EventRegistration_Events
-					Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-						TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-						Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and
-						EventCancelled = <cfqueryparam value="0" cfsqltype="cf_sql_bit">
-				</cfquery>
-
 				<cfquery name="Session.getActiveMembership" datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Select TContent_ID, OrganizationName, OrganizationDomainName, Active
 					From p_EventRegistration_Membership
@@ -63,7 +62,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</cfquery>
 
 				<cfif Session.getSelectedEvent.EarlyBird_RegistrationAvailable EQ 1>
-					<cfif DateDiff("d", Now(), getSelectedEvent.EarlyBird_RegistrationDeadline) GTE 0>
+					<cfif DateDiff("d", Now(), Session.getSelectedEvent.EarlyBird_RegistrationDeadline) GTE 0>
 						<cfset Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration = True>
 					<cfelse>
 						<cfset Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration = False>
@@ -113,9 +112,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfset Session.UserRegistrationInfo.UserEventEarlyBirdPrice = #Session.getSelectedEvent.EarlyBird_NonMemberCost#>
 				</cfif>
 			</cflock>
-		</cfif>
-
-		<cfif isDefined("FORM.formSubmit")>
+		<cfelseif isDefined("FORM.EventID") and isNumeric(FORM.EventID) and Session.Mura.IsLoggedIn EQ "true" and isDefined("FORM.formSubmit")>
 			<cflock timeout="60" scope="Session" type="Exclusive">
 				<cfset Session.FormErrors = #ArrayNew()#>
 				<cfset Session.FormInput = #StructCopy(FORM)#>
@@ -133,171 +130,162 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
 			<cfset CreateiCalCard = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>
 
-			<cfif FORM.formSubmit EQ "true">
-				<cfif FORM.RegisterAdditionalIndividuals EQ "----">
+
+			<cfif FORM.RegisterAdditionalIndividuals EQ "----">
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please Select whether you are wanting to register additional individuals to this same event/workshop."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True" addtoken="false">
+			</cfif>
+
+			<cfif isDefined("FORM.RegisterAllDates")>
+				<cfif FORM.RegisterAllDates EQ "----">
 					<cfscript>
-						errormsg = {property="EmailMsg",message="Please Select whether you are wanting to register additional individuals to this same event/workshop."};
+						errormsg = {property="EmailMsg",message="Please Select whether you will be attending all of the dates that this event is scheduled for."};
 						arrayAppend(Session.FormErrors, errormsg);
 					</cfscript>
 					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True" addtoken="false">
 				</cfif>
+			</cfif>
 
-				<cfif isDefined("FORM.RegisterAllDates")>
-					<cfif FORM.RegisterAllDates EQ "----">
-						<cfscript>
-							errormsg = {property="EmailMsg",message="Please Select whether you will be attending all of the dates that this event is scheduled for."};
-							arrayAppend(Session.FormErrors, errormsg);
-						</cfscript>
-						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True" addtoken="false">
-					</cfif>
+			<cfif isDefined("FORM.AttendViaWebinar")>
+				<cfif FORM.AttendViaWebinar EQ "----">
+					<cfscript>
+						errormsg = {property="EmailMsg",message="Please Select whether you will be attending this event via the Webinar Option or not."};
+						arrayAppend(Session.FormErrors, errormsg);
+					</cfscript>
+					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True" addtoken="false">
 				</cfif>
+			</cfif>
 
-				<cfif isDefined("FORM.AttendViaWebinar")>
-					<cfif FORM.AttendViaWebinar EQ "----">
-						<cfscript>
-							errormsg = {property="EmailMsg",message="Please Select whether you will be attending this event via the Webinar Option or not."};
-							arrayAppend(Session.FormErrors, errormsg);
-						</cfscript>
-						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True" addtoken="false">
-					</cfif>
+			<cfif isDefined("FORM.AttendViaIVC")>
+				<cfif FORM.AttendViaIVC EQ "----">
+					<cfscript>
+						errormsg = {property="EmailMsg",message="Please Select whether you will be attending this event via the Video Conference Option or not."};
+						arrayAppend(Session.FormErrors, errormsg);
+					</cfscript>
+					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True" addtoken="false">
 				</cfif>
+			</cfif>
 
-				<cfif isDefined("FORM.AttendViaIVC")>
-					<cfif FORM.AttendViaIVC EQ "----">
-						<cfscript>
-							errormsg = {property="EmailMsg",message="Please Select whether you will be attending this event via the Video Conference Option or not."};
-							arrayAppend(Session.FormErrors, errormsg);
-						</cfscript>
-						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True" addtoken="false">
-					</cfif>
+			<cfif isDefined("FORM.StayForMeal")>
+				<cfif FORM.StayForMeal EQ "----">
+					<cfscript>
+						errormsg = {property="EmailMsg",message="Please Select whether you will be stayinf for the Meal that is provided to Participants or not"};
+						arrayAppend(Session.FormErrors, errormsg);
+					</cfscript>
+					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True" addtoken="false">
 				</cfif>
+			</cfif>
 
-				<cfif isDefined("FORM.StayForMeal")>
-					<cfif FORM.StayForMeal EQ "----">
-						<cfscript>
-							errormsg = {property="EmailMsg",message="Please Select whether you will be stayinf for the Meal that is provided to Participants or not"};
-							arrayAppend(Session.FormErrors, errormsg);
-						</cfscript>
-						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True" addtoken="false">
+			<cfif FORM.RegisterAdditionalIndividuals EQ 0>
+				<cfquery name="CheckUserAlreadyRegistered" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select TContent_ID
+					From p_EventRegistration_UserRegistrations
+					Where Site_ID = <cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar"> and
+						User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
+						EventID = <cfqueryparam value="#FORM.EventID#" cfsqltype="cf_sql_integer">
+				</cfquery>
+				<cfif CheckUserAlreadyRegistered.RecordCount EQ 0>
+					<cfset RegistrationID = #CreateUUID()#>
+					<cfif Session.getSelectedEvent.MealProvided EQ 0>
+						<cfset FORM.StayForMeal = 0>
 					</cfif>
-				</cfif>
-
-				<cfif FORM.RegisterAdditionalIndividuals EQ 0>
-					<cfquery name="CheckUserAlreadyRegistered" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Select TContent_ID
-						From p_EventRegistration_UserRegistrations
-						Where Site_ID = <cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar"> and
-							User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
-							<cfif isDefined("URL.EventID")>
-								EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
-							<cfelse>
-								EventID = <cfqueryparam value="#Session.UserRegistrationInfo.RegisterUserForEvent#" cfsqltype="cf_sql_integer">
-							</cfif>
-					</cfquery>
-					<cfif CheckUserAlreadyRegistered.RecordCount EQ 0>
-						<cfset RegistrationID = #CreateUUID()#>
-						<cfif Session.getSelectedEvent.MealProvided EQ 0>
-							<cfset FORM.StayForMeal = 0>
-						</cfif>
-						<cftry>
-							<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RequestsMeal)
-								Values(
-									<cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar">,
-									<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
-									<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-									<cfqueryparam value="1" cfsqltype="cf_sql_bit">,
-									<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
-									<cfqueryparam value="#FORM.EventID#" cfsqltype="cf_sql_integer">,
-									<cfqueryparam value="#Session.UserRegistrationInfo.UserEventPrice#" cfsqltype="cf_sql_money">,
-									<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
-									<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
-									<cfqueryparam value="#FORM.StayForMeal#" cfsqltype="cf_sql_bit">
-								)
-							</cfquery>
-
-							<cfif isDefined("FORM.RegisterAllDates")>
-								<cfif FORM.RegisterAllDates EQ 1>
-									<cfif isDate(Session.getSelectedEvent.EventDate1)>
-										<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-											Update p_EventRegistration_UserRegistrations
-											Set RegisterForEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-											Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
-										</cfquery>
-									</cfif>
-									<cfif isDate(Session.getSelectedEvent.EventDate2)>
-										<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-											Update p_EventRegistration_UserRegistrations
-											Set RegisterForEventDate3 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-											Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
-										</cfquery>
-									</cfif>
-									<cfif isDate(Session.getSelectedEvent.EventDate3)>
-										<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-											Update p_EventRegistration_UserRegistrations
-											Set RegisterForEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-											Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
-										</cfquery>
-									</cfif>
-									<cfif isDate(Session.getSelectedEvent.EventDate4)>
-										<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-											Update p_EventRegistration_UserRegistrations
-											Set RegisterForEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-											Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
-										</cfquery>
-									</cfif>
-									<cfif isDate(Session.getSelectedEvent.EventDate5)>
-										<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-											Update p_EventRegistration_UserRegistrations
-											Set RegisterForEventDate6 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-											Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
-										</cfquery>
-									</cfif>
-								<cfelse>
-
+					<cftry>
+						<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RequestsMeal)
+							Values(
+								<cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar">,
+								<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
+								<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+								<cfqueryparam value="1" cfsqltype="cf_sql_bit">,
+								<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
+								<cfqueryparam value="#FORM.EventID#" cfsqltype="cf_sql_integer">,
+								<cfqueryparam value="#Session.UserRegistrationInfo.UserEventPrice#" cfsqltype="cf_sql_money">,
+								<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
+								<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
+								<cfqueryparam value="#FORM.StayForMeal#" cfsqltype="cf_sql_bit">
+							)
+						</cfquery>
+						<cfif isDefined("FORM.RegisterAllDates")>
+							<cfif FORM.RegisterAllDates EQ 1>
+								<cfif isDate(Session.getSelectedEvent.EventDate1)>
+									<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+										Update p_EventRegistration_UserRegistrations
+										Set RegisterForEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+										Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
+									</cfquery>
 								</cfif>
-							</cfif>
-							<cfif isDefined("FORM.AttendViaWebinar")>
-								<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Update p_EventRegistration_UserRegistrations
-									Set WebinarParticipant = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
-								</cfquery>
-							</cfif>
+								<cfif isDate(Session.getSelectedEvent.EventDate2)>
+									<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+										Update p_EventRegistration_UserRegistrations
+										Set RegisterForEventDate3 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+										Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
+									</cfquery>
+								</cfif>
+								<cfif isDate(Session.getSelectedEvent.EventDate3)>
+									<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+										Update p_EventRegistration_UserRegistrations
+										Set RegisterForEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+										Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
+									</cfquery>
+								</cfif>
+								<cfif isDate(Session.getSelectedEvent.EventDate4)>
+									<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+										Update p_EventRegistration_UserRegistrations
+										Set RegisterForEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+										Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
+									</cfquery>
+								</cfif>
+								<cfif isDate(Session.getSelectedEvent.EventDate5)>
+									<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+										Update p_EventRegistration_UserRegistrations
+										Set RegisterForEventDate6 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+										Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
+									</cfquery>
+								</cfif>
+							<cfelse>
 
-							<cfif isDefined("FORM.AttendViaIVC")>
-								<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Update p_EventRegistration_UserRegistrations
-									Set IVCParticipant = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
-								</cfquery>
 							</cfif>
-
-							<cfif Session.getSelectedEvent.MealProvided EQ 1>
-								<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Update p_EventRegistration_UserRegistrations
-									Set RequestsMeal = <cfqueryparam value="#FORM.StayForMeal#" cfsqltype="cf_sql_bit">
-									Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
-								</cfquery>
-							</cfif>
-
-							<cfset Temp = #SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, insertNewRegistration.GENERATED_KEY)#>
-							<cfset temp = StructDelete(Session, "FormErrors")>
-							<cfset temp = StructDelete(Session, "FormInput")>
-							<cfset temp = StructDelete(Session, "UserRegistrationInfo")>
-							<cfset temp = StructDelete(Session, "getSelectedEvent")>
-							<cfset temp = StructDelete(Session, "getActiveMembership")>
-							<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" addtoken="false">
-							<cfcatch type="Database">
-								<cfdump var="#CFCATCH#"><cfabort>
-							</cfcatch>
-						</cftry>
-					<cfelse>
-						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True&UserAction=UserAlreadyRegistered" addtoken="false">
-					</cfif>
-				<cfelseif FORM.RegisterAdditionalIndividuals EQ 1>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.registeradditionalparticipants" addtoken="false">
+						</cfif>
+						<cfif isDefined("FORM.AttendViaWebinar")>
+							<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_UserRegistrations
+								Set WebinarParticipant = <cfqueryparam value="#FORM.AttendViaWebinar#" cfsqltype="cf_sql_bit">
+								Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
+							</cfquery>
+						</cfif>
+						<cfif isDefined("FORM.AttendViaIVC")>
+							<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_UserRegistrations
+								Set IVCParticipant = <cfqueryparam value="#FORM.AttendViaIVC#" cfsqltype="cf_sql_bit">
+								Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
+							</cfquery>
+						</cfif>
+						<cfif Session.getSelectedEvent.MealProvided EQ 1>
+							<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_UserRegistrations
+								Set RequestsMeal = <cfqueryparam value="#FORM.StayForMeal#" cfsqltype="cf_sql_bit">
+								Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
+							</cfquery>
+						</cfif>
+						<cfset Temp = #SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, insertNewRegistration.GENERATED_KEY)#>
+						<cfset temp = StructDelete(Session, "FormErrors")>
+						<cfset temp = StructDelete(Session, "FormInput")>
+						<cfset temp = StructDelete(Session, "UserRegistrationInfo")>
+						<cfset temp = StructDelete(Session, "getSelectedEvent")>
+						<cfset temp = StructDelete(Session, "getActiveMembership")>
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" addtoken="false">
+						<cfcatch type="Database">
+							<cfdump var="#CFCATCH#"><cfabort>
+						</cfcatch>
+					</cftry>
+				<cfelse>
+					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True&UserAction=UserAlreadyRegistered" addtoken="false">
 				</cfif>
+			<cfelseif FORM.RegisterAdditionalIndividuals EQ 1>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.registeradditionalparticipants" addtoken="false">
 			</cfif>
 		</cfif>
 	</cffunction>
