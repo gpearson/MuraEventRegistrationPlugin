@@ -19,14 +19,23 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<div class="panel-body">
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
-					<cfcase value="GroupCreated">
+					<cfcase value="InformationUpdated">
 						<cfif URL.Successful EQ "true">
 							<div class="alert alert-success">
-								You have successfully created a new group that you will be able to put subscribers into.
+								You have successfully updated the catering facility information in the database.
 							</div>
 						<cfelse>
 							<div class="alert alert-danger">
-								An error has occurred and the group information was not added to the database.
+							</div>
+						</cfif>
+					</cfcase>
+					<cfcase value="CatererAdded">
+						<cfif URL.Successful EQ "true">
+							<div class="alert alert-success">
+								You have successfully added a new catering facility to the database.
+							</div>
+						<cfelse>
+							<div class="alert alert-danger">
 							</div>
 						</cfif>
 					</cfcase>
@@ -87,7 +96,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					caption: "",
 					buttonicon: "glyphicon-plus",
 					onClickButton: function(id) {
-						var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:events.addeventexpense";
+						var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:caterers.addcaterer";
 						window.open(urlToGo,"_self");
 					},
 					position: "last"
@@ -104,7 +113,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						} else {
 							var grid = $('##jqGrid');
 							var RowIDValue = grid.getCell(selectedRow, 'TContent_ID');
-							var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:events.editeventexpense&ExpenseID="+ RowIDValue;
+							var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:caterers.editcaterer&CatererID="+ RowIDValue;
 							window.open(urlToGo,"_self");
 						}
 						},
