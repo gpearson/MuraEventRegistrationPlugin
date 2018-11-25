@@ -174,7 +174,7 @@
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Edit Catering Facility"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add Catering Facility"><br /><br />
 				</div>
 			</cfform>
 		</div>
