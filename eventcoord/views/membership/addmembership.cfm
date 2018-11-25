@@ -29,52 +29,52 @@
 					</div>
 					<div class="form-group">
 						<label for="Active" class="control-label col-sm-3">Active Membership:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="Active" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" Display="OptionName" queryposition="below">
+						<div class="col-sm-8"><cfselect name="Active" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below">
 							<option value="----">Active Membership?</option>
 						</cfselect></div>
 					</div>
 					<div class="form-group">
 						<label for="StateDOEIDNumber" class="control-label col-sm-3">State DOE ID Number:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEIDNumber" name="StateDOEIDNumber" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEIDNumber" name="StateDOEIDNumber" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="StateDOEState" class="control-label col-sm-3">State DOE State:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEState" name="StateDOEState" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEState" name="StateDOEState" required="no"></div>
 					</div>
 
 					<div class="panel-heading"><h1>Mailing Address Information</h1></div>
 					<div class="form-group">
 						<label for="MailingAddress" class="control-label col-sm-3">Address:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingAddress" name="MailingAddress" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingAddress" name="MailingAddress" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="MailingCity" class="control-label col-sm-3">City:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingCity" name="MailingCity" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingCity" name="MailingCity" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="MailingState" class="control-label col-sm-3">State:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingState" name="MailingState" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingState" name="MailingState" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="MailingZipCode" class="control-label col-sm-3">ZipCode:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingZipCode" name="MailingZipCode" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingZipCode" name="MailingZipCode" required="no"></div>
 					</div>
 					<div class="panel-heading"><h1>Physical Address Information</h1></div>
 					<div class="form-group">
 						<label for="PhysicalAddress" class="control-label col-sm-3">Address:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="PhysicalCity" class="control-label col-sm-3">City:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalCity" name="PhysicalCity" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalCity" name="PhysicalCity" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="PhysicalState" class="control-label col-sm-3">State:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalState" name="PhysicalState" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalState" name="PhysicalState" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="PhysicalZipCode" class="control-label col-sm-3">ZipCode:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" required="yes"></div>
 					</div>
 					<div class="panel-heading"><h1>Phone Information</h1></div>
 					<div class="form-group">

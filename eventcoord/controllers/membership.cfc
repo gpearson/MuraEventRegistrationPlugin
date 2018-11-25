@@ -23,7 +23,7 @@
 			<cfif Arguments.sidx NEQ "">
 				Order By #Arguments.sidx# #Arguments.sord#
 			<cfelse>
-				Order by OrganizationName #Arguments.sord#
+				Order by OrganizationName ASC
 			</cfif>
 		</cfquery>
 
@@ -218,8 +218,9 @@
 				<cfelse>
 					<cfset CombinedPhysicalAddress = #MailingAddressGeoCoded[1].AddressStreetNumber# & " " & #MailingAddressGeoCoded[1].AddressStreetNameShort#>
 					<cfquery name="updateMembershipInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						insert into p_EventRegistration_Membership(OrganizationName, Mailing_Address, Mailing_City, Mailing_State, Mailing_ZipCode, Primary_PhoneNumber, Primary_FaxNumber, OrganizationDomainName, StateDOE_IDNUmber, StateDOE_State, Active, AccountsPayable_EmailAddress, AccountsPayable_ContactName, ReceiveInvoicesByEmail, dateCreated, lastUpdateBy)
+						insert into p_EventRegistration_Membership(Site_ID, OrganizationName, Mailing_Address, Mailing_City, Mailing_State, Mailing_ZipCode, Primary_PhoneNumber, Primary_FaxNumber, OrganizationDomainName, StateDOE_IDNUmber, StateDOE_State, Active, AccountsPayable_EmailAddress, AccountsPayable_ContactName, ReceiveInvoicesByEmail, dateCreated, lastUpdated, lastUpdateBy)
 						Values(
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.CombinedPhysicalAddress#">,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded[1].AddressCityName)#">,
@@ -234,6 +235,7 @@
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableEmailAddress#">,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableContactName#">,
 							<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.ReceiveInvoicesByEmail#">,
+							<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 							<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.Lname#">
 						)
