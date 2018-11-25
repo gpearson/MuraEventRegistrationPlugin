@@ -1,411 +1,305 @@
-/*
-
-This file is part of MuraFW1
-
-Copyright 2010-2013 Stephen J. Withington, Jr.
-Licensed under the Apache License, Version v2.0
-http://www.apache.org/licenses/LICENSE-2.0
-
-*/
-<cfcomponent extends="controller" output="false" persistent="false" accessors="true">
+<cfcomponent output="false" persistent="false" accessors="true">
 	<cffunction name="default" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
-		<cfif isDefined("FORM.FormSubmited")>
-			<cfswitch expression="#FORM.SearchCriteria#">
-				<cfcase value="LName">
-					<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
-						From tusers
-						Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-							LName LIKE '%#FORM.SearchText#%'
-						Order by LName ASC, FName ASC
-					</cfquery>
-					<cfset rc.Query = StructNew()>
-					<cfset rc.Query = StructCopy(getAllUsers)>
-					<cfreturn rc>
-				</cfcase>
-				<cfcase value="FName">
-					<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
-						From tusers
-						Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-							FName LIKE '%#FORM.SearchText#%'
-						Order by LName ASC, FName ASC
-					</cfquery>
-					<cfset rc.Query = StructNew()>
-					<cfset rc.Query = StructCopy(getAllUsers)>
-					<cfreturn rc>
-				</cfcase>
-				<cfcase value="Email">
-					<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
-						From tusers
-						Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-							Email LIKE '%#FORM.SearchText#%'
-						Order by LName ASC, FName ASC
-					</cfquery>
-					<cfset rc.Query = StructNew()>
-					<cfset rc.Query = StructCopy(getAllUsers)>
-					<cfreturn rc>
-				</cfcase>
-				<cfcase value="Company">
-					<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
-						From tusers
-						Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-							Company LIKE '%#FORM.SearchText#%'
-						Order by LName ASC, FName ASC
-					</cfquery>
-					<cfset rc.Query = StructNew()>
-					<cfset rc.Query = StructCopy(getAllUsers)>
-					<cfreturn rc>
-				</cfcase>
-			</cfswitch>
-		<cfelse>
-			<cfquery name="getAllUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select UserID, GroupName, FName, LName, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, Notes, Description, Interests, keepPrivate, created
-				From tusers
-				Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-					LENGTH(FName) > 0 or
-					SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-					LENGTH(LName) > 0
-					or SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and S2 = <cfqueryparam value="0" cfsqltype="cf_sql_integer"> and
-					LENGTH(Username) > 0
+		<cfquery name="Session.getUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select UserID, FName, LName, UserName, Company, LastLogin, LastUpdate, InActive, Created
+			From tusers
+			Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and GroupName is null and Username <> "admin"
+			Order by LName ASC, FName ASC
+		</cfquery>
+	</cffunction>
+
+	<cffunction name="getAllUsers" access="remote" returnformat="json">
+		<cfargument name="page" required="no" default="1" hint="Page user is on">
+		<cfargument name="rows" required="no" default="10" hint="Number of Rows to display per page">
+		<cfargument name="sidx" required="no" default="" hint="Sort Column">
+		<cfargument name="sord" required="no" default="ASC" hint="Sort Order">
+
+		<cfset var arrUsers = ArrayNew(1)>
+		<cfquery name="getUsers" dbtype="Query">
+			Select UserID, LName, FName, UserName, Company, LastLogin, Created, InActive
+			From Session.getUsers
+			<cfif Arguments.sidx NEQ "">
+				Order By #Arguments.sidx# #Arguments.sord#
+			<cfelse>
 				Order by LName ASC, FName ASC
+			</cfif>
+		</cfquery>
+
+		<!--- Calculate the Start Position for the loop query. So, if you are on 1st page and want to display 4 rows per page, for first page you start at: (1-1)*4+1 = 1.
+				If you go to page 2, you start at (2-)1*4+1 = 5 --->
+		<cfset start = ((arguments.page-1)*arguments.rows)+1>
+
+		<!--- Calculate the end row for the query. So on the first page you go from row 1 to row 4. --->
+		<cfset end = (start-1) + arguments.rows>
+
+		<!--- When building the array --->
+		<cfset i = 1>
+
+		<cfloop query="getUsers" startrow="#start#" endrow="#end#">
+			<!--- Array that will be passed back needed by jqGrid JSON implementation --->
+			<cfif #InActive# EQ 1>
+				<cfset strActive = "Yes">
+			<cfelse>
+				<cfset strActive = "No">
+			</cfif>
+			<cfset arrUsers[i] = [#UserID#,#LName#,#FName#,#UserName#,#Company#,#LastLogin#,#Created#,#strActive#]>
+			<cfset i = i + 1>
+		</cfloop>
+
+		<!--- Calculate the Total Number of Pages for your records. --->
+		<cfset totalPages = Ceiling(getUsers.recordcount/arguments.rows)>
+
+		<!--- The JSON return.
+			Total - Total Number of Pages we will have calculated above
+			Page - Current page user is on
+			Records - Total number of records
+			rows = our data
+		--->
+		<cfset stcReturn = {total=#totalPages#,page=#Arguments.page#,records=#getUsers.recordcount#,rows=arrUsers}>
+		<cfreturn stcReturn>
+	</cffunction>
+
+	<cffunction name="edituser" returntype="any" output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif not isDefined("FORM.formSubmit")>
+			<cfquery name="Session.getSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select Fname, Lname, UserName, Email, Company, JobTitle, mobilePhone, Website, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, InActive
+				From tusers
+				Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">  and
+					UserID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#URL.UserID#">
 			</cfquery>
-			<cfset rc.Query = StructNew()>
-			<cfset rc.Query = StructCopy(getAllUsers)>
-			<cfreturn rc>
+			<cfquery name="Session.getEventGroups" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select UserID, GroupName
+				From tusers
+				Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and InActive = <cfqueryparam cfsqltype="cf_sql_bit" value="0"> and
+					GroupName Like <cfqueryparam cfsqltype="cf_sql_varchar" value="%Event%">
+				Order by GroupName ASC
+			</cfquery>
+		<cfelseif isDefined("FORM.formSubmit")>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfset Session.FormErrors = #ArrayNew()#>
+				<cfset Session.FormInput = #StructCopy(FORM)#>
+			</cflock>
+			<cfif FORM.UserAction EQ "Back to Main Menu">
+				<cfset temp = StructDelete(Session, "getSelectedUser")>
+				<cfset temp = StructDelete(Session, "getEventGroups")>
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cfif isDefined("Session.FormInput")><cfset temp = StructDelete(Session, "FormInput")></cfif>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.default" addtoken="false">
+			</cfif>
+			<cfif FORM.UserAction EQ "Change Password">
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.changepassword" addtoken="false">
+			</cfif>
+			<cfif FORM.UserAction EQ "Activate Account">
+				<cfquery name="ActivateAccount" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					update tusers
+					Set InActive = <cfqueryparam cfsqltype="cf_sql_bit" value="0">
+					Where UserID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.UserID#">
+				</cfquery>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.default&UserAction=ActivatedAccount&Successful=True" addtoken="false">
+			</cfif>
+
+			<cfif FORM.InActive EQ "----">
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please Select if this Account Holder's Account is InActive or Not."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.edituser&FormRetry=True&UserID=#FORM.UserID#" addtoken="false">
+			</cfif>
+
+			<cfquery name="updateUserAccount" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				update tusers
+				Set FName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.FName#">,
+					LName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.LName#">,
+					Email = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.Email#">,
+					Company = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.Company#">,
+					JobTitle = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.JobTitle#">,
+					mobilePhone = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.mobilePhone#">,
+					InActive = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.InActive#">,
+					LastUpdate = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+					LastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.FName# #Session.Mura.LName#">,
+					LastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+				Where UserID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.UserID#">
+			</cfquery>
+
+			<cfif isDefined("FORM.MemberGroup")>
+				<cfquery name="getUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select GroupID
+					From tusersmemb
+					Where UserID = <cfqueryparam value="#FORM.UserID#" cfsqltype="cf_sql_varchar">
+				</cfquery>
+				<cfif getUserMemberships.RecordCount NEQ ListLen(FORM.MemberGroup, ",")>
+					<cfquery name="deleteUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Delete from tusersmemb
+						Where UserID = <cfqueryparam value="#FORM.UserID#" cfsqltype="cf_sql_varchar">
+					</cfquery>
+					<cfloop list="#FORM.MemberGroup#" index="i" delimiters=",">
+						<cfquery name="insertUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Insert into tusersmemb(UserID, GroupID)
+							Values('#FORM.UserID#', '#i#')
+						</cfquery>
+					</cfloop>
+				<cfelse>
+					<cfloop list="#FORM.MemberGroup#" index="i" delimiters=",">
+						<cfquery name="checkUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Select GroupID
+							From tusersmemb
+							Where UserID = <cfqueryparam value="#FORM.UserID#" cfsqltype="cf_sql_varchar"> and
+								GroupID = <cfqueryparam value="#i#" cfsqltype="cf_sql_varchar">
+						</cfquery>
+						<cfif checkUserMemberships.RecordCount EQ 0>
+							<cfquery name="insertUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Insert into tusersmemb(UserID, GroupID)
+								Values('#FORM.UserID#', '#i#')
+							</cfquery>
+						</cfif>
+					</cfloop>
+				</cfif>
+			<cfelse>
+				<cfquery name="getUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select GroupID
+					From tusersmemb
+					Where UserID = <cfqueryparam value="#FORM.UserID#" cfsqltype="cf_sql_varchar">
+				</cfquery>
+				<cfif getUserMemberships.RecordCount>
+					<cfquery name="deleteUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Delete from tusersmemb
+						Where UserID = <cfqueryparam value="#FORM.UserID#" cfsqltype="cf_sql_varchar">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.default&UserAction=AccountUpdated&Successful=True" addtoken="false">
+		</cfif>
+	</cffunction>
+
+	<cffunction name="changepassword" returntype="any" output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif not isDefined("FORM.formSubmit")>
+			<cfquery name="Session.getSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select Fname, Lname, UserName, Email, Company, JobTitle, mobilePhone, Website, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, InActive
+				From tusers
+				Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">  and
+					UserID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.FormInput.UserID#">
+			</cfquery>
+		<cfelseif isDefined("FORM.formSubmit")>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfset Session.FormErrors = #ArrayNew()#>
+				<cfset Session.FormInput = #StructCopy(FORM)#>
+			</cflock>
+			<cfif FORM.UserAction EQ "Back to Main Menu">
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.edituser&UserID=#FORM.UserID#" addtoken="false">
+			</cfif>
+			<cfif LEN(FORM.Password) LT 5>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="The Password Field must be longer than 5 characters."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.changepassword&FormRetry=True" addtoken="false">
+			</cfif>
+			<cfif LEN(FORM.VerifyPassword) LT 5>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="The Verify Password Field must be longer than 5 characters."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.changepassword&FormRetry=True" addtoken="false">
+			</cfif>
+			<cfif FORM.Password NEQ FORM.VerifyPassword>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="The Password Field and the Verify Password Field did not match. Please check these fields and try to submit this request again."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.changepassword&FormRetry=True" addtoken="false">
+			</cfif>
+			<!--- Initiates the User Bean --->
+			<cfset NewUser = #Application.userManager.readByUsername(form.UserName, rc.$.siteConfig('siteID'))#>
+			<CFSET NewUser.setPassword(FORM.Password)>
+			<cfset NewUser.save()>
+
+			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.edituser&UserID=#FORM.UserID#&UserAction=PasswordChanged&Successful=True" addtoken="false">
 		</cfif>
 	</cffunction>
 
 	<cffunction name="adduser" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
-		<cfif isDefined("FORM.formSubmit") and not isDefined("FORM.ReSubmit")>
-			<cfif isDefined("URL.PerformAction")>
-				<cfswitch expression="#URL.PerformAction#">
-					<cfcase value="AddUser">
-						<cflock timeout="60" scope="SESSION" type="Exclusive">
-							<cfset Session.FormData = #StructCopy(FORM)#>
-							<cfset Session.UserSuppliedInfo = StructNew()>
-							<cfset Session.UserSuppliedInfo.Fname = #FORM.Fname#>
-							<cfset Session.UserSuppliedInfo.Lname = #FORM.Lname#>
-							<cfset Session.UserSuppliedInfo.UserName = #FORM.UserName#>
-							<cfset Session.UserSuppliedInfo.Email = #FORM.Email#>
-							<cfset Session.UserSuppliedInfo.Company = #FORM.Company#>
-							<cfset Session.UserSuppliedInfo.JobTitle = #FORM.JobTitle#>
-							<cfset Session.UserSuppliedInfo.mobilePhone = #FORM.mobilePhone#>
-							<cfif isDefined("FORM.Memberships")>
-								<cfset Session.UserSuppliedInfo.Memberships = #FORM.Memberships#>
-							</cfif>
-						</cflock>
+		<cfif not isDefined("FORM.formSubmit")>
 
-						<cfif not isValid("email", FORM.Email)>
-							<cfscript>
-								UsernameNotValid = {property="Email",message="The Email Address is not a valid email address. We use this email address as the communication method to get you information regarding events that you signup for."};
-								arrayAppend(Session.FormErrors, UsernameNotValid);
-							</cfscript>
-							<cflocation url="/index.cfm?EventRegistrationaction=eventcoord:users.adduser&PerformAction=AddUser" addtoken="false">
-						</cfif>
-
-						<cfquery name="GetOrganizationName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-							Select OrganizationName
-							From eMembership
-							Where StateDOE_IDNumber = #FORM.Company#
-						</cfquery>
-
-						<!--- Initiates the User Bean --->
-						<cfset NewUser = #Application.userManager.readByUsername(form.Username, rc.$.siteConfig('siteID'))#>
-						<cfset NewUser.setInActive(0)>
-						<cfset NewUser.setSiteID(rc.$.siteConfig('siteID'))>
-						<cfset NewUser.setFname(FORM.fName)>
-						<cfset NewUser.setLname(FORM.lName)>
-						<cfset NewUser.setCompany(GetOrganizationName.OrganizationName)>
-						<cfset NewUser.setUsername(FORM.UserName)>
-						<cfset NewUser.setMobilePhone(FORM.mobilePhone)>
-						<cfset NewUser.setEmail(FORM.Email)>
-
-						<cfset AddNewAccount = #Application.userManager.save(NewUser)#>
-
-						<cfif LEN(AddNewAccount.getErrors()) EQ 0>
-							<cfif isDefined("FORM.Memberships")>
-								<cfloop list="#FORM.Memberships#" index="i" delimiters=",">
-									<cfquery name="insertUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Insert into tusersmemb(UserID, GroupID)
-										Values('#NewUser.getUserID()#', '#i#')
-									</cfquery>
-								</cfloop>
-							</cfif>
-						<cfelse>
-							<cfdump var="#AddNewAccount.getErrors()#"><cfabort>
-						</cfif>
-						<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users&UserAction=AddedUser&SiteID=#rc.$.siteConfig('siteID')#&Successful=true" addtoken="false">
-					</cfcase>
-				</cfswitch>
+		<cfelseif isDefined("FORM.formSubmit")>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfset Session.FormErrors = #ArrayNew()#>
+				<cfset Session.FormInput = #StructCopy(FORM)#>
+			</cflock>
+			<cfif FORM.UserAction EQ "Back to Main Menu">
+				<cfset temp = StructDelete(Session, "getCaterers")>
+				<cfset temp = StructDelete(Session, "getSelectedCaterer")>
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cfif isDefined("Session.FormInput")><cfset temp = StructDelete(Session, "FormInput")></cfif>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.default" addtoken="false">
 			</cfif>
-		</cfif>
-	</cffunction>
 
-	<cffunction name="GetRoles" returntype="any" output="false">
-		<cfargument name="RoleName" required="true" type="string" default="">
-		<cfquery name="GetRole" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select UserID From tusers
-			Where GroupName = <cfqueryparam value="#Arguments.RoleName#" cfsqltype="cf_sql_varchar"> and SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-
-		<cfreturn GetRole.UserID>
-	</cffunction>
-
-	<cffunction name="updateuser" returntype="any" output="true">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
-		<cfif isDefined("FORM.formSubmit") and not isDefined("FORM.ReSubmit")>
-			<cfif isDefined("URL.PerformAction")>
-				<cfswitch expression="#URL.PerformAction#">
-					<cfcase value="ChangePassword">
-						<cflock timeout="60" scope="SESSION" type="Exclusive">
-							<cfset Session.FormErrors = ArrayNew()>
-							<cfset Session.FormData = #StructCopy(FORM)#>
-							<cfset Session.UserSuppliedInfo = StructNew()>
-							<cfset Session.UserSuppliedInfo.NewRecNo = #FORM.RecNo#>
-							<cfif isDefined("FORM.Username")><cfset Session.UserSuppliedInfo.Username = #FORM.Username#></cfif>
-							<cfif isDefined("FORM.Password")><cfset Session.UserSuppliedInfo.Password = #FORM.Password#></cfif>
-							<cfif isDefined("FORM.VerifyPassword")><cfset Session.UserSuppliedInfo.VerifyPassword = #FORM.VerifyPassword#></cfif>
-						</cflock>
-						<cfset UpdateInfo = #StructNew()#>
-
-						<cfif FORM.Password NEQ FORM.VerifyPassword>
-							<cfscript>
-								PasswordMisMatch = {property="Password",message="The Password and the Verify Password fields do not match. Please check these values you want for this user's account and try again.'"};
-								arrayAppend(Session.FormErrors, PasswordMisMatch);
-							</cfscript>
-							<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:users.updateuser&PerformAction=ChangePassword&RecNo=#FORM.RecNo#" addtoken="false">
-						<cfelse>
-							<!--- Initiates the User Bean --->
-							<cfset NewUser = #Application.userManager.readByUsername(form.Username, rc.$.siteConfig('siteID'))#>
-							<CFSET NewUser.setPassword(FORM.Password)>
-							<cfset NewUser.save()>
-							<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:users&Successful=true&UserAction=ChangePassword" addtoken="false">
-						</cfif>
-					</cfcase>
-					<cfcase value="Edit">
-						<cflock timeout="60" scope="SESSION" type="Exclusive">
-							<cfset Session.FormData = #StructCopy(FORM)#>
-							<cfset Session.UserSuppliedInfo = StructNew()>
-							<cfset Session.UserSuppliedInfo.NewRecNo = #FORM.RecNo#>
-							<cfif isDefined("FORM.Fname")><cfset Session.UserSuppliedInfo.Fname = #FORM.Fname#></cfif>
-							<cfif isDefined("FORM.Lname")><cfset Session.UserSuppliedInfo.Lname = #FORM.Lname#></cfif>
-							<cfif isDefined("FORM.UserName")><cfset Session.UserSuppliedInfo.UserName = #FORM.UserName#></cfif>
-							<cfif isDefined("FORM.Email")><cfset Session.UserSuppliedInfo.Email = #FORM.Email#></cfif>
-							<cfif isDefined("FORM.JobTitle")><cfset Session.UserSuppliedInfo.JobTitle = #FORM.JobTitle#></cfif>
-							<cfif isDefined("FORM.mobilePhone")><cfset Session.UserSuppliedInfo.mobilePhone = #FORM.mobilePhone#></cfif>
-							<cfif isDefined("FORM.Company")><cfset Session.UserSuppliedInfo.Company = #FORM.Company#></cfif>
-							<cfif isDefined("FORM.Memberships")><cfset Session.UserSuppliedInfo.Memberships = #FORM.Memberships#></cfif>
-							<cfif isDefined("FORM.Active")><cfset Session.UserSuppliedInfo.Active = #FORM.Active#></cfif>
-						</cflock>
-						<cfset UpdateInfo = #StructNew()#>
-						<cfquery name="getSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-							Select UserID, Fname, Lname, UserName, Password, PasswordCreated, Email, Company, JobTitle, mobilePhone, Website, Type, subType, Ext, ContactForm, Admin, S2, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, Perm, InActive, isPublic, SiteID, Subscribe, notes, description, interests, keepPrivate, photoFileID, IMName, IMService, created, remoteID, tags, tablist, InActive
-							From tusers
-							Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-							Order by Lname ASC, Fname ASC
-						</cfquery>
-						<cfparam name="UpdateInfo.Fname" type="boolean" default="0">
-						<cfparam name="UpdateInfo.Lname" type="boolean" default="0">
-						<cfparam name="UpdateInfo.UserName" type="boolean" default="0">
-						<cfparam name="UpdateInfo.Email" type="boolean" default="0">
-						<cfparam name="UpdateInfo.JobTitle" type="boolean" default="0">
-						<cfparam name="UpdateInfo.mobilePhone" type="boolean" default="0">
-						<cfparam name="UpdateInfo.Company" type="boolean" default="0">
-						<cfparam name="UpdateInfo.Active" type="boolean" default="0">
-
-						<cfif getSelectedUser.Fname NEQ Form.Fname><cfset UpdateInfo.Fname = 1></cfif>
-						<cfif getSelectedUser.Lname NEQ Form.Lname><cfset UpdateInfo.Lname = 1></cfif>
-						<cfif getSelectedUser.UserName NEQ Form.UserName><cfset UpdateInfo.UserName = 1></cfif>
-						<cfif getSelectedUser.Email NEQ Form.Email><cfset UpdateInfo.Email = 1></cfif>
-						<cfif getSelectedUser.JobTitle NEQ Form.JobTitle><cfset UpdateInfo.JobTitle = 1></cfif>
-						<cfif getSelectedUser.mobilePhone NEQ Form.mobilePhone><cfset UpdateInfo.mobilePhone = 1></cfif>
-						<cfif getSelectedUser.Company NEQ Form.Company><cfset UpdateInfo.Company = 1></cfif>
-						<cfif getSelectedUser.InActive NEQ Form.Active><cfset UpdateInfo.Active = 1></cfif>
-
-						<cfif UpdateInfo.Fname EQ 1 OR UpdateInfo.Lname EQ 1 OR UpdateInfo.UserName EQ 1 OR UpdateInfo.Email EQ 1 OR UpdateInfo.JobTitle EQ 1 OR UpdateInfo.mobilePhone EQ 1 OR UpdateInfo.Active EQ 1>
-							<cfif UpdateInfo.Fname EQ 1>
-								<cfquery name="updateSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Update tusers
-									Set Fname = <cfqueryparam value="#Trim(Form.Fname)#" cfsqltype="cf_sql_varchar">
-									Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-								</cfquery>
-							</cfif>
-
-							<cfif UpdateInfo.Lname EQ 1>
-								<cfquery name="updateSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Update tusers
-									Set Lname = <cfqueryparam value="#Trim(Form.Lname)#" cfsqltype="cf_sql_varchar">
-									Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-								</cfquery>
-							</cfif>
-
-							<cfif UpdateInfo.Username EQ 1>
-								<cfquery name="updateSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Update tusers
-									Set UserName = <cfqueryparam value="#Trim(Form.UserName)#" cfsqltype="cf_sql_varchar">
-									Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-								</cfquery>
-							</cfif>
-
-							<cfif UpdateInfo.Email EQ 1>
-								<cfquery name="updateSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Update tusers
-									Set Email = <cfqueryparam value="#Trim(Form.Email)#" cfsqltype="cf_sql_varchar">
-									Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-								</cfquery>
-							</cfif>
-
-							<cfif UpdateInfo.JobTitle EQ 1>
-								<cfquery name="updateSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Update tusers
-									Set JobTitle = <cfqueryparam value="#Trim(Form.JobTitle)#" cfsqltype="cf_sql_varchar">
-									Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-								</cfquery>
-							</cfif>
-
-							<cfif UpdateInfo.mobilePhone EQ 1>
-								<cfquery name="updateSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Update tusers
-									Set mobilePhone = <cfqueryparam value="#Trim(Form.mobilePhone)#" cfsqltype="cf_sql_varchar">
-									Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-								</cfquery>
-							</cfif>
-
-							<cfif UpdateInfo.Active EQ 1>
-								<cfquery name="updateSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Update tusers
-									Set InActive = <cfqueryparam value="#Trim(Form.Active)#" cfsqltype="cf_sql_bit">
-									Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-								</cfquery>
-							</cfif>
-
-							<cfquery name="getUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								Select GroupID
-								From tusersmemb
-								Where UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-							</cfquery>
-
-							<cfif isDefined("FORM.Membership")>
-								<cfif getUserMemberships.RecordCount NEQ ListLen(FORM.Memberships, ",")>
-									<cfquery name="deleteUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Delete from tusersmemb
-										Where UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-									</cfquery>
-									<cfloop list="#FORM.Memberships#" index="i" delimiters=",">
-										<cfquery name="insertUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-											Insert into tusersmemb(UserID, GroupID)
-											Values('#FORM.RecNo#', '#i#')
-										</cfquery>
-									</cfloop>
-								</cfif>
-							</cfif>
-
-							<cfquery name="updateSelectedUserUpdateDate" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								Update tusers
-								Set LastUpdate = #Now()#,
-									LastUpdateBy = '#Session.Mura.Username#',
-									LastUpdateByID = '#Session.Mura.UserID#'
-								Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-							</cfquery>
-
-							<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users&UserAction=UpdatedUser&SiteID=#rc.$.siteConfig('siteID')#&Successful=true" addtoken="false">
-						</cfif>
-
-						<cfif UpdateInfo.Company EQ 1>
-							<cfquery name="GetOrganizationName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								Select OrganizationName
-								From eMembership
-								Where StateDOE_IDNumber = #FORM.Company#
-							</cfquery>
-
-							<cfquery name="updateSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								Update tusers
-								Set Company = <cfqueryparam value="#Trim(GetOrganizationName.OrganizationName)#" cfsqltype="cf_sql_varchar">
-								Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-							</cfquery>
-						</cfif>
-
-						<cfquery name="getUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-							Select GroupID
-							From tusersmemb
-							Where UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-						</cfquery>
-
-						<cfif not isDefined("FORM.Memberships")>
-							<cfquery name="deleteUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								Delete from tusersmemb
-								Where UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-							</cfquery>
-						</cfif>
-
-						<cfif isDefined("FORM.Memberships")>
-							<cfif getUserMemberships.RecordCount NEQ ListLen(FORM.Memberships, ",")>
-								<cfquery name="deleteUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Delete from tusersmemb
-									Where UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-								</cfquery>
-								<cfloop list="#FORM.Memberships#" index="i" delimiters=",">
-									<cfquery name="insertUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Insert into tusersmemb(UserID, GroupID)
-										Values('#FORM.RecNo#', '#i#')
-									</cfquery>
-								</cfloop>
-								<cfquery name="updateSelectedUserUpdateDate" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Update tusers
-									Set LastUpdate = #Now()#,
-										LastUpdateBy = '#Session.Mura.Username#',
-										LastUpdateByID = '#Session.Mura.UserID#'
-									Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and UserID = <cfqueryparam value="#FORM.RecNo#" cfsqltype="cf_sql_varchar">
-								</cfquery>
-								<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users&UserAction=UpdatedUser&SiteID=#rc.$.siteConfig('siteID')#&Successful=true" addtoken="false">
-							</cfif>
-						</cfif>
-						<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users" addtoken="false">
-					</cfcase>
-				</cfswitch>
+			<cfif FORM.InActive EQ "----">
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please Select if this Account Holder's Account is InActive or Not."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.adduser&FormRetry=True" addtoken="false">
 			</cfif>
-		</cfif>
+			<cfif LEN(FORM.Password) LT 5>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="The Password Field must be longer than 5 characters."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.adduser&FormRetry=True" addtoken="false">
+			</cfif>
+			<cfif LEN(FORM.VerifyPassword) LT 5>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="The Verify Password Field must be longer than 5 characters."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.adduser&FormRetry=True" addtoken="false">
+			</cfif>
+			<cfif FORM.Password NEQ FORM.VerifyPassword>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="The Password Field and the Verify Password Field did not match. Please check these fields and try to submit this request again."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.adduser&FormRetry=True" addtoken="false">
+			</cfif>
 
-		<cfif isDefined("URL.PerformAction")>
-			<cfswitch expression="#URL.PerformAction#">
-				<cfcase value="LoginUser">
-					<cfset Session.MuraPreviousUser = #StructNew()#>
-					<cfset Session.MuraPreviousUser = #StructCopy(Session.Mura)#>
-					<cfset userLogin = application.serviceFactory.getBean("userUtility").loginByUserID("#URL.RecNo#", "#rc.$.siteConfig('siteID')#")>
+			<!--- Initiates the User Bean --->
+			<cfset NewUser = #Application.userManager.readByUsername(form.Email, rc.$.siteConfig('siteID'))#>
+			<cfset NewUser.setInActive(FORM.InActive)>
+			<cfset NewUser.setSiteID(rc.$.siteConfig('siteID'))>
+			<cfset NewUser.setFname(FORM.FName)>
+			<cfset NewUser.setLname(FORM.LName)>
+			<cfset NewUser.setCompany(FORM.Company)>
+			<CFSET NewUser.setPassword(FORM.Password)>
+			<cfset NewUser.setUsername(FORM.Email)>
+			<cfset NewUser.setMobilePhone(FORM.mobilePhone)>
+			<cfset NewUser.setEmail(FORM.Email)>
+			<cfset AddNewAccount = #Application.userManager.save(NewUser)#>
 
-					<cfif userLogin EQ true>
-						<cflocation addtoken="true" url="/index.cfm">
-					</cfif>
-				</cfcase>
-				<cfcase value="Delete">
-					<cfquery name="updateUserRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Update tusers
-						Set inActive = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-						Where UserID = <cfqueryparam value="#URL.RecNo#" cfsqltype="cf_sql_varchar">
-					</cfquery>
-					<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.default&Successful=true&UserAction=DeActivateAccount" addtoken="false">
-				</cfcase>
-				<cfcase value="Activate">
-					<cfquery name="updateUserRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Update tusers
-						Set inActive = <cfqueryparam value="0" cfsqltype="cf_sql_bit">
-						Where UserID = <cfqueryparam value="#URL.RecNo#" cfsqltype="cf_sql_varchar">
-					</cfquery>
-					<cflocation url="?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.default&Successful=true&UserAction=ActivateAccount" addtoken="false">
-				</cfcase>
-			</cfswitch>
-		</cfif>
+			<cfif LEN(AddNewAccount.getErrors()) EQ 0>
+				<cfif isDefined("FORM.MemberGroup")>
+					<cfloop list="#FORM.MemberGroup#" index="i" delimiters=",">
+						<cfquery name="insertUserMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Insert into tusersmemb(UserID, GroupID)
+							Values('#NewUser.getUserID()#', '#i#')
+						</cfquery>
+					</cfloop>
+				</cfif>
+			<cfelse>
+				<cfdump var="#AddNewAccount.getErrors()#"><cfabort>
+			</cfif>
 
-		<cfif isDefined("FORM.formSubmit") and not isDefined("FORM.ReSubmit")>
-
+			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.default&UserAction=AccountCreated&Successful=True" addtoken="false">
 		</cfif>
 	</cffunction>
+
 </cfcomponent>

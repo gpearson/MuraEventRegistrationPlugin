@@ -13,10 +13,11 @@
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Add Account Holder Information</h1></div>
+			<div class="panel-heading"><h1>Edit Account Holder Information</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfinput type="hidden" name="UserID" value="#URL.UserID#">
 				<cfif isDefined("URL.UserAction")>
 					<cfswitch expression="#URL.UserAction#">
 					<cfcase value="PasswordChanged">
@@ -35,44 +36,40 @@
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
 						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getSelectedUser.FName#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getSelectedUser.LName#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getSelectedUser.Email#" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="Username" class="control-label col-sm-3">Username:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.getSelectedUser.Email#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Company" class="control-label col-sm-3">Company:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Company" name="Company" Required="No"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Company" name="Company" value="#Session.getSelectedUser.Company#" Required="No"></div>
 					</div>
 					<div class="form-group">
 						<label for="JobTitle" class="control-label col-sm-3">Job Title:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="JobTitle" name="JobTitle" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="JobTitle" name="JobTitle" value="#Session.getSelectedUser.JobTitle#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="mobilePhone" class="control-label col-sm-3">Mobile Phone:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" required="no"></div>
-					</div>
-					<div class="form-group">
-						<label for="Password" class="control-label col-sm-3">Password:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="password" class="form-control" id="Password" name="Password" required="yes"></div>
-					</div>
-					<div class="form-group">
-						<label for="VerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.getSelectedUser.mobilePhone#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="InActive" class="control-label col-sm-3">Account InActive:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="InActive" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below">
+						<div class="col-sm-8"><cfselect name="InActive" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedUser.InActive#" Display="OptionName" queryposition="below">
 							<option value="----">Account InActive?</option>
 						</cfselect></div>
 					</div>
 					<div class="form-group">
-						<label for="Membership" class="control-label col-sm-3">Account Membership:&nbsp;</label>
+						<label for="InActive" class="control-label col-sm-3">Account Membership:&nbsp;</label>
 						<div class="col-sm-8">
 							<table class="table table-striped table-bordered">
 								<thead class="thead-default">
@@ -106,7 +103,9 @@
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add Account Information"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Change Password">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Activate Account">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Edit Account Information"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -116,6 +115,7 @@
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfinput type="hidden" name="UserID" value="#URL.UserID#">
 				<cfif isDefined("Session.FormErrors")>
 					<div class="panel-body">
 						<cfif ArrayLen(Session.FormErrors) GTE 1>
@@ -127,15 +127,19 @@
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
 						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.FormInput.Fname#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.FormInput.FName#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.FormInput.Lname#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.FormInput.LName#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.FormInput.Email#" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="Username" class="control-label col-sm-3">Username:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.FormInput.Email#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Company" class="control-label col-sm-3">Company:&nbsp;</label>
@@ -150,21 +154,13 @@
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.FormInput.mobilePhone#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Password" class="control-label col-sm-3">Password:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="password" class="form-control" id="Password" name="Password" value="#Session.FormInput.Password#" required="yes"></div>
-					</div>
-					<div class="form-group">
-						<label for="VerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" value="#Session.FormInput.VerifyPassword#" required="yes"></div>
-					</div>
-					<div class="form-group">
 						<label for="InActive" class="control-label col-sm-3">Account InActive:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="InActive" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.FormInput.InActive#" value="ID" Display="OptionName" queryposition="below">
+						<div class="col-sm-8"><cfselect name="InActive" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormInput.InActive#" Display="OptionName" queryposition="below">
 							<option value="----">Account InActive?</option>
 						</cfselect></div>
 					</div>
 					<div class="form-group">
-						<label for="Membership" class="control-label col-sm-3">Account Membership:&nbsp;</label>
+						<label for="InActive" class="control-label col-sm-3">Account Membership:&nbsp;</label>
 						<div class="col-sm-8">
 							<table class="table table-striped table-bordered">
 								<thead class="thead-default">
@@ -179,7 +175,7 @@
 											Select UserID, GroupID
 											From tusersmemb
 											Where UserID = <cfqueryparam value="#URL.UserID#" cfsqltype="cf_sql_varchar"> and
-												GroupID = <cfqueryparam value="#Session.getEventGroups.UserID#" cfsqltype="cf_sql_varchar">
+												GroupID = <cfqueryparam value="#Session.FormInput.UserID#" cfsqltype="cf_sql_varchar">
 										</cfquery>
 										<tr>
 											<td>#Session.getEventGroups.GroupName#</td>
@@ -198,7 +194,9 @@
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add Account Information"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Change Password">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Activate Account">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Edit Account Information"><br /><br />
 				</div>
 			</cfform>
 		</div>
