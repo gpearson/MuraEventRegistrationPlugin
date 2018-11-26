@@ -87,7 +87,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<tr>
 								<td colspan="3">
 									<div class="form-group">
-										<label for="ExpenseName" class="control-label col-sm-1">Type:&nbsp;</label>
+										<label for="ExpenseName" class="control-label col-sm-1">Type:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 										<div class="col-sm-4">
 											<cfselect name="ExpenseID" class="form-control" Required="Yes" Multiple="No" query="Session.getAvailableExpenseList" value="TContent_ID" Display="Expense_Name"  queryposition="below">
 												<option value="----">Select Expense Name from List?</option>
@@ -114,7 +114,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<tr>
 								<td colspan="3">
 									<div class="form-group">
-										<label for="ExpenseName" class="control-label col-sm-1">Type:&nbsp;</label>
+										<label for="ExpenseName" class="control-label col-sm-1">Type:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 										<div class="col-sm-4">
 											<cfselect name="ExpenseID" class="form-control" Required="Yes" Multiple="No" query="Session.getAvailableExpenseList" value="TContent_ID" Display="Expense_Name"  queryposition="below">
 												<option value="----">Select Expense Name from List?</option>
@@ -143,7 +143,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<tr>
 								<td colspan="3">
 									<div class="form-group">
-										<label for="ExpenseName" class="control-label col-sm-3">Expense Type:&nbsp;</label>
+										<label for="ExpenseName" class="control-label col-sm-3">Expense Type:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 										<div class="col-sm-8">
 											<cfselect name="ExpenseID" class="form-control" Required="Yes" Multiple="No" selected="#Session.getSelectedEventExpenses.Expense_ID#" query="Session.getAvailableExpenseList" value="TContent_ID" Display="Expense_Name"  queryposition="below">
 												<option value="----">Select Expense Name from List?</option>
@@ -175,7 +175,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<tr>
 								<td colspan="3">
 									<div class="form-group">
-										<label for="ExpenseName" class="control-label col-sm-3">Expense Type:&nbsp;</label>
+										<label for="ExpenseName" class="control-label col-sm-3">Expense Type:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 										<div class="col-sm-8">
 											<cfselect name="ExpenseID" class="form-control" Required="Yes" Multiple="No" query="Session.getAvailableExpenseList" value="TContent_ID" Display="Expense_Name"  queryposition="below">
 												<option value="----">Select Expense Name from List?</option>
@@ -207,7 +207,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<tr>
 								<td colspan="3">
 									<div class="form-group">
-										<label for="ExpenseName" class="control-label col-sm-3">Expense Type:&nbsp;</label>
+										<label for="ExpenseName" class="control-label col-sm-3">Expense Type:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 										<div class="col-sm-8">
 											<cfselect name="ExpenseID" class="form-control" Required="Yes" Multiple="No" query="Session.getAvailableExpenseList" value="TContent_ID" Display="Expense_Name"  queryposition="below">
 												<option value="----">Select Expense Name from List?</option>

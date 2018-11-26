@@ -34,7 +34,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EarlyBird_RegistrationAvailable" class="control-label col-sm-3">Allow Early Bird Registrations:&nbsp;</label>
+						<label for="EarlyBird_RegistrationAvailable" class="control-label col-sm-3">Allow Early Bird Registrations:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="EarlyBird_RegistrationAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.EarlyBird_RegistrationAvailable#" Display="OptionName"  queryposition="below">
 								<option value="----">Does Event have Early Bird Registrations</option>
@@ -72,7 +72,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EarlyBird_RegistrationAvailable" class="control-label col-sm-3">Allow Early Bird Registrations:&nbsp;</label>
+						<label for="EarlyBird_RegistrationAvailable" class="control-label col-sm-3">Allow Early Bird Registrations:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="EarlyBird_RegistrationAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.EarlyBird_RegistrationAvailable#" Display="OptionName"  queryposition="below">
 								<option value="----">Does Event have Early Bird Registrations</option>

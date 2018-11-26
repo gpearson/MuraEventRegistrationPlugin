@@ -65,36 +65,8 @@
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.LongDescription#</p></div>
 					</div>
 					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "mm/dd/yyyy")#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Registration Begin Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, "hh:mm tt")#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_StartTime, "hh:mm tt")#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event End Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "hh:mm tt")#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event Agenda:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.EventAgenda#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event Target Audience:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.EventTargetAudience#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event Strategies:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.EventStrategies#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event Special Instructions:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.EventSpecialInstructions#</p></div>
+						<label for="EventDate" class="control-label col-sm-3">Event Location:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.getEventLocation.FacilityName# (#Session.getEventLocation.PhysicalAddress# #Session.getEventLocation.PhysicalCity# #Session.getEventLocation.PhysicalState# #Session.getEventLocation.PhysicalZipCode#)</p></div>
 					</div>
 					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
 						<div class="form-group">
@@ -110,7 +82,8 @@
 					</cfif>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Send Email Confirmations:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="EmailConfirmations" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Send Email Confirmations to Participants</option></cfselect></div>
+						<div class="col-sm-2"><cfinput type="checkbox" name="EmailConfirmations" class="form-control" checked="yes"></div>
+						<div class="col-sm-7">&nbsp;</div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">School District:&nbsp;</label>
@@ -213,38 +186,6 @@
 						<label for="EventDate" class="control-label col-sm-3">Event Description:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.LongDescription#</p></div>
 					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "mm/dd/yyyy")#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Registration Begin Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, "hh:mm tt")#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_StartTime, "hh:mm tt")#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event End Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "hh:mm tt")#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event Agenda:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.EventAgenda#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event Target Audience:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.EventTargetAudience#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event Strategies:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.EventStrategies#</p></div>
-					</div>
-					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Event Special Instructions:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.EventSpecialInstructions#</p></div>
-					</div>
 					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
 						<div class="form-group">
 							<label for="EventDate" class="control-label col-sm-3">Participant via Webinar:&nbsp;</label>
@@ -259,7 +200,8 @@
 					</cfif>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Send Email Confirmations:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="EmailConfirmations" class="form-control" Required="Yes" Multiple="No" selected="#Session.UserRegister.FirstStep.EmailConfirmations#" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Send Email Confirmations to Participants</option></cfselect></div>
+						<div class="col-sm-2"><cfinput type="checkbox" name="EmailConfirmations" class="form-control" checked="yes"></div>
+						<div class="col-sm-7">&nbsp;</div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">School District:&nbsp;</label>
@@ -354,7 +296,8 @@
 							<cfif Session.getSelectedEvent.MealProvided EQ 1>
 								<div class="form-group">
 									<label for="EventDate" class="control-label col-sm-3">Each Participant Staying for Meal?:&nbsp;</label>
-									<div class="col-sm-8"><cfselect name="RegisterParticipantStayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Everyone Staying for Meal Being Registered</option></cfselect></div>
+									<div class="col-sm-2"><cfinput type="checkbox" name="RegisterParticipantStayForMeal" class="form-control" checked="yes"></div>
+									<div class="col-sm-7">&nbsp;</div>
 								</div>
 							<cfelse>
 								<cfinput type="hidden" name="RegisterParticipantStayForMeal" value="0">

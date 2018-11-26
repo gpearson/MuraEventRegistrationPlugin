@@ -29,7 +29,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
+						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="AcceptRegistrations" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.AcceptRegistrations#" Display="OptionName"  queryposition="below">
 								<option value="----">Allow Registrations</option>
@@ -37,7 +37,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="DisplayEvent" class="control-label col-sm-3">Display Event:&nbsp;</label>
+						<label for="DisplayEvent" class="control-label col-sm-3">Display Event:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="Active" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.Active#" Display="OptionName"  queryposition="below">
 								<option value="----">Display Event</option>
@@ -62,7 +62,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
+						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="AcceptRegistrations" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormData.AcceptRegistrations#" Display="OptionName"  queryposition="below">
 								<option value="----">Allow Registrations</option>
@@ -70,7 +70,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="DisplayEvent" class="control-label col-sm-3">Display Event:&nbsp;</label>
+						<label for="DisplayEvent" class="control-label col-sm-3">Display Event:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="Active" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormData.Active#" Display="OptionName"  queryposition="below">
 								<option value="----">Display Event</option>

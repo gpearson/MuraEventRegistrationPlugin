@@ -35,7 +35,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EventFeatured" class="control-label col-sm-3">Feature Event:&nbsp;</label>
+						<label for="EventFeatured" class="control-label col-sm-3">Feature Event:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="EventFeatured" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.EventFeatured#" Display="OptionName"  queryposition="below">
 								<option value="----">Feature this Event on Front Page of Site</option>
@@ -73,7 +73,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EventFeatured" class="control-label col-sm-3">Feature Event:&nbsp;</label>
+						<label for="EventFeatured" class="control-label col-sm-3">Feature Event:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="EventFeatured" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.EventFeatured#" Display="OptionName"  queryposition="below">
 								<option value="----">Feature this Event on Front Page of Site</option>

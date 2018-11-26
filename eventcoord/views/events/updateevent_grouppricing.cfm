@@ -29,7 +29,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="ViewGroupPricing" class="control-label col-sm-3">Allow Group Pricing:&nbsp;</label>
+						<label for="ViewGroupPricing" class="control-label col-sm-3">Allow Group Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="ViewGroupPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.ViewGroupPricing#" Display="OptionName"  queryposition="below">
 								<option value="----">Does Event have Group Pricing</option>
@@ -67,7 +67,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="ViewGroupPricing" class="control-label col-sm-3">Allow Group Pricing:&nbsp;</label>
+						<label for="ViewGroupPricing" class="control-label col-sm-3">Allow Group Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="ViewGroupPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.ViewGroupPricing#" Display="OptionName"  queryposition="below">
 								<option value="----">Does Event have Group Pricing</option>

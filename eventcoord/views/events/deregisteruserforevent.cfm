@@ -58,7 +58,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfset ColWidth = #Variables.NumberOfEventDates# / 100>
 					<div class="form-group">
 						<label for="SendConfirmation" class="control-label col-sm-3">Send Email Confirmation:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="SendConfirmation" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Participant receive email confirmation regarding this</option></cfselect>
+						<div class="col-sm-2"><cfinput type="checkbox" name="SendConfirmation" class="form-control" checked="yes"></div>
+						<div class="col-sm-7">&nbsp;</div>
 					</div>
 					<br /><br />
 					<table class="table table-striped" width="100%" cellspacing="0" cellpadding="0">

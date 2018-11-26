@@ -270,6 +270,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				From tusers
 				Where UserID = <cfqueryparam value="#getSelectedEvent.Presenters#" cfsqltype="cf_sql_varchar">
 			</cfquery>
+			<cfset Session.EventInfo = StructNew()>
 
 			<cfif Session.Mura.isLoggedIn EQ true>
 				<cfquery name="checkRegisteredForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
@@ -281,6 +282,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</cfquery>
 				<cfif checkRegisteredForEvent.RecordCount>
 					<cfset Session.EventInfo.ParticipantRegistered = true>
+				<cfelse>
+					<cfset Session.EventInfo.ParticipantRegistered = false>
 				</cfif>
 			<cfelse>
 				<cfset Session.EventInfo.ParticipantRegistered = false>

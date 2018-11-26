@@ -29,7 +29,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AllowVideoConference" class="control-label col-sm-3">Video Conference Available:&nbsp;</label>
+						<label for="AllowVideoConference" class="control-label col-sm-3">Video Conference Available:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="AllowVideoConference" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.AllowVideoConference#" Display="OptionName"  queryposition="below">
 								<option value="----">Allow Video Conference</option>
@@ -63,7 +63,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AllowVideoConference" class="control-label col-sm-3">Video Conference Available:&nbsp;</label>
+						<label for="AllowVideoConference" class="control-label col-sm-3">Video Conference Available:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="AllowVideoConference" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.AllowVideoConference#" Display="OptionName"  queryposition="below">
 								<option value="----">Allow Video Conference</option>

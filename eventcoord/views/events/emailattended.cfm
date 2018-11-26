@@ -103,7 +103,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8"><cfinput type="file" class="form-control" id="FifthDocument" name="FifthDocument" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="SendEmail" class="control-label col-sm-3">Send Email to Participants:&nbsp;</label>
+						<label for="SendEmail" class="control-label col-sm-3">Send Email to Participants:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="SendEmail" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
 								<option value="----">Send Email?</option>
@@ -169,7 +169,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</div>
 						</div>
 						<div class="form-group">
-						<label for="IncludePreviousDocumentsInEmail" class="control-label col-sm-3">Include These Documents in Email:&nbsp;</label>
+						<label for="IncludePreviousDocumentsInEmail" class="control-label col-sm-3">Include These Documents in Email:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="IncludePreviousDocumentsInEmail" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
 								<option value="----">Include These Documents in Email?</option>
@@ -199,7 +199,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8"><cfinput type="file" class="form-control" value="#Session.FormInput.FifthDocument#" id="FifthDocument" name="FifthDocument" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="SendEmail" class="control-label col-sm-3">Send Email to Participants:&nbsp;</label>
+						<label for="SendEmail" class="control-label col-sm-3">Send Email to Participants:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="SendEmail" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
 								<option value="----">Send Email?</option>

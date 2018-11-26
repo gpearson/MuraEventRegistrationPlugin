@@ -29,7 +29,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="ShortTitle" class="control-label col-sm-3">Event Title:&nbsp;</label>
+						<label for="ShortTitle" class="control-label col-sm-3">Event Title:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ShortTitle" name="ShortTitle" value="#Session.getSelectedEvent.ShortTitle#" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -70,7 +70,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="ShortTitle" class="control-label col-sm-3">Event Title:&nbsp;</label>
+						<label for="ShortTitle" class="control-label col-sm-3">Event Title:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ShortTitle" name="ShortTitle" value="#Session.getSelectedEvent.ShortTitle#" required="yes"></div>
 					</div>
 					<div class="form-group">

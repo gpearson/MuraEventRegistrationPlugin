@@ -71,7 +71,45 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfcase value="EmailUpComingEvents">
 							<cfif isDefined("URL.Successful")>
 								<cfif URL.Successful EQ "true">
-									<div class="alert alert-success"><p>You have successfully sent an email with the PDF Attachment of all upcoming events currently active in the system. Depending on the number of participants, this process can take a few minutes before the email shows up in the user's inbox.</p></div>
+									<div id="modelWindowDialog" class="modal fade">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+													<h3>Upcoming Event Marketing Email Sent</h3>
+												</div>
+												<div class="modal-body">
+													<p class="alert alert-success">You have successfully sent an email with the PDF Attachment of all upcoming events currently active in the system. Depending on the number of participants, this process can take a few minutes before the email shows up in the user's inbox.</p>
+												</div>
+												<div class="modal-footer">
+													<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<script type='text/javascript'>
+										(function() {
+											'use strict';
+											function remoteModal(idModal){
+												var vm = this;
+												vm.modal = $(idModal);
+												if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+												if( window.location.hash == idModal ){ openModal(); }
+												var services = { open: openModal, close: closeModal };
+												return services;
+												function openModal(){
+													vm.modal.modal('show');
+												}
+												function closeModal(){
+													vm.modal.modal('hide');
+												}
+											}
+											Window.prototype.remoteModal = remoteModal;
+										})();
+										$(function(){
+											window.remoteModal('##modelWindowDialog');
+										});
+									</script>
 								</cfif>
 							</cfif>
 						</cfcase>

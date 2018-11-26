@@ -31,7 +31,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Maximum Participants for Event or Workshop</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="RoomMaxParticipants" class="control-label col-sm-3">Maximum Registrations:&nbsp;</label>
+						<label for="RoomMaxParticipants" class="control-label col-sm-3">Maximum Registrations:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfif Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
 								<cfinput type="text" class="form-control" id="RoomMaxParticipants" name="RoomMaxParticipants" value="#Session.getSpecificFacilityRoomInfo.Capacity#" required="yes">
@@ -44,7 +44,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Allow Online Registrations</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
+						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="AcceptRegistrations" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
 							<option value="----">Allow Individuals To Register</option></cfselect>
@@ -78,7 +78,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Maximum Participants for Event or Workshop</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="RoomMaxParticipants" class="control-label col-sm-3">Maximum Registrations:&nbsp;</label>
+						<label for="RoomMaxParticipants" class="control-label col-sm-3">Maximum Registrations:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfif Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
 								<cfinput type="text" class="form-control" id="RoomMaxParticipants" name="RoomMaxParticipants" value="#Session.getFacilityRoomInfo.Capacity#" required="yes">
@@ -91,7 +91,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Allow Online Registrations</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
+						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="AcceptRegistrations" class="form-control" Required="Yes" Selected="#Session.UserSuppliedInfo.FourthStep.AcceptRegistrations#" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
 							<option value="----">Allow Individuals To Register</option></cfselect>

@@ -22,7 +22,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</fieldset>
 					<div class="alert alert-info">This is Step 3 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
 					<div class="form-group">
-						<label for="LocationRoomID" class="control-label col-sm-3">Which Room at Facility:&nbsp;</label>
+						<label for="LocationRoomID" class="control-label col-sm-3">Which Room at Facility:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="LocationRoomID" class="form-control" Required="Yes" Multiple="No" query="Session.getFacilityRoomInfo" value="RoomID" Display="RoomName"  queryposition="below">
 							<option value="----">Select Which Room at Facility this event is held in</option></cfselect>
 						</div>
@@ -52,7 +52,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</fieldset>
 					<div class="alert alert-info">This is Step 3 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
 					<div class="form-group">
-						<label for="LocationRoomID" class="control-label col-sm-3">Which Room at Facility:&nbsp;</label>
+						<label for="LocationRoomID" class="control-label col-sm-3">Which Room at Facility:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="LocationRoomID" class="form-control" Required="Yes" Multiple="No" query="Session.getFacilityRoomInfo" value="RoomID" Display="RoomName"  queryposition="below">
 							<option value="----">Select Which Room at Facility this event is held in</option></cfselect>
 						</div>

@@ -39,7 +39,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
+						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#DateFormat(Session.getSelectedEvent.EventDate, 'mm/dd/yyyy')#" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -80,7 +80,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
+						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" value="#DateFormat(Session.getSelectedEvent.EventDate, 'mm/dd/yyyy')#" required="yes"></div>
 					</div>
 					<div class="form-group">

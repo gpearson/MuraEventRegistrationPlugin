@@ -49,7 +49,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EventHaveSessions" class="control-label col-sm-3">Event has Daily Sessions:&nbsp;</label>
+						<label for="EventHaveSessions" class="control-label col-sm-3">Event has Daily Sessions:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="EventHaveSessions" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.getSelectedEvent.EventHasDailySessions#" queryposition="below">
 								<option value="----">Will Event have 2 Sessions on a Single Day</option>
@@ -94,7 +94,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EventHaveSessions" class="control-label col-sm-3">Event has Daily Sessions:&nbsp;</label>
+						<label for="EventHaveSessions" class="control-label col-sm-3">Event has Daily Sessions:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="EventHaveSessions" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.getSelectedEvent.EventHasDailySessions#" queryposition="below">
 								<option value="----">Will Event have 2 Sessions on a Single Day</option>

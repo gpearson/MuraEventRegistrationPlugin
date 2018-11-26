@@ -38,15 +38,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
-						<label for="MealProvidedBy" class="control-label col-sm-3">Who's Providing Meal:&nbsp;</label>
+						<label for="MealProvidedBy" class="control-label col-sm-3">Who's Providing Meal:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="MealProvidedBy" class="form-control" Required="Yes" Multiple="No" query="Session.getMealProviders" value="TContent_ID" selected="#Session.getSelectedEvent.MealProvidedBy#" Display="FacilityName"  queryposition="below">
 								<option value="----">Select Meal Provider</option>
 							</cfselect>
 						</div>
-					</div>
-					<div class="form-group">
-						<label for="MealCost_Estimated" class="control-label col-sm-3">Estimated Cost Per Meal:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MealCost_Estimated" name="MealCost_Estimated" value="#Session.getSelectedEvent.MealCost_Estimated#" required="no"></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -66,7 +62,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
+						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="MealProvided" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.MealProvided#" Display="OptionName"  queryposition="below">
 								<option value="----">Provide Meal to Participants</option>
@@ -75,15 +71,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
-						<label for="MealProvidedBy" class="control-label col-sm-3">Who's Providing Meal:&nbsp;</label>
+						<label for="MealProvidedBy" class="control-label col-sm-3">Who's Providing Meal:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="MealProvidedBy" class="form-control" Required="Yes" Multiple="No" query="Session.getMealProviders" value="TContent_ID" selected="#Session.getSelectedEvent.MealProvidedBy#" Display="FacilityName"  queryposition="below">
 								<option value="----">Select Meal Provider</option>
 							</cfselect>
 						</div>
-					</div>
-					<div class="form-group">
-						<label for="MealCost_Estimated" class="control-label col-sm-3">Estimated Cost Per Meal:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MealCost_Estimated" name="MealCost_Estimated" value="#Session.getSelectedEvent.MealCost_Estimated#" required="no"></div>
 					</div>
 				</div>
 				<div class="panel-footer">

@@ -29,7 +29,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="LocationID" class="control-label col-sm-3">Event Location:&nbsp;</label>
+						<label for="LocationID" class="control-label col-sm-3">Event Location:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="LocationID" class="form-control" Required="Yes" Multiple="No" query="Session.getAllLocations" value="TContent_ID" selected="#Session.getSelectedEvent.LocationID#" Display="FacilityName"  queryposition="below">
 								<option value="----">Select Event Location</option>
@@ -54,7 +54,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="LocationID" class="control-label col-sm-3">Event Location:&nbsp;</label>
+						<label for="LocationID" class="control-label col-sm-3">Event Location:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="LocationID" class="form-control" Required="Yes" Multiple="No" query="Session.getAllLocations" value="TContent_ID" selected="#Session.getSelectedEvent.LocationID#" Display="FacilityName"  queryposition="below">
 								<option value="----">Select Event Location</option>
@@ -79,7 +79,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="LocationRoomID" class="control-label col-sm-3">Event Room Name:&nbsp;</label>
+						<label for="LocationRoomID" class="control-label col-sm-3">Event Room Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="LocationRoomID" class="form-control" Required="Yes" Multiple="No" query="Session.getAllLocationRooms" value="TContent_ID" selected="#Session.getSelectedEvent.LocationRoomID#" Display="RoomName"  queryposition="below">
 								<option value="----">Select Location Room</option>
@@ -87,7 +87,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="MaxParticipants" class="control-label col-sm-3">Maximum Participants:&nbsp;</label>
+						<label for="MaxParticipants" class="control-label col-sm-3">Maximum Participants:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomMaxParticipants" name="RoomMaxParticipants" value="#Session.getSelectedEvent.MaxParticipants#" required="yes"></div>
 					</div>
 				</div>
@@ -108,7 +108,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="LocationRoomID" class="control-label col-sm-3">Event Room Name:&nbsp;</label>
+						<label for="LocationRoomID" class="control-label col-sm-3">Event Room Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="LocationRoomID" class="form-control" Required="Yes" Multiple="No" query="Session.getAllLocationRooms" value="TContent_ID" selected="#Session.getSelectedEvent.LocationRoomID#" Display="RoomName"  queryposition="below">
 								<option value="----">Select Location Room</option>
@@ -116,7 +116,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="MaxParticipants" class="control-label col-sm-3">Maximum Participants:&nbsp;</label>
+						<label for="MaxParticipants" class="control-label col-sm-3">Maximum Participants:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomMaxParticipants" name="RoomMaxParticipants" value="#Session.getSelectedEvent.MaxParticipants#" required="yes"></div>
 					</div>
 				</div>

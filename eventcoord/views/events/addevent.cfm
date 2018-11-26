@@ -58,38 +58,35 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Event Date and Time Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
+						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" name="EventDate" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventSpanDates" class="control-label col-sm-3">Event has Multiple Dates:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="EventSpanDates" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Does Event have multiple dates</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-1">&nbsp;</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="EventSpanDates" id="EventSpanDates" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Enable Multiple Day Event)</div></div>
 					</div>
-					<div class="form-group">
-						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
+					<div class="form-group required">
+						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Registration_BeginTime" class="control-label col-sm-3">Registration Start Time:&nbsp;</label>
+						<label for="Registration_BeginTime" class="control-label col-sm-3">Registration Start Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_BeginTime" name="Registration_BeginTime" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_StartTime" class="control-label col-sm-3">Event Begin Time:&nbsp;</label>
+						<label for="Event_StartTime" class="control-label col-sm-3">Event Begin Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_StartTime" name="Event_StartTime" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_EndTime" class="control-label col-sm-3">Event Ending Time:&nbsp;</label>
+						<label for="Event_EndTime" class="control-label col-sm-3">Event Ending Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_EndTime" name="Event_EndTime" required="yes"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Event Description Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="ShortTitle" class="control-label col-sm-3">Event Title:&nbsp;</label>
+						<label for="ShortTitle" class="control-label col-sm-3">Event Title:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ShortTitle" name="ShortTitle" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -102,83 +99,45 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="alert alert-info">The default option for each one of the following is No unless you specifically select Yes on these questions.</div>
 					<div class="form-group">
 						<label for="EventFeatured" class="control-label col-sm-3">Event is Featured:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="EventFeatured" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Will Event be Featured on Website</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="EventFeatured" id="EventFeatured" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="EventHaveSessions" class="control-label col-sm-3">Event has Daily Sessions:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="EventHaveSessions" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Will Event have 2 Sessions on a Single Day</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="EventHaveSessions" id="EventHaveSessions" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
+					<!---
 					<div class="form-group">
 						<label for="EventHasBreakoutSessions" class="control-label col-sm-3">Event has Breakout Sessions:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="EventBreakoutSessions" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Will Event have breakout Sessions</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="EventBreakoutSessions" id="EventBreakoutSessions" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
+					--->
 					<div class="form-group">
 						<label for="EarlyBird_RegistrationAvailable" class="control-label col-sm-3">Earlybird Registration Available:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="EarlyBird_RegistrationAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Will Event allow Early Bird Registrations</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="EarlyBird_RegistrationAvailable" id="EarlyBird_RegistrationAvailable" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="ViewGroupPricing" class="control-label col-sm-3">Group Pricing Available:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="ViewGroupPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Will Event have Group pricing available</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="ViewGroupPricing" id="ViewGroupPricing" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="PGPAvailable" class="control-label col-sm-3">PGP Certificate Available:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="PGPAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Will Event issue PGP Certificates</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="PGPAvailable" id="PGPAvailable" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="MealProvided" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Will Meal be provided to Participants</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="MealProvided" id="MealProvided" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="AllowVideoConference" class="control-label col-sm-3">Is Distance Education Available:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="AllowVideoConference" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Can Participants participate via Distance Education</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="AllowVideoConference" id="AllowVideoConference" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="WebinarEvent" class="control-label col-sm-3">Webinar Only Event:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="WebinarEvent" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Webinar Only Event</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="WebinarEvent" id="WebinarEvent" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
-						<label for="PostEventToFB" class="control-label col-sm-3">Post to FB Fan Page:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="PostEventToFB" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Post Event to FB Page</option>
-							</cfselect>
-						</div>
+						<label for="PostEventToFB" class="control-label col-sm-3">Post to FB Fan Page:&nbsp;&nbsp;</label>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="PostEventToFB" id="PostEventToFB" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -220,38 +179,35 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Event Date and Time Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
+						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate" value="#Session.UserSuppliedInfo.EventDate#" name="EventDate" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="EventSpanDates" class="control-label col-sm-3">Event has Multiple Dates:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="EventSpanDates" class="form-control" Required="Yes" Multiple="No" selected="#Session.UserSuppliedInfo.EventSpanDates#" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Does Event have multiple dates</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-1">&nbsp;</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="EventSpanDates" id="EventSpanDates" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Enable Multiple Day Event)</div></div>
 					</div>
 					<div class="form-group">
-						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
+						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" value="#Session.UserSuppliedInfo.Registration_Deadline#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Registration_BeginTime" class="control-label col-sm-3">Registration Start Time:&nbsp;</label>
+						<label for="Registration_BeginTime" class="control-label col-sm-3">Registration Start Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_BeginTime" name="Registration_BeginTime" value="#Session.UserSuppliedInfo.Registration_BeginTime#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_StartTime" class="control-label col-sm-3">Event Begin Time:&nbsp;</label>
+						<label for="Event_StartTime" class="control-label col-sm-3">Event Begin Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_StartTime" name="Event_StartTime" value="#Session.UserSuppliedInfo.Event_StartTime#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_EndTime" class="control-label col-sm-3">Event Ending Time:&nbsp;</label>
+						<label for="Event_EndTime" class="control-label col-sm-3">Event Ending Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_EndTime" name="Event_EndTime" value="#Session.UserSuppliedInfo.Event_EndTime#" required="yes"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Event Description Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="ShortTitle" class="control-label col-sm-3">Event Title:&nbsp;</label>
+						<label for="ShortTitle" class="control-label col-sm-3">Event Title:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ShortTitle" name="ShortTitle" value="#Session.UserSuppliedInfo.ShortTitle#" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -264,67 +220,45 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="alert alert-info">The default option for each one of the following is No unless you specifically select Yes on these questions.</div>
 					<div class="form-group">
 						<label for="EventFeatured" class="control-label col-sm-3">Event is Featured:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="EventFeatured" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Will Event be Featured on Website</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="EventFeatured" id="EventFeatured" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
+						<label for="EventHaveSessions" class="control-label col-sm-3">Event has Daily Sessions:&nbsp;</label>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="EventHaveSessions" id="EventHaveSessions" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
+					</div>
+					<!---
+					<div class="form-group">
+						<label for="EventHasBreakoutSessions" class="control-label col-sm-3">Event has Breakout Sessions:&nbsp;</label>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="EventBreakoutSessions" id="EventBreakoutSessions" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
+					</div>
+					--->
+					<div class="form-group">
 						<label for="EarlyBird_RegistrationAvailable" class="control-label col-sm-3">Earlybird Registration Available:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="EarlyBird_RegistrationAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.UserSuppliedInfo.EarlyBird_RegistrationAvailable#" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Will Event allow Early Bird Registrations</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="EarlyBird_RegistrationAvailable" id="EarlyBird_RegistrationAvailable" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="ViewGroupPricing" class="control-label col-sm-3">Group Pricing Available:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="ViewGroupPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.UserSuppliedInfo.ViewGroupPricing#" Display="OptionName"  queryposition="below">
-								<option value="----">Will Event have Group pricing avialable</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="ViewGroupPricing" id="ViewGroupPricing" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="PGPAvailable" class="control-label col-sm-3">PGP Certificate Available:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="PGPAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.UserSuppliedInfo.PGPAvailable#"  queryposition="below">
-								<option value="----">Will Event issue PGP Certificates</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="PGPAvailable" id="PGPAvailable" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="MealProvided" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.UserSuppliedInfo.MealProvided#" queryposition="below">
-								<option value="----">Will Meal be provided to Participants</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="MealProvided" id="MealProvided" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="AllowVideoConference" class="control-label col-sm-3">Is Distance Education Available:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="AllowVideoConference" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.UserSuppliedInfo.AllowVideoConference#" Display="OptionName"  queryposition="below">
-								<option value="----">Can Participants participate via Distance Education</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="AllowVideoConference" id="AllowVideoConference" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="WebinarEvent" class="control-label col-sm-3">Webinar Only Event:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="WebinarEvent" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.UserSuppliedInfo.WebinarEvent#" Display="OptionName"  queryposition="below">
-								<option value="----">Webinar Only Event</option>
-							</cfselect>
-						</div>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="WebinarEvent" id="WebinarEvent" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
-						<label for="PostEventToFB" class="control-label col-sm-3">Post to FB Fan Page:&nbsp;</label>
-						<div class="col-sm-8">
-							<cfselect name="PostEventToFB" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.UserSuppliedInfo.PostEventToFB#" Display="OptionName"  queryposition="below">
-								<option value="----">Post Event to FB Page</option>
-							</cfselect>
-						</div>
+						<label for="PostEventToFB" class="control-label col-sm-3">Post to FB Fan Page:&nbsp;&nbsp;</label>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="PostEventToFB" id="PostEventToFB" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 				</div>
 				<div class="panel-footer">

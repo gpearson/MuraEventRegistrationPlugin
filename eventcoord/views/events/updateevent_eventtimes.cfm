@@ -46,7 +46,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
+						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" value="#DateFormat(Session.getSelectedEvent.Registration_Deadline, 'mm/dd/yyyy')#" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -54,11 +54,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_BeginTime" name="Registration_BeginTime" value="#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, 'hh:mm tt')#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_StartTime" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
+						<label for="Event_StartTime" class="control-label col-sm-3">Event Start Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_StartTime" name="Event_StartTime" value="#TimeFormat(Session.getSelectedEvent.Event_StartTime, 'hh:mm tt')#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_EndTime" class="control-label col-sm-3">Event End Time:&nbsp;</label>
+						<label for="Event_EndTime" class="control-label col-sm-3">Event End Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_EndTime" name="Event_EndTime" value="#TimeFormat(Session.getSelectedEvent.Event_EndTime, 'hh:mm tt')#" required="yes"></div>
 					</div>
 				</div>
@@ -79,7 +79,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
+						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" value="#DateFormat(Session.getSelectedEvent.Registration_Deadline, 'mm/dd/yyyy')#" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -87,11 +87,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_BeginTime" name="Registration_BeginTime" value="#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, 'hh:mm tt')#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_StartTime" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
+						<label for="Event_StartTime" class="control-label col-sm-3">Event Start Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_StartTime" name="Event_StartTime" value="#TimeFormat(Session.getSelectedEvent.Event_StartTime, 'hh:mm tt')#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_EndTime" class="control-label col-sm-3">Event End Time:&nbsp;</label>
+						<label for="Event_EndTime" class="control-label col-sm-3">Event End Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_EndTime" name="Event_EndTime" value="#TimeFormat(Session.getSelectedEvent.Event_EndTime, 'hh:mm tt')#" required="yes"></div>
 					</div>
 				</div>

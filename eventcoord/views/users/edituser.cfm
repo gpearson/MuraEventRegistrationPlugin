@@ -73,15 +73,15 @@
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
-						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;</label>
+						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getSelectedUser.FName#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;</label>
+						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getSelectedUser.LName#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;</label>
+						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getSelectedUser.Email#" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -101,7 +101,7 @@
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.getSelectedUser.mobilePhone#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="InActive" class="control-label col-sm-3">Account InActive:&nbsp;</label>
+						<label for="InActive" class="control-label col-sm-3">Account InActive:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="InActive" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedUser.InActive#" Display="OptionName" queryposition="below">
 							<option value="----">Account InActive?</option>
 						</cfselect></div>
@@ -200,15 +200,15 @@
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
-						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;</label>
+						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.FormInput.FName#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;</label>
+						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.FormInput.LName#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;</label>
+						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.FormInput.Email#" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -228,7 +228,7 @@
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.FormInput.mobilePhone#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="InActive" class="control-label col-sm-3">Account InActive:&nbsp;</label>
+						<label for="InActive" class="control-label col-sm-3">Account InActive:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="InActive" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormInput.InActive#" Display="OptionName" queryposition="below">
 							<option value="----">Account InActive?</option>
 						</cfselect></div>

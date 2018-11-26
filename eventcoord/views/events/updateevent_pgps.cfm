@@ -29,7 +29,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="PGPAvailable" class="control-label col-sm-3">PGP Certificate Available:&nbsp;</label>
+						<label for="PGPAvailable" class="control-label col-sm-3">PGP Certificate Available:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="PGPAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.PGPAvailable#" Display="OptionName"  queryposition="below">
 								<option value="----">Offer PGP Certificates</option>
@@ -38,7 +38,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
-						<label for="PGPPoints" class="control-label col-sm-3">Number PGP Points for Event:&nbsp;</label>
+						<label for="PGPPoints" class="control-label col-sm-3">Number PGP Points Per Day:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PGPPoints" name="PGPPoints" value="#Session.getSelectedEvent.PGPPoints#" required="no"></div>
 					</div>
 				</div>
@@ -59,7 +59,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="PGPAvailable" class="control-label col-sm-3">PGP Certificate Available:&nbsp;</label>
+						<label for="PGPAvailable" class="control-label col-sm-3">PGP Certificate Available:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfselect name="PGPAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.PGPAvailable#" Display="OptionName"  queryposition="below">
 								<option value="----">Offer PGP Certificates</option>
@@ -68,7 +68,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
-						<label for="PGPPoints" class="control-label col-sm-3">Number PGP Points for Event:&nbsp;</label>
+						<label for="PGPPoints" class="control-label col-sm-3">Number PGP Points Per Day:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PGPPoints" name="PGPPoints" value="#Session.getSelectedEvent.PGPPoints#" required="no"></div>
 					</div>
 				</div>

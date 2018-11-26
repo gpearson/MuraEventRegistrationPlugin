@@ -142,7 +142,7 @@
 				<cfinput type="hidden" name="EventID" value="#URL.EventID#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="form-group">
-					<label for="CancelRegistration" class="control-label col-sm-3">Really Cancel Registration:&nbsp;</label>
+					<label for="CancelRegistration" class="control-label col-sm-3">Really Cancel Registration:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 					<div class="col-sm-8"><cfselect name="CancelRegistration" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Do you want to Cancel Registration</option></cfselect></div>
 				</div>
 				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Manage Registrations">
@@ -340,7 +340,7 @@
 				<cfinput type="hidden" name="EventID" value="#URL.EventID#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="form-group">
-					<label for="CancelRegistration" class="control-label col-sm-3">Really Cancel Registration:&nbsp;</label>
+					<label for="CancelRegistration" class="control-label col-sm-3">Really Cancel Registration:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 					<div class="col-sm-8"><cfselect name="CancelRegistration" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Do you want to Cancel Registration</option></cfselect></div>
 				</div>
 				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Manage Registrations">

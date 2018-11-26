@@ -22,19 +22,19 @@
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding the Facility Room</div>
 					<div class="form-group">
-						<label for="RoomName" class="control-label col-sm-3">Room Name:&nbsp;</label>
+						<label for="RoomName" class="control-label col-sm-3">Room Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomName" name="RoomName" value="#Session.getSelectedFacilityRoom.RoomName#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="RoomCapacity" class="control-label col-sm-3">Seating Capacity:&nbsp;</label>
+						<label for="RoomCapacity" class="control-label col-sm-3">Seating Capacity:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomCapacity" name="RoomCapacity" value="#Session.getSelectedFacilityRoom.Capacity#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="RoomFees" class="control-label col-sm-3">Room Fee:&nbsp;</label>
+						<label for="RoomFees" class="control-label col-sm-3">Room Fee:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomFees" name="RoomFees" value="#Session.getSelectedFacilityRoom.RoomFees#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Active" class="control-label col-sm-3">Active:&nbsp;</label>
+						<label for="Active" class="control-label col-sm-3">Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="Active" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedFacilityRoom.Active#" Display="OptionName" queryposition="below">
 							<option value="----">Is Room Active?</option>
 						</cfselect></div>
@@ -98,19 +98,19 @@
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding the Facility Room</div>
 					<div class="form-group">
-						<label for="RoomName" class="control-label col-sm-3">Room Name:&nbsp;</label>
+						<label for="RoomName" class="control-label col-sm-3">Room Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomName" name="RoomName" value="#Session.FormInput.RoomName#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="RoomCapacity" class="control-label col-sm-3">Seating Capacity:&nbsp;</label>
+						<label for="RoomCapacity" class="control-label col-sm-3">Seating Capacity:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomCapacity" name="RoomCapacity" value="#Session.FormInput.RoomCapacity#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="RoomFees" class="control-label col-sm-3">Room Fee:&nbsp;</label>
+						<label for="RoomFees" class="control-label col-sm-3">Room Fee:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomFees" name="RoomFees" value="#Session.FormInput.RoomFees#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Active" class="control-label col-sm-3">Active:&nbsp;</label>
+						<label for="Active" class="control-label col-sm-3">Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="Active" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormInput.Active#" Display="OptionName" queryposition="below">
 							<option value="----">Is Room Active?</option>
 						</cfselect></div>

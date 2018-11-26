@@ -34,11 +34,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="MemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
+						<label for="MemberCost" class="control-label col-sm-3">Member Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" value="#Session.getSelectedEvent.MemberCost#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="NonMemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
+						<label for="NonMemberCost" class="control-label col-sm-3">Non Member Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" value="#Session.getSelectedEvent.NonMemberCost#" required="yes"></div>
 					</div>
 				</div>
@@ -59,11 +59,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="MemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
+						<label for="MemberCost" class="control-label col-sm-3">Member Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" value="#Session.getSelectedEvent.MemberCost#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="NonMemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
+						<label for="NonMemberCost" class="control-label col-sm-3">Non Member Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" value="#Session.getSelectedEvent.NonMemberCost#" required="yes"></div>
 					</div>
 				</div>
