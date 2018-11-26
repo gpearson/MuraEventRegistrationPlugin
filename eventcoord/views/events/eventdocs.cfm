@@ -15,10 +15,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfset temp = #QuerySetCell(YesNoQuery, "ID", 1)#>
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 <cfoutput>
-	<link rel="stylesheet" href="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/plupload/js/jquery.ui.plupload/css/jquery.ui.plupload.css" type="text/css" />
+	<link rel="stylesheet" href="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/plupload-v3/js/jquery.ui.plupload/css/jquery.ui.plupload.css" type="text/css" />
 	<script type="text/javascript" src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/jquery-ui-1.9.2.custom.min.js"></script>
-	<script type="text/javascript" src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/plupload/js/plupload.full.min.js"></script>
-	<script type="text/javascript" src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/plupload/js/jquery.ui.plupload/jquery.ui.plupload.js"></script>
+	<script type="text/javascript" src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/plupload-v3/js/plupload.min.js"></script>
+	<script type="text/javascript" src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/plupload-v3/js/jquery.ui.plupload/jquery.ui.plupload.js"></script>
 	<cfif isDefined("URL.UserAction")>
 		<div class="panel-body">
 			<cfswitch expression="#URL.UserAction#">
@@ -100,7 +100,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 									<cfloop query="#Session.GetSelectedEventDocuments#">
 										<tr>
 											<td>#Session.GetSelectedEventDocuments.ResourceDocument#</td>
-											<td>#Session.GetSelectedEventDocuments.ResourceDocumentSize#</td>
+											<cfset FileMBSize = NumberFormat(((#Session.GetSelectedEventDocuments.ResourceDocumentSize# / 1024) / 1024), "99.99999") />
+											<td>#Variables.FileMBSize# MB</td>
+											<!--- <td>#Session.GetSelectedEventDocuments.ResourceDocumentSize#</td> --->
 											<td><a href="#Session.WebEventDirectory##Session.GetSelectedEventDocuments.ResourceDocument#" class="btn btn-primary btn-small" target="_blank">View</a><a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.eventdocs&EventID=#URL.EventID#&UserAction=DeleteEventDocument&DocumentID=#Session.GetSelectedEventDocuments.TContent_ID#" class="btn btn-primary btn-small">Delete</a></td>
 										</tr>
 									</cfloop>
@@ -132,9 +134,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 					// General settings
 					runtimes : 'html5,flash,silverlight,html4',
 					url : '#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.eventdocs&EventID=#URL.EventID#&UserAction=FileUpload',
+
 					// User can upload no more then 20 files in one go (sets multiple_queues to false)
 					max_file_count: 20,
-					chunk_size: '1mb',
+
 					// Resize images on clientside if we can
 					resize : {
 						width : 200,
@@ -149,7 +152,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						mime_types: [
 							{title : "Image files", extensions : "jpg,gif,png"},
 							{title : "Zip files", extensions : "zip"},
-							{title : "Document files", extensions : "doc,docx,pdf,xls,xlsx,ppt,pptx"},
+							{title : "Document files", extensions : "doc,docx,pdf,xls,xlsx,ppt,pptx"}
 						]
 					},
 					// Rename files by clicking on their titles
@@ -165,9 +168,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						active: 'list'
 					},
 					// Flash settings
-					flash_swf_url : '/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/plupload/js/Moxie.swf',
+					flash_swf_url : '/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/plupload-v3/js/Moxie.swf',
 					// Silverlight settings
-					silverlight_xap_url : '/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/plupload/js/Moxie.xap'
+					silverlight_xap_url : '/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/plupload-v3/js/Moxie.xap'
 				});
 				// Handle the case when form was submitted before uploading has finished
 				$('##EventDocumentsForm').submit(function(e) {

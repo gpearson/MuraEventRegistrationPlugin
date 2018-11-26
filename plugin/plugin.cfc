@@ -51,6 +51,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 				include "db/update/mysql-update-3.0.6.0.cfm";
 				include "db/update/mysql-update-3.0.8.0.cfm";
 				include "db/update/mysql-update-3.0.8.6.cfm";
+				include "db/update/mysql-update-3.0.8.7.cfm";
 				break;
 		}
 	}
@@ -188,6 +189,33 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		var dbDropTable = new query();
 		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
 		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_GradeSubjects");
+		var dbDropTableResults = dbDropTable.execute();
+		if (len(dbDropTableResults.getResult()) neq 0) {
+			writedump(dbDropTableResults.getResult());
+			abort;
+		}
+
+		var dbDropTable = new query();
+		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
+		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_StateESCOrganizations");
+		var dbDropTableResults = dbDropTable.execute();
+		if (len(dbDropTableResults.getResult()) neq 0) {
+			writedump(dbDropTableResults.getResult());
+			abort;
+		}
+
+		var dbDropTable = new query();
+		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
+		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_EventEmailLog");
+		var dbDropTableResults = dbDropTable.execute();
+		if (len(dbDropTableResults.getResult()) neq 0) {
+			writedump(dbDropTableResults.getResult());
+			abort;
+		}
+
+		var dbDropTable = new query();
+		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
+		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_EventResources");
 		var dbDropTableResults = dbDropTable.execute();
 		if (len(dbDropTableResults.getResult()) neq 0) {
 			writedump(dbDropTableResults.getResult());

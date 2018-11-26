@@ -613,6 +613,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfif Session.getAvailableEvents.RecordCount>
 					<thead class="thead-default">
 						<tr>
+							<td colspan="3">Add a new Event or Workshop to allow registrations not listed below click <a href="#buildURL('eventcoord:events.addevent')#" class="btn btn-primary btn-small">here</a></td>
+						</tr>
+						<tr>
 							<th width="50%">Event Title</th>
 							<th  width="15%">Event Date</th>
 							<th>Actions</th>
@@ -750,7 +753,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 										</cfif>
 										#DateFormat(Session.getAvailableEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate, "ddd")#)
 									</cfif>
-									<cfif Session.getAvailableEvents.Active EQ 0><div class="alert alert-danger small">Event not displayed<hr>Click Update Event to change settings</div>
+									<cfif Session.getAvailableEvents.Active EQ 0><div class="alert alert-danger small">Event not displayed<br><cfif Session.getAvailableEvents.EventCancelled EQ 1>Event Cancelled</cfif>
+									<hr>Click Update Event to change settings</div>
 									<cfelseif Session.getAvailableEvents.AcceptRegistrations EQ 0>
 										<div class="alert alert-warning small">Registration Closed<hr>Click Update Event to change settings</div>
 									<cfelse>

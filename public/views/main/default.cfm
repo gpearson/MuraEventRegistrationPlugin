@@ -19,6 +19,7 @@
 		<cfparam name="Session.Mura.EventPresenterRole" default="0" type="boolean">
 		<cfparam name="Session.Mura.SuperAdminRole" default="0" type="boolean">
 		<cfset UserMembershipQuery = #$.currentUser().getMembershipsQuery()#>
+			
 		<cfloop query="#Variables.UserMembershipQuery#">
 			<cfif UserMembershipQuery.GroupName EQ "Event Facilitator"><cfset Session.Mura.EventCoordinatorRole = true></cfif>
 			<cfif UserMembershipQuery.GroupName EQ "Event Presenter"><cfset Session.Mura.EventPresenterRole = true></cfif>
