@@ -5,10 +5,10 @@ Event Registration Administrator,
 The individual listed below submitted the following information through the Comment Form.
 
 
-Individual's Name': #Arguments.EmailInfo.ContactFirstName# #Arguments.EmailInfo.ContactLastName#
-Email Address: #Arguments.EmailInfo.ContactEmail#
-Telephone Number: #Arguments.EmailInfo.ContactPhone#
-Best Contact Method: <cfswitch expression="#Arguments.EmailInfo.BestContactMethod#"><cfcase value="0">By Email</cfcase><cfcase value="1">By Telephone</cfcase></cfswitch>
+Individual's Name': #Arguments.ContactInfo.ContactFirstName# #Arguments.ContactInfo.ContactLastName#
+Email Address: #Arguments.EmailInfo.ContactFormEmail#
+Telephone Number: #Arguments.EmailInfo.ContactFormNumber#
+Best Contact Method: #Arguments.EmailInfo.ContactBy#
 
 Question:
 

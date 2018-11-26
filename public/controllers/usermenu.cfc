@@ -31,6 +31,54 @@ http://www.apache.org/licenses/LICENSE-2.0
 		</cfif>
 	</cffunction>
 
+	<cffunction name="updateregistration" returntype="any" output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif not isDefined("FORM.formSubmit")>
+			<cfquery name="GetRegistrationInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				SELECT p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5,
+					p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6,
+					p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.PGPPoints, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.OnWaitingList,
+					p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.AttendeePriceVerified, p_EventRegistration_UserRegistrations.AttendeePrice,
+					p_EventRegistration_UserRegistrations.EventID, p_EventRegistration_Events.MealIncluded, p_EventRegistration_Events.MealAvailable, p_EventRegistration_Events.MealCost, p_EventRegistration_Events.Meal_Notes, p_EventRegistration_Events.MealProvidedBy
+				FROM p_EventRegistration_Events INNER JOIN p_EventRegistration_UserRegistrations on p_EventRegistration_UserRegistrations.EventID = p_EventRegistration_Events.TContent_ID
+				WHERE p_EventRegistration_UserRegistrations.RegistrationID = <cfqueryparam value="#URL.RegistrationID#" cfsqltype="cf_sql_varchar">
+			</cfquery>
+			<cfif GetRegistrationInfo.MealAvailable EQ 1 and GetRegistrationInfo.MealIncluded EQ 0>
+				<cfquery name="getEventCatererInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber
+					From p_EventRegistration_Caterers
+					Where TContent_ID = <cfqueryparam value="#Session.GetRegistrationInfo.MealProvidedBy#" cfsqltype="cf_sql_integer">
+				</cfquery>
+				<cfset Session.getEventCaterer = #StructCopy(getEventCatererInfo)#>
+			</cfif>
+			<cfset Session.GetRegistrationInfo = #StructCopy(GetRegistrationInfo)#>
+		<cfelseif isDefined("FORM.formSubmit")>
+			<cfquery name="GetRegistrationInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				SELECT p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5,
+					p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6,
+					p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.PGPPoints, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.OnWaitingList,
+					p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.AttendeePriceVerified, p_EventRegistration_UserRegistrations.AttendeePrice,
+					p_EventRegistration_UserRegistrations.EventID, p_EventRegistration_Events.MealIncluded, p_EventRegistration_Events.MealAvailable, p_EventRegistration_Events.MealCost, p_EventRegistration_Events.Meal_Notes, p_EventRegistration_Events.MealProvidedBy
+				FROM p_EventRegistration_Events INNER JOIN p_EventRegistration_UserRegistrations on p_EventRegistration_UserRegistrations.EventID = p_EventRegistration_Events.TContent_ID
+				WHERE p_EventRegistration_UserRegistrations.RegistrationID = <cfqueryparam value="#FORM.RegistrationID#" cfsqltype="cf_sql_varchar">
+			</cfquery>
+			<cftry>
+				<cfquery name="updateRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Update p_EventRegistration_UserRegistrations
+					Set RequestsMeal = <cfqueryparam value="#FORM.StayForMeal#" cfsqltype="cf_sql_bit">
+					WHere RegistrationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.RegistrationID#">
+				</cfquery>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.upcomingevents&UserAction=RegistrationUpdated&Successful=True" addtoken="false">
+				<cfcatch type="any">
+					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.upcomingevents&UserAction=RegistrationUpdated&Successful=False" addtoken="false">
+				</cfcatch>
+			</cftry>
+
+
+		</cfif>
+	</cffunction>
+
 	<cffunction name="upcomingevents" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
@@ -488,19 +536,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfelse>
 				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default">
 			</cfif>
-
-
-
 		</cfif>
 	</cffunction>
-
-
-
-
-
-
-
-
-
 
 </cfcomponent>

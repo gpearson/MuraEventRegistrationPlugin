@@ -127,10 +127,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 				url: "/plugins/#rc.pc.getPackage()#/eventcoord/controllers/membership.cfc?method=getAllESCESA",
 				// we set the changes to be made at client side using predefined word clientArray
 				datatype: "json",
-				colNames: ["Rec No","Organization Name","State","Phone Number"],
+				colNames: ["Rec No","Organization Name","City","State","Phone Number"],
 				colModel: [
-					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, editable: false },
+					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, hidden: true, editable: false },
 					{ label: 'Organization Name', name: 'OrganizationName', editable: true },
+					{ label: 'City', name: 'Physical_City', width: 75, editable: true },
 					{ label: 'State', name: 'Physical_State', width: 75, editable: true },
 					{ label: 'Phone Number', name: 'Primary_PhoneNumber', width: 75, editable: true }
 				],
@@ -140,6 +141,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 				height: 500,
 				autowidth: true,
 				rowNum: 60,
+				rowList : [20,30,50],
+				rowTotal: 2000,
 				pgText: " of ",
 				pager: "##jqGridPager",
 				jsonReader: {
@@ -159,7 +162,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					}
 				}
 			});
-			$('##jqGrid').navGrid('##jqGridPager', {edit: false, add: false, del:false, search:false});
+			$('##jqGrid').navGrid('##jqGridPager', {edit: false, add: false, del:false, search:true});
 
 			$('##jqGrid').navButtonAdd('##jqGridPager',
 				{
@@ -183,7 +186,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						} else {
 							var grid = $('##jqGrid');
 							var RowIDValue = grid.getCell(selectedRow, 'TContent_ID');
-							var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:membership.editmembership&MembershipID="+ RowIDValue;
+							var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:membership.editstateesc&MembershipID="+ RowIDValue;
 							window.open(urlToGo,"_self");
 						}
 						},

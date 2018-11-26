@@ -17,7 +17,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<fieldset>
-				<legend><h2>Available Facilities</h2></legend>
+				<legend><h2>Available Facilities to hold events</h2></legend>
 			</fieldset>
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
@@ -173,11 +173,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 				url: "/plugins/#rc.pc.getPackage()#/eventcoord/controllers/facility.cfc?method=getAllFacilities",
 				// we set the changes to be made at client side using predefined word clientArray
 				datatype: "json",
-				colNames: ["Rec No","Facility Name","State","Phone Number","Active"],
+				colNames: ["Rec No","Facility Name","City","State","Phone Number","Active"],
 				colModel: [
-					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, editable: false },
+					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, hidden: true, editable: false },
 					{ label: 'Facility Name', name: 'FacilityName', editable: true },
-					{ label: 'State', name: 'PrimaryState', width: 75, editable: true },
+					{ label: 'City', name: 'PhysicalCity', width: 75, editable: true },
+					{ label: 'State', name: 'PhysicalState', width: 75, editable: true },
 					{ label: 'Phone Number', name: 'PrimaryVoiceNumber', width: 75, editable: true },
 					{ label: 'Active', name: 'Active', width: 75, editable: true }
 				],
@@ -186,7 +187,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 				viewrecords: true,
 				height: 500,
 				autowidth: true,
-				rowNum: 30,
+				rowNum: 60,
+				rowList : [20,30,50],
+				rowTotal: 2000,
 				pgText: " of ",
 				pager: "##jqGridPager",
 				jsonReader: {
@@ -206,7 +209,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					}
 				}
 			});
-			$('##jqGrid').navGrid('##jqGridPager', {edit: false, add: false, del:false, search:false});
+			$('##jqGrid').navGrid('##jqGridPager', {edit: false, add: false, del:false, search:true});
 
 			$('##jqGrid').navButtonAdd('##jqGridPager',
 				{
