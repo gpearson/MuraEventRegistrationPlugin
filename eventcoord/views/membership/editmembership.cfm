@@ -23,30 +23,30 @@
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Organization's Membership</div>
 					<div class="form-group">
-						<label for="OrganizationName" class="control-label col-sm-3">Organization Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="OrganizationName" name="OrganizationName" value="#Session.getSelectedMembership.OrganizationName#" required="no"></div>
+						<label for="OrganizationName" class="col-lg-3 col-md-3">Organization Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="OrganizationName" name="OrganizationName" value="#Session.getSelectedMembership.OrganizationName#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="OrganizationDomainName" class="control-label col-sm-3">Organization Domain Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="OrganizationDomainName" name="OrganizationDomainName" value="#Session.getSelectedMembership.OrganizationDomainName#" required="no"></div>
+						<label for="OrganizationDomainName" class="col-lg-3 col-md-3">Organization Domain Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="OrganizationDomainName" name="OrganizationDomainName" value="#Session.getSelectedMembership.OrganizationDomainName#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Active" class="control-label col-sm-3">Active Membership:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfselect name="Active" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedMembership.Active#" Display="OptionName" queryposition="below">
+						<label for="Active" class="col-lg-3 col-md-3">Active Membership:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfselect name="Active" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedMembership.Active#" Display="OptionName" queryposition="below">
 							<option value="----">Active Membership?</option>
 						</cfselect></div>
 					</div>
 					<div class="form-group">
-						<label for="StateDOEIDNumber" class="control-label col-sm-3">State DOE ID Number:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEIDNumber" name="StateDOEIDNumber" value="#Session.getSelectedMembership.StateDOE_IDNumber#" required="no"></div>
+						<label for="StateDOEIDNumber" class="col-lg-3 col-md-3">State DOE ID Number:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="StateDOEIDNumber" name="StateDOEIDNumber" value="#Session.getSelectedMembership.StateDOE_IDNumber#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="StateDOEState" class="control-label col-sm-3">State DOE State:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEState" name="StateDOEState" value="#Session.getSelectedMembership.StateDOE_State#" required="no"></div>
+						<label for="StateDOEState" class="col-lg-3 col-md-3">State DOE State:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="StateDOEState" name="StateDOEState" value="#Session.getSelectedMembership.StateDOE_State#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="StateESCMembership" class="control-label col-sm-3">ESC/ESA Membership Affiliation:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="StateESCMembership" class="form-control" required="no" Multiple="No" query="Session.getESCESAAgencies" selected="#Session.getSelectedMembership.StateDOE_ESCESAMembership#" value="TContent_ID" Display="OrganizationName" queryposition="below">
+						<label for="StateESCMembership" class="col-lg-3 col-md-3">ESC/ESA Membership Affiliation:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfselect name="StateESCMembership" class="form-control" required="no" Multiple="No" query="Session.getESCESAAgencies" selected="#Session.getSelectedMembership.StateDOE_ESCESAMembership#" value="TContent_ID" Display="OrganizationName" queryposition="below">
 							<option value="0">No ESC/ESA Membership?</option>
 						</cfselect></div>
 					</div>
@@ -54,85 +54,85 @@
 						<legend><h2>Mailing Address Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="MailingAddress" class="control-label col-sm-3">Address:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingAddress" name="MailingAddress" value="#Session.getSelectedMembership.Mailing_Address#" required="no"></div>
+						<label for="MailingAddress" class="col-lg-3 col-md-3">Address:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingAddress" name="MailingAddress" value="#Session.getSelectedMembership.Mailing_Address#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="MailingCity" class="control-label col-sm-3">City:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingCity" name="MailingCity" value="#Session.getSelectedMembership.Mailing_City#" required="no"></div>
+						<label for="MailingCity" class="col-lg-3 col-md-3">City:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingCity" name="MailingCity" value="#Session.getSelectedMembership.Mailing_City#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="MailingState" class="control-label col-sm-3">State:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingState" name="MailingState" value="#Session.getSelectedMembership.Mailing_State#" required="no"></div>
+						<label for="MailingState" class="col-lg-3 col-md-3">State:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingState" name="MailingState" value="#Session.getSelectedMembership.Mailing_State#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="MailingZipCode" class="control-label col-sm-3">ZipCode:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingZipCode" name="MailingZipCode" value="#Session.getSelectedMembership.Mailing_ZipCode#" required="no"></div>
+						<label for="MailingZipCode" class="col-lg-3 col-md-3">ZipCode:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingZipCode" name="MailingZipCode" value="#Session.getSelectedMembership.Mailing_ZipCode#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="MailingZipPlus4" class="control-label col-sm-3">Zip + 4:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingZipPlus4" name="MailingZipPlus4" value="#Session.getSelectedMembership.Mailing_ZipPlus4#" required="no"></div>
+						<label for="MailingZipPlus4" class="col-lg-3 col-md-3">Zip + 4:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingZipPlus4" name="MailingZipPlus4" value="#Session.getSelectedMembership.Mailing_ZipPlus4#" required="no"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Physical Address Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="PhysicalAddress" class="control-label col-sm-3">Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" value="#Session.getSelectedMembership.Physical_Address#" required="yes"></div>
+						<label for="PhysicalAddress" class="col-lg-3 col-md-3">Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" value="#Session.getSelectedMembership.Physical_Address#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="PhysicalCity" class="control-label col-sm-3">City:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalCity" name="PhysicalCity" value="#Session.getSelectedMembership.Physical_City#" required="yes"></div>
+						<label for="PhysicalCity" class="col-lg-3 col-md-3">City:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalCity" name="PhysicalCity" value="#Session.getSelectedMembership.Physical_City#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="PhysicalState" class="control-label col-sm-3">State:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalState" name="PhysicalState" value="#Session.getSelectedMembership.Physical_State#" required="yes"></div>
+						<label for="PhysicalState" class="col-lg-3 col-md-3">State:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalState" name="PhysicalState" value="#Session.getSelectedMembership.Physical_State#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="PhysicalZipCode" class="control-label col-sm-3">ZipCode:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" value="#Session.getSelectedMembership.Physical_ZipCode#" required="yes"></div>
+						<label for="PhysicalZipCode" class="col-lg-3 col-md-3">ZipCode:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" value="#Session.getSelectedMembership.Physical_ZipCode#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="PhysicalZipPlus4" class="control-label col-sm-3">Zip + 4:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipPlus4" name="PhysicalZipPlus4" value="#Session.getSelectedMembership.Physical_ZipPlus4#" required="no"></div>
+						<label for="PhysicalZipPlus4" class="col-lg-3 col-md-3">Zip + 4:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalZipPlus4" name="PhysicalZipPlus4" value="#Session.getSelectedMembership.Physical_ZipPlus4#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="PhysicalLatitude" class="control-label col-sm-3">Address Latitude:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalLatitude" name="PhysicalLatitude" value="#Session.getSelectedMembership.Physical_Latitude#" disabled="yes"></div>
+						<label for="PhysicalLatitude" class="col-lg-3 col-md-3">Address Latitude:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalLatitude" name="PhysicalLatitude" value="#Session.getSelectedMembership.Physical_Latitude#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="PhysicalLongitude" class="control-label col-sm-3">Address Longitude:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalLongitude" name="PhysicalLongitude" value="#Session.getSelectedMembership.Physical_Longitude#" disabled="yes"></div>
+						<label for="PhysicalLongitude" class="col-lg-3 col-md-3">Address Longitude:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalLongitude" name="PhysicalLongitude" value="#Session.getSelectedMembership.Physical_Longitude#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="PhysicalCountyName" class="control-label col-sm-3">Address County Name:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalCountyName" name="PhysicalCountyName" value="#Session.getSelectedMembership.Physical_CountyName#" disabled="yes"></div>
+						<label for="PhysicalCountyName" class="col-lg-3 col-md-3">Address County Name:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalCountyName" name="PhysicalCountyName" value="#Session.getSelectedMembership.Physical_CountyName#" disabled="yes"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Phone Organization</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="PrimaryPhoneNumber" class="control-label col-sm-3">Voice Number:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PrimaryPhoneNumber" name="PrimaryPhoneNumber" value="#Session.getSelectedMembership.Primary_PhoneNumber#" required="no"></div>
+						<label for="PrimaryPhoneNumber" class="col-lg-3 col-md-3">Voice Number:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PrimaryPhoneNumber" name="PrimaryPhoneNumber" value="#Session.getSelectedMembership.PrimaryVoiceNumber#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="PrimaryFaxNumber" class="control-label col-sm-3">Fax Number:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PrimaryFaxNumber" name="PrimaryFaxNumber" value="#Session.getSelectedMembership.Primary_FaxNumber#" required="no"></div>
+						<label for="PrimaryFaxNumber" class="col-lg-3 col-md-3">Fax Number:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PrimaryFaxNumber" name="PrimaryFaxNumber" value="#Session.getSelectedMembership.PrimaryFaxNumber#" required="no"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Accounts Payable Contact Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AccountsPayableContactName" class="control-label col-sm-3">Name:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="AccountsPayableContactName" name="AccountsPayableContactName" value="#Session.getSelectedMembership.AccountsPayable_ContactName#" required="NO"></div>
+						<label for="AccountsPayableContactName" class="col-lg-3 col-md-3">Name:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="AccountsPayableContactName" name="AccountsPayableContactName" value="#Session.getSelectedMembership.AccountsPayable_ContactName#" required="NO"></div>
 					</div>
 					<div class="form-group">
-						<label for="AccountsPayableEmailAddress" class="control-label col-sm-3">Email Address:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="AccountsPayableEmailAddress" name="AccountsPayableEmailAddress" value="#Session.getSelectedMembership.AccountsPayable_EmailAddress#" required="NO"></div>
+						<label for="AccountsPayableEmailAddress" class="col-lg-3 col-md-3">Email Address:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="AccountsPayableEmailAddress" name="AccountsPayableEmailAddress" value="#Session.getSelectedMembership.AccountsPayable_EmailAddress#" required="NO"></div>
 					</div>
 					<div class="form-group">
-						<label for="Active" class="control-label col-sm-3">Send Invoices Electronically:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfselect name="ReceiveInvoicesByEmail" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedMembership.ReceiveInvoicesByEmail#" Display="OptionName" queryposition="below">
+						<label for="Active" class="col-lg-3 col-md-3">Send Invoices Electronically:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfselect name="ReceiveInvoicesByEmail" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedMembership.ReceiveInvoicesByEmail#" Display="OptionName" queryposition="below">
 							<option value="----">Send Invoices Electronically?</option>
 						</cfselect></div>
 					</div>
@@ -197,30 +197,30 @@
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Organization's Membership</div>
 					<div class="form-group">
-						<label for="OrganizationName" class="control-label col-sm-3">Organization Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="OrganizationName" name="OrganizationName" value="#Session.FormInput.OrganizationName#" required="no"></div>
+						<label for="OrganizationName" class="col-lg-3 col-md-3">Organization Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="OrganizationName" name="OrganizationName" value="#Session.FormInput.OrganizationName#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="OrganizationDomainName" class="control-label col-sm-3">Organization Domain Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="OrganizationDomainName" name="OrganizationDomainName" value="#Session.FormInput.OrganizationDomainName#" required="no"></div>
+						<label for="OrganizationDomainName" class="col-lg-3 col-md-3">Organization Domain Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="OrganizationDomainName" name="OrganizationDomainName" value="#Session.FormInput.OrganizationDomainName#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Active" class="control-label col-sm-3">Active Membership:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfselect name="Active" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormInput.Active#" Display="OptionName" queryposition="below">
+						<label for="Active" class="col-lg-3 col-md-3">Active Membership:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfselect name="Active" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormInput.Active#" Display="OptionName" queryposition="below">
 							<option value="----">Active Membership?</option>
 						</cfselect></div>
 					</div>
 					<div class="form-group">
-						<label for="StateDOEIDNumber" class="control-label col-sm-3">State DOE ID Number:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEIDNumber" name="StateDOEIDNumber" value="#Session.FormInput.StateDOEIDNumber#" required="no"></div>
+						<label for="StateDOEIDNumber" class="col-lg-3 col-md-3">State DOE ID Number:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="StateDOEIDNumber" name="StateDOEIDNumber" value="#Session.FormInput.StateDOEIDNumber#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="StateDOEState" class="control-label col-sm-3">State DOE State:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEState" name="StateDOEState" value="#Session.FormInput.StateDOEState#" required="no"></div>
+						<label for="StateDOEState" class="col-lg-3 col-md-3">State DOE State:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="StateDOEState" name="StateDOEState" value="#Session.FormInput.StateDOEState#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="StateESCMembership" class="control-label col-sm-3">ESC/ESA Membership Affiliation:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfselect name="StateESCMembership" class="form-control" required="no" Multiple="No" query="Session.FormInput.StateESCMembership" selected="#Session.getSelectedMembership.StateDOE_ESCESAMembership#" value="TContent_ID" Display="OrganizationName" queryposition="below">
+						<label for="StateESCMembership" class="col-lg-3 col-md-3">ESC/ESA Membership Affiliation:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfselect name="StateESCMembership" class="form-control" required="no" Multiple="No" query="Session.FormInput.StateESCMembership" selected="#Session.getSelectedMembership.StateDOE_ESCESAMembership#" value="TContent_ID" Display="OrganizationName" queryposition="below">
 							<option value="0">No ESC/ESA Membership?</option>
 						</cfselect></div>
 					</div>
@@ -228,65 +228,65 @@
 						<legend><h2>Mailing Address Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="MailingAddress" class="control-label col-sm-3">Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingAddress" name="MailingAddress" value="#Session.FormInput.MailingAddress#" required="no"></div>
+						<label for="MailingAddress" class="col-lg-3 col-md-3">Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingAddress" name="MailingAddress" value="#Session.FormInput.MailingAddress#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="MailingCity" class="control-label col-sm-3">City:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingCity" name="MailingCity" value="#Session.FormInput.MailingCity#" required="no"></div>
+						<label for="MailingCity" class="col-lg-3 col-md-3">City:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingCity" name="MailingCity" value="#Session.FormInput.MailingCity#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="MailingState" class="control-label col-sm-3">State:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingState" name="MailingState" value="#Session.FormInput.MailingState#" required="no"></div>
+						<label for="MailingState" class="col-lg-3 col-md-3">State:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingState" name="MailingState" value="#Session.FormInput.MailingState#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="MailingZipCode" class="control-label col-sm-3">ZipCode:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingZipCode" name="MailingZipCode" value="#Session.FormInput.MailingZipCode#" required="no"></div>
+						<label for="MailingZipCode" class="col-lg-3 col-md-3">ZipCode:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingZipCode" name="MailingZipCode" value="#Session.FormInput.MailingZipCode#" required="no"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Physical Address Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="PhysicalAddress" class="control-label col-sm-3">Address:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" value="#Session.FormInput.PhysicalAddress#" required="no"></div>
+						<label for="PhysicalAddress" class="col-lg-3 col-md-3">Address:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" value="#Session.FormInput.PhysicalAddress#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="PhysicalCity" class="control-label col-sm-3">City:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalCity" name="PhysicalCity" value="#Session.FormInput.PhysicalCity#" required="no"></div>
+						<label for="PhysicalCity" class="col-lg-3 col-md-3">City:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalCity" name="PhysicalCity" value="#Session.FormInput.PhysicalCity#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="PhysicalState" class="control-label col-sm-3">State:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalState" name="PhysicalState" value="#Session.FormInput.PhysicalState#" required="no"></div>
+						<label for="PhysicalState" class="col-lg-3 col-md-3">State:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalState" name="PhysicalState" value="#Session.FormInput.PhysicalState#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="PhysicalZipCode" class="control-label col-sm-3">ZipCode:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" value="#Session.FormInput.PhysicalZipCode#" required="no"></div>
+						<label for="PhysicalZipCode" class="col-lg-3 col-md-3">ZipCode:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" value="#Session.FormInput.PhysicalZipCode#" required="no"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Phone Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="PrimaryPhoneNumber" class="control-label col-sm-3">Voice Number:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PrimaryPhoneNumber" name="PrimaryPhoneNumber" value="#Session.FormInput.PrimaryPhoneNumber#" required="no"></div>
+						<label for="PrimaryPhoneNumber" class="col-lg-3 col-md-3">Voice Number:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PrimaryPhoneNumber" name="PrimaryPhoneNumber" value="#Session.FormInput.PrimaryPhoneNumber#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="PrimaryFaxNumber" class="control-label col-sm-3">Fax Number:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PrimaryFaxNumber" name="PrimaryFaxNumber" value="#Session.FormInput.PrimaryFaxNumber#" required="no"></div>
+						<label for="PrimaryFaxNumber" class="col-lg-3 col-md-3">Fax Number:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PrimaryFaxNumber" name="PrimaryFaxNumber" value="#Session.FormInput.PrimaryFaxNumber#" required="no"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Accounts Payable Contact Information/h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AccountsPayableContactName" class="control-label col-sm-3">Name:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="AccountsPayableContactName" name="AccountsPayableContactName" value="#Session.FormInput.AccountsPayableContactName#" required="NO"></div>
+						<label for="AccountsPayableContactName" class="col-lg-3 col-md-3">Name:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="AccountsPayableContactName" name="AccountsPayableContactName" value="#Session.FormInput.AccountsPayableContactName#" required="NO"></div>
 					</div>
 					<div class="form-group">
-						<label for="AccountsPayableEmailAddress" class="control-label col-sm-3">Email Address:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="AccountsPayableEmailAddress" name="AccountsPayableEmailAddress" value="#Session.FormInput.AccountsPayableEmailAddress#" required="NO"></div>
+						<label for="AccountsPayableEmailAddress" class="col-lg-3 col-md-3">Email Address:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="AccountsPayableEmailAddress" name="AccountsPayableEmailAddress" value="#Session.FormInput.AccountsPayableEmailAddress#" required="NO"></div>
 					</div>
 					<div class="form-group">
-						<label for="Active" class="control-label col-sm-3">Send Invoices Electronically:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfselect name="ReceiveInvoicesByEmail" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormInput.ReceiveInvoicesByEmail#" Display="OptionName" queryposition="below">
+						<label for="Active" class="col-lg-3 col-md-3">Send Invoices Electronically:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfselect name="ReceiveInvoicesByEmail" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormInput.ReceiveInvoicesByEmail#" Display="OptionName" queryposition="below">
 							<option value="----">Send Invoices Electronically?</option>
 						</cfselect></div>
 					</div>

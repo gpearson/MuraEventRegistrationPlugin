@@ -1,123 +1,519 @@
-<cfquery name="Create-p_EventRegistration_Caterers" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_Caterers` ( `TContent_ID` INT(11) NOT NULL AUTO_INCREMENT, `Site_ID` VARCHAR(20) NOT NULL, `FacilityName` TINYTEXT NOT NULL, `PhysicalAddress` TINYTEXT NULL, `PhysicalCity` TINYTEXT NULL, `PhysicalState` VARCHAR(2) NULL DEFAULT NULL, `PhysicalZipCode` VARCHAR(5) NULL DEFAULT NULL, `PhysicalZip4` VARCHAR(4) NULL DEFAULT NULL, `PrimaryVoiceNumber` VARCHAR(14) NULL DEFAULT NULL, `BusinessWebsite` TINYTEXT NULL, `ContactName` TINYTEXT NULL, `ContactPhoneNumber` TINYTEXT NULL, `ContactEmail` TINYTEXT NULL, `PaymentTerms` TINYTEXT NULL, `DeliveryInfo` TINYTEXT NULL, `GuaranteeInformation` TINYTEXT NULL, `AdditionalNotes` TINYTEXT NULL, `dateCreated` DATETIME NOT NULL, `lastUpdated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `lastUpdateBy` TINYTEXT NOT NULL, `isAddressVerified` BIT(1) NOT NULL DEFAULT b'0', `GeoCode_Latitude` VARCHAR(20) NULL DEFAULT NULL, `GeoCode_Longitude` VARCHAR(20) NULL DEFAULT NULL, `GeoCode_Township` TINYTEXT NULL, `GeoCode_StateLongName` TINYTEXT NULL, `GeoCode_CountryShortName` TINYTEXT NULL, `GeoCode_Neighborhood` TINYTEXT NULL, `Active` BIT(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`, `Site_ID`) ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
 
-<cfquery name="Create-p_EventRegistration_EventEmailLog" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_EventEmailLog` ( `TContent_ID` INT(11) NOT NULL AUTO_INCREMENT, `Site_ID` VARCHAR(20) NOT NULL, `Event_ID` INT(11) NOT NULL, `MsgBody` LONGTEXT NULL, `EmailType` TINYTEXT NULL, `LinksToInclude` TINYTEXT NULL, `DocsToInclude` TINYTEXT NULL, `EmailSentToParticipants` LONGTEXT NOT NULL, `dateCreated` DATETIME NOT NULL, `lastUpdated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `lastUpdateBy` VARCHAR(35) NOT NULL, PRIMARY KEY (`TContent_ID`, `Event_ID`), INDEX `Event_ID_Index` (`Event_ID`) USING BTREE ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
+<cfscript>
+  var dbWorker = application.configbean.getBean('dbUtility');
 
-<cfquery name="Create-p_EventRegistration_EventExpenses" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_EventExpenses` ( `TContent_ID` INT(11) NOT NULL AUTO_INCREMENT, `Site_ID` VARCHAR(20) NOT NULL, `Event_ID` INT(11) NOT NULL, `Expense_ID` INT(11) NOT NULL, `Cost_Amount` DOUBLE(15,2) NOT NULL, `dateCreated` DATETIME NOT NULL, `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `lastUpdateBy` VARCHAR(35) NOT NULL, `Cost_Verified` BIT(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`, `Event_ID`), INDEX `Event_ID_Index` (`Event_ID`) ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
+  dbWorker.setTable('p_EventRegistration_Caterers')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='FacilityName',dataType='varchar',length='255',nullable=false)
+    .addColumn(column='PhysicalAddress',dataType='varchar',length='255')
+    .addColumn(column='PhysicalCity',dataType='char',length='50')
+    .addColumn(column='PhysicalState',dataType='char',length='2')
+    .addColumn(column='PhysicalZipCode',dataType='char',length='5')
+    .addColumn(column='PhysicalZip4',dataType='char',length='4')
+    .addColumn(column='PrimaryVoiceNumber',dataType='char',length='14')
+    .addColumn(column='BusinessWebsite',dataType='varchar',length='255')
+    .addColumn(column='ContactName',dataType='varchar',length='255')
+    .addColumn(column='ContactPhoneNumber',dataType='char',length='14')
+    .addColumn(column='ContactEmail',dataType='varchar',length='255')
+    .addColumn(column='PaymentTerms',dataType='longtext',nullable=true)
+    .addColumn(column='DeliveryInfo',dataType='longtext',nullable=true)
+    .addColumn(column='GuaranteeInformation',dataType='longtext',nullable=true)
+    .addColumn(column='AdditionalNotes',dataType='longtext',nullable=true)
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='isAddressVerified',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='GeoCode_Latitude',dataType='char',length='20',nullable=true)
+    .addColumn(column='GeoCode_Longitude',dataType='char',length='20',nullable=true)
+    .addColumn(column='GeoCode_Township',dataType='varchar',length='255',nullable=true)
+    .addColumn(column='GeoCode_StateLongName',dataType='varchar',length='255',nullable=true)
+    .addColumn(column='GeoCode_CountryShortName',dataType='varchar',length='255',nullable=true)
+    .addColumn(column='GeoCode_Neighborhood',dataType='varchar',length='255',nullable=true)
+    .addColumn(column='Active',dataType='boolean',default=0,nullable=false)
+    .addPrimaryKey(column='TContent_ID');
 
-<cfquery name="Create-p_EventRegistration_EventResources" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_EventResources` ( `TContent_ID` INT(11) NOT NULL AUTO_INCREMENT, `Site_ID` VARCHAR(20) NOT NULL, `Event_ID` INT(11) NOT NULL, `ResourceType` CHAR(1) NOT NULL, `ResourceLink` TINYTEXT NULL, `dateCreated` DATETIME NOT NULL, `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `lastUpdateBy` VARCHAR(35) NOT NULL, `ResourceDocument` TINYTEXT NULL, `ResourceDocumentType` TINYTEXT NULL, `ResourceDocumentSize` TINYTEXT NULL, PRIMARY KEY (`TContent_ID`, `Event_ID`), INDEX `Event_ID_Index` (`Event_ID`) USING BTREE ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
+  dbWorker.setTable('p_EventRegistration_EventEmailLog')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='Event_ID',dataType='int',nullable=false)
+    .addColumn(column='MsgBody',dataType='longtext',nullable=false)
+    .addColumn(column='EmailType',dataType='longtext',nullable=false)
+    .addColumn(column='LinksToInclude',dataType='varchar',length='255',nullable=true)
+    .addColumn(column='DocsToInclude',dataType='varchar',length='255',nullable=true)
+    .addColumn(column='EmailSentToParticipants',dataType='varchar',length='255',nullable=true)
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='varchar',length='35')
+    .addPrimaryKey(column='TContent_ID');
 
-<cfquery name="Create-p_EventRegistration_Events" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_Events` ( `TContent_ID` INT(10) NOT NULL AUTO_INCREMENT, `Site_ID` VARCHAR(20) NOT NULL DEFAULT '', `ShortTitle` TINYTEXT NOT NULL, `EventDate` DATE NOT NULL DEFAULT '1980-01-01', `EventDate1` DATE NULL DEFAULT NULL, `EventDate2` DATE NULL DEFAULT NULL, `EventDate3` DATE NULL DEFAULT NULL, `EventDate4` DATE NULL DEFAULT NULL, `EventDate5` DATE NULL DEFAULT NULL, `LongDescription` LONGTEXT NULL, `Event_StartTime` TIME NULL DEFAULT NULL, `Event_EndTime` TIME NULL DEFAULT NULL, `Registration_Deadline` DATE NOT NULL DEFAULT '1980-01-01', `Registration_BeginTime` TIME NULL DEFAULT NULL, `Registration_EndTime` TIME NULL DEFAULT NULL, `EventFeatured` BIT(1) NOT NULL DEFAULT b'0', `Featured_StartDate` DATE NULL DEFAULT '1980-01-01', `Featured_EndDate` DATE NULL DEFAULT '1980-01-01', `Featured_SortOrder` INT(10) NULL DEFAULT '100', `MemberCost` DECIMAL(15,4) NULL DEFAULT NULL, `NonMemberCost` DECIMAL(15,4) NULL DEFAULT NULL, `EarlyBird_RegistrationDeadline` DATE NULL DEFAULT '1980-01-01', `EarlyBird_RegistrationAvailable` BIT(1) NOT NULL DEFAULT b'0', `EarlyBird_MemberCost` DECIMAL(15,4) NULL DEFAULT NULL, `EarlyBird_NonMemberCost` DECIMAL(15,4) NULL DEFAULT NULL, `ViewGroupPricing` BIT(1) NOT NULL DEFAULT b'0', `GroupMemberCost` DECIMAL(15,4) NULL DEFAULT NULL, `GroupNonMemberCost` DECIMAL(15,4) NULL DEFAULT NULL, `GroupPriceRequirements` LONGTEXT NULL, `PGPAvailable` BIT(1) NOT NULL DEFAULT b'0', `PGPPoints` DECIMAL(5,2) NULL DEFAULT NULL, `MealAvailable` BIT(1) NOT NULL DEFAULT b'0', `MealIncluded` BIT(1) NOT NULL DEFAULT b'0', `MealProvidedBy` INT(11) NULL DEFAULT NULL, `MealCost` DECIMAL(15,4) NULL DEFAULT '0.0000', `Meal_Notes` LONGTEXT NULL, `AllowVideoConference` BIT(1) NOT NULL DEFAULT b'0', `VideoConferenceInfo` LONGTEXT NULL, `VideoConferenceCost` DECIMAL(15,4) NULL DEFAULT NULL, `AcceptRegistrations` BIT(1) NOT NULL DEFAULT b'0', `EventAgenda` LONGTEXT NULL, `EventTargetAudience` LONGTEXT NULL, `EventStrategies` LONGTEXT NULL, `EventSpecialInstructions` LONGTEXT NULL, `MaxParticipants` INT(10) NULL DEFAULT '0', `LocationID` INT(10) NULL DEFAULT '0', `LocationRoomID` INT(10) NULL DEFAULT '0', `Presenters` TINYTEXT NULL, `Facilitator` CHAR(35) NOT NULL, `dateCreated` DATETIME NOT NULL, `lastUpdated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `lastUpdateBy` CHAR(35) NULL DEFAULT NULL, `Active` BIT(1) NOT NULL DEFAULT b'0', `EventCancelled` BIT(1) NOT NULL DEFAULT b'0', `WebinarAvailable` BIT(1) NOT NULL DEFAULT b'0', `WebinarConnectInfo` MEDIUMTEXT NULL, `WebinarMemberCost` DECIMAL(15,4) NULL DEFAULT NULL, `WebinarNonMemberCost` DECIMAL(15,4) NULL DEFAULT NULL, `PostedTo_Facebook` BIT(1) NOT NULL DEFAULT b'0', `PostedTo_Twitter` BIT(1) NOT NULL DEFAULT b'0', `EventHasDailySessions` BIT(1) NOT NULL DEFAULT b'0', `Session1BeginTime` TIME NULL DEFAULT NULL, `Session1EndTime` TIME NULL DEFAULT NULL, `Session2BeginTime` TIME NULL DEFAULT NULL, `Session2EndTime` TIME NULL DEFAULT NULL, `EventInvoicesGenerated` BIT(1) NOT NULL DEFAULT b'0', `PGPCertificatesGenerated` BIT(1) NOT NULL DEFAULT b'0', `BillForNoShow` BIT(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`, `Site_ID`) ) COLLATE='utf8_general_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
+  dbWorker.setTable('p_EventRegistration_EventExpenses')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='Expense_ID',dataType='int',nullable=false)
+    .addColumn(column='Cost_Amount',dataType='double',nullable=false)
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='varchar',length='35')
+    .addColumn(column='Cost_Verified',dataType='boolean',default=0,nullable=false)
+    .addPrimaryKey(column='TContent_ID');
 
-<cfquery name="Create-p_EventRegistration_ExpenseList" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_ExpenseList` ( `TContent_ID` INT(11) NOT NULL AUTO_INCREMENT, `Site_ID` VARCHAR(20) NOT NULL, `Expense_Name` TINYTEXT NOT NULL, `Active` BIT(1) NOT NULL DEFAULT b'0', `dateCreated` DATETIME NOT NULL, `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `lastUpdateBy` VARCHAR(35) NOT NULL, PRIMARY KEY (`TContent_ID`) ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
+  dbWorker.setTable('p_EventRegistration_EventResources')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='ResourceType',dataType='char',length='1',nullable=false)
+    .addColumn(column='ResourceLink',dataType='longtext',nullable=true)
+    .addColumn(column='ResourceDocument',dataType='longtext',nullable=true)
+    .addColumn(column='ResourceDocumentSized',dataType='longtext',nullable=true)
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='varchar',length='35')
+    .addPrimaryKey(column='TContent_ID');
 
-<cfquery name="Create-p_EventRegistration_Facility" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_Facility` ( `TContent_ID` INT(10) NOT NULL AUTO_INCREMENT, `Site_ID` VARCHAR(20) NOT NULL DEFAULT '', `FacilityName` TINYTEXT NOT NULL, `PhysicalAddress` TINYTEXT NULL, `PhysicalCity` TINYTEXT NULL, `PhysicalState` VARCHAR(2) NULL DEFAULT NULL, `PhysicalZipCode` VARCHAR(5) NULL DEFAULT NULL, `PhysicalZip4` VARCHAR(4) NULL DEFAULT NULL, `PrimaryVoiceNumber` VARCHAR(14) NULL DEFAULT '', `BusinessWebsite` TINYTEXT NULL, `ContactName` TINYTEXT NULL, `ContactPhoneNumber` TINYTEXT NULL, `ContactEmail` TINYTEXT NULL, `dateCreated` DATETIME NOT NULL DEFAULT '1980-01-01 01:00:00', `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `lastUpdateBy` VARCHAR(50) NOT NULL DEFAULT '', `isAddressVerified` CHAR(1) NOT NULL DEFAULT '0', `GeoCode_Latitude` VARCHAR(20) NULL DEFAULT NULL, `GeoCode_Longitude` VARCHAR(20) NULL DEFAULT NULL, `GeoCode_Township` VARCHAR(40) NULL DEFAULT NULL, `GeoCode_StateLongName` VARCHAR(40) NULL DEFAULT NULL, `GeoCode_CountryShortName` VARCHAR(40) NULL DEFAULT NULL, `GeoCode_Neighborhood` VARCHAR(40) NULL DEFAULT NULL, `USPS_CarrierRoute` VARCHAR(20) NULL DEFAULT NULL, `USPS_CheckDigit` VARCHAR(20) NULL DEFAULT NULL, `USPS_DeliveryPoint` VARCHAR(20) NULL DEFAULT NULL, `PhysicalLocationCountry` VARCHAR(20) NULL DEFAULT NULL, `PhysicalCountry` VARCHAR(20) NULL DEFAULT NULL, `Active` CHAR(1) NOT NULL DEFAULT '1', `FacilityType` CHAR(1) NOT NULL DEFAULT 'B', 	`Physical_TimeZone` TINYTEXT NOT NULL, 	`Physical_UTCOffset` CHAR(4) NOT NULL, 	`Physical_DST` BIT(1) NOT NULL DEFAULT b'0', 	 PRIMARY KEY (`TContent_ID`, `Site_ID`) ) COLLATE='utf8_general_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
-
-<cfquery name="Create-p_EventRegistration_FacilityRooms" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_FacilityRooms` ( `TContent_ID` INT(10) NOT NULL AUTO_INCREMENT, `Site_ID` VARCHAR(20) NOT NULL DEFAULT '', `Facility_ID` INT(10) NOT NULL DEFAULT '1', `RoomName` VARCHAR(35) NOT NULL DEFAULT '', `Capacity` INT(10) NOT NULL DEFAULT '1', `RoomFees` DECIMAL(15,4) NULL DEFAULT '0.0000', `Active` BIT(1) NOT NULL DEFAULT b'1', `dateCreated` DATETIME NOT NULL DEFAULT '1980-01-01 01:00:00', `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `lastUpdateBy` VARCHAR(50) NOT NULL DEFAULT '', PRIMARY KEY (`TContent_ID`, `Site_ID`, `Facility_ID`) ) COLLATE='utf8_general_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
-
-<cfquery name="Create-p_EventRegistration_GradeLevels" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_GradeLevels` ( `TContent_ID` INT(11) NOT NULL, `Site_ID` TINYTEXT NOT NULL, `GradeLevel` TINYTEXT NOT NULL, `dateCreated` DATETIME NOT NULL DEFAULT '1980-01-01 01:00:00', `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `lastUpdateBy` VARCHAR(50) NOT NULL DEFAULT '', PRIMARY KEY (`TContent_ID`) ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
-
-<cfquery name="Create-p_EventRegistration_GradeSubjects" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_GradeSubjects` ( `TContent_ID` INT(11) NOT NULL, `Site_ID` TINYTEXT NOT NULL, `GradeLevel` INT(11) NOT NULL, `GradeSubject` TINYTEXT NOT NULL, `dateCreated` DATETIME NOT NULL DEFAULT '1980-01-01 01:00:00', `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `lastUpdateBy` VARCHAR(50) NOT NULL DEFAULT '', PRIMARY KEY (`TContent_ID`) ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
-
-<cfquery name="Create-p_EventRegistration_Membership" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_Membership` ( `TContent_ID` INT(11) NOT NULL AUTO_INCREMENT, `Site_ID` TINYTEXT NOT NULL, `OrganizationName` VARCHAR(50) NOT NULL, `OrganizationDomainName` VARCHAR(50) NOT NULL, `StateDOE_IDNumber` VARCHAR(10) NULL DEFAULT NULL, `StateDOE_ESCESAMembership` INT(11) NULL DEFAULT NULL, `StateDOE_State` TINYTEXT NULL, `Active` BIT(1) NOT NULL DEFAULT b'0', `dateCreated` DATETIME NOT NULL, `lastUpdateBy` VARCHAR(35) NOT NULL, `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `Mailing_Address` TINYTEXT NULL, `Mailing_City` TINYTEXT NULL, `Mailing_State` TINYTEXT NULL, `Mailing_ZipCode` TINYTEXT NULL, `Mailing_ZipPlus4` CHAR(4) NULL DEFAULT NULL, `Mailing_DeliveryPointBarcode` CHAR(12) NULL DEFAULT NULL, `Primary_PhoneNumber` TINYTEXT NULL, `Primary_FaxNumber` TINYTEXT NULL, `Physical_Address` TINYTEXT NULL, `Physical_City` TINYTEXT NULL, `Physical_State` TINYTEXT NULL, `Physical_ZipCode` TINYTEXT NULL, `Physical_ZipPlus4` CHAR(4) NULL DEFAULT NULL, `Physical_DeliveryPointBarcode` CHAR(12) NULL DEFAULT NULL, `Physical_Latitude` DECIMAL(10,5) NULL DEFAULT NULL, `Physical_Longitude` DECIMAL(10,5) NULL DEFAULT NULL, `Physical_TimeZone` TINYTEXT NULL, `Physical_DST` BIT(1) NULL DEFAULT NULL, `Physical_UTCOffset` CHAR(3) NULL DEFAULT NULL, `Physical_CountyName` TINYTEXT NULL, `Physical_CarrierRoute` TINYTEXT NULL, `Physical_CongressionalDistrict` TINYTEXT NULL, `AccountsPayable_EmailAddress` TINYTEXT NULL, `AccountsPayable_ContactName` TINYTEXT NULL, `ReceiveInvoicesByEmail` BIT(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`) ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
-
-<cfquery name="Create-p_EventRegistration_MembershipBuildings" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_MembershipBuildings` ( 	`TContent_ID` INT(11) NOT NULL AUTO_INCREMENT, `Site_ID` TINYTEXT NOT NULL, `MembershipDistrict_ID` INT(11) NOT NULL, `OrganizationName` VARCHAR(50) NOT NULL, `StateDOE_IDNumber` VARCHAR(10) NULL DEFAULT NULL, `StateDOE_State` TINYTEXT NULL, `Active` BIT(1) NOT NULL DEFAULT b'0', `dateCreated` DATETIME NOT NULL, `lastUpdateBy` VARCHAR(35) NOT NULL, `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `Mailing_Address` TINYTEXT NULL, `Mailing_City` TINYTEXT NULL, `Mailing_State` TINYTEXT NULL, `Mailing_ZipCode` TINYTEXT NULL, `Mailing_ZipPlus4` CHAR(4) NULL DEFAULT NULL, `Mailing_DeliveryPointBarcode` CHAR(12) NULL DEFAULT NULL, `Primary_PhoneNumber` TINYTEXT NULL, `Primary_FaxNumber` TINYTEXT NULL, `Physical_Address` TINYTEXT NULL, `Physical_City` TINYTEXT NULL, `Physical_State` TINYTEXT NULL, `Physical_ZipCode` TINYTEXT NULL, `Physical_ZipPlus4` CHAR(4) NULL DEFAULT NULL, `Physical_DeliveryPointBarcode` CHAR(12) NULL DEFAULT NULL, `Physical_Latitude` DECIMAL(10,5) NULL DEFAULT NULL, `Physical_Longitude` DECIMAL(10,5) NULL DEFAULT NULL, `Physical_TimeZone` TINYTEXT NULL, `Physical_DST` BIT(1) NULL DEFAULT NULL, `Physical_UTCOffset` CHAR(3) NULL DEFAULT NULL, `Physical_CountyName` TINYTEXT NULL, `Physical_CarrierRoute` TINYTEXT NULL, `Physical_CongressionalDistrict` TINYTEXT NULL, PRIMARY KEY (`TContent_ID`, `MembershipDistrict_ID`) ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
-
-<cfquery name="Create-p_EventRegistration_ShortURL" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_ShortURL` (`TContent_ID` INT(10) NOT NULL AUTO_INCREMENT, `Site_ID` VARCHAR(20) NOT NULL DEFAULT '', `FullLink` LONGTEXT NULL, `ShortLink` TINYTEXT NULL, `Active` BIT(1) NOT NULL DEFAULT b'0', `dateCreated` DATETIME NULL DEFAULT NULL, `lastUpdateBy` VARCHAR(35) NULL DEFAULT NULL, `lastUpdated` DATETIME NULL DEFAULT NULL, PRIMARY KEY (`TContent_ID`, `Site_ID`) ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
+  dbWorker.setTable('p_EventRegistration_ExpenseList')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='Expense_Name',dataType='varchar',length='100',nullable=false)
+    .addColumn(column='Active',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='varchar',length='35')
+    .addPrimaryKey(column='TContent_ID');
 
 
-<cfquery name="Create-p_EventRegistration_SiteConfig" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_SiteConfig` ( `TContent_ID` INT(11) NOT NULL AUTO_INCREMENT, `Site_ID` TINYTEXT NOT NULL, `DateCreated` DATETIME NOT NULL, `lastUpdateBy` VARCHAR(35) NOT NULL, `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `ProcessPayments_Stripe` BIT(1) NOT NULL DEFAULT b'0', `Stripe_TestMode` BIT(1) NOT NULL DEFAULT b'1', `Stripe_TestAPIKey` TINYTEXT NULL, `Stripe_LiveAPIKey` TINYTEXT NULL, `Facebook_Enabled` BIT(1) NULL DEFAULT b'0', `Facebook_AppID` TINYTEXT NULL, `Facebook_AppSecretKey` TINYTEXT NULL, `Facebook_PageID` TINYTEXT NULL, `Facebook_AppScope` TINYTEXT NULL, `Google_ReCaptchaSiteKey` TINYTEXT NULL, `Google_ReCaptchaSecretKey` TINYTEXT NULL, `SmartyStreets_Enabled` BIT(1) NOT NULL DEFAULT b'0', `SmartyStreets_APIID` TINYTEXT NULL, `SmartyStreets_APIToken` TINYTEXT NULL, PRIMARY KEY (`TContent_ID`) ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
+  dbWorker.setTable('p_EventRegistration_Events')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='ShortTitle',dataType='varchar',length='100')
+    .addColumn(column='EventDate',dataType='date',nullable=false)
+    .addColumn(column='EventDate1',dataType='date',nullable=true)
+    .addColumn(column='EventDate2',dataType='date',nullable=true)
+    .addColumn(column='EventDate3',dataType='date',nullable=true)
+    .addColumn(column='EventDate4',dataType='date',nullable=true)
+    .addColumn(column='EventDate5',dataType='date',nullable=true)
+    .addColumn(column='EventDate6',dataType='date',nullable=true)
+    .addColumn(column='LongDescription',dataType='longtext',nullable=false)
+    .addColumn(column='Event_StartTime',dataType='timestamp',nullable=false)
+    .addColumn(column='Event_EndTime',dataType='timestamp',nullable=false)
+    .addColumn(column='Registration_Deadline',dataType='date',nullable=false)
+    .addColumn(column='Registration_BeginTime',dataType='timestamp')
+    .addColumn(column='Registration_EndTime',dataType='timestamp')
+    .addColumn(column='EventFeatured',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Featured_StartDate',dataType='date',nullable=true)
+    .addColumn(column='Featured_EndDate',dataType='date',nullable=true)
+    .addColumn(column='Featured_SortOrder',dataType='int',nullable=false,default=0)
+    .addColumn(column='Member_Cost',dataType='double',nullable=false)
+    .addColumn(column='NonMember_Cost',dataType='double',nullable=false)
+    .addColumn(column='EarlyBird_Available',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='EarlyBird_Deadline',dataType='date',nullable=true)
+    .addColumn(column='EarlyBird_MemberCost',dataType='double',nullable=true)
+    .addColumn(column='EarlyBird_NonMemberCost',dataType='double',nullable=true)
+    .addColumn(column='ViewGroupPricing',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='GroupPrice_Requirements',dataType='longtext',nullable=true)
+    .addColumn(column='GroupPrice_MemberCost',dataType='double',nullable=false)
+    .addColumn(column='GroupPrice_NonMemberCost',dataType='double',nullable=false)
+    .addColumn(column='PGPAvailable',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='PGPPoints',dataType='double',nullable=true)
+    .addColumn(column='Meal_Available',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Meal_Included',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Meal_Notes',dataType='longtext',nullable=true)
+    .addColumn(column='Meal_Cost',dataType='double',nullable=true)
+    .addColumn(column='Meal_ProvidedBy',dataType='int',nullable=false,default=0)
+    .addColumn(column='AllowVideoConference',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='VideoConferenceInfo',dataType='longtext',nullable=true)
+    .addColumn(column='VideoConferenceCost',dataType='double',nullable=true)
+    .addColumn(column='AcceptRegistrations',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='EventAgenda',dataType='longtext',nullable=true)
+    .addColumn(column='EventTargetAudience',dataType='longtext',nullable=true)
+    .addColumn(column='EventStrategies',dataType='longtext',nullable=true)
+    .addColumn(column='EventSpecialInstructions',dataType='longtext',nullable=true)
+    .addColumn(column='MaxParticipants',dataType='int',nullable=false,default=0)
+    .addColumn(column='LocationID',dataType='int',nullable=false,default=0)
+    .addColumn(column='LocationRoomID',dataType='int',nullable=false,default=0)
+    .addColumn(column='PresenterID',dataType='char',length='35',nullable=true)
+    .addColumn(column='FacilitatorID',dataType='char',length='35',nullable=false)
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='varchar',length='35')
+    .addColumn(column='Active',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='EventCancelled',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='WebinarAvailable',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='WebinarConnectInfo',dataType='longtext',nullable=true)
+    .addColumn(column='Webinar_MemberCost',dataType='double',nullable=true)
+    .addColumn(column='Webinar_NonMemberCost',dataType='double',nullable=true)
+    .addColumn(column='PostedTo_Facebook',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='PostedTo_Twitter',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='EventHasDailySessions',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Session1BeginTime',dataType='timestamp',nullable=true)
+    .addColumn(column='Session1EndTime',dataType='timestamp',nullable=true)
+    .addColumn(column='Session2BeginTime',dataType='timestamp',nullable=true)
+    .addColumn(column='Session2EndTime',dataType='timestamp',nullable=true)
+    .addColumn(column='EventInvoicesGenerated',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='PGPCertificatesGenerated',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='BillForNoShow',dataType='boolean',default=0,nullable=false)
+    .addPrimaryKey(column='TContent_ID');
 
-<cfquery name="Create-p_EventRegistration_StateESCOrganizations" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_StateESCOrganizations` ( `TContent_ID` INT(11) NOT NULL AUTO_INCREMENT, `Site_ID` TINYTEXT NOT NULL, `OrganizationName` VARCHAR(50) NOT NULL, `OrganizationDomainName` VARCHAR(50) NOT NULL, `StateDOE_IDNumber` VARCHAR(10) NULL DEFAULT NULL, `StateDOE_State` TINYTEXT NULL, `dateCreated` DATETIME NOT NULL, `lastUpdateBy` VARCHAR(35) NOT NULL, `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `Mailing_Address` TINYTEXT NULL, `Mailing_City` TINYTEXT NULL, `Mailing_State` TINYTEXT NULL, `Mailing_ZipCode` TINYTEXT NULL, `Mailing_ZipPlus4` CHAR(4) NULL DEFAULT NULL, `Mailing_DeliveryPointBarcode` CHAR(12) NULL DEFAULT NULL, `Primary_PhoneNumber` TINYTEXT NULL, `Primary_FaxNumber` TINYTEXT NULL, `Physical_Address` TINYTEXT NULL, `Physical_City` TINYTEXT NULL, `Physical_State` TINYTEXT NULL, `Physical_ZipCode` TINYTEXT NULL, `Physical_ZipPlus4` CHAR(4) NULL DEFAULT NULL, `Physical_DeliveryPointBarcode` CHAR(12) NULL DEFAULT NULL, `Physical_Latitude` DECIMAL(10,5) NULL DEFAULT NULL, `Physical_Longitude` DECIMAL(10,5) NULL DEFAULT NULL, `Physical_TimeZone` TINYTEXT NULL, `Physical_DST` BIT(1) NOT NULL DEFAULT b'0', `Physical_UTCOffset` CHAR(3) NOT NULL DEFAULT '0', `Physical_CountyName` TINYTEXT NULL, `Physical_CarrierRoute` TINYTEXT NULL, `Physical_CongressionalDistrict` TINYTEXT NULL, PRIMARY KEY (`TContent_ID`) ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
+  dbWorker.setTable('p_EventRegistration_Facility')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='FacilityName',dataType='varchar',length='255',nullable=false)
+    .addColumn(column='Mailing_Address',dataType='varchar',length='255')
+    .addColumn(column='Mailing_City',dataType='char',length='50')
+    .addColumn(column='Mailing_State',dataType='char',length='2')
+    .addColumn(column='Mailing_ZipCode',dataType='char',length='5')
+    .addColumn(column='Mailing_ZipPlus4',dataType='char',length='4')
+    .addColumn(column='Mailing_USPSDeliveryPoint',dataType='char',length='12')
+    .addColumn(column='Mailing_USPSCheckDigit',dataType='varchar',length='50',nullable=true)
+    .addColumn(column='Mailing_USPSCarrierRoute',dataType='varchar',length='50',nullable=true)
+    .addColumn(column='Mailing_isAddressVerified',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Physical_Address',dataType='varchar',length='255')
+    .addColumn(column='Physical_City',dataType='char',length='50')
+    .addColumn(column='Physical_State',dataType='char',length='2')
+    .addColumn(column='Physical_ZipCode',dataType='char',length='5')
+    .addColumn(column='Physical_ZipPlus4',dataType='char',length='4')
+    .addColumn(column='Physical_USPSDeliveryPoint',dataType='varchar',length='12',nullable=true)
+    .addColumn(column='Physical_USPSCheckDigit',dataType='varchar',length='50',nullable=true)
+    .addColumn(column='Physical_USPSCarrierRoute',dataType='varchar',length='50',nullable=true)
+    .addColumn(column='Physical_Latitude',dataType='char',length='12')
+    .addColumn(column='Physical_Longitude',dataType='char',length='12')
+    .addColumn(column='Physical_TimeZone',dataType='char',length='50')
+    .addColumn(column='Physical_DST',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Physical_UTCOffset',dataType='char',length='10')
+    .addColumn(column='Physical_CountyName',dataType='char',length='30')
+    .addColumn(column='Physical_CongressionalDistrict',dataType='char',length='30')
+    .addColumn(column='Physical_CountyFIPS',dataType='varchar',length='50',nullable=true)
+    .addColumn(column='Physical_isAddressVerified',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='PrimaryVoiceNumber',dataType='char',length='14')
+    .addColumn(column='BusinessWebsite',dataType='varchar',length='255')
+    .addColumn(column='ContactName',dataType='varchar',length='255')
+    .addColumn(column='ContactPhoneNumber',dataType='char',length='14')
+    .addColumn(column='ContactEmail',dataType='varchar',length='255')
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='char',length='35')
+    .addColumn(column='Active',dataType='boolean',default=0,nullable=false)
+    .addPrimaryKey(column='TContent_ID');
 
-<cfquery name="Create-p_EventRegistration_UserMatrix" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_UserMatrix` ( `TContent_ID` INT(11) NOT NULL AUTO_INCREMENT, `Site_ID` TINYTEXT NOT NULL, `User_ID` CHAR(35) NOT NULL, `School_District` INT(11) NULL DEFAULT NULL, `dateCreated` DATETIME NOT NULL, `lastUpdateBy` VARCHAR(35) NOT NULL, `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, `TeachingGrade` INT(11) NULL DEFAULT NULL, `TeachingSubject` INT(11) NULL DEFAULT NULL, `ReceiveMarketingFlyers` BIT(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`) ) COLLATE='latin1_swedish_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
 
-<cfquery name="Create-p_EventRegistration_UserRegistrations" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	CREATE TABLE `p_EventRegistration_UserRegistrations` ( `TContent_ID` INT(10) NOT NULL AUTO_INCREMENT, `Site_ID` VARCHAR(20) NOT NULL DEFAULT '', `RegistrationID` VARCHAR(35) NOT NULL DEFAULT '', `RegistrationDate` DATETIME NOT NULL DEFAULT '1980-01-01 01:00:00', `User_ID` CHAR(35) NOT NULL, `EventID` INT(10) NOT NULL DEFAULT '0', `RequestsMeal` BIT(1) NOT NULL DEFAULT b'0', `IVCParticipant` BIT(1) NOT NULL DEFAULT b'0', `AttendeePrice` DECIMAL(15,4) NULL DEFAULT '0.0000', `RegistrationIPAddr` VARCHAR(15) NOT NULL DEFAULT '0.0.0.0', `RegisterByUserID` VARCHAR(35) NOT NULL DEFAULT '', `OnWaitingList` BIT(1) NOT NULL DEFAULT b'0', `AttendedEventDate1` BIT(1) NOT NULL DEFAULT b'0', `AttendedEventDate2` BIT(1) NOT NULL DEFAULT b'0', `AttendedEventDate3` BIT(1) NOT NULL DEFAULT b'0', `AttendedEventDate4` BIT(1) NOT NULL DEFAULT b'0', `AttendedEventDate5` BIT(1) NOT NULL DEFAULT b'0', `AttendedEventDate6` BIT(1) NOT NULL DEFAULT b'0', `AttendedEventSessionAM` BIT(1) NOT NULL DEFAULT b'0', `AttendedEventSessionPM` BIT(1) NOT NULL DEFAULT b'0', `RegisterForEventDate1` BIT(1) NOT NULL DEFAULT b'0', `RegisterForEventDate2` BIT(1) NOT NULL DEFAULT b'0', `RegisterForEventDate3` BIT(1) NOT NULL DEFAULT b'0', `RegisterForEventDate4` BIT(1) NOT NULL DEFAULT b'0', `RegisterForEventDate5` BIT(1) NOT NULL DEFAULT b'0', `RegisterForEventDate6` BIT(1) NOT NULL DEFAULT b'0', `RegisterForEventSessionAM` BIT(1) NOT NULL DEFAULT b'0', `RegisterForEventSessionPM` BIT(1) NOT NULL DEFAULT b'0', `Comments` VARCHAR(255) NULL DEFAULT NULL, `WebinarParticipant` BIT(1) NOT NULL DEFAULT b'0', `AttendeePriceVerified` BIT(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`, `Site_ID`, `User_ID`) ) COLLATE='utf8_general_ci' ENGINE=InnoDB AUTO_INCREMENT=1;
-</cfquery>
+  dbWorker.setTable('p_EventRegistration_FacilityRooms')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='Facility_ID',dataType='int',nullable=false)
+    .addColumn(column='RoomName',dataType='varchar',length='50')
+    .addColumn(column='Capacity',dataType='int',nullable=false)
+    .addColumn(column='RoomFees',dataType='double',nullable=true)
+    .addColumn(column='Active',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='char',length='35')
+    .addPrimaryKey(column='TContent_ID');
 
-<cfquery name="CheckGroups" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	Select UserID, GroupName
-	From tusers
-	Where GroupName LIKE '%Event%'
+  dbWorker.setTable('p_EventRegistration_GradeLevels')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='GradeLevel',dataType='char',length='50',nullable=false)
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='char',length='35')
+    .addPrimaryKey(column='TContent_ID');
+
+  dbWorker.setTable('p_EventRegistration_GradeSubjects')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='GradeLevel',dataType='int',nullable=false)
+    .addColumn(column='GradeSubject',dataType='char',length='50',nullable=false)
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='char',length='35')
+    .addPrimaryKey(column='TContent_ID');
+
+  dbWorker.setTable('p_EventRegistration_Membership')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='OrganizationName',dataType='char',length='50',nullable=false)
+    .addColumn(column='OrganizationDomainName',dataType='char',length='150',nullable=false)
+    .addColumn(column='StateDOE_IDNumber',dataType='char',length='10',nullable=true)
+    .addColumn(column='StateDOE_ESCESAMembership',dataType='int',nullable=true)
+    .addColumn(column='StateDOE_State',dataType='char',length='50',nullable=true)
+    .addColumn(column='Mailing_Address',dataType='varchar',length='255')
+    .addColumn(column='Mailing_City',dataType='char',length='50')
+    .addColumn(column='Mailing_State',dataType='char',length='2')
+    .addColumn(column='Mailing_ZipCode',dataType='char',length='5')
+    .addColumn(column='Mailing_ZipPlus4',dataType='char',length='4')
+    .addColumn(column='Mailing_USPSDeliveryPoint',dataType='char',length='12')
+    .addColumn(column='Mailing_USPSCheckDigit',dataType='varchar',length='50',nullable=true)
+    .addColumn(column='Mailing_USPSCarrierRoute',dataType='varchar',length='50',nullable=true)
+    .addColumn(column='Mailing_isAddressVerified',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Physical_Address',dataType='varchar',length='255')
+    .addColumn(column='Physical_City',dataType='char',length='50')
+    .addColumn(column='Physical_State',dataType='char',length='2')
+    .addColumn(column='Physical_ZipCode',dataType='char',length='5')
+    .addColumn(column='Physical_ZipPlus4',dataType='char',length='4')
+    .addColumn(column='Physical_USPSDeliveryPoint',dataType='varchar',length='12',nullable=true)
+    .addColumn(column='Physical_USPSCheckDigit',dataType='varchar',length='50',nullable=true)
+    .addColumn(column='Physical_USPSCarrierRoute',dataType='varchar',length='50',nullable=true)
+    .addColumn(column='Physical_Latitude',dataType='char',length='12')
+    .addColumn(column='Physical_Longitude',dataType='char',length='12')
+    .addColumn(column='Physical_TimeZone',dataType='char',length='50')
+    .addColumn(column='Physical_DST',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Physical_UTCOffset',dataType='char',length='10')
+    .addColumn(column='Physical_CountyName',dataType='char',length='30')
+    .addColumn(column='Physical_CongressionalDistrict',dataType='char',length='30')
+    .addColumn(column='Physical_CountyFIPS',dataType='varchar',length='50',nullable=true)
+    .addColumn(column='Physical_isAddressVerified',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='AccountsPayable_ContactName',dataType='varchar',length='100')
+    .addColumn(column='AccountsPayable_EmailAddress',dataType='varchar',length='255')
+    .addColumn(column='ReceiveInvoicesByEmail',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='PrimaryVoiceNumber',dataType='char',length='14')
+    .addColumn(column='PrimaryFaxNumber',dataType='char',length='14')
+    .addColumn(column='BusinessWebsite',dataType='varchar',length='255')
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='char',length='35')
+    .addColumn(column='Active',dataType='boolean',default=0,nullable=false)
+    .addPrimaryKey(column='TContent_ID');
+
+  dbWorker.setTable('p_EventRegistration_MembershipBuildings')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='MembershipDistrict_ID',dataType='int',nullable=false)
+    .addColumn(column='OrganizationName',dataType='char',length='50',nullable=false)
+    .addColumn(column='StateDOE_IDNumber',dataType='char',length='10',nullable=true)
+    .addColumn(column='StateDOE_State',dataType='char',length='50',nullable=true)
+    .addColumn(column='Mailing_Address',dataType='varchar',length='255')
+    .addColumn(column='Mailing_City',dataType='char',length='50')
+    .addColumn(column='Mailing_State',dataType='char',length='2')
+    .addColumn(column='Mailing_ZipCode',dataType='char',length='5')
+    .addColumn(column='Mailing_ZipPlus4',dataType='char',length='4')
+    .addColumn(column='Mailing_DeliveryPointBarCode',dataType='char',length='12')
+    .addColumn(column='Physical_Address',dataType='varchar',length='255')
+    .addColumn(column='Physical_City',dataType='char',length='50')
+    .addColumn(column='Physical_State',dataType='char',length='2')
+    .addColumn(column='Physical_ZipCode',dataType='char',length='5')
+    .addColumn(column='Physical_ZipPlus4',dataType='char',length='4')
+    .addColumn(column='Physical_DeliveryPointBarCode',dataType='char',length='12')
+    .addColumn(column='Physical_Latitude',dataType='char',length='12')
+    .addColumn(column='Physical_Longitude',dataType='char',length='12')
+    .addColumn(column='Physical_TimeZone',dataType='char',length='50')
+    .addColumn(column='Physical_DST',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Physical_UTCOffset',dataType='char',length='10')
+    .addColumn(column='Physical_CountyName',dataType='char',length='30')
+    .addColumn(column='Physical_CongressionalDistrict',dataType='char',length='30')
+    .addColumn(column='Physical_CarrierRoute',dataType='char',length='30')
+    .addColumn(column='PrimaryVoiceNumber',dataType='char',length='14')
+    .addColumn(column='BusinessWebsite',dataType='varchar',length='255')
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='char',length='35')
+    .addColumn(column='isAddressVerified',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Active',dataType='boolean',default=0,nullable=false)
+    .addPrimaryKey(column='TContent_ID')
+    .addIndex(column='MembershipDistrict_ID');
+
+  dbWorker.setTable('p_EventRegistration_ShortURL')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='FullLink',dataType='longtext',nullable=true)
+    .addColumn(column='ShortLink',dataType='varchar',length='255')
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='char',length='35')
+    .addColumn(column='Active',dataType='boolean',default=0,nullable=false)
+    .addPrimaryKey(column='TContent_ID');
+
+  dbWorker.setTable('p_EventRegistration_SiteConfig')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='char',length='35')
+    .addColumn(column='ProcessPayments_Stripe',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Stripe_TestMode',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Stripe_TestAPIKey',dataType='char',length='50',nullable=true)
+    .addColumn(column='Stripe_LiveAPIKey',dataType='char',length='50',nullable=true)
+    .addColumn(column='Facebook_Enabled',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Facebook_AppID',dataType='char',length='50',nullable=true)
+    .addColumn(column='Facebook_AppSecretKey',dataType='char',length='50',nullable=true)
+    .addColumn(column='Facebook_PageID',dataType='char',length='50',nullable=true)
+    .addColumn(column='Facebook_AppScope',dataType='char',length='50',nullable=true)
+    .addColumn(column='Google_ReCaptchaEnabled',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='Google_ReCaptchaSiteKey',dataType='char',length='50',nullable=true)
+    .addColumn(column='Google_ReCaptchaSecretKey',dataType='char',length='50',nullable=true)
+    .addColumn(column='SmartyStreets_Enabled',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='SmartyStreets_APIID',dataType='char',length='50',nullable=true)
+    .addColumn(column='SmartyStreets_APIToken',dataType='char',length='50',nullable=true)
+    .addPrimaryKey(column='TContent_ID');
+
+  dbWorker.setTable('p_EventRegistration_StateESCOrganizations')
+        .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+        .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+        .addColumn(column='OrganizationName',dataType='char',length='50',nullable=false)
+        .addColumn(column='OrganizationDomainName',dataType='char',length='150',nullable=false)
+        .addColumn(column='StateDOE_IDNumber',dataType='char',length='10',nullable=true)
+        .addColumn(column='StateDOE_State',dataType='char',length='50',nullable=true)
+        .addColumn(column='Mailing_Address',dataType='varchar',length='255')
+        .addColumn(column='Mailing_City',dataType='char',length='50')
+        .addColumn(column='Mailing_State',dataType='char',length='2')
+        .addColumn(column='Mailing_ZipCode',dataType='char',length='5')
+        .addColumn(column='Mailing_ZipPlus4',dataType='char',length='4')
+        .addColumn(column='Mailing_USPSDeliveryPoint',dataType='char',length='12')
+        .addColumn(column='Mailing_USPSCheckDigit',dataType='varchar',length='50',nullable=true)
+        .addColumn(column='Mailing_USPSCarrierRoute',dataType='varchar',length='50',nullable=true)
+        .addColumn(column='Mailing_isAddressVerified',dataType='boolean',default=0,nullable=false)
+        .addColumn(column='Physical_Address',dataType='varchar',length='255')
+        .addColumn(column='Physical_City',dataType='char',length='50')
+        .addColumn(column='Physical_State',dataType='char',length='2')
+        .addColumn(column='Physical_ZipCode',dataType='char',length='5')
+        .addColumn(column='Physical_ZipPlus4',dataType='char',length='4')
+        .addColumn(column='Physical_USPSDeliveryPoint',dataType='varchar',length='12',nullable=true)
+        .addColumn(column='Physical_USPSCheckDigit',dataType='varchar',length='50',nullable=true)
+        .addColumn(column='Physical_USPSCarrierRoute',dataType='varchar',length='50',nullable=true)
+        .addColumn(column='Physical_Latitude',dataType='char',length='12')
+        .addColumn(column='Physical_Longitude',dataType='char',length='12')
+        .addColumn(column='Physical_TimeZone',dataType='char',length='50')
+        .addColumn(column='Physical_DST',dataType='boolean',default=0,nullable=false)
+        .addColumn(column='Physical_UTCOffset',dataType='char',length='10')
+        .addColumn(column='Physical_CountyName',dataType='char',length='30')
+        .addColumn(column='Physical_CongressionalDistrict',dataType='char',length='30')
+        .addColumn(column='Physical_CountyFIPS',dataType='varchar',length='50',nullable=true)
+        .addColumn(column='Physical_isAddressVerified',dataType='boolean',default=0,nullable=false)
+        .addColumn(column='PrimaryVoiceNumber',dataType='char',length='14')
+        .addColumn(column='PrimaryFaxNumber',dataType='char',length='14')
+        .addColumn(column='BusinessWebsite',dataType='varchar',length='255')
+        .addColumn(column='dateCreated',dataType='datetime')
+        .addColumn(column='lastUpdated',dataType='datetime')
+        .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+        .addColumn(column='lastUpdateByID',dataType='char',length='35')
+        .addColumn(column='Active',dataType='boolean',default=0,nullable=false)
+        .addPrimaryKey(column='TContent_ID');
+
+  dbWorker.setTable('p_EventRegistration_UserMatrix')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='User_ID',dataType='char',length='35',nullable=false)
+    .addColumn(column='SchoolDistrict_ID',dataType='int',nullable=true)
+    .addColumn(column='SchoolBuilding_ID',dataType='int',nullable=true)
+    .addColumn(column='GradeLevel',dataType='int',nullable=true)
+    .addColumn(column='GradeSubject',dataType='int',nullable=true)
+    .addColumn(column='dateCreated',dataType='datetime')
+    .addColumn(column='lastUpdated',dataType='datetime')
+    .addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+    .addColumn(column='lastUpdateByID',dataType='char',length='35')
+    .addColumn(column='ReceiveMarketingFlyers',dataType='boolean',default=0,nullable=false)
+    .addPrimaryKey(column='TContent_ID')
+    .addIndex(column='User_ID')
+    ;
+
+  dbWorker.setTable('p_EventRegistration_UserRegistrations')
+    .addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+    .addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+    .addColumn(column='User_ID',dataType='char',length='35',nullable=false)
+    .addColumn(column='Event_ID',dataType='int',nullable=false)
+    .addColumn(column='RegistrationID',dataType='char',length='35',nullable=false)
+    .addColumn(column='RegistrationDate',dataType='datetime')
+    .addColumn(column='IVCParticipant',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='OnWaitingList',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='AttendedEventDate1',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='AttendedEventDate2',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='AttendedEventDate3',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='AttendedEventDate4',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='AttendedEventDate5',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='AttendedEventDate6',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='AttendedEventSessionAM',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='AttendedEventSessionPM',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='RegisterFOrEventDate1',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='RegisterFOrEventDate2',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='RegisterFOrEventDate3',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='RegisterFOrEventDate4',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='RegisterFOrEventDate5',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='RegisterFOrEventDate6',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='RegisterForEventSessionAM',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='RegisterForEventSessionPM',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='AttendeePrice',dataType='double',nullable=false)
+    .addColumn(column='RegistrationIPAddr',dataType='char',length='35',nullable=false)
+    .addColumn(column='RegisterByUserID',dataType='char',length='35',nullable=false)
+    .addColumn(column='Comments',dataType='longtext',nullable=true)
+    .addColumn(column='WeminarParticipant',dataType='boolean',default=0,nullable=false)
+    .addColumn(column='AttendeePriceVerified',dataType='boolean',default=0,nullable=false)
+    .addPrimaryKey(column='TContent_ID')
+    .addIndex(column='Event_ID')
+    .addIndex(column='User_ID');
+</cfscript>
+
+<cfquery name='CheckGroups' datasource='#application.configBean.getDatasource()#' username='#application.configBean.getDBUsername()#' password='#application.configBean.getDBPassword()#'>
+  Select UserID, GroupName
+  From tusers
+  Where GroupName LIKE '%Event%'
 </cfquery>
 <cfif CheckGroups.RecordCount EQ 0>
-	<cfscript>
-		var NewGroupEventFacilitator = #application.userManager.read("")#;
-		NewGroupEventFacilitator.setSiteID(Session.SiteID);
-		NewGroupEventFacilitator.setGroupName("Event Facilitator");
-		NewGroupEventFacilitator.setType(1);
-		NewGroupEventFacilitator.setIsPublic(1);
-		NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
-	</cfscript>
-	<cfscript>
-		var NewGroupEventFacilitator = #application.userManager.read("")#;
-		NewGroupEventFacilitator.setSiteID(Session.SiteID);
-		NewGroupEventFacilitator.setGroupName("Event Presenter");
-		NewGroupEventFacilitator.setType(1);
-		NewGroupEventFacilitator.setIsPublic(1);
-		NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
-	</cfscript>
+  <cfscript>
+    var NewGroupEventFacilitator = #application.userManager.read('')#;
+    NewGroupEventFacilitator.setSiteID(Session.SiteID);
+    NewGroupEventFacilitator.setGroupName('Event Facilitator');
+    NewGroupEventFacilitator.setType(1);
+    NewGroupEventFacilitator.setIsPublic(1);
+    NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
+  </cfscript>
+  <cfscript>
+    var NewGroupEventFacilitator = #application.userManager.read('')#;
+    NewGroupEventFacilitator.setSiteID(Session.SiteID);
+    NewGroupEventFacilitator.setGroupName('Event Presenter');
+    NewGroupEventFacilitator.setType(1);
+    NewGroupEventFacilitator.setIsPublic(1);
+    NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
+  </cfscript>
 <cfelse>
-	<cfset GroupPresenterExists = 0>
-	<cfset GroupFacilitatorExists = 0>
-	<cfloop query="CheckGroups">
-		<cfif CheckGroups.GroupName EQ "Event Facilitator">
-			<cfset GroupFacilitatorExists = 1>
-		</cfif>
-		<cfif CheckGroups.GroupName EQ "Event Presenter">
-			<cfset GroupPresenterExists = 1>
-		</cfif>
-	</cfloop>
-	<cfif GroupFacilitatorExists EQ 0>
-		<cfscript>
-		var NewGroupEventFacilitator = #application.userManager.read("")#;
-		NewGroupEventFacilitator.setSiteID(Session.SiteID);
-		NewGroupEventFacilitator.setGroupName("Event Facilitator");
-		NewGroupEventFacilitator.setType(1);
-		NewGroupEventFacilitator.setIsPublic(1);
-		NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
-		</cfscript>
-	</cfif>
-	<cfif GroupPresenterExists EQ 0>
-		<cfscript>
-		var NewGroupEventFacilitator = #application.userManager.read("")#;
-		NewGroupEventFacilitator.setSiteID(Session.SiteID);
-		NewGroupEventFacilitator.setGroupName("Event Presenter");
-		NewGroupEventFacilitator.setType(1);
-		NewGroupEventFacilitator.setIsPublic(1);
-		NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
-		</cfscript>
-	</cfif>
+  <cfset GroupPresenterExists = 0>
+  <cfset GroupFacilitatorExists = 0>
+  <cfloop query='CheckGroups'>
+    <cfif CheckGroups.GroupName EQ 'Event Facilitator'>
+      <cfset GroupFacilitatorExists = 1>
+    </cfif>
+    <cfif CheckGroups.GroupName EQ 'Event Presenter'>
+      <cfset GroupPresenterExists = 1>
+    </cfif>
+  </cfloop>
+  <cfif GroupFacilitatorExists EQ 0>
+    <cfscript>
+    var NewGroupEventFacilitator = #application.userManager.read('')#;
+    NewGroupEventFacilitator.setSiteID(Session.SiteID);
+    NewGroupEventFacilitator.setGroupName('Event Facilitator');
+    NewGroupEventFacilitator.setType(1);
+    NewGroupEventFacilitator.setIsPublic(1);
+    NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
+    </cfscript>
+  </cfif>
+  <cfif GroupPresenterExists EQ 0>
+    <cfscript>
+    var NewGroupEventFacilitator = #application.userManager.read('')#;
+    NewGroupEventFacilitator.setSiteID(Session.SiteID);
+    NewGroupEventFacilitator.setGroupName('Event Presenter');
+    NewGroupEventFacilitator.setType(1);
+    NewGroupEventFacilitator.setIsPublic(1);
+    NewGroupEventFacilitatorStatus = #Application.userManager.create(NewGroupEventFacilitator)#;
+    </cfscript>
+  </cfif>
 </cfif>
+
+<cfquery name='InsertSiteToSiteConfig' datasource='#application.configBean.getDatasource()#' username='#application.configBean.getDBUsername()#' password='#application.configBean.getDBPassword()#'>
+  Insert into p_EventRegistration_SiteConfig(Site_ID, DateCreated, lastUpdateBy, lastUpdated)
+  Values(
+    <cfqueryparam value='#Session.SiteID#' cfsqltype='cf_sql_varchar'>,
+    <cfqueryparam value='#Now()#' cfsqltype='cf_sql_timestamp'>,
+    <cfqueryparam value='Admin' cfsqltype='cf_sql_varchar'>,
+    <cfqueryparam value='#Now()#' cfsqltype='cf_sql_timestamp'>
+    )
+</cfquery>

@@ -1,13 +1,22 @@
-<cfquery name="ShowEventResourcesTable" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	Show Tables LIKE 'p_EventRegistration_EventResources'
-</cfquery>
+<cfscript>
+	var dbWorker = application.configbean.getBean('dbUtility');
 
-<cfif ShowEventResourcesTable.RecordCount EQ 0>
-	<cfquery name="Create-p_EventRegistration_EventResources" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		CREATE TABLE `p_EventRegistration_EventResources` (
-			`TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL, `Event_ID` int(11) NOT NULL, `ResourceType` char(1) NOT NULL,
-			`ResourceLink` tinytext, `dateCreated` datetime NOT NULL, `lastUpdated` timestamp default now() ON UPDATE now(), `lastUpdateBy` tinytext NOT NULL, `ResourceDocument` tinytext,
-			`ResourceDocumentType` tinytext, `ResourceDocumentSize` tinytext, PRIMARY KEY (`TContent_ID`,`Event_ID`), KEY `Event_ID_Index` (`Event_ID`) USING BTREE
-		) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-	</cfquery>
+	var CheckTable = dbWorker.tableExists('p_EventRegistration_EventResources');
+</cfscript>
+
+<cfif Variables.CheckTable EQ False>
+	<cfscript>
+		dbWorker.setTable('p_EventRegistration_EventResources')
+			.addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+			.addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+			.addColumn(column='ResourceType',dataType='char',length='1',nullable=false)
+			.addColumn(column='ResourceLink',dataType='longtext',nullable=true)
+			.addColumn(column='ResourceDocument',dataType='longtext',nullable=true)
+			.addColumn(column='ResourceDocumentSized',dataType='longtext',nullable=true)
+			.addColumn(column='dateCreated',dataType='datetime')
+			.addColumn(column='lastUpdated',dataType='datetime')
+			.addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+			.addColumn(column='lastUpdateByID',dataType='varchar',length='35')
+			.addPrimaryKey(column='TContent_ID');
+	</cfscript>
 </cfif>

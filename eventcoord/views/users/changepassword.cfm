@@ -24,46 +24,46 @@
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
-						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getSelectedUser.FName#" disabled="yes"></div>
+						<label for="FirstName" class="col-lg-3 col-md-3">First Name:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getSelectedUser.FName#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getSelectedUser.LName#" disabled="yes"></div>
+						<label for="LastName" class="col-lg-3 col-md-3">Last Name:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getSelectedUser.LName#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getSelectedUser.Email#" disabled="yes"></div>
+						<label for="Email" class="col-lg-3 col-md-3">Email Address:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getSelectedUser.Email#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Username" class="control-label col-sm-3">Username:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.getSelectedUser.Email#" disabled="yes"></div>
+						<label for="Username" class="col-lg-3 col-md-3">Username:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.getSelectedUser.Email#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Company" class="control-label col-sm-3">Company:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Company" name="Company" value="#Session.getSelectedUser.Company#" disabled="No"></div>
+						<label for="Company" class="col-lg-3 col-md-3">Company:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="Company" name="Company" value="#Session.getSelectedUser.Company#" disabled="No"></div>
 					</div>
 					<div class="form-group">
-						<label for="JobTitle" class="control-label col-sm-3">Job Title:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="JobTitle" name="JobTitle" value="#Session.getSelectedUser.JobTitle#" disabled="no"></div>
+						<label for="JobTitle" class="col-lg-3 col-md-3">Job Title:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="JobTitle" name="JobTitle" value="#Session.getSelectedUser.JobTitle#" disabled="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="mobilePhone" class="control-label col-sm-3">Mobile Phone:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.getSelectedUser.mobilePhone#" disabled="no"></div>
+						<label for="mobilePhone" class="col-lg-3 col-md-3">Mobile Phone:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.getSelectedUser.mobilePhone#" disabled="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="InActive" class="control-label col-sm-3">Account InActive:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="InActive" class="form-control" disabled="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedUser.InActive#" Display="OptionName" queryposition="below">
+						<label for="InActive" class="col-lg-3 col-md-3">Account InActive:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfselect name="InActive" class="form-control" disabled="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedUser.InActive#" Display="OptionName" queryposition="below">
 							<option value="----">Account InActive?</option>
 						</cfselect></div>
 					</div>
 					<div class="form-group">
-						<label for="Password" class="control-label col-sm-3">Password:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="password" class="form-control" id="Password" name="Password" required="no"></div>
+						<label for="Password" class="col-lg-3 col-md-3">Password:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="password" class="form-control" id="Password" name="Password" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="VerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" required="no"></div>
+						<label for="VerifyPassword" class="col-lg-3 col-md-3">Verify Password:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" required="no"></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -126,46 +126,46 @@
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
-						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getSelectedUser.FName#" disabled="yes"></div>
+						<label for="FirstName" class="col-lg-3 col-md-3">First Name:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getSelectedUser.FName#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getSelectedUser.LName#" disabled="yes"></div>
+						<label for="LastName" class="col-lg-3 col-md-3">Last Name:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getSelectedUser.LName#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getSelectedUser.Email#" disabled="yes"></div>
+						<label for="Email" class="col-lg-3 col-md-3">Email Address:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getSelectedUser.Email#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Username" class="control-label col-sm-3">Username:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.getSelectedUser.Email#" disabled="yes"></div>
+						<label for="Username" class="col-lg-3 col-md-3">Username:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.getSelectedUser.Email#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Company" class="control-label col-sm-3">Company:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Company" name="Company" value="#Session.getSelectedUser.Company#" disabled="No"></div>
+						<label for="Company" class="col-lg-3 col-md-3">Company:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="Company" name="Company" value="#Session.getSelectedUser.Company#" disabled="No"></div>
 					</div>
 					<div class="form-group">
-						<label for="JobTitle" class="control-label col-sm-3">Job Title:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="JobTitle" name="JobTitle" value="#Session.getSelectedUser.JobTitle#" disabled="no"></div>
+						<label for="JobTitle" class="col-lg-3 col-md-3">Job Title:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="JobTitle" name="JobTitle" value="#Session.getSelectedUser.JobTitle#" disabled="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="mobilePhone" class="control-label col-sm-3">Mobile Phone:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.getSelectedUser.mobilePhone#" disabled="no"></div>
+						<label for="mobilePhone" class="col-lg-3 col-md-3">Mobile Phone:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.getSelectedUser.mobilePhone#" disabled="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="InActive" class="control-label col-sm-3">Account InActive:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="InActive" class="form-control" disabled="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedUser.InActive#" Display="OptionName" queryposition="below">
+						<label for="InActive" class="col-lg-3 col-md-3">Account InActive:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfselect name="InActive" class="form-control" disabled="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedUser.InActive#" Display="OptionName" queryposition="below">
 							<option value="----">Account InActive?</option>
 						</cfselect></div>
 					</div>
 					<div class="form-group">
-						<label for="Password" class="control-label col-sm-3">Password:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="password" class="form-control" id="Password" name="Password" value="#Session.FormInput.Password#" required="no"></div>
+						<label for="Password" class="col-lg-3 col-md-3">Password:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="password" class="form-control" id="Password" name="Password" value="#Session.FormInput.Password#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="VerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" value="#Session.FormInput.VerifyPassword#" required="no"></div>
+						<label for="VerifyPassword" class="col-lg-3 col-md-3">Verify Password:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" value="#Session.FormInput.VerifyPassword#" required="no"></div>
 					</div>
 				</div>
 				<div class="panel-footer">

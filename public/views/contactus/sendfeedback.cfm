@@ -1,23 +1,24 @@
-<cfset BestContactMethodQuery = QueryNew("ID,OptionName", "Integer,VarChar")>
-<cfset temp = QueryAddRow(BestContactMethodQuery, 1)>
-<cfset temp = #QuerySetCell(BestContactMethodQuery, "ID", 0)#>
-<cfset temp = #QuerySetCell(BestContactMethodQuery, "OptionName", "By Email")#>
-<cfset temp = QueryAddRow(BestContactMethodQuery, 1)>
-<cfset temp = #QuerySetCell(BestContactMethodQuery, "ID", 1)#>
-<cfset temp = #QuerySetCell(BestContactMethodQuery, "OptionName", "By Telephone")#>
+<cfsilent>
+	<cfset BestContactMethodQuery = QueryNew("ID,OptionName", "Integer,VarChar")>
+	<cfset temp = QueryAddRow(BestContactMethodQuery, 1)>
+	<cfset temp = #QuerySetCell(BestContactMethodQuery, "ID", 0)#>
+	<cfset temp = #QuerySetCell(BestContactMethodQuery, "OptionName", "By Email")#>
+	<cfset temp = QueryAddRow(BestContactMethodQuery, 1)>
+	<cfset temp = #QuerySetCell(BestContactMethodQuery, "ID", 1)#>
+	<cfset temp = #QuerySetCell(BestContactMethodQuery, "OptionName", "By Telephone")#>
+</cfsilent>
 
 <cfoutput>
+	<cfscript>
+			lang = 'en';
+		</cfscript>
+	<script src='https://www.google.com/recaptcha/api.js?h1=#lang#'></script>
 	<div class="panel panel-default">
 		<div class="panel-heading"><h1>Contact Us</h1></div>
 		<cfif not isDefined("URL.FormRetry")>
-			<cfset captcha = #Session.Captcha#>
-			<cfset captchaHash = Hash(captcha)>
 			<cfform action="" method="post" id="ContactUsForm" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-				<cfinput type="hidden" name="CaptchaEncrypted" value="#Variables.CaptchaHash#">
-				<cfinput type="hidden" name="HumanValidation" value="#Variables.Captcha#">
 				<cfinput type="hidden" name="formSubmit" value="true">
-				<!--- <cfinput type="hidden" name="captchaHash" id="captchaHash" value="#captchaHash#"> --->
 				<div class="panel-body">
 					<div class="well">Please complete the following information to send us your inquiry</div>
 					<div class="panel-heading"><h2>Your Contact Information</h2></div>
@@ -94,15 +95,13 @@
 							<textarea class="form-control" name="InquiryMessage" id="InquiryMessage" height="45" required="true"></textarea>
 						</div>
 					</div>
-					<div class="panel-heading"><h2>Account Security</h2></div>
-					<div class="form-group">
-						<label for="HumanChecker" class="control-label col-sm-2">In order to prevent abuse from automatic systems, please type the letters or numbers in the box below:&nbsp;</label>
-						<div class="col-sm-9">
-							<cfimage action="captcha" difficulty="medium" text="#captcha#" fonts="arial,times roman, tahoma" height="150" width="500" /><br>
-							<cfinput name="ValidateCaptcha" type="text" required="yes" message="Input Captcha Text" />
+					<cfif Session.EventRegistration.SiteSettings.Google_ReCaptchaEnabled EQ 1>
+						<div class="panel-heading"><h2>Account Security</h2></div>
+						<div class="form-group">
+						<div class="col-sm-6"><div class="g-recaptcha" data-sitekey="#Session.EventRegistration.SiteSettings.Google_ReCaptchaSiteKey#"></div></div>
 						</div>
-					</div>
-				</div>
+						</div>
+					</cfif>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="SendInquiry" class="btn btn-primary pull-right" value="Send Inquiry"><br /><br />
 				</div>
@@ -117,8 +116,6 @@
 			</cfif>
 			<cfform action="" method="post" id="ContactUsForm" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-				<cfinput type="hidden" name="CaptchaEncrypted" value="#Session.FormData.CaptchaEncrypted#">
-				<cfinput type="hidden" name="HumanValidation" value="#Session.FormData.HumanValidation#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<div class="well">Please complete the following information to send us your inquiry</div>
@@ -155,14 +152,13 @@
 							<textarea class="form-control" name="InquiryMessage" id="InquiryMessage" height="45" required="true">#Session.FormData.InquiryMessage#</textarea>
 						</div>
 					</div>
-					<div class="panel-heading"><h2>Human Checker</h2></div>
-					<div class="form-group">
-						<label for="HumanChecker" class="control-label col-sm-2">Enter Text:&nbsp;</label>
-						<div class="col-sm-9">
-							<cfimage action="captcha" difficulty="medium" text="#Session.FormData.HumanValidation#" fonts="arial,times roman, tahoma" height="150" width="500" /><br>
-							<cfinput name="ValidateCaptcha" type="text" required="yes" message="Input Captcha Text" />
+					<cfif Session.EventRegistration.SiteSettings.Google_ReCaptchaEnabled EQ 1>
+						<div class="panel-heading"><h2>Account Security</h2></div>
+						<div class="form-group">
+						<div class="col-sm-6"><div class="g-recaptcha" data-sitekey="#Session.EventRegistration.SiteSettings.Google_ReCaptchaSiteKey#"></div></div>
 						</div>
-					</div>
+						</div>
+					</cfif>
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="SendInquiry" class="btn btn-primary pull-right" value="Send Inquiry"><br /><br />

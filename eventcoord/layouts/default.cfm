@@ -151,13 +151,9 @@
 		</div>
 		<div class="row-fluid">
 			<!--- SUB-NAV --->
-			<div class="span3">
-				<ul class="nav nav-list">
-
-				</ul>
-			</div>
+			
 			<!--- BODY --->
-			<div class="span9">
+			<div class="span12">
 				#body#
 			</div>
 		</div>

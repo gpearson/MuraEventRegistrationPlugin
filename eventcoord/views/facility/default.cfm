@@ -14,153 +14,153 @@ http://www.apache.org/licenses/LICENSE-2.0
 		$.jgrid.defaults.responsive = true;
 		$.jgrid.defaults.styleUI = 'Bootstrap';
 	</script>
+	<cfif isDefined("URL.UserAction")>
+		<cfswitch expression="#URL.UserAction#">
+			<cfcase value="InformationUpdated">
+				<cfif URL.Successful EQ "true">
+					<div id="modelWindowDialog" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+									<h3>Facility Information Updated</h3>
+								</div>
+								<div class="modal-body">
+									<p class="alert alert-success">You have successfully updated the facility information in the database.</p>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<script type='text/javascript'>
+						(function() {
+							'use strict';
+							function remoteModal(idModal){
+								var vm = this;
+								vm.modal = $(idModal);
+								if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+								if( window.location.hash == idModal ){ openModal(); }
+								var services = { open: openModal, close: closeModal };
+								return services;
+								function openModal(){
+									vm.modal.modal('show');
+								}
+								function closeModal(){
+									vm.modal.modal('hide');
+								}
+							}
+							Window.prototype.remoteModal = remoteModal;
+						})();
+						$(function(){
+							window.remoteModal('##modelWindowDialog');
+						});
+					</script>
+				<cfelse>
+					<div class="alert alert-danger">
+					</div>
+				</cfif>
+			</cfcase>
+			<cfcase value="RoomCreated">
+				<cfif URL.Successful EQ "true">
+					<div id="modelWindowDialog" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+									<h3>Meeting Room Added to Facility</h3>
+								</div>
+								<div class="modal-body">
+									<p class="alert alert-success">You have successfully created a new meeting room within the facility for upcoming events or workshops.</p>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<script type='text/javascript'>
+						(function() {
+							'use strict';
+							function remoteModal(idModal){
+								var vm = this;
+								vm.modal = $(idModal);
+								if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+								if( window.location.hash == idModal ){ openModal(); }
+								var services = { open: openModal, close: closeModal };
+								return services;
+								function openModal(){
+									vm.modal.modal('show');
+								}
+								function closeModal(){
+									vm.modal.modal('hide');
+								}
+							}
+							Window.prototype.remoteModal = remoteModal;
+						})();
+						$(function(){
+							window.remoteModal('##modelWindowDialog');
+						});
+					</script>
+				<cfelse>
+					<div class="alert alert-danger">
+					</div>
+				</cfif>
+			</cfcase>
+			<cfcase value="InformationAdded">
+				<cfif URL.Successful EQ "true">
+					<div id="modelWindowDialog" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+									<h3>Facility Information Added</h3>
+								</div>
+								<div class="modal-body">
+									<p class="alert alert-success">You have successfully added a new facility to the database for upcoming events or workshops.</p>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<script type='text/javascript'>
+						(function() {
+							'use strict';
+							function remoteModal(idModal){
+								var vm = this;
+								vm.modal = $(idModal);
+								if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+								if( window.location.hash == idModal ){ openModal(); }
+								var services = { open: openModal, close: closeModal };
+								return services;
+								function openModal(){
+									vm.modal.modal('show');
+								}
+								function closeModal(){
+									vm.modal.modal('hide');
+								}
+							}
+							Window.prototype.remoteModal = remoteModal;
+						})();
+						$(function(){
+							window.remoteModal('##modelWindowDialog');
+						});
+					</script>
+				<cfelse>
+					<div class="alert alert-danger">
+					</div>
+				</cfif>
+			</cfcase>
+		</cfswitch>
+	</cfif>
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<fieldset>
-				<legend><h2>Available Facilities to hold events</h2></legend>
+				<legend><h2>Available Facilities to Hold Events</h2></legend>
 			</fieldset>
-			<cfif isDefined("URL.UserAction")>
-				<cfswitch expression="#URL.UserAction#">
-					<cfcase value="InformationUpdated">
-						<cfif URL.Successful EQ "true">
-							<div id="modelWindowDialog" class="modal fade">
-								<div class="modal-dialog">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
-											<h3>Facility Information Updated</h3>
-										</div>
-										<div class="modal-body">
-											<p class="alert alert-success">You have successfully updated the facility information in the database.</p>
-										</div>
-										<div class="modal-footer">
-											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<script type='text/javascript'>
-								(function() {
-									'use strict';
-									function remoteModal(idModal){
-										var vm = this;
-										vm.modal = $(idModal);
-										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
-										if( window.location.hash == idModal ){ openModal(); }
-										var services = { open: openModal, close: closeModal };
-										return services;
-										function openModal(){
-											vm.modal.modal('show');
-										}
-										function closeModal(){
-											vm.modal.modal('hide');
-										}
-									}
-									Window.prototype.remoteModal = remoteModal;
-								})();
-								$(function(){
-									window.remoteModal('##modelWindowDialog');
-								});
-							</script>
-						<cfelse>
-							<div class="alert alert-danger">
-							</div>
-						</cfif>
-					</cfcase>
-					<cfcase value="RoomCreated">
-						<cfif URL.Successful EQ "true">
-							<div id="modelWindowDialog" class="modal fade">
-								<div class="modal-dialog">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
-											<h3>Meeting Room Added to Facility</h3>
-										</div>
-										<div class="modal-body">
-											<p class="alert alert-success">You have successfully created a new meeting room within the facility for upcoming events or workshops.</p>
-										</div>
-										<div class="modal-footer">
-											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<script type='text/javascript'>
-								(function() {
-									'use strict';
-									function remoteModal(idModal){
-										var vm = this;
-										vm.modal = $(idModal);
-										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
-										if( window.location.hash == idModal ){ openModal(); }
-										var services = { open: openModal, close: closeModal };
-										return services;
-										function openModal(){
-											vm.modal.modal('show');
-										}
-										function closeModal(){
-											vm.modal.modal('hide');
-										}
-									}
-									Window.prototype.remoteModal = remoteModal;
-								})();
-								$(function(){
-									window.remoteModal('##modelWindowDialog');
-								});
-							</script>
-						<cfelse>
-							<div class="alert alert-danger">
-							</div>
-						</cfif>
-					</cfcase>
-					<cfcase value="CatererAdded">
-						<cfif URL.Successful EQ "true">
-							<div id="modelWindowDialog" class="modal fade">
-								<div class="modal-dialog">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
-											<h3>Facility Information Added</h3>
-										</div>
-										<div class="modal-body">
-											<p class="alert alert-success">You have successfully added a new facility to the database for upcoming events or workshops.</p>
-										</div>
-										<div class="modal-footer">
-											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<script type='text/javascript'>
-								(function() {
-									'use strict';
-									function remoteModal(idModal){
-										var vm = this;
-										vm.modal = $(idModal);
-										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
-										if( window.location.hash == idModal ){ openModal(); }
-										var services = { open: openModal, close: closeModal };
-										return services;
-										function openModal(){
-											vm.modal.modal('show');
-										}
-										function closeModal(){
-											vm.modal.modal('hide');
-										}
-									}
-									Window.prototype.remoteModal = remoteModal;
-								})();
-								$(function(){
-									window.remoteModal('##modelWindowDialog');
-								});
-							</script>
-						<cfelse>
-							<div class="alert alert-danger">
-							</div>
-						</cfif>
-					</cfcase>
-				</cfswitch>
-			</cfif>
 			<table id="jqGrid"></table>
 			<div id="jqGridPager"></div>
 			<div id="dialog" title="Feature not supported" style="display:none"><p>That feature is not supported.</p></div>

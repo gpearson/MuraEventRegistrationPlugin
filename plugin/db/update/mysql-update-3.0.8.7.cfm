@@ -1,23 +1,34 @@
-<cfquery name="ShowEventEmailLogTable" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	Show Tables LIKE 'p_EventRegistration_EventEmailLog'
-</cfquery>
+<cfscript>
+	var dbWorker = application.configbean.getBean('dbUtility');
 
-<cfif ShowEventEmailLogTable.RecordCount EQ 0>
-	<cfquery name="Create-p_EventRegistrations_EventEmailLog" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		CREATE TABLE `p_EventRegistration_EventEmailLog` (
-			`TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` varchar(20) NOT NULL, `Event_ID` int(11) NOT NULL, `MsgBody` longtext, `EmailType` tinytext,
-			`LinksToInclude` tinytext, `DocsToInclude` tinytext, `dateCreated` datetime NOT NULL, `lastUpdated` timestamp default now() ON UPDATE now(), `lastUpdateBy` tinytext NOT NULL,
-			PRIMARY KEY (`TContent_ID`,`Event_ID`), KEY `Event_ID_Index` (`Event_ID`) USING BTREE
-		) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-	</cfquery>
-</cfif>
+	var CheckTable = dbWorker.tableExists('p_EventRegistration_EventEmailLog');
+</cfscript>
 
-<cfquery name="CheckColumnNameCreated" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-	Show Columns From p_EventRegistration_EventEmailLog Like 'EmailSentToParticipants'
-</cfquery>
-
-<cfif CheckColumnNameCreated.RecordCount EQ 0>
-	<cfquery name="AlterUserMatrixAddColumn" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE `p_EventRegistration_EventEmailLog` Add COLUMN `EmailSentToParticipants` longtext after `DocsToInclude`
-	</cfquery>
+<cfif Variables.CheckTable EQ False>
+	<cfscript>
+		dbWorker.setTable('p_EventRegistration_EventEmailLog')
+			.addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
+			.addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
+			.addColumn(column='Event_ID',dataType='int',nullable=false)
+			.addColumn(column='MsgBody',dataType='longtext',nullable=false)
+			.addColumn(column='EmailType',dataType='longtext',nullable=false)
+			.addColumn(column='LinksToInclude',dataType='varchar',length='255',nullable=true)
+			.addColumn(column='DocsToInclude',dataType='varchar',length='255',nullable=true)
+			.addColumn(column='EmailSentToParticipants',dataType='varchar',length='255',nullable=true)
+			.addColumn(column='dateCreated',dataType='datetime')
+			.addColumn(column='lastUpdated',dataType='datetime')
+			.addColumn(column='lastUpdateBy',dataType='varchar',length='255')
+			.addColumn(column='lastUpdateByID',dataType='varchar',length='35')
+			.addPrimaryKey(column='TContent_ID');
+	</cfscript>
+<cfelse>
+	<cfscript>
+		var checkTableColumn = dbWorker.columnExists('EmailSentToParticipants');
+	</cfscript>
+	<cfif variables.checkTableColumn eq False>
+		<cfscript>
+			dbWorker.setTable('p_EventRegistration_EventEmailLog')
+				.addColumn(column='EmailSentToParticipants',dataType='varchar',length='255',nullable=true);
+		</cfscript>
+	</cfif>
 </cfif>

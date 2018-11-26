@@ -74,42 +74,42 @@
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
-						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getSelectedUser.FName#" required="no"></div>
+						<label for="FirstName" class="col-lg-3 col-md-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getSelectedUser.FName#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getSelectedUser.LName#" required="no"></div>
+						<label for="LastName" class="col-lg-3 col-md-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getSelectedUser.LName#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getSelectedUser.Email#" required="no"></div>
+						<label for="Email" class="col-lg-3 col-md-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getSelectedUser.Email#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Username" class="control-label col-sm-3">Username:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.getSelectedUser.Username#" disabled="yes"></div>
+						<label for="Username" class="col-lg-3 col-md-3">Username:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.getSelectedUser.Username#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Company" class="control-label col-sm-3">Company:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Company" name="Company" value="#Session.getSelectedUser.Company#" Required="No"></div>
+						<label for="Company" class="col-lg-3 col-md-3">Company:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="Company" name="Company" value="#Session.getSelectedUser.Company#" Required="No"></div>
 					</div>
 					<div class="form-group">
-						<label for="JobTitle" class="control-label col-sm-3">Job Title:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="JobTitle" name="JobTitle" value="#Session.getSelectedUser.JobTitle#" required="no"></div>
+						<label for="JobTitle" class="col-lg-3 col-md-3">Job Title:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="JobTitle" name="JobTitle" value="#Session.getSelectedUser.JobTitle#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="mobilePhone" class="control-label col-sm-3">Mobile Phone:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.getSelectedUser.mobilePhone#" required="no"></div>
+						<label for="mobilePhone" class="col-lg-3 col-md-3">Mobile Phone:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.getSelectedUser.mobilePhone#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="InActive" class="control-label col-sm-3">Account InActive:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfselect name="InActive" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedUser.InActive#" Display="OptionName" queryposition="below">
+						<label for="InActive" class="col-lg-3 col-md-3">Account InActive:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfselect name="InActive" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedUser.InActive#" Display="OptionName" queryposition="below">
 							<option value="----">Account InActive?</option>
 						</cfselect></div>
 					</div>
 					<div class="form-group">
-						<label for="InActive" class="control-label col-sm-3">Account Membership:&nbsp;</label>
-						<div class="col-sm-8">
+						<label for="InActive" class="col-lg-3 col-md-3">Account Membership:&nbsp;</label>
+						<div class="col-lg-9 col-md-9">
 							<table class="table table-striped table-bordered">
 								<thead class="thead-default">
 									<tr>
@@ -203,42 +203,42 @@
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
-						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.FormInput.FName#" required="no"></div>
+						<label for="FirstName" class="col-lg-3 col-md-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.FormInput.FName#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.FormInput.LName#" required="no"></div>
+						<label for="LastName" class="col-lg-3 col-md-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.FormInput.LName#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.FormInput.Email#" required="no"></div>
+						<label for="Email" class="col-lg-3 col-md-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.FormInput.Email#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Username" class="control-label col-sm-3">Username:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.FormInput.Username#" disabled="yes"></div>
+						<label for="Username" class="col-lg-3 col-md-3">Username:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.FormInput.Username#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Company" class="control-label col-sm-3">Company:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Company" name="Company" value="#Session.FormInput.Company#" Required="No"></div>
+						<label for="Company" class="col-lg-3 col-md-3">Company:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="Company" name="Company" value="#Session.FormInput.Company#" Required="No"></div>
 					</div>
 					<div class="form-group">
-						<label for="JobTitle" class="control-label col-sm-3">Job Title:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="JobTitle" name="JobTitle" value="#Session.FormInput.JobTitle#" required="no"></div>
+						<label for="JobTitle" class="col-lg-3 col-md-3">Job Title:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="JobTitle" name="JobTitle" value="#Session.FormInput.JobTitle#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="mobilePhone" class="control-label col-sm-3">Mobile Phone:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.FormInput.mobilePhone#" required="no"></div>
+						<label for="mobilePhone" class="col-lg-3 col-md-3">Mobile Phone:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.FormInput.mobilePhone#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="InActive" class="control-label col-sm-3">Account InActive:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfselect name="InActive" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormInput.InActive#" Display="OptionName" queryposition="below">
+						<label for="InActive" class="col-lg-3 col-md-3">Account InActive:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfselect name="InActive" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormInput.InActive#" Display="OptionName" queryposition="below">
 							<option value="----">Account InActive?</option>
 						</cfselect></div>
 					</div>
 					<div class="form-group">
-						<label for="InActive" class="control-label col-sm-3">Account Membership:&nbsp;</label>
-						<div class="col-sm-8">
+						<label for="InActive" class="col-lg-3 col-md-3">Account Membership:&nbsp;</label>
+						<div class="col-lg-9 col-md-9">
 							<table class="table table-striped table-bordered">
 								<thead class="thead-default">
 									<tr>

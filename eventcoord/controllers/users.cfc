@@ -15,7 +15,7 @@
 				<cfquery name="Session.getUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Select UserID, FName, LName, UserName, Company, LastLogin, LastUpdate, InActive, Created
 					From tusers
-					Where GroupName is null
+					Where GroupName is null and Username is not null
 					Order by LName ASC, FName ASC
 				</cfquery>
 			</cfcase>

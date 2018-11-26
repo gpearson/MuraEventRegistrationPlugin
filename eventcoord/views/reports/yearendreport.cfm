@@ -31,16 +31,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to display this report for the selected year period. This will create a CSV (Comma Seperated Value) file that can be read by Microsoft Excell or compatible program to view the information.</div>
 					<div class="form-group">
-						<label for="BeginYearDate" class="control-label col-sm-3">Year Start Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="BegYearDate" name="BegYearDate" value="#DateFormat(Variables.ReportStartDate, 'mm/dd/yyyy')#" required="no"></div>
+						<label for="BeginYearDate" class="col-lg-3 col-md-3">Year Start Date:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="BegYearDate" name="BegYearDate" value="#DateFormat(Variables.ReportStartDate, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="EndYearDate" class="control-label col-sm-3">Year End Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EndYearDate" name="EndYearDate" value="#DateFormat(Variables.ReportEndDate, 'mm/dd/yyyy')#" required="no"></div>
+						<label for="EndYearDate" class="col-lg-3 col-md-3">Year End Date:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="EndYearDate" name="EndYearDate" value="#DateFormat(Variables.ReportEndDate, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Membership" class="control-label col-sm-3">Membership Agency:&nbsp;</label>
-						<div class="col-sm-8"><cfselect name="MembershipID" class="form-control" Required="Yes" Multiple="No" query="Session.QueryForReport.GetMembershipAgencies" value="TContent_ID" Display="OrganizationName"  queryposition="below">
+						<label for="Membership" class="col-lg-3 col-md-3">Membership Agency:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfselect name="MembershipID" class="form-control" Required="Yes" Multiple="No" query="Session.QueryForReport.GetMembershipAgencies" value="TContent_ID" Display="OrganizationName"  queryposition="below">
 							<option value="----">Select Which Membership Agency you want to base report on</option>
 							<option value="0">Not a Member of ESC/ESA</option></cfselect>
 						</div>
@@ -104,12 +104,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to display this report for the selected year period. The report will only show events that have not been cancelled.</div>
 					<div class="form-group">
-						<label for="BeginYearDate" class="control-label col-sm-3">Year Start Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="BegYearDate" value="#Session.FormData.BegYearDate#" name="BegYearDate" required="no"></div>
+						<label for="BeginYearDate" class="col-lg-3 col-md-3">Year Start Date:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="BegYearDate" value="#Session.FormData.BegYearDate#" name="BegYearDate" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="EndYearDate" class="control-label col-sm-3">Year End Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EndYearDate" value="#Session.FormData.EndYearDate#" name="EndYearDate" required="no"></div>
+						<label for="EndYearDate" class="col-lg-3 col-md-3">Year End Date:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="EndYearDate" value="#Session.FormData.EndYearDate#" name="EndYearDate" required="no"></div>
 					</div>
 				</div>
 				<div class="panel-footer">

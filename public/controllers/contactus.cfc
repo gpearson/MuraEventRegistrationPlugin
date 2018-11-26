@@ -1,7 +1,3 @@
-/*
-
-
-*/
 <cfcomponent output="false" persistent="false" accessors="true">
 	<cffunction name="sendfeedback" returntype="any" output="true">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
@@ -11,21 +7,33 @@
 				<cfif not isDefined("Session.FormErrors")>
 					<cfset Session.FormErrors = #ArrayNew()#>
 				</cfif>
-				<cfset Session.Captcha = #makeRandomString()#>
+				<cfquery name="getSiteSettings" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select ProcessPayments_Stripe, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_ENabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken
+					From p_EventRegistration_SiteConfig
+					Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+				</cfquery>
+				<cfif not isDefined("Session.EventRegistration.SiteSettings")>
+					<cfset Session.EventRegistration = StructNew()>
+				</cfif>
+				<cfset Session.EventRegistration.SiteSettings = #StructCopy(getSiteSettings)#>
 			</cflock>
 		<cfelseif isDefined("FORM.formSubmit")>
 			<cfset Session.FormData = #StructCopy(FORM)#>
 			<cfset Session.FormErrors = #ArrayNew()#>
-			<cfif #HASH(FORM.ValidateCaptcha)# NEQ FORM.CaptchaEncrypted>
-				<cflock timeout="60" scope="SESSION" type="Exclusive">
-					<cfscript>
-						errormsg = {property="HumanChecker",message="The Characters entered did not match what was displayed"};
-						arrayAppend(Session.FormErrors, errormsg);
-					</cfscript>
-				</cflock>
-				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:contactus.sendfeedback&FormRetry=True">
-			</cfif>
+			<cfset GoogleReCaptchaCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/recaptcha")>
 
+			<cfif Session.EventRegistration.SiteSettings.Google_ReCaptchaEnabled EQ 1>
+				<cfif StructKeyExists(form, 'g-recaptcha-response')>
+					<cfset CheckCaptcha = #GoogleReCaptchaCFC.verifyResponse(secret='6Le6hw0UAAAAAMfQXFE5H3AJ4PnGmADX9v468d93',response=form['g-recaptcha-response'], remoteip=cgi.remote_add)#>
+					<cfif CheckCaptcha.success EQ "false">
+						<cfscript>
+							InvalidPassword = {property="VerifyPassword",message="We have detected that the form was completed by a Computer Robot. We ask that this form be completed by a human being."};
+							arrayAppend(Session.FormErrors, InvalidPassword);
+						</cfscript>
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#rc.pc.getPackage()#action=public:contactus.sendfeedback&FormRetry=True" addtoken="false">
+					</cfif>
+				</cfif>
+			</cfif>
 			<cfif FORM.BestContactMethod EQ 0>
 				<cfif not isValid("email", FORM.ContactEmail)>
 					<cflock timeout="60" scope="SESSION" type="Exclusive">
