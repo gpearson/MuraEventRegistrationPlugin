@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2017-11-02T12:34:00 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EventConfirmationPage" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5d673e45-1895-4102-8f83-bcd66d7c254f">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="K12 Event Registration Website"/>
+	<queryString>
+		<![CDATA[Select * From eRegistrations
+Where RegistrationID = '2565F7B5-9F96-450A-8D1A343BE983F3F1'
+Order by RegistrationID]]>
+	</queryString>
+	<field name="RegistrationDate" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="LogoPath" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ParticipantFName" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ParticipantLName" class="java.lang.String"/>
+	<field name="EventTitle" class="java.lang.String"/>
+	<field name="RegisteredBy" class="java.lang.String"/>
+	<field name="EventDates" class="java.lang.String"/>
+	<field name="DistantEdParticipant" class="java.lang.String"/>
+	<field name="RequestsMeal" class="java.lang.String"/>
+	<field name="EventLocation" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="LocationQRCode" class="java.lang.String"/>
+	<field name="PGPPoints" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="144" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="210" height="130" uuid="7183eacb-bab5-4a68-9a56-a37aa69a1695"/>
+				<imageExpression><![CDATA[$F{LogoPath}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="140" y="10" width="432" height="130" uuid="9609dd39-b97e-4d24-946f-cfd007c40331"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Northern Indiana Educational Services Center
+56535 Magnetic Drive
+Mishawaka IN 46545
+
+(800) 326-5642 / (574) 254-0111
+www.niesc.k12.in.us]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="50" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="11" width="572" height="29" uuid="66ec427c-6a25-4d76-a20e-49200221a320"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Event Registration Confirmation Page]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="172" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="9" width="210" height="19" uuid="67d12aa0-89a1-4fa2-878b-92b9e3bc3c5a"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Participant's First Name:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="34" width="210" height="19" uuid="8c6e4901-5ba7-436d-b116-a9d2ffd49be8"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Participant's Last Name:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="56" width="210" height="19" uuid="ed783ce4-6332-4d5a-8ede-ade6f14222bf"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Registered Date:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="78" width="210" height="19" uuid="e188c9c1-60a8-44ae-b698-bcbd935e2a3d"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Registered By:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="6" width="580" height="1" uuid="f0eed7d4-658c-4f55-b767-00c1b8d2e8eb"/>
+			</line>
+			<textField>
+				<reportElement x="220" y="9" width="340" height="19" uuid="2e622a0a-52fa-4040-bbb4-0ea64ffc927d"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ParticipantFName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="34" width="340" height="19" uuid="60815dc7-45b7-42f0-9adc-865ddfb95e6f"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ParticipantLName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="56" width="340" height="19" uuid="e85af365-9104-4b45-86b7-7c5ca2e6fd03"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RegistrationDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="78" width="340" height="19" uuid="74fffc66-182e-47a3-87d7-f0d3c1318b94"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RegisteredBy}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="122" width="210" height="19" uuid="747aae89-3e96-491e-93a0-bfd4fe247ee3"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Requests Meal:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="100" width="210" height="19" uuid="b32bab1f-58b4-4ded-b382-f9debbc32464"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Distance Education:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="220" y="100" width="341" height="19" uuid="a4fd82fa-7a6a-45cc-b1a5-e718d92a5ffd"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DistantEdParticipant}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="220" y="122" width="341" height="19" uuid="520e85c8-6579-4ffd-ac71-4ba990810ac0"/>
+				<textElement textAlignment="Left">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RequestsMeal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="144" width="210" height="19" uuid="d4bbe6c7-2e5f-4cf0-b606-6b98f78752e9"/>
+				<textElement textAlignment="Right">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Professional Growth Points:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="220" y="144" width="342" height="19" uuid="2ca30429-9ec2-4255-b976-7b4b1788b140"/>
+				<textElement textAlignment="Left">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PGPPoints}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="35">
+			<staticText>
+				<reportElement x="0" y="2" width="210" height="28" uuid="2cb7013b-cd5f-47b5-b880-a791ee8e6115"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Event Date(s):]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="220" y="2" width="341" height="28" uuid="7f76b5e4-c73d-4240-adcd-f2ae37345994"/>
+				<textElement verticalAlignment="Top">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EventDates}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="36">
+			<staticText>
+				<reportElement x="0" y="1" width="210" height="29" uuid="abe1e2c7-fb2c-47ec-8240-dc352d14988b"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Event Title:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="220" y="1" width="342" height="29" uuid="9628243d-4f3a-4224-8c2c-b6229755f743"/>
+				<textElement verticalAlignment="Top">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EventTitle}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="36">
+			<staticText>
+				<reportElement x="0" y="2" width="210" height="29" uuid="ec59f2d2-c351-471f-9945-680baa8ffb1e"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Location of Event:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="220" y="2" width="342" height="29" uuid="4cd8e108-0db3-4138-b22d-4c93fd3d4064"/>
+				<textElement verticalAlignment="Top">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EventLocation}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="109">
+			<staticText>
+				<reportElement x="0" y="20" width="210" height="40" uuid="744b86c8-382b-4e67-a2d1-d9b72eb7b878"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Scan Barcode for Map/Directions
+ to Event Location:]]></text>
+			</staticText>
+			<image>
+				<reportElement x="220" y="3" width="170" height="100" uuid="a2d7bc96-945c-4e7f-882d-cd0dca0e00f3"/>
+				<imageExpression><![CDATA[$F{LocationQRCode}]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement x="-10" y="7" width="590" height="1" uuid="11e7d961-c3c1-46d2-b026-396151d6948c">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="12" width="572" height="30" uuid="5aa6229b-e89f-47c9-b91b-cdff13c5bb88"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Any Professional Growth Points available for this event will be electronically sent (to the email address we have on file) after the event has concluded and attendance recorded.]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

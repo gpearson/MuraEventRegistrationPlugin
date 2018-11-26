@@ -116,7 +116,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		param name='request.context.siteid' default='';
 
 		if ( !StructKeyExists(session, 'siteid') ) {
-			lock scope='session' type='exclusive' timeout='10' {
+			lock scope='session' type='exclusive' timeout='30' {
 				session.siteid = 'default';
 			};
 		}
@@ -134,7 +134,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		if ( Len(Trim(request.context.siteid)) && ( session.siteid != request.context.siteid) ) {
 			local.siteCheck = application.settingsManager.getSites();
 			if ( StructKeyExists(local.siteCheck, request.context.siteid) ) {
-				lock scope='session' type='exclusive' timeout='10' {
+				lock scope='session' type='exclusive' timeout='30' {
 					session.siteid = request.context.siteid;
 				};
 			};
@@ -323,7 +323,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		}
 
 		private void function setCachedView(required string viewKey, string viewValue='') {
-			lock scope='session' type='exclusive' timeout=10 {
+			lock scope='session' type='exclusive' timeout=30 {
 				session[variables.framework.package].views[arguments.viewKey] = arguments.viewValue;
 			};
 		}
@@ -341,7 +341,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 			if ( isCacheExpired() ) {
 				setSessionCache();
 			}
-			lock scope='session' type='readonly' timeout=10 {
+			lock scope='session' type='readonly' timeout=30 {
 				local.cache = session[variables.framework.package];
 			};
 			return local.cache;
@@ -350,7 +350,7 @@ component persistent="false" accessors="true" output="false" extends="includes.f
 		private void function setSessionCache() {
 			var p = variables.framework.package;
 			// Expires - s:seconds, n:minutes, h:hours, d:days
-			lock scope='session' type='exclusive' timeout=10 {
+			lock scope='session' type='exclusive' timeout=30 {
 				StructDelete(session, p);
 				session[p] = {
 					created = Now()

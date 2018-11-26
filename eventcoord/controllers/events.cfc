@@ -437,12 +437,14 @@
 					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_review&FormRetry=True" addtoken="false">
 				</cfif>
 
-				<cfif FORM.MealAvailable EQ 1 and FORM.MealIncluded EQ "----">
-					<cfscript>
-						eventdate = {property="Registration_Deadline",message="Please enter if the meal is included in the registration price or not."};
-						arrayAppend(Session.FormErrors, eventdate);
-					</cfscript>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_review&FormRetry=True" addtoken="false">
+				<cfif FORM.MealAvailable EQ 1 and isDefined("FORM.MealIncluded")>
+					<cfif FORM.MealIncluded EQ "----">
+						<cfscript>
+							eventdate = {property="Registration_Deadline",message="Please enter if the meal is included in the registration price or not."};
+							arrayAppend(Session.FormErrors, eventdate);
+						</cfscript>
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_review&FormRetry=True" addtoken="false">
+					</cfif>
 				</cfif>
 			</cfif>
 
@@ -2592,7 +2594,7 @@
 						FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.EventID
 						WHERE p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
 							p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-						ORDER BY tusers.Lname ASC, tusers.Fname ASC
+						ORDER BY Domain ASC, tusers.Lname ASC, tusers.Fname ASC
 					</cfquery>
 				</cfcase>
 				<cfcase value="mssql">
@@ -3180,7 +3182,7 @@
 						<cfset ParticipantNumberOfDaysAttended = #Variables.ParticipantNumberOfDaysAttended# + 1>
 					</cfif>
 				</cfif>
-				<cfset temp = #QuerySetCell(Session.EventNumberRegistrations, "PGPPoints", NumberFormat(Variables.ParticipantNumberOfPGPCertificatePoints, "99.9"))#>
+				<cfset temp = #QuerySetCell(Session.EventNumberRegistrations, "PGPPoints", NumberFormat(Variables.ParticipantNumberOfPGPCertificatePoints, "99.9"), Session.EventNumberRegistrations.CurrentRow)#>
 				<cfquery name="getOrganizationinfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Select OrganizationName, Mailing_Address, Mailing_City, Mailing_State, Mailing_ZipCode
 					From p_EventRegistration_Membership
@@ -3202,7 +3204,14 @@
 					<cfset ParticipantFilename = #Replace(Variables.ParticipantFilename, ".", "", "all")#>
 					<cfset PGPEarned = "PGP Earned: " & #NumberFormat(Variables.ParticipantNumberOfPGPCertificatePoints, "99.9")#>
 					<cfset CertificateCompletedFile = #Variables.CertificateExportTemplateDir# & #FORM.EventID# & "-" & #Variables.ParticipantFilename# & ".pdf">
-					<cfset CertificateMasterTemplate = #Variables.CertificateTemplateDir# & "NIESCPGPCertificateTemplate.pdf">
+					<cfswitch expression="#rc.$.siteConfig('siteID')#">
+						<cfcase value="NIESCEvents">
+							<cfset CertificateMasterTemplate = #Variables.CertificateTemplateDir# & "NIESCPGPCertificateTemplate.pdf">
+						</cfcase>
+						<cfcase value="NWIESCEvents">
+							<cfset CertificateMasterTemplate = #Variables.CertificateTemplateDir# & "NWIESCPGPCertificateTemplate.pdf">
+						</cfcase>
+					</cfswitch>
 
 					<cfscript>
 						PDFCompletedCertificate = CreateObject("java", "java.io.FileOutputStream").init(CertificateCompletedFile);
@@ -3265,12 +3274,11 @@
 						<jr:jasperreport jrxml="#ReportDirectory#/NIESCEventAttendanceRecord.jrxml" query="#GetOrganizationRegistrations#" exportfile="#ReportExportLoc#" exportType="pdf" />
 					</cfcase>
 					<cfcase value="NWIESCEvents">
-						<jr:jasperreport jrxml="#ReportDirectory#/NWIESCEventAttendanceRecord.jrxml" query="#getParticipants#" exportfile="# ReportExportLoc#" exportType="pdf" />
+						<jr:jasperreport jrxml="#ReportDirectory#/NWIESCEventAttendanceRecord.jrxml" query="#GetOrganizationRegistrations#" exportfile="# ReportExportLoc#" exportType="pdf" />
+						<cfset FacilitatorName = #Session.GetSelectedEventFacilitator.Fname# & " " & #Session.GetSelectedEventFacilitator.Lname#>	
+						<cfset Temp = SendEmailCFC.SendStatementofAttendanceToFacilitator(rc, Variables.ReportExportLoc, GetOrganizationRegistrations.ShortTitle, Variables.FacilitatorName, Session.GetSelectedEventFacilitator.EMail, GetOrganizationRegistrations.OrganizationName)>
 					</cfcase>
 				</cfswitch>
-				<cfset FacilitatorName = #Session.GetSelectedEventFacilitator.Fname# & " " & #Session.GetSelectedEventFacilitator.Lname#>
-				
-				<cfset Temp = SendEmailCFC.SendStatementofAttendanceToFacilitator(rc, Variables.ReportExportLoc, GetOrganizationRegistrations.ShortTitle, Variables.FacilitatorName, Session.GetSelectedEventFacilitator.EMail, GetOrganizationRegistrations.OrganizationName)>
 			</cfloop>
 			<cfquery name="UpdateEventPGPCertificateFlag" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Update p_EventRegistration_Events
@@ -3443,7 +3451,7 @@
 
 		<cfif not isDefined("FORM.formSubmit") and isDefined("URL.EventID")>
 			<cfquery name="Session.getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewGroupPricing, GroupMemberCost, GroupNonMemberCost, GroupPriceRequirements, PGPAvailable, PGPPoints, MealAvailable, MealIncluded, MealProvidedBy, MealCost, Meal_Notes, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Facilitator, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, Presenters
+				Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewGroupPricing, GroupMemberCost, GroupNonMemberCost, GroupPriceRequirements, PGPAvailable, PGPPoints, MealAvailable, MealIncluded, MealProvidedBy, MealCost, Meal_Notes, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Facilitator, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, Presenters, BillForNoShow
 				From p_EventRegistration_Events
 				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 					TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
@@ -3488,7 +3496,7 @@
 					Where TContent_ID = <cfqueryparam value="#Variables.Participant[RecNo]['RecordID']#" cfsqltype="cf_sql_integer">
 				</cfquery>
 			</cfloop>
-			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterrevenue&EventID=#URL.EventID#" addtoken="false">
+			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.viewprofitlossreport&EventID=#URL.EventID#" addtoken="false">
 		</cfif>
 	</cffunction>
 
@@ -3629,6 +3637,7 @@
 				<cfset EventTotalRevenue = #EventServicesCFC.ConvertCurrencyToDecimal(getSelectedEvent.TotalRevenue)#>
 				<cfset EventTotalExpenses = #EventServicesCFC.ConvertCurrencyToDecimal(getSelectedEvent.TotalExpenses)#>
 				<cfset EventTotalProfitLoss = #EventServicesCFC.ConvertCurrencyToDecimal(getSelectedEvent.ProfitOrLoss)#>
+				<cfset EventTotalProfitLoss = #Replace(variables.EventTotalProfitLoss, ' ', '', 'all')#>
 
 				<cfquery name="EventInfoCreateTemporaryTable_EventProfitLossReport" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Insert into p_EventRegistration_EventProfitLossReport(TContent_ID,Site_ID,ShortTitle,EventDate,EventDate1,EventDate2,EventDate3,EventDate4,EventDate5,EventDateDisplay,TotalRevenue,TotalExpenses,ProfitOrLoss,ImagePath)
@@ -3643,9 +3652,9 @@
 						<cfqueryparam value="#getSelectedEvent.EventDate4#" cfsqltype="cf_sql_date">,
 						<cfqueryparam value="#getSelectedEvent.EventDate5#" cfsqltype="cf_sql_date">,
 						<cfqueryparam value="#getSelectedEvent.EventDateDisplay#" cfsqltype="cf_sql_varchar">,
-						<cfqueryparam value="#NumberFormat(Variables.EventTotalRevenue, '99999999.9999')#" cfsqltype="cf_sql_decimal">,
-						<cfqueryparam value="#NumberFormat(Variables.EventTotalExpenses, '99999999.9999')#" cfsqltype="cf_sql_decimal">,
-						<cfqueryparam value="#NumberFormat(Variables.EventTotalProfitLoss, '99999999.9999')#" cfsqltype="cf_sql_decimal">,
+						<cfqueryparam value="#NumberFormat(Variables.EventTotalRevenue, '999999.99')#" cfsqltype="cf_sql_decimal">,
+						<cfqueryparam value="#NumberFormat(Variables.EventTotalExpenses, '999999.99')#" cfsqltype="cf_sql_decimal">,
+						<cfqueryparam value="#Variables.EventTotalProfitLoss#" cfsqltype="cf_sql_decimal">,
 						<cfqueryparam value="#getSelectedEvent.ImagePath#" cfsqltype="cf_sql_varchar">
 					)
 				</cfquery>

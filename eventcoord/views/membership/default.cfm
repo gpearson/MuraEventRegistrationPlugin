@@ -9,6 +9,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 --->
 </cfsilent>
+
 <cfoutput>
 	<script>
 		$.jgrid.defaults.responsive = true;
@@ -83,14 +84,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 				datatype: "json",
 				colNames: ["Rec No","Organization Name","City","State","Phone Number","Active Membership"],
 				colModel: [
-					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, hidden: true, editable: false },
-					{ label: 'Organization Name', name: 'OrganizationName', editable: true },
+					{ label: 'Rec ##', name: 'TContent_ID', width: 75, hidden: true, editable: false },
+					{ label: 'Organization Name', name: 'OrganizationName', editable: true, key: true },
 					{ label: 'City', name: 'Physical_City', width: 75, editable: true },
 					{ label: 'State', name: 'Physical_State', width: 75, editable: true },
 					{ label: 'Phone Number', name: 'Primary_PhoneNumber', width: 75, editable: true },
 					{ label: 'Active', name: 'Active', width: 75, editable: true }
 				],
-				sortname: 'TContent_ID',
+				sortname: 'OrganizationName',
 				sortorder : 'asc',
 				viewrecords: true,
 				height: 700,

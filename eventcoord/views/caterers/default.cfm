@@ -136,7 +136,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					{ label: 'Phone Number', name: 'PrimaryVoiceNumber', width: 75, editable: true },
 					{ label: 'Active', name: 'Active', width: 75, editable: true }
 				],
-				sortname: 'TContent_ID',
+				sortname: 'FacilityName',
 				sortorder : 'asc',
 				viewrecords: true,
 				height: 500,

@@ -65,7 +65,7 @@
 					</tr>
 					<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">Event Time:</span></td>
-						<td style="width: 390px;">#TimeFormat(Session.EventInfo.SelectedEvent.Event_StartTime, "hh:mm tt")# till #TimeFormat(Session.EventInfo.SelectedEvent.Event_EndTime, "hh:mm tt")#</td>
+						<td style="width: 390px;">#TimeFormat(Session.EventInfo.SelectedEvent.Event_StartTime, "hh:mm tt")# till #TimeFormat(Session.EventInfo.SelectedEvent.Event_EndTime, "hh:mm tt")# <cfif LEN(Session.EventInfo.EventFacility.Physical_TimeZone)>(#Session.EventInfo.EventFacility.Physical_TimeZone#)</cfif></td>
 						<td style="text-align: right; width: 175px;"><span style="font-weight: bold;">Registration Deadline:</span></td>
 						<td style="width: 175px;">#DateFormat(Session.EventInfo.SelectedEvent.Registration_Deadline, "mm/dd/yyyy")#</td>
 					</tr>

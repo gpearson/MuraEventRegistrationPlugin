@@ -164,7 +164,7 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="membership" returntype="any" output="false">
+	<cffunction name="membership" returntype="any" output="true">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
 		<cfif not isDefined("FORM.formSubmit")>
@@ -178,6 +178,7 @@
 				From p_EventRegistration_StateESCOrganizations
 			</cfquery>
 			<cfset ReportQuery = #QueryNew('OrganizationName,Active,OrganizationDomainName,AffilitationName')#>
+
 			<cfloop query="GetAllMemberships">
 				<cfset temp = QueryAddRow(Variables.ReportQuery, 1)>
 				<cfset temp = QuerySetCell(Variables.ReportQuery, "OrganizationName", GetAllMemberships.OrganizationName)>
@@ -187,14 +188,15 @@
 					<cfset temp = QuerySetCell(Variables.ReportQuery, "Active", "No")>
 				</cfif>
 				<cfset temp = QuerySetCell(Variables.ReportQuery, "OrganizationDomainName", GetAllMemberships.OrganizationDomainName)>
-				<cfif GetAllMemberships.StateDOE_ESCESAMembership EQ 0>
-					<cfset temp = QuerySetCell(Variables.ReportQuery, "AffilitationName", "No ESC/ESA Membership")>	
-				<cfelse>
+
+				<cfif LEN(GetAllMemberships.StateDOE_ESCESAMembership)>
 					<cfquery name="GetAffiliationInfo" dbtype="query">
 						Select * from GetAllMembershipAgencies
 						Where TContent_ID = #GetAllMemberships.StateDOE_ESCESAMembership#
 					</cfquery>
 					<cfset temp = QuerySetCell(Variables.ReportQuery, "AffilitationName", GetAffiliationInfo.OrganizationName)>
+				<cfelse>
+					<cfset temp = QuerySetCell(Variables.ReportQuery, "AffilitationName", "No ESC/ESA Membership")>	
 				</cfif>
 			</cfloop>
 			<cfset LogoPath = ArrayNew(1)>

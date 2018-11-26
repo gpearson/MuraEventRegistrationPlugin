@@ -9,11 +9,88 @@ http://www.apache.org/licenses/LICENSE-2.0
 */
 <cfcomponent output="false" persistent="false" accessors="true">
 
+	<cffunction name="oauthtest" returntype="any" output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfset TwitterJARPath = ArrayNew(1)>
+		<cfset TwitterJARPath[1] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/jars/twitter4j-core-4.0.4.jar")#>
+		<cfset TwitterJARPath[2] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/jars/twitter4j-async-4.0.4.jar")#>
+		<cfset TwitterJARPath[3] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/jars/twitter4j-media-support-4.0.4.jar")#>
+		<cfset TwitterJARPath[4] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/jars/twitter4j-stream-4.0.4.jar")#>
+
+		<cfset JavaLoader = createObject("component", "plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/JavaLoader").init(TwitterJARPath)>
+		<cfset TwitterLibrary = JavaLoader.create("twitter4j.TwitterFactory").getInstance()>
+		<cfset TwitterAccessToken = JavaLoader.create("twitter4j.auth.AccessToken")>
+		<cfset TwitterLibrary.setOAuthConsumer('pEuVQfc5Lg7yRzyV3eGrdPiV0', 'Ae47ywGPPNavUUSP4RyqOUaat73JNUCxT0fK4ZdUxSFaOBnmuu')>
+		<cfset TwitterOAuthAccessToken = TwitterAccessToken.init('894989565420859392-m2OzwOGAqwRJnmP5hl4cylne7IuyNnJ', 'bVQiGaaCURY1ZrSdi15WF4zpqyG51zXVYL7nvPd3kvYHG')>
+		<cfset TwitterLibrary.setOAuthAccessToken(TwitterOAuthAccessToken)>
+		<cfset Message = "This is my First Twitter Update from Application">
+		<cfset TwitterLibrary.updateStatus(Variables.Message)>
+		
+
+
+
+		<cfdump var="#Variables.TwitterLibrary#" abort="true">
+		
+		<!--- 
+		<cfscript>
+			TwitterConfigBuilder.setOAuthConsumerKey('pEuVQfc5Lg7yRzyV3eGrdPiV0');
+			TwitterConfigBuilder.setOAuthCOnsumerSecret('Ae47ywGPPNavUUSP4RyqOUaat73JNUCxT0fK4ZdUxSFaOBnmuu');
+			TwitterConfigBuilder.setOAuthAccessToken('894989565420859392-m2OzwOGAqwRJnmP5hl4cylne7IuyNnJ');
+			TwitterConfigBuilder.setOAuthAccessToeknSecret('bVQiGaaCURY1ZrSdi15WF4zpqyG51zXVYL7nvPd3kvYHG');
+		</cfscript>
+		<cfset config = TwitterConfigBuilder.build()>
+
+		<cfset TwitterFactory = createObject("java", "twitter4j.TwitterFactory").init(config)>
+		<cfset TwitterClient = TwitterFactory.getInstance();
+		<cfset TwitterTweet = TwitterClient.updateStatus('Hello World')>
+
+		<cfdump var="#Variables.TwitterTweet#" abort="true">
+
+
+
+
+
+		<cfdump var="#variables.TwitterObj#" abort="true">
+	--->
+
+		<!--- <cfset application.Twitter = javaloader.create ("twitter4j.TwitterFactory").getInstance()>
+		<cfset application.Twitter.setOAuthConsumer ('consumerkey',consumersecret')>
+		<cfset local.accessToken = javaloader.create ("twitter4j.auth.AccessToken").init ("storedaccesstoken" ,"storedaccesssecret")> <cfset application.Twitter.setOAuthAccessToken (local.accessToken)>
+
+
+		<cfset ConsumerKey = "pEuVQfc5Lg7yRzyV3eGrdPiV0">
+		<cfset ConsumerSecret = "Ae47ywGPPNavUUSP4RyqOUaat73JNUCxT0fK4ZdUxSFaOBnmuu">
+		<cfset CallBack = "http://events.niesc.k12.in.us/#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.oauthtest">
+
+
+
+		<cfset oAuthCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/oAuth2/oauth2")>
+
+		<cfset bitlyclient = oAuthCFC.init(client_id = 'ef61eea07d91ba54208f86480368611db4efbaef', client_secret='a4c7759b2f4d02a4b1037e83f032f685292e19e9',
+			authEndpoint="https://api-ssl.bitly.com/", accessTokenEndpoint="https://bitly.com/oauth/authorize", redirect_uri="http://events.niesc.k12.in.us/#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.oauthtest")>
+		<cfset AccessToken = #bitlyclient.MakeAccessTokenRequest(code='Test')#>
+
+
+
+		<cfdump var="#Variables.AccessToken#" abort="true">
+		--->
+
+	</cffunction>
+
 	<cffunction name="default" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
 		<cfif isDefined("URL.Info")>
 			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#URL.Info#" addtoken="false">
+		</cfif>
+
+		<cfif isDefined("URL.ShortURL")>
+			<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>
+
+			<cfset GetFullLink = #EventServicesComponent.getFullLinkFromShortURL(rc, URL.ShortURL)#>
+			<cfif Variables.GetFullLink DOES NOT CONTAIN "The ShortURL Link is not valid">
+				<cflocation url="#Variables.GetFullLink#" addtoken="false">
+			</cfif>
 		</cfif>
 
 		<cflock scope="Session" timeout="60" type="Exclusive">
@@ -249,7 +326,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</cfquery>
 
 			<cfquery name="getEventFacility" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, BusinessWebsite, GeoCode_Latitude, GeoCode_Longitude, GeoCode_StateLongName
+				Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, BusinessWebsite, GeoCode_Latitude, GeoCode_Longitude, Physical_TimeZone, Physical_UTCOffset, Physical_DST
 				From p_EventRegistration_Facility
 				Where TContent_ID = <cfqueryparam value="#getSelectedEvent.LocationID#" cfsqltype="cf_sql_integer">
 			</cfquery>

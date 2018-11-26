@@ -13,6 +13,10 @@
 		<cfset EncryptedValue = #Tobase64(Variables.ValueToEncrypt)#>
 		<cfset AccountVars = "Key=" & #Variables.EncryptedValue#>
 		<cfset AccountActiveLink = "http://" & #CGI.Server_Name# & "#CGI.Script_name##CGI.path_info#?#rc.pc.getPackage()#action=public:registeruser.activateaccount&" & #Variables.AccountVars#>
+
+		<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>
+		<cfset ShortenedURL = EventServicesComponent.insertShortURLContent(rc, AccountActiveLink)>
+		<cfset AccountActiveLink = "http://" & #CGI.Server_Name# & "?ShortURL=" & #Variables.ShortenedURL#>
 		<cfinclude template="EmailTemplates/SendAccountActivationEmailToIndividual.cfm">
 	</cffunction>
 
@@ -30,6 +34,11 @@
 		<cfset EncryptedValue = #Tobase64(Variables.ValueToEncrypt)#>
 		<cfset AccountVars = "Key=" & #Variables.EncryptedValue#>
 		<cfset AccountActiveLink = "http://" & #CGI.Server_Name# & "#CGI.Script_name##CGI.path_info#?#rc.DBINfo.PackageName#action=public:registeruser.activateaccount&" & #Variables.AccountVars#>
+
+		<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>
+		<cfset ShortenedURL = EventServicesComponent.insertShortURLContent(rc, AccountActiveLink)>
+		<cfset AccountActiveLink = "http://" & #CGI.Server_Name# & "?ShortURL=" & #Variables.ShortenedURL#>
+
 		<cfinclude template="EmailTemplates/SendAccountActivationEmailToIndividualFromOrganizationPerson.cfm">
 	</cffunction>
 
@@ -210,7 +219,16 @@
 		</cfif>
 
 		<cfset reportQuery = QueryNew("ParticipantFName,ParticipantLName,RegistrationDate,RegisteredBy,EventTitle,EventDates,LogoPath,DistantEdParticipant,RequestsMeal,EventLocation,LocationQRCode,PGPPoints,EventSessionTimes")>
-		<cfset LogoPathLoc = "/plugins/" & #rc.pc.getPackage()# & "/library/images/NIESC_Logo.png">
+
+		<cfswitch expression="#rc.$.siteConfig('siteID')#">
+			<cfcase value="NIESCEvents">
+				<cfset LogoPathLoc = "/plugins/" & #rc.pc.getPackage()# & "/library/images/NIESC_Logo.png">
+			</cfcase>
+			<cfcase value="NWIESCEvents">
+				<cfset LogoPathLoc = "/plugins/" & #rc.pc.getPackage()# & "/library/images/NWIESC_Logo.png">
+			</cfcase>
+		</cfswitch>
+
 		<cfset temp = QueryAddRow(reportQuery, 1)>
 		<cfset temp = QuerySetCell(reportQuery, "ParticipantFName", getRegisteredUserInfo.Fname)>
 		<cfset temp = QuerySetCell(reportQuery, "ParticipantLName", getRegisteredUserInfo.Lname)>
@@ -240,7 +258,15 @@
 			<cfset temp = QueryAddColumn(getRegistration, "LogoPath", "VarChar", Variables.LogoPath)>
 			<cfset ReportDirectory = #ExpandPath(ReportDirLoc)# >
 			<cfset ReportExportLoc = #ExpandPath(ReportExportDirLoc)# & #getRegistration.RegistrationID# & "-EventConfirmation.pdf" >
-			<jr:jasperreport jrxml="#ReportDirLoc#/EventConfirmationPageWithSessions.jrxml" query="#reportQuery#" exportfile="#ReportExportLoc#" exportType="pdf" />
+
+			<cfswitch expression="#rc.$.siteConfig('siteID')#">
+				<cfcase value="NIESCEvents">
+					<jr:jasperreport jrxml="#ReportDirLoc#/NIESCEventConfirmationPageWithSessions.jrxml" query="#reportQuery#" exportfile="#ReportExportLoc#" exportType="pdf" />
+				</cfcase>
+				<cfcase value="NWIESCEvents">
+					<jr:jasperreport jrxml="#ReportDirLoc#/NWIESCEventConfirmationPageWithSessions.jrxml" query="#reportQuery#" exportfile="#ReportExportLoc#" exportType="pdf" />
+				</cfcase>
+			</cfswitch>
 		<cfelse>
 			<cfset temp = QuerySetCell(reportQuery, "EventSessionTimes", "")>
 			<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
@@ -250,7 +276,14 @@
 			<cfset temp = QueryAddColumn(getRegistration, "LogoPath", "VarChar", Variables.LogoPath)>
 			<cfset ReportDirectory = #ExpandPath(ReportDirLoc)# >
 			<cfset ReportExportLoc = #ExpandPath(ReportExportDirLoc)# & #getRegistration.RegistrationID# & "-EventConfirmation.pdf" >
-			<jr:jasperreport jrxml="#ReportDirLoc#/EventConfirmationPage.jrxml" query="#reportQuery#" exportfile="#ReportExportLoc#" exportType="pdf" />
+			<cfswitch expression="#rc.$.siteConfig('siteID')#">
+				<cfcase value="NIESCEvents">
+					<jr:jasperreport jrxml="#ReportDirLoc#/NIESCEventConfirmationPage.jrxml" query="#reportQuery#" exportfile="#ReportExportLoc#" exportType="pdf" />
+				</cfcase>
+				<cfcase value="NWIESCEvents">
+					<jr:jasperreport jrxml="#ReportDirLoc#/NWIESCEventConfirmationPage.jrxml" query="#reportQuery#" exportfile="#ReportExportLoc#" exportType="pdf" />
+				</cfcase>
+			</cfswitch>
 		</cfif>
 
 		<cfswitch expression="#Variables.RegisteredBy#">

@@ -1,4 +1,4 @@
-<cfmail To="#Arguments.EmailInfo.FName# #Arguments.EmailInfo.LName# <#Arguments.EmailInfo.EmailAddr#>" from="Event Registration System <registrationsystem@niesc.k12.in.us>" subject="Question about Event: #getEvent.ShortTitle#" server="127.0.0.1">
+<cfmail To="#Arguments.EmailInfo.FName# #Arguments.EmailInfo.LName# <#Arguments.EmailInfo.EmailAddr#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Question about Event: #getEvent.ShortTitle#" server="127.0.0.1">
 <cfmailpart type="text/plain">
 #Arguments.EmailInfo.FName# #Arguments.EmailInfo.LName#,
 

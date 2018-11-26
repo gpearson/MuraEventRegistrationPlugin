@@ -97,14 +97,10 @@
 				</cfquery>
 			</cfif>
 		<cfelse>
-			<cfquery name="getFacilities" dbtype="Query">
-				Select TContent_ID, OrganizationName, Physical_City, Physical_State, Primary_PhoneNumber, Active
-				From Session.getMemberships
-				<cfif Arguments.sidx NEQ "">
-					Order By #Arguments.sidx# #Arguments.sord#
-				<cfelse>
-					Order by OrganizationName ASC
-				</cfif>
+			<cfquery name="getFacilities" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select TContent_ID, OrganizationName, OrganizationDomainName, StateDOE_IDNumber, StateDOE_State, Active, Physical_Address, Physical_City, Physical_State, Physical_ZipCode, Mailing_Address, Mailing_City, Mailing_State, Mailing_ZipCode, Primary_PhoneNumber, Primary_FaxNumber, AccountsPayable_EmailAddress, AccountsPayable_ContactName
+				From p_EventRegistration_Membership
+				Order by OrganizationName ASC
 			</cfquery>
 		</cfif>
 
@@ -129,7 +125,7 @@
 			<cfset arrCaterers[i] = [#TContent_ID#,#OrganizationName#,#Physical_City#,#Physical_State#,#Primary_PhoneNumber#,#strActive#]>
 			<cfset i = i + 1>
 		</cfloop>
-
+		
 		<!--- Calculate the Total Number of Pages for your records. --->
 		<cfset totalPages = Ceiling(getFacilities.recordcount/arguments.rows)>
 
@@ -888,6 +884,11 @@
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
 		<cfif not isDefined("FORM.formSubmit")>
+			<cfquery name="Session.getSiteConfig" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select ProcessPayments_Stripe, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_ApiID, SmartyStreets_APIToken
+				From p_EventRegistration_SiteConfig
+				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+			</cfquery>
 
 		<cfelseif isDefined("FORM.formSubmit")>
 			<cflock timeout="60" scope="Session" type="Exclusive">
@@ -1118,6 +1119,11 @@
 				Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.MembershipID#">
 				Order by Physical_State ASC, OrganizationName ASC
 			</cfquery>
+			<cfquery name="Session.getSiteConfig" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select ProcessPayments_Stripe, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_ApiID, SmartyStreets_APIToken
+				From p_EventRegistration_SiteConfig
+				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+			</cfquery>
 		<cfelseif isDefined("FORM.formSubmit")>
 			<cflock timeout="60" scope="Session" type="Exclusive">
 				<cfset Session.FormErrors = #ArrayNew()#>
@@ -1140,6 +1146,7 @@
 					lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
 				Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
 			</cfquery>
+
 
 			<cfif Session.getSiteConfig.SmartyStreets_Enabled EQ true>
 				<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/SmartyStreets").init(apitoken="#Session.getSiteConfig.SmartyStreets_APIToken#", apiid="#Session.getSiteConfig.SmartyStreets_APIID#", verbose=true)>

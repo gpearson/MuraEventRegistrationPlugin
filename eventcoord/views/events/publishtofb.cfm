@@ -62,10 +62,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					window.fbAsyncInit = function() {
 						FB.init({
 							appId   : '#facebookApp.getAppId()#',
+							autoLogAppEvents: true,
 							cookie  : true, // enable cookies to allow the server to access the session
 							oauth	  : true, // OAuth 2.0
 							status  : true, // check login status
-							version : "v2.10",
+							version : "v2.11",
 							xfbml   : true // parse XFBML
 						});
 						FB.Canvas.setSize({height:1800});
