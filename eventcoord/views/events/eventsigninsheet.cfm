@@ -10,8 +10,10 @@ Line 42: Change to the Plugin Name for the cfimport line
 </cfsilent>
 <cfoutput>
 	<div class="panel panel-default">
-		<div class="panel-heading"><h1>Event Signin Sheet: #Session.getSelectedEvent.ShortTitle#</h1></div>
 		<div class="panel-body">
+			<fieldset>
+				<legend><h2>Event Signin Sheet: #Session.getSelectedEvent.ShortTitle#</h2></legend>
+			</fieldset>
 			<div class="alert alert-info">Below is the PDF Document with Registered Participants who have signed up for this event</div>
 			<cfif ListLen(Session.SignInSheet.EventDates) GTE 2 and not isDefined("URL.EventDatePOS")>
 				<table class="table" width="100%" cellspacing="0" cellpadding="0">
@@ -163,12 +165,12 @@ Line 42: Change to the Plugin Name for the cfimport line
 		</div>
 		<cfif isDefined("URL.EventDatePOS")>
 			<div class="panel-footer">
-				<a href="#buildurl('eventcoord:events.default')#" class="btn btn-primary pull-left">Back to Main Screen</a>
+				<a href="#buildurl('eventcoord:events.default')#" class="btn btn-primary pull-left">Back to Event Listing</a>
 				<a href="#buildurl('eventcoord:events.eventsigninsheet&EventID=#URL.EventID#')#" class="btn btn-primary pull-right">View Another Day's SignIn Sheet</a><br /><br />
 			</div>
 		<cfelse>
 			<div class="panel-footer">
-				<a href="#buildurl('eventcoord:events.default')#" class="btn btn-primary pull-left">Back to Main Screen</a><br /><br />
+				<a href="#buildurl('eventcoord:events.default')#" class="btn btn-primary pull-left">Back to Event Listing</a><br /><br />
 			</div>
 		</cfif>
 	</div>

@@ -55,14 +55,16 @@
 	CREATE TABLE `p_EventRegistration_SiteConfig` (
 		`TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` tinytext NOT NULL, `DateCreated` datetime NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, `lastUpdated` datetime NOT NULL,
 		`ProcessPayments_Stripe` bit(1) NOT NULL DEFAULT b'0', `Stripe_TestMode` bit(1) NOT NULL DEFAULT b'1', `Stripe_TestAPIKey` tinytext, `Stripe_LiveAPIKey` tinytext, `Facbook_AppID` tinytext,
-		`Facebook_AppSecretKey` tinytext, `Facebook_PageID` tinytext, `Facebook_AppScope` tinytext, PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+		`Facebook_AppSecretKey` tinytext, `Facebook_PageID` tinytext, `Facebook_AppScope` tinytext, `Google_ReCaptchaSiteKey` tinytext, `Google_ReCaptchaSecretKey` tinytext,
+		PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 </cfquery>
 
 <cfquery name="Create-p_EventRegistration_UserMatrix" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
 	CREATE TABLE `p_EventRegistration_UserMatrix` (
 		`TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` tinytext NOT NULL, `User_ID` char(35) NOT NULL, `School_District` int(11) DEFAULT NULL,
-		`lastUpdateBy` varchar(35) NOT NULL, `lastUpdated` datetime NOT NULL, `created` datetime NOT NULL, `TeachingGrade` int(11) DEFAULT NULL,
-		`TeachingSubject` int(11) DEFAULT NULL, PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=2544 DEFAULT CHARSET=latin1;
+		`created` datetime NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, `lastUpdated` datetime NOT NULL, `TeachingGrade` int(11) DEFAULT NULL,
+		`TeachingSubject` int(11) DEFAULT NULL,
+		`ReceiveMarketingFlyers` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 </cfquery>
 
 <cfquery name="Create-p_EventRegistration_UserRegistrations" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
@@ -91,9 +93,11 @@
 		`MealProvided` bit(1) NOT NULL DEFAULT b'0', `MealProvidedBy` int(11) DEFAULT NULL, `MealCost_Estimated` decimal(6,2) DEFAULT '0.00', `AllowVideoConference` bit(1) NOT NULL DEFAULT b'0',
 		`VideoConferenceInfo` longtext, `VideoConferenceCost` decimal(6,2) DEFAULT NULL, `AcceptRegistrations` bit(1) NOT NULL DEFAULT b'0', `EventAgenda` longtext,
 		`EventTargetAudience` longtext, `EventStrategies` longtext, `EventSpecialInstructions` longtext, `MaxParticipants` int(10) DEFAULT '0', `LocationID` int(10) DEFAULT '0',
-		`LocationRoomID` int(10) DEFAULT '0', `Presenters` tinytext, `Facilitator` char(35) DEFAULT '0', `dateCreated` date NOT NULL, `lastUpdated` date DEFAULT NULL, `lastUpdateBy` char(35) DEFAULT NULL,
-		`Active` bit(1) NOT NULL DEFAULT b'0', `EventCancelled` bit(1) NOT NULL DEFAULT b'0', `WebinarAvailable` bit(1) NOT NULL DEFAULT b'0', `WebinarConnectInfo` mediumtext, `WebinarMemberCost` decimal(6,2) DEFAULT NULL,
-		`WebinarNonMemberCost` decimal(6,2) DEFAULT NULL, `PostedTo_Facebook` bit(1) NOT NULL DEFAULT b'0', `PostedTo_Twitter` bit(1) NOT NULL DEFAULT b'0', PRIMARY KEY (`TContent_ID`,`Site_ID`)
+		`LocationRoomID` int(10) DEFAULT '0', `Presenters` tinytext, `Facilitator` char(35) DEFAULT '0', `dateCreated` date NOT NULL, `lastUpdated` date DEFAULT NULL,
+		`lastUpdateBy` char(35) DEFAULT NULL, `Active` bit(1) NOT NULL DEFAULT b'0', `EventCancelled` bit(1) NOT NULL DEFAULT b'0', `WebinarAvailable` bit(1) NOT NULL DEFAULT b'0',
+		`WebinarConnectInfo` mediumtext, `WebinarMemberCost` decimal(6,2) DEFAULT NULL, `WebinarNonMemberCost` decimal(6,2) DEFAULT NULL, `PostedTo_Facebook` bit(1) NOT NULL DEFAULT b'0',
+		`PostedTo_Twitter` bit(1) NOT NULL DEFAULT b'0', `EventHasDailySessions` bit(1) NOT NULL DEFAULT b'0', `Session1BeginTime` time DEFAULT NULL, `Session1EndTime` time DEFAULT NULL,
+		`Session2BeginTime` time DEFAULT NULL, `Session2EndTime` time DEFAULT NULL, `EventInvoicesGenerated` bit(1) NOT NULL DEFAULT b'0',
 	) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 </cfquery>
 

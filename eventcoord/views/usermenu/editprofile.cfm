@@ -5,6 +5,7 @@
 <cfset temp = QueryAddRow(YesNoQuery, 1)>
 <cfset temp = #QuerySetCell(YesNoQuery, "ID", 1)#>
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
+
 <cfif not isDefined("URL.formRetry")>
 	<cfoutput>
 		<div class="panel panel-default">
@@ -22,11 +23,11 @@
 						<div class="col-sm-8"><p class="form-control-static">#Session.getUserProfile.Username#</p></div>
 					</div>
 					<div class="form-group">
-						<label for="FName" class="control-label col-sm-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<label for="FName" class="control-label col-sm-3">First Name:&nbsp;</label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getUserProfile.Fname#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="LName" class="control-label col-sm-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<label for="LName" class="control-label col-sm-3">Last Name:&nbsp;</label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getUserProfile.LName#" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -95,8 +96,6 @@
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Back to Event Listing"> |
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Event History"> |
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Upcoming Events">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Account Profile"><br /><br />
 				</div>
 			</cfform>
@@ -171,11 +170,11 @@
 						<div class="col-sm-8"><p class="form-control-static">#Session.getUserProfile.Username#</p></div>
 					</div>
 					<div class="form-group">
-						<label for="FName" class="control-label col-sm-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<label for="FName" class="control-label col-sm-3">First Name:&nbsp;</label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.FormData.Fname#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="LName" class="control-label col-sm-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<label for="LName" class="control-label col-sm-3">Last Name:&nbsp;</label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.FormData.LName#" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -244,8 +243,6 @@
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Back to Event Listing"> |
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Event History"> |
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Upcoming Events">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Account Profile"><br /><br />
 				</div>
 			</cfform>

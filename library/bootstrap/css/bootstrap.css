@@ -5063,6 +5063,11 @@ a.thumbnail.active {
   background-color: #dff0d8;
   border-color: #d6e9c6;
 }
+.alert-featured {
+  color: #3c763d;
+  background-color: #eeffee;
+  border-color: #d6e9c6;
+}
 .alert-success hr {
   border-top-color: #c9e2b3;
 }

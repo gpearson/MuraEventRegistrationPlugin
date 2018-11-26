@@ -1,7 +1,9 @@
 <cfoutput>
 	<div class="panel panel-default">
-		<div class="panel-heading"><h2 align="center">#Session.EventInfo.SelectedEvent.ShortTitle# <cfif Len(Session.EventInfo.SelectedEvent.Presenters)>(#Session.EventInfo.EventPresenter.FName# #Session.EventInfo.EventPresenter.Lname#)</cfif></h2></div>
 		<div class="panel-body">
+			<fieldset>
+				<legend><h2>#Session.EventInfo.SelectedEvent.ShortTitle# <cfif Len(Session.EventInfo.SelectedEvent.Presenters)>(#Session.EventInfo.EventPresenter.FName# #Session.EventInfo.EventPresenter.Lname#)</cfif></h2></legend>
+			</fieldset>
 			<table class="table" width="100%" cellspacing="0" cellpadding="0">
 				<tbody>
 					<tr>
@@ -61,6 +63,21 @@
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">Special Instructions:</span></td>
 						<td colspan="3">#Session.EventInfo.SelectedEvent.EventSpecialInstructions#</td>
+						</tr>
+					</cfif>
+					<cfif Session.EventInfo.SelectedEvent.EventHasDailySessions EQ 1>
+						<tr>
+						<td style="width: 155px; valign: middle;"><span style="font-weight: bold;">Event Sessions:</span></td>
+						<td colspan="3">
+							<table border="0" colspan="0" cellspan="0" align="center" width="100%">
+								<tr>
+									<td width="25%"><span style="font-weight: bold;">Session 1:</span></td>
+									<td width="25%">#timeFormat(Session.EventInfo.SelectedEvent.Session1BeginTime, "hh:mm tt")# till #timeFormat(Session.EventInfo.SelectedEvent.Session1EndTime, "hh:mm tt")#</td>
+									<td width="25%"><span style="font-weight: bold;">Session 2:</span></td>
+									<td width="25%">#timeFormat(Session.EventInfo.SelectedEvent.Session2BeginTime, "hh:mm tt")# till #timeFormat(Session.EventInfo.SelectedEvent.Session2EndTime, "hh:mm tt")#</td>
+								</tr>
+							</table>
+						</td>
 						</tr>
 					</cfif>
 					<cfif Session.EventInfo.SelectedEvent.PGPAvailable GT 0 and Session.EventInfo.SelectedEvent.MealProvided EQ 1>

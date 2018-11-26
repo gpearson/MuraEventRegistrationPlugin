@@ -1,4 +1,4 @@
-<cfmail To="#getUserAccount.FName# #getUserAccount.LName# <#getUserAccount.Email#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Event Registration: UpComming Events" server="127.0.0.1">
+<cfmail To="#getUserAccount.FName# #getUserAccount.LName# <#getUserAccount.Email#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Event Registration: Upcoming Events" server="127.0.0.1">
 <cfmailparam file="#Session.EmailMarketing.WebExportCompletedFile#" type="application/pdf">
 <cfmailpart type="text/plain">
 #getUserAccount.FName# #getUserAccount.LName#,
