@@ -18,6 +18,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 
 <cfoutput>
+	<script src="/requirements/ckeditor/ckeditor.js"></script>
 	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
 	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency-1.4.0.js"></script>
 	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrnecy.all.js"></script>
@@ -69,7 +70,24 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="MealNotes" class="control-label col-sm-3">Meal Information:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><textarea name="MealNotes" id="MealNotes" class="form-control">#Session.getSelectedEvent.Meal_Notes#</textarea></div>
+						<div class="col-sm-8">
+							<textarea name="MealNotes" id="MealNotes" class="form-control" cols="80" rows="10">#Session.getSelectedEvent.Meal_Notes#</textarea>
+							<script>CKEDITOR.replace('MealNotes', {
+								// Define the toolbar groups as it is a more accessible solution.
+								toolbarGroups: [
+									{"name":"basicstyles","groups":["basicstyles"]},
+									{"name":"links","groups":["links"]},
+									{"name":"paragraph","groups":["list","blocks"]},
+									{"name":"document","groups":["mode"]},
+									{"name":"insert","groups":["insert"]},
+									{"name":"styles","groups":["styles"]},
+									{"name":"about","groups":["about"]}
+								],
+								// Remove the redundant buttons from toolbar groups defined above.
+								removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+							} );
+							</script>
+						</div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -118,7 +136,24 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="MealNotes" class="control-label col-sm-3">Meal Information:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><textarea name="MealNotes" id="MealNotes" class="form-control">#Session.getSelectedEvent.Meal_Notes#</textarea></div>
+						<div class="col-sm-8">
+							<textarea name="MealNotes" id="MealNotes" class="form-control" cols="80" rows="10">#Session.getSelectedEvent.Meal_Notes#</textarea>
+							<script>CKEDITOR.replace('MealNotes', {
+								// Define the toolbar groups as it is a more accessible solution.
+								toolbarGroups: [
+									{"name":"basicstyles","groups":["basicstyles"]},
+									{"name":"links","groups":["links"]},
+									{"name":"paragraph","groups":["list","blocks"]},
+									{"name":"document","groups":["mode"]},
+									{"name":"insert","groups":["insert"]},
+									{"name":"styles","groups":["styles"]},
+									{"name":"about","groups":["about"]}
+								],
+								// Remove the redundant buttons from toolbar groups defined above.
+								removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+							} );
+							</script>
+						</div>
 					</div>
 				</div>
 				<div class="panel-footer">

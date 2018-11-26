@@ -51,7 +51,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				datatype: "json",
 				colNames: ["Rec No","Expense Name","Active","DateCreated","lastUpdated"],
 				colModel: [
-					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, editable: false },
+					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, hidden: true, editable: false },
 					{ label: 'Expense Name', name: 'Expense_Name', editable: true },
 					{ label: 'Active', name: 'Active', width: 75, editable: true },
 					{ label: 'Date Created', name: 'dateCreated', width: 75, editable: true },
@@ -62,7 +62,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 				viewrecords: true,
 				height: 500,
 				autowidth: true,
-				rowNum: 30,
+				rowNum: 60,
+				rowList : [20,30,50],
+				rowTotal: 2000,
 				pgText: " of ",
 				pager: "##jqGridPager",
 				jsonReader: {
@@ -82,7 +84,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					}
 				}
 			});
-			$('##jqGrid').navGrid('##jqGridPager', {edit: false, add: false, del:false, search:false});
+			$('##jqGrid').navGrid('##jqGridPager', {edit: false, add: false, del:false, search:true});
 
 			$('##jqGrid').navButtonAdd('##jqGridPager',
 				{

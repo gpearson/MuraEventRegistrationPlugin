@@ -5,6 +5,69 @@
 				<fieldset>
 					<legend>List of Upcoming Events</legend>
 				</fieldset>
+				<cfif isDefined("URL.UserAction")>
+					<cfswitch expression="#URL.UserAction#">
+						<cfcase value="RegistrationUpdated">
+							<cfif URL.Successful EQ "True">
+								<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Registration Updated</h3>
+										</div>
+										<div class="modal-body">
+											<div class="alert alert-success">The registration for #Session.GetRegistrationInfo.ShortTitle# was updated due to your request.</div>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+
+										if( window.location.hash == idModal ){ openModal(); }
+
+										var services = { open: openModal, close: closeModal };
+										return services;
+										///////////////
+
+										// method to open modal
+										function openModal(){
+											vm.modal.modal('show');
+										}
+
+										// method to close modal
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+							<cfset temp = StructDelete(Session, "FormErrors")>
+							<cfset temp = StructDelete(Session, "FormData")>
+							<cfset temp = StructDelete(Session, "GetSelectedEvent")>
+							<cfset temp = StructDelete(Session, "GetEventFacility")>
+							<cfset temp = StructDelete(Session, "GetEventFacilityRoom")>
+							<cfelse>
+
+							</cfif>
+						</cfcase>
+					</cfswitch>
+				</cfif>
 				<cfif isDefined("URL.RegistrationCancelled")>
 					<cfswitch expression="#URL.RegistrationCancelled#">
 						<cfcase value="True">
@@ -114,10 +177,11 @@
 								</cfif>
 							</td>
 							<td>
-								<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small pull-right" alt="Event Information">View Event Info</a>
+								<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small pull-right" alt="View Event Info">View Event Info</a>
 								<div class="pull-right">&nbsp;</div>
 								<cfif DateDiff("d", Now(), Session.GetRegisteredEvents.Registration_Deadline) GTE 0>
-									<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.cancelregistration&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small pull-right" alt="Event Information">Cancel Registration</a>
+									<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.cancelregistration&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small pull-right" alt="Cancel Registration">Cancel Registration</a>
+									<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.updateregistration&RegistrationID=#Session.GetRegisteredEvents.RegistrationID#" class="btn btn-primary btn-small pull-right" alt="Update Registration">Update Registration</a>
 								<cfelse>
 									<button type="button" class="btn btn-secondary btn-small pull-right">Cancel Deadline Passed</button>
 								</cfif>

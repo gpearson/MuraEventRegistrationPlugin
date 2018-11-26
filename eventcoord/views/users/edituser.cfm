@@ -17,6 +17,7 @@
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<cfinput type="hidden" name="UserID" value="#URL.UserID#">
+				<cfinput type="hidden" name="Username" value="#Session.getSelectedUser.Username#">
 				<cfif isDefined("URL.UserAction")>
 					<cfswitch expression="#URL.UserAction#">
 					<cfcase value="PasswordChanged">
@@ -74,19 +75,19 @@
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
 						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getSelectedUser.FName#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getSelectedUser.FName#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getSelectedUser.LName#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getSelectedUser.LName#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getSelectedUser.Email#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getSelectedUser.Email#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="Username" class="control-label col-sm-3">Username:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.getSelectedUser.Email#" disabled="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.getSelectedUser.Username#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Company" class="control-label col-sm-3">Company:&nbsp;</label>
@@ -143,6 +144,7 @@
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">&nbsp;
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Change Password">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Activate Account">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Login As User">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Edit Account Information"><br /><br />
 				</div>
 			</cfform>
@@ -153,6 +155,7 @@
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<cfinput type="hidden" name="UserID" value="#URL.UserID#">
+				<cfinput type="hidden" name="Username" value="#Session.getSelectedUser.Username#">
 				<cfif isDefined("Session.FormErrors")>
 					<div id="modelWindowDialog" class="modal fade">
 						<div class="modal-dialog">
@@ -201,19 +204,19 @@
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
 						<label for="FirstName" class="control-label col-sm-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.FormInput.FName#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.FormInput.FName#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="LastName" class="control-label col-sm-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.FormInput.LName#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.FormInput.LName#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="Email" class="control-label col-sm-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.FormInput.Email#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.FormInput.Email#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="Username" class="control-label col-sm-3">Username:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.FormInput.Email#" disabled="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="UserName" name="UserName" value="#Session.FormInput.Username#" disabled="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Company" class="control-label col-sm-3">Company:&nbsp;</label>
@@ -270,6 +273,7 @@
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">&nbsp;
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Change Password">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Activate Account">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Login As User">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Edit Account Information"><br /><br />
 				</div>
 			</cfform>

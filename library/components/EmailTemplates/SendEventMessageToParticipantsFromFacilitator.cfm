@@ -13,6 +13,11 @@ Message Details Below
 	<cfif LEN(Arguments.ParticipantInfo.WebLink3)>#Arguments.ParticipantInfo.WebLink3#</cfif>
 </cfif>
 
+<cfif isDefined("Arguments.ParticipantInfo.WebLinksInEmail")><cfif Arguments.ParticipantInfo.WebLinksInEmail EQ 1>Web Link(s):
+	 #Arguments.ParticipantInfo.WebLink1#
+	 #Arguments.ParticipantInfo.WebLink1#
+</cfif></cfif>
+
 <cfif isDefined("Arguments.ParticipantInfo.DocLinksInEmail")><cfif Arguments.ParticipantInfo.DocLinksInEmail EQ 1>Here are the links to the Event Documents for your reference:
 	<cfloop query="Arguments.ParticipantInfo.EventDocuments">
 		http://#cgi.server_name#/#Arguments.ParticipantInfo.WebEventDirectory##Arguments.ParticipantInfo.EventDocuments.name#

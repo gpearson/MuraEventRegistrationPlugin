@@ -33,7 +33,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<input type="hidden" name="formSubmit" value="true">
 				<input type="hidden" name="PerformAction" value="UpdateEvent">
 				<uForm:fieldset legend="Event Description">
-					<uform:field label="Event Short Title" name="ShortTitle" value="#Session.UserSuppliedInfo.ShortTitle#" maxFieldLength="50" type="text" hint="Short Event Title of Event" />
+					<uform:field label="Event Short Title" name="ShortTitle" value="#Session.UserSuppliedInfo.ShortTitle#" type="text" hint="Short Event Title of Event" />
 					<uform:field label="Event Description" name="LongDescription" value="#Session.UserSuppliedInfo.LongDescription#" type="textarea" hint="Description of this meeting or event" />
 				</uForm:fieldset>
 			</uForm:form>

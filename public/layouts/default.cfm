@@ -56,6 +56,13 @@
 					</ul>
 				</div>
 			</nav>
+			<cfif StructKeyExists(session, "MuraPreviousUser")>
+				<div class="text-left">
+					<div class="alert alert-info">
+						<span>Logged In As:</span> #Session.Mura.FName# #Session.Mura.LName#.<br />To return back to your user account, click <a href="/plugins/#variables.Framework.package##buildURL('public:main.default')#&PerformAction=LogoutUser" class="art-button">here</a>
+					</div>
+				</div>
+			</cfif>
 			<cfif Session.Mura.IsLoggedIn EQ "True">
 				<div class="text-right">
 					Current User: #Session.Mura.FName# #Session.Mura.LName# (#Session.Mura.Company#) <a href="#CGI.Script_name##CGI.path_info#?doaction=logout" class="btn btn-sm btn-primary">Logout</a><br>

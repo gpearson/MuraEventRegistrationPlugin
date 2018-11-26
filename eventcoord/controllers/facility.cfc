@@ -17,15 +17,38 @@
 		<cfargument name="sord" required="no" default="ASC" hint="Sort Order">
 
 		<cfset var arrCaterers = ArrayNew(1)>
-		<cfquery name="getFacilities" dbtype="Query">
-			Select TContent_ID, FacilityName, PhysicalState, PrimaryVoiceNumber, Active
-			From Session.getFacilities
-			<cfif Arguments.sidx NEQ "">
-				Order By #Arguments.sidx# #Arguments.sord#
+		<cfif isDefined("URL._search")>
+			<cfif URL._search EQ "false">
+				<cfquery name="getFacilities" dbtype="Query">
+					Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryVoiceNumber, Active
+					From Session.getFacilities
+					<cfif Arguments.sidx NEQ "">
+						Order By #Arguments.sidx# #Arguments.sord#
+					<cfelse>
+						Order by OrganizationName ASC
+					</cfif>
+				</cfquery>
 			<cfelse>
-				Order by FacilityName #Arguments.sord#
+				<cfquery name="getFacilities" dbtype="Query">
+					Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryVoiceNumber, Active
+					From Session.getFacilities
+					<cfif Arguments.sidx NEQ "">
+						Where #URL.searchField# LIKE '%#URL.searchString#'
+						Order By #Arguments.sidx# #Arguments.sord#
+					</cfif>
+				</cfquery>
 			</cfif>
-		</cfquery>
+		<cfelse>
+			<cfquery name="getFacilities" dbtype="Query">
+				Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryVoiceNumber, Active
+				From Session.getFacilities
+				<cfif Arguments.sidx NEQ "">
+					Order By #Arguments.sidx# #Arguments.sord#
+				<cfelse>
+					Order by FacilityName #Arguments.sord#
+				</cfif>
+			</cfquery>
+		</cfif>
 
 		<!--- Calculate the Start Position for the loop query. So, if you are on 1st page and want to display 4 rows per page, for first page you start at: (1-1)*4+1 = 1.
 				If you go to page 2, you start at (2-)1*4+1 = 5 --->
@@ -44,7 +67,7 @@
 			<cfelse>
 				<cfset strActive = "No">
 			</cfif>
-			<cfset arrCaterers[i] = [#TContent_ID#,#FacilityName#,#PhysicalState#,#PrimaryVoiceNumber#,#strActive#]>
+			<cfset arrCaterers[i] = [#TContent_ID#,#FacilityName#,#PhysicalCity#,#PhysicalState#,#PrimaryVoiceNumber#,#strActive#]>
 			<cfset i = i + 1>
 		</cfloop>
 
@@ -291,6 +314,22 @@
 			<cfif FORM.Active EQ "----">
 				<cfscript>
 					errormsg = {property="EmailMsg",message="Please Select if this Facility is active in the database or not."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:facility.addfacility&FormRetry=True" addtoken="false">
+			</cfif>
+
+			<cfif LEN(FORM.FacilityName) EQ 0>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please Select which ESC/ESA Membership Affiliation this organization is with."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:facility.addfacility&FormRetry=True" addtoken="false">
+			</cfif>
+
+			<cfif LEN(FORM.PhysicalAddress) EQ 0 or LEN(FORM.PhysicalCity) EQ 0 OR LEN(FORM.PhysicalState) EQ 0 OR LEN(FORM.PhysicalZipCode) EQ 0>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter the physical address of this organization."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:facility.addfacility&FormRetry=True" addtoken="false">

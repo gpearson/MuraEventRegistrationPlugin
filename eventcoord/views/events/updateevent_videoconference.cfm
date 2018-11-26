@@ -18,6 +18,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 
 <cfoutput>
+	<script src="/requirements/ckeditor/ckeditor.js"></script>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
@@ -39,7 +40,24 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
 						<label for="VideoConferenceInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control">#Session.getSelectedEvent.VideoConferenceInfo#</textarea></div>
+						<div class="col-sm-8">
+							<textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control" cols="80" rows="10">#Session.getSelectedEvent.VideoConferenceInfo#</textarea>
+							<script>CKEDITOR.replace('VideoConferenceInfo', {
+								// Define the toolbar groups as it is a more accessible solution.
+								toolbarGroups: [
+									{"name":"basicstyles","groups":["basicstyles"]},
+									{"name":"links","groups":["links"]},
+									{"name":"paragraph","groups":["list","blocks"]},
+									{"name":"document","groups":["mode"]},
+									{"name":"insert","groups":["insert"]},
+									{"name":"styles","groups":["styles"]},
+									{"name":"about","groups":["about"]}
+								],
+								// Remove the redundant buttons from toolbar groups defined above.
+								removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+							} );
+							</script>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="VideoConferenceCost" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
@@ -73,7 +91,24 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
 						<label for="VideoConferenceInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control">#Session.getSelectedEvent.VideoConferenceInfo#</textarea></p></div>
+						<div class="col-sm-8">
+							<textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control" cols="80" rows="10">#Session.getSelectedEvent.VideoConferenceInfo#</textarea>
+							<script>CKEDITOR.replace('VideoConferenceInfo', {
+								// Define the toolbar groups as it is a more accessible solution.
+								toolbarGroups: [
+									{"name":"basicstyles","groups":["basicstyles"]},
+									{"name":"links","groups":["links"]},
+									{"name":"paragraph","groups":["list","blocks"]},
+									{"name":"document","groups":["mode"]},
+									{"name":"insert","groups":["insert"]},
+									{"name":"styles","groups":["styles"]},
+									{"name":"about","groups":["about"]}
+								],
+								// Remove the redundant buttons from toolbar groups defined above.
+								removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+							} );
+							</script>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="VideoConferenceCost" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
