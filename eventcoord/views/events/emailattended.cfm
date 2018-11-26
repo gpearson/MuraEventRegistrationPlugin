@@ -102,14 +102,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<label for="FifthDocument" class="control-label col-sm-3">Fifth Document (if Any):&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="file" class="form-control" id="FifthDocument" name="FifthDocument" required="no"></div>
 					</div>
-					<div class="form-group">
-						<label for="SendEmail" class="control-label col-sm-3">Send Email to Participants:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8">
-							<cfselect name="SendEmail" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Send Email?</option>
-							</cfselect>
-						</div>
-					</div>
 				</div>
 			<cfelseif isDefined("URL.FormRetry")>
 				<cfif isDefined("Session.FormErrors")>
@@ -197,14 +189,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="FifthDocument" class="control-label col-sm-3">Fifth Document (if Any):&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="file" class="form-control" value="#Session.FormInput.FifthDocument#" id="FifthDocument" name="FifthDocument" required="no"></div>
-					</div>
-					<div class="form-group">
-						<label for="SendEmail" class="control-label col-sm-3">Send Email to Participants:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8">
-							<cfselect name="SendEmail" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Send Email?</option>
-							</cfselect>
-						</div>
 					</div>
 				</div>
 			</cfif>

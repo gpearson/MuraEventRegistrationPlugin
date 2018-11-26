@@ -18,6 +18,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfif isDefined("Session.FormErrors")>
 				<cfif ArrayLen(Session.FormErrors) GTE 1>
 					<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
+					<cfdump var="#Session.FormErrors#">
 				</cfif>
 			</cfif>
 			<cfif isDefined("URL.UserAction")>
@@ -707,7 +708,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 									<cfif getAttendedParticipantsForEvent.RecordCount><cfif Session.getAvailableEvents.PGPAvailable EQ 1><a href="#buildURL('eventcoord:events.sendpgpcertificates')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Send Certificates</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Send Certificates</small></button></cfif><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Send Certificates</small></button></CFIF><br>
 									<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoord:events.eventsigninsheet')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Sheet</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Sign-In Sheet</small></button></cfif>
 									<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoord:events.namebadges')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Name Badges</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Name Badges</small></button></cfif>
-									<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoord:events.signinparticipant')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Participant</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Sign-In Participant</small></button></cfif>
+									<cfif getRegisteredParticipantsForEvent.RecordCount and DateDiff("d", Now(), Session.getAvailableEvents.EventDate) LT 1><a href="#buildURL('eventcoord:events.signinparticipant')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Participant</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Sign-In Participant</small></button></cfif>
 									<a href="#buildURL('eventcoord:events.updateevent_review')#&EventID=#Session.getAvailableEvents.TContent_ID#" role="button" class="btn btn-primary btn-small"><small>Update Event</small></a>
 									<a href="#buildURL('eventcoord:events.cancelevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Cancel Event</small></a>
 									<a href="#buildURL('eventcoord:events.copyevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Copy Event</small></a><br>
