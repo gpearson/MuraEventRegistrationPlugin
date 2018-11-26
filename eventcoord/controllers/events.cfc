@@ -4,11 +4,10 @@
 
 		<cfset PriorDate = #DateAdd("m", -8, Now())#>
 		<cfquery name="Session.getAvailableEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, PGPAvailable, MemberCost, NonMemberCost, Presenters, Active, AcceptRegistrations, Registration_Deadline, MaxParticipants, EventInvoicesGenerated
+			Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, PGPAvailable, MemberCost, NonMemberCost, Presenters, Active, EventCancelled, AcceptRegistrations, Registration_Deadline, MaxParticipants, EventInvoicesGenerated
 			From p_EventRegistration_Events
 			Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-				EventDate >= <cfqueryparam value="#Variables.PriorDate#" cfsqltype="cf_sql_date"> and
-				EventCancelled = <cfqueryparam value="0" cfsqltype="cf_sql_bit">
+				EventDate >= <cfqueryparam value="#Variables.PriorDate#" cfsqltype="cf_sql_date">
 			Order by EventDate DESC
 		</cfquery>
 		<cfif isDefined("Session.getFacilityInformation")><cfset temp = StructDelete(Session, "getFacilityInformation")></cfif>
@@ -1282,7 +1281,10 @@
 			<cfelseif FORM.CopyEvent EQ 1>
 				<cftry>
 					<cfquery name="insertNewEvent" result="insertNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Insert into p_EventRegistration_Events(Site_ID, ShortTitle, EventDate, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, EarlyBird_RegistrationAvailable, ViewGroupPricing, PGPAvailable, MealAvailable, MealIncluded, AllowVideoConference, AcceptRegistrations, Facilitator, dateCreated, MaxParticipants, Active, lastUpdated, lastUpdateBy, EventCancelled, WebinarAvailable, PostedTo_Facebook, PostedTo_Twitter)
+						Insert into p_EventRegistration_Events(Site_ID,
+						 ShortTitle, EventDate, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime,
+						  EventFeatured, EarlyBird_RegistrationAvailable, ViewGroupPricing, PGPAvailable, MealAvailable, MealIncluded, AllowVideoConference, AcceptRegistrations,
+							 Facilitator, dateCreated, MaxParticipants, Active, lastUpdated, lastUpdateBy, EventCancelled, WebinarAvailable, PostedTo_Facebook, PostedTo_Twitter)
 						Values (
 							<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="Copy of #Session.getSelectedEvent.ShortTitle#" cfsqltype="cf_sql_varchar">,
@@ -1297,6 +1299,7 @@
 							<cfqueryparam value="#Session.getSelectedEvent.EarlyBird_RegistrationAvailable#" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#Session.getSelectedEvent.ViewGroupPricing#" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#Session.getSelectedEvent.PGPAvailable#" cfsqltype="cf_sql_bit">,
+							<cfqueryparam value="#Session.getSelectedEvent.MealAvailable#" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#Session.getSelectedEvent.MealAvailable#" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#Session.getSelectedEvent.AllowVideoConference#" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="0" cfsqltype="cf_sql_bit">,
@@ -1644,6 +1647,13 @@
 				From p_EventRegistration_Membership
 				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
 				Order by OrganizationName
+			</cfquery>
+			<cfquery name="Session.CheckExistingSentEmailsForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select MsgBody, LinksToInclude, DocsToInclude
+				From p_EventRegistration_EventEmailLog
+				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+					Event_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
+					EmailType = <cfqueryparam value="EmailRegistered" cfsqltype="cf_sql_varchar">
 			</cfquery>
 			<cfif not isDefined("URL.EventStatus")>
 				<cflock timeout="60" scope="Session" type="Exclusive">
@@ -2000,6 +2010,40 @@
 										<cfif isDefined("Session.UserRegister.FirstStep.EmailConfirmations")>
 											<cfif Session.UserRegister.FirstStep.EmailConfirmations EQ "on">
 												<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, insertNewRegistration.GENERATED_KEY)#>
+
+												<cfif CheckExistingSentEmailsForEvent.RecordCount>
+													<cfquery name="GetParticipantInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+														Select FName, LName, Email
+														From tusers
+														Where UserID = <cfqueryparam value="#Variables.ParticipantUserID#" cfsqltype="cf_sql_varchar">
+													</cfquery>
+													<cfset ParticipantInfo = StructNew()>
+													<cfset ParticipantInfo.FName = #GetParticipantInfo.Fname#>
+													<cfset ParticipantInfo.LName = #GetParticipantInfo.Lname#>
+													<cfset ParticipantInfo.EmailType = "EmailRegistered">
+													<cfset ParticipantInfo.Email = #GetParticipantInfo.Email#>
+													<cfset ParticipantInfo.EventShortTitle = #Session.getSelectedEvent.ShortTitle#>
+													<cfset ParticipantInfo.EmailMessageBody = #CheckExistingSentEmailsForEvent.MsgBody#>
+													<cfset ParticipantInfo.WebEventDirectory = "/plugins/" & #HTMLEditFormat(rc.pc.getPackage())# & "/includes/assets/documents/" & #URL.EventID# & "/">
+													<cfset ParticipantInfo.EventDocsDirectory = #rc.pc.getFullPath()# & "/includes/assets/documents/" & #FORM.EventID# & "/">
+													<cfif LEN(CheckExistingSentEmailsForEvent.DocsToInclude)>
+														<cfquery name="GetSelectedEventDocuments" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+															Select TContent_ID, ResourceType, ResourceLink, dateCreated, lastUpdated, lastUpdateBy, ResourceDocument, ResourceDocumentType
+															From p_EventRegistration_EventResources
+															Where TContent_ID IN (#FORM.IncludeDocumentLinkInEmail#)
+														</cfquery>
+														<cfset ParticipantInfo.DocumentLinksInEmail = #StructCopy(GetSelectedEventDocuments)#>
+													</cfif>
+													<cfif LEN(CheckExistingSentEmailsForEvent.LinksToInclude)>
+														<cfquery name="GetSelectedEventWebLinks" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+															Select TContent_ID, ResourceType, ResourceLink, dateCreated, lastUpdated, lastUpdateBy, ResourceDocument, ResourceDocumentType
+															From p_EventRegistration_EventResources
+															Where TContent_ID IN (#FORM.IncludeWebLinkInEmail#)
+														</cfquery>
+														<cfset ParticipantInfo.WebLinksInEmail = #StructCopy(GetSelectedEventWebLinks)#>
+													</cfif>
+													<cfset temp = #Variables.SendEMailCFC.SendEventMessageToAllParticipants(rc, Variables.ParticipantInfo)#>
+												</cfif>
 											</cfif>
 										</cfif>
 									<cfelse>
@@ -2987,19 +3031,33 @@
 					Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 					ResourceType = <cfqueryparam value="L" cfsqltype="cf_sql_varchar">
 			</cfquery>
+
+			<cfset WebEventDirectory = "/plugins/" & #HTMLEditFormat(rc.pc.getPackage())# & "/includes/assets/documents/" & #URL.EventID# & "/">
+			<cflock scope="Session" type="exclusive" timeout="60">
+				<cfset Session.WebEventDirectory = #Variables.WebEventDirectory#>
+			</cflock>
 			<cfswitch expression="#URL.EmailType#">
 				<cfcase value="EmailRegistered">
 					<cfquery name="GetRegisteredUsersForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Select p_EventRegistration_UserRegistrations.RegistrationID, p_EventRegistration_UserRegistrations.Site_ID, p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_UserRegistrations.EventID, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.IVCParticipant, p_EventRegistration_UserRegistrations.AttendeePrice,
+						Select p_EventRegistration_UserRegistrations.RegistrationID, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.Site_ID, p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_UserRegistrations.EventID, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.IVCParticipant, p_EventRegistration_UserRegistrations.AttendeePrice,
 							p_EventRegistration_UserRegistrations.OnWaitingList, p_EventRegistration_UserRegistrations.Comments, p_EventRegistration_UserRegistrations.WebinarParticipant, tusers.Fname, tusers.Lname, tusers.UserName, tusers.Email
 						FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID
 						WHERE p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 							p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
 					</cfquery>
+					<cfquery name="GetRegisteredEmailLog" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Select TContent_ID, MsgBody, EmailSentToParticipants, LinksToInclude, DocsToInclude
+						From p_EventRegistration_EventEmailLog
+						Where EmailType = <cfqueryparam value="EmailRegistered" cfsqltype="cf_sql_varchar"> and
+							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+							Event_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
+					</cfquery>
 					<cflock scope="Session" type="exclusive" timeout="60">
 						<cfset Session.getSelectedEvent = StructCopy(getSelectedEvent)>
 						<cfset Session.GetSelectedEventLinks = StructCopy(GetSelectedEventLinks)>
 						<cfset Session.GetSelectedEventDocuments = StructCopy(GetSelectedEventDocuments)>
+						<cfset Session.GetEventEmailLogs = StructCopy(GetRegisteredEmailLog)>
+						<cfset Session.GetParticipantsForEvent = StructCopy(GetRegisteredUsersForEvent)>
 						<cfif GetRegisteredUsersForEvent.RecordCount><cfset Session.EventNumberRegistrations = #GetRegisteredUsersForEvent.RecordCount#><cfelse><cfset Session.EventNumberRegistrations = 0></cfif>
 					</cflock>
 				</cfcase>
@@ -3021,10 +3079,19 @@
 							)
 						ORDER BY tusers.Lname ASC, tusers.Fname ASC
 					</cfquery>
+					<cfquery name="GetAttendedEmailLog" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Select TContent_ID, MsgBody, EmailSentToParticipants, LinksToInclude, DocsToInclude
+						From p_EventRegistration_EventEmailLog
+						Where EmailType = <cfqueryparam value="EmailAttended" cfsqltype="cf_sql_varchar"> and
+							Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+							Event_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
+					</cfquery>
 					<cflock scope="Session" type="exclusive" timeout="60">
 						<cfset Session.getSelectedEvent = StructCopy(getSelectedEvent)>
 						<cfset Session.GetSelectedEventLinks = StructCopy(GetSelectedEventLinks)>
 						<cfset Session.GetSelectedEventDocuments = StructCopy(GetSelectedEventDocuments)>
+						<cfset Session.GetEventEmailLogs = StructCopy(GetAttendedEmailLog)>
+						<cfset Session.GetParticipantsForEvent = StructCopy(GetSelectedEventRegistrations)>
 						<cfif GetSelectedEventRegistrations.RecordCount><cfset Session.EventNumberRegistrations = #GetSelectedEventRegistrations.RecordCount#><cfelse><cfset Session.EventNumberRegistrations = 0></cfif>
 					</cflock>
 				</cfcase>
@@ -3055,6 +3122,9 @@
 			<cfset EventDirectory = #rc.pc.getFullPath()# & "/includes/assets/documents/" & #URL.EventID# & "/">
 			<cfset WebEventDirectory = "/plugins/" & #HTMLEditFormat(rc.pc.getPackage())# & "/includes/assets/documents/" & #URL.EventID# & "/">
 			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
+			<cflock scope="Session" type="exclusive" timeout="60">
+				<cfset Session.WebEventDirectory = #Variables.WebEventDirectory#>
+			</cflock>
 			<cfquery name="getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewGroupPricing, GroupMemberCost, GroupNonMemberCost, GroupPriceRequirements, PGPAvailable, PGPPoints, MealAvailable, MealIncluded, MealProvidedBy, MealCost, Meal_Notes, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Facilitator, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, Presenters
 				From p_EventRegistration_Events
@@ -3066,15 +3136,25 @@
 			<cfswitch expression="#FORM.EmailType#">
 				<cfcase value="EmailRegistered">
 					<cfquery name="GetRegisteredUsersForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Select p_EventRegistration_UserRegistrations.RegistrationID, p_EventRegistration_UserRegistrations.Site_ID, p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_UserRegistrations.EventID, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.IVCParticipant, p_EventRegistration_UserRegistrations.AttendeePrice,
+						Select p_EventRegistration_UserRegistrations.RegistrationID, p_EventRegistration_UserRegistrations.Site_ID,  p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_UserRegistrations.EventID, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.IVCParticipant, p_EventRegistration_UserRegistrations.AttendeePrice,
 							p_EventRegistration_UserRegistrations.OnWaitingList, p_EventRegistration_UserRegistrations.Comments, p_EventRegistration_UserRegistrations.WebinarParticipant, tusers.Fname, tusers.Lname, tusers.UserName, tusers.Email
 						FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID
 						WHERE p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 							p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
 					</cfquery>
-					<cflock scope="Session" type="exclusive" timeout="60">
-						<cfset Session.WebEventDirectory = #Variables.WebEventDirectory#>
-					</cflock>
+					<cfquery name="InsertEmailMessageLog" result="insertNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Insert into p_EventRegistration_EventEmailLog(Site_ID, Event_ID, EmailType, MsgBody, EmailSentToParticipants, dateCreated, lastUpdated, lastUpdateBy)
+						Values(
+							<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">,
+							<cfqueryparam value="#FORM.EmailType#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#FORM.EmailMsg#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#ValueList(GetRegisteredUsersForEvent.User_ID)#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+							<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+						)
+					</cfquery>
 					<cfloop query="GetRegisteredUsersForEvent">
 						<cfset ParticipantInfo = StructNew()>
 						<cfset ParticipantInfo.FName = #GetRegisteredUsersForEvent.Fname#>
@@ -3083,7 +3163,7 @@
 						<cfset ParticipantInfo.Email = #GetRegisteredUsersForEvent.Email#>
 						<cfset ParticipantInfo.EventShortTitle = #GetSelectedEvent.ShortTitle#>
 						<cfset ParticipantInfo.EmailMessageBody = #FORM.EmailMsg#>
-						<cfset ParticipantInfo.WebEventDirectory = "/plugins/" & #HTMLEditFormat(rc.pc.getPackage())# & "/includes/assets/documents/" & #FORM.EventID# & "/">
+						<cfset ParticipantInfo.WebEventDirectory = #Variables.WebEventDirectory#>
 						<cfset ParticipantInfo.EventDocsDirectory = #rc.pc.getFullPath()# & "/includes/assets/documents/" & #FORM.EventID# & "/">
 						<cfif isDefined("FORM.IncludeDocumentLinkInEmail")>
 							<cfquery name="GetSelectedEventDocuments" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
@@ -3103,6 +3183,20 @@
 						</cfif>
 						<cfset temp = #SendEMailCFC.SendEventMessageToAllParticipants(rc, Variables.ParticipantInfo)#>
 					</cfloop>
+					<cfif isDefined("FORM.IncludeDocumentLinkInEmail")>
+						<cfquery name="UpdateEmailMessageLog" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update p_EventRegistration_EventEmailLog
+							Set DocsToInclude = <cfqueryparam value="#FORM.IncludeDocumentLinkInEmail#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+						</cfquery>
+					</cfif>
+					<cfif isDefined("FORM.IncludeWebLinkInEmail")>
+						<cfquery name="UpdateEmailMessageLog" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update p_EventRegistration_EventEmailLog
+							Set LinksToInclude = <cfqueryparam value="#FORM.IncludeWebLinkInEmail#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+						</cfquery>
+					</cfif>
 					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default&UserAction=EmailRegistered&Successful=True" addtoken="false">
 				</cfcase>
 				<cfcase value="EmailAttended">
@@ -3123,9 +3217,19 @@
 							)
 						ORDER BY tusers.Lname ASC, tusers.Fname ASC
 					</cfquery>
-					<cflock scope="Session" type="exclusive" timeout="60">
-						<cfset Session.WebEventDirectory = #Variables.WebEventDirectory#>
-					</cflock>
+					<cfquery name="InsertEmailMessageLog" result="insertNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Insert into p_EventRegistration_EventEmailLog(Site_ID, Event_ID, EmailType, MsgBody, EmailSentToParticipants, dateCreated, lastUpdated, lastUpdateBy)
+						Values(
+							<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">,
+							<cfqueryparam value="#FORM.EmailType#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#FORM.EmailMsg#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#ValueList(GetRegisteredUsersForEvent.User_ID)#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+							<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+						)
+					</cfquery>
 					<cfloop query="GetAttendedUsersForEvent">
 						<cfset ParticipantInfo = StructNew()>
 						<cfset ParticipantInfo.FName = #GetAttendedUsersForEvent.Fname#>
@@ -3134,7 +3238,7 @@
 						<cfset ParticipantInfo.EmailType = "EmailAttended">
 						<cfset ParticipantInfo.EventShortTitle = #GetSelectedEvent.ShortTitle#>
 						<cfset ParticipantInfo.EmailMessageBody = #FORM.EmailMsg#>
-						<cfset ParticipantInfo.WebEventDirectory = "/plugins/" & #HTMLEditFormat(rc.pc.getPackage())# & "/includes/assets/documents/" & #FORM.EventID# & "/">
+						<cfset ParticipantInfo.WebEventDirectory = #Variables.WebEventDirectory#>
 						<cfset ParticipantInfo.EventDocsDirectory = #rc.pc.getFullPath()# & "/includes/assets/documents/" & #FORM.EventID# & "/">
 						<cfif isDefined("FORM.IncludeDocumentLinkInEmail")>
 							<cfquery name="GetSelectedEventDocuments" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
@@ -3154,6 +3258,20 @@
 						</cfif>
 						<cfset temp = #SendEMailCFC.SendEventMessageToAllParticipants(rc, Variables.ParticipantInfo)#>
 					</cfloop>
+					<cfif isDefined("FORM.IncludeDocumentLinkInEmail")>
+						<cfquery name="UpdateEmailMessageLog" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update p_EventRegistration_EventEmailLog
+							Set DocsToInclude = <cfqueryparam value="#FORM.IncludeDocumentLinkInEmail#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+						</cfquery>
+					</cfif>
+					<cfif isDefined("FORM.IncludeWebLinkInEmail")>
+						<cfquery name="UpdateEmailMessageLog" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Update p_EventRegistration_EventEmailLog
+							Set LinksToInclude = <cfqueryparam value="#FORM.IncludeWebLinkInEmail#" cfsqltype="cf_sql_varchar">
+							Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+						</cfquery>
+					</cfif>
 					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default&UserAction=EmailAttended&Successful=True" addtoken="false">
 				</cfcase>
 			</cfswitch>
@@ -4704,14 +4822,12 @@
 				<cffile action="upload" fileField="FORM.file" result="EventDocs" destination="#GetTempDirectory()#" nameconflict="MakeUnique">
 				<cfset NewEventDocument = #Replace(Variables.EventDocs.ServerFile, " ", "_", "ALL")#>
 				<cfset NewEventDocument = #Replace(Variables.NewEventDocument, "'", "_", "ALL")#>
-				<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocs.ServerFile#" Destination="#Variables.uploadDir#/#Variables.NewEventDocument#">
-
+				<cffile action="rename" source="#GetTempDirectory()#/#Variables.EventDocs.ServerFile#" Destination="#Variables.uploadDir#/#Variables.NewEventDocument#" result="FileInfo">
 				<cfset File = #variables.uploadDir# & "/" & #Variables.NewEventDocument#>
 				<cfscript>
 					FileMimeType = fileGetMimeType(variables.file);
 					FileInformation = getFileInfo(variables.file);
 				</cfscript>
-
 				<cfquery name="insertEventDocument" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Insert into p_EventRegistration_EventResources(Site_ID, Event_ID, ResourceType, dateCreated, lastUpdated, lastUpdateBy, ResourceDocument, ResourceDocumentType, ResourceDocumentSize)
 					Values(

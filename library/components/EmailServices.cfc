@@ -114,11 +114,6 @@
 			From tusers
 			Where UserID = <cfqueryparam value="#GetRegisteredEvent.User_ID#" cfsqltype="cf_sql_varchar">
 		</cfquery>
-
-		<cfquery name="DeleteRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Delete from p_EventRegistration_UserRegistrations
-			Where RegistrationID = <cfqueryparam value="#Arguments.Info.RegistrationID#" cfsqltype="cf_sql_varchar">
-		</cfquery>
 		<cfinclude template="EmailTemplates/EventRegistrationCancellationToIndividual.cfm">
 	</cffunction>
 

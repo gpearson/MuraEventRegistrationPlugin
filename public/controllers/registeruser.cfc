@@ -139,11 +139,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 				<cfif GetOrganizationName.RecordCount>
 					<cfquery name="insertUserMatrixInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Insert into p_EventRegistration_UserMatrix(User_ID,Site_ID,School_District,created,LastUpdateBy,LastUpdated) Values('#Variables.NewUserID#','#rc.$.siteConfig("siteID")#',#GetOrganizationName.StateDOE_IDNumber#,#Now()#,'System',#Now()#)
+						Insert into p_EventRegistration_UserMatrix(User_ID,Site_ID,School_District,dateCreated,LastUpdateBy,LastUpdated) Values('#Variables.NewUserID#','#rc.$.siteConfig("siteID")#',#GetOrganizationName.StateDOE_IDNumber#,#Now()#,'System',#Now()#)
 					</cfquery>
 				<cfelse>
 					<cfquery name="insertUserMatrixInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Insert into p_EventRegistration_UserMatrix(User_ID,Site_ID,created,LastUpdateBy,LastUpdated) Values('#Variables.NewUserID#','#rc.$.siteConfig("siteID")#',#Now()#,'System',#Now()#)
+						Insert into p_EventRegistration_UserMatrix(User_ID,Site_ID,dateCreated,LastUpdateBy,LastUpdated) Values('#Variables.NewUserID#','#rc.$.siteConfig("siteID")#',#Now()#,'System',#Now()#)
 					</cfquery>
 				</cfif>
 
