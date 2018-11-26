@@ -2,22 +2,22 @@
 <cfmailpart type="text/plain">
 #getUserAccount.fName# #getUserAccount.lName#,
 
-You have successfully registered for an account on the event registration system provided by your Educational Service Center. In order to make your account active, please click the link below. Upon clicking the link below, your account will become active and will be able to login with your email address and desired password.
+You have successfully registered an account on the #rc.$.siteConfig('site')# event registration system. Please click the link below to activate your account. Failure to click the link below will prevent you from registering for events.
 
 #Variables.AccountActiveLink#
 
-Note: This email address is not valid and is not read by a human individual. This email address is strictly for system notifications that are sent from this system.
+Note: Replies to this automated email address are not monitored by staff. If you have questions or issues contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')#
 </cfmailpart>
 <cfmailpart type="text/html">
 	<html><body>
 		<table border="0" align="center" width="100%" cellspacing="0" cellpadding="0">
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#getUserAccount.fName# #getUserAccount.lName#,</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">You have successfully registered for an account on the event registration system provided by your Educational Service Center. In order to make your account active, please click the link below. Upon clicking the link below, your account will become active and will be able to login with your email address and desired password.</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">You have successfully registered an account on the #rc.$.siteConfig('site')# event registration system. Please click the link below to activate your account. Failure to click the link below will prevent you from registering for events.</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#Variables.AccountActiveLink#</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Note: This email address is not valid and is not read by a human individual. This email address is strictly for system notifications that are sent from this system.</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Note: Replies to this automated email address are not monitored by staff. If you have questions or issues contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')#</td></tr>
 		</table>
 	</body></html>
 </cfmailpart>

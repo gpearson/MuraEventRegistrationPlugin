@@ -1,103 +1,50 @@
-<cfif isDefined("URL.formSubmit") and isDefined("URL.CertificateEventID")>
-
-	<cfquery name="GetCertificateForSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		SELECT eEvents.ShortTitle, eEvents.EventDate, eRegistrations.RequestsMeal, eRegistrations.IVCParticipant, eRegistrations.AttendeePrice, tusers.Fname,
-			tusers.Lname, tusers.Email,  tusers.Company,eEvents.TContent_ID, eEvents.PGPAvailable, eEvents.PGPPoints, eRegistrations.WebinarParticipant
-		FROM eRegistrations INNER JOIN eEvents ON eEvents.TContent_ID = eRegistrations.EventID INNER JOIN tusers ON tusers.UserID = eRegistrations.User_ID
-		WHERE eRegistrations.Site_ID = <cfqueryparam value="#Session.Mura.SiteID#" cfsqltype="cf_sql_varchar"> AND
-			eRegistrations.TContent_ID = <cfqueryparam value="#URL.CertificateEventID#" cfsqltype="cf_sql_integer">
-	</cfquery>
-
-	<cfset CertificateTemplateDir = #Left(ExpandPath("*"), Find("*", ExpandPath("*")) - 1)#>
-	<cfset ParticipantName = #GetCertificateForSelectedEvent.FName# & " " & #GetCertificateForSelectedEvent.LName#>
-	<cfset ParticipantFilename = #Replace(Variables.ParticipantName, " ", "", "all")#>
-	<cfset ParticipantFilename = #Replace(Variables.ParticipantFilename, ".", "", "all")#>
-	<cfset PGPEarned = "PGP Earned: " & #NumberFormat(GetCertificateForSelectedEvent.PGPPoints, "99.9")#>
-	<cfset CertificateMasterTemplate = #Variables.CertificateTemplateDir# & "library/reports/" & "NIESCRisePGPCertificateTemplate.pdf">
-	<cfset CertificateCompletedFile = #Variables.CertificateTemplateDir# & "library/ReportExports/" & #Variables.ParticipantFilename# & ".pdf">
-	<cfscript>
-		PDFCompletedCertificate = CreateObject("java", "java.io.FileOutputStream").init(CertificateCompletedFile);
-		PDFMasterCertificateTemplate = CreateObject("java", "com.itextpdf.text.pdf.PdfReader").init(CertificateMasterTemplate);
-		PDFStamper = CreateObject("java", "com.itextpdf.text.pdf.PdfStamper").init(PDFMasterCertificateTemplate, PDFCompletedCertificate);
-		PDFStamper.setFormFlattening(true);
-		PDFFormFields = PDFStamper.getAcroFields();
-		PDFFormFields.setField("PGPEarned", Variables.PGPEarned);
-		PDFFormFields.setField("ParticipantName", Variables.ParticipantName);
-		PDFFormFields.setField("EventTitle", GetCertificateForSelectedEvent.ShortTitle);
-		PDFFormFields.setField("EventDate", DateFormat(GetCertificateForSelectedEvent.EventDate, "full"));
-		PDFFormFields.setField("SignDate", DateFormat(GetCertificateForSelectedEvent.EventDate, "mm/dd/yyyy"));
-		PDFStamper.close();
-	</cfscript>
+<cfif not isDefined("URL.EventID")>
 	<cfoutput>
-		<div align="center"><h4>Viewing Requested Certificate</h4></div>
-		<div class="alert-box notice">Click <a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.manageregistrations" class="art-button">here</a> to return to the listing of events for a different certificate.</div>
-		<hr>
-		<table class="art-article" border="0" align="center" width="100%" cellspacing="0" cellpadding="0">
-			<tbody>
-				<tr>
-					<td style="border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; width: 99%; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;">
-						<embed src="/plugins/EventRegistration/library/ReportExports/#Variables.ParticipantFilename#.pdf" width="850" height="900">
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="panel panel-default">
+			<div class="panel-heading"><h2>List of Events with Certificates</h2></div>
+			<div class="panel-body">
+				<fieldset>
+					<legend>List of Events with Certificates</legend>
+				</fieldset>
+				<table class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
+					<tr>
+						<td>Event Title</td>
+						<td>Primary Date</td>
+						<td width="15%"></td>
+					</tr>
+					<cfif Session.GetRegisteredEvents.RecordCount GTE 1>
+						<cfloop query="Session.GetRegisteredEvents">
+							<tr>
+							<td>#Session.GetRegisteredEvents.ShortTitle#</td>
+							<td>#dateFormat(Session.GetRegisteredEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate, "ddd")#)</td>
+							<td width="15%">
+								<cfif Session.GetRegisteredEvents.AttendedEventDate1 EQ 1 or Session.GetRegisteredEvents.AttendedEventDate2 EQ 1 or Session.GetRegisteredEvents.AttendedEventDate3 EQ 1 or Session.GetRegisteredEvents.AttendedEventDate4 EQ 1 or Session.GetRegisteredEvents.AttendedEventDate5 EQ 1 or Session.GetRegisteredEvents.AttendedEventDate6 EQ 1>
+									<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.getcertificate&EventID=#Session.GetRegisteredEvents.EventID#&DisplayCertificate=True" class="btn btn-primary btn-small" alt="Event Information">Get Certificate</a>
+								</cfif>
+							</td>
+							</tr>
+						</cfloop>
+					<cfelse>
+						<tr>
+							<td colspan="3" align="center">To view available events you can register for <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary btn-small" alt="Event Listing Button">click here</a></td>
+						</tr>
+					</cfif>
+				</table>
+			</div>
+		</div>
 	</cfoutput>
-<cfelseif not isDefined("FORM.formSubmit") and not isDefined("FORM.CertificatelEventID")>
-	<cflocation url="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.manageregistrations" addtoken="false">
-<cfelseif isDefined("FORM.formSubmit") and isDefined("FORM.CertificatelEventID")>
-	<cfquery name="GetCertificateForSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		SELECT eEvents.ShortTitle, eEvents.EventDate, eRegistrations.RequestsMeal, eRegistrations.IVCParticipant, eRegistrations.AttendeePrice, tusers.Fname,
-			tusers.Lname, tusers.Email,  tusers.Company,eEvents.TContent_ID, eEvents.PGPAvailable, eEvents.PGPPoints, eRegistrations.WebinarParticipant
-		FROM eRegistrations INNER JOIN eEvents ON eEvents.TContent_ID = eRegistrations.EventID INNER JOIN tusers ON tusers.UserID = eRegistrations.UserID
-		WHERE eRegistrations.Site_ID = <cfqueryparam value="#Session.Mura.SiteID#" cfsqltype="cf_sql_varchar"> AND
-			eEvents.TContent_ID = <cfqueryparam value="#FORM.CertificatelEventID#" cfsqltype="cf_sql_integer">
-	</cfquery>
-	<cfset CertificateTemplateDir = #Left(ExpandPath("*"), Find("*", ExpandPath("*")) - 1)#>
-	<cfset ParticipantName = #GetCertificateForSelectedEvent.FName# & " " & #GetCertificateForSelectedEvent.LName#>
-	<cfset ParticipantFilename = #Replace(Variables.ParticipantName, " ", "", "all")#>
-	<cfset ParticipantFilename = #Replace(Variables.ParticipantFilename, ".", "", "all")#>
-	<cfset PGPEarned = "PGP Earned: " & #NumberFormat(GetCertificateForSelectedEvent.PGPPoints, "99.9")#>
-	<cfset CertificateMasterTemplate = #Variables.CertificateTemplateDir# & "library/reports/" & "NIESCRisePGPCertificateTemplate.pdf">
-	<cfset CertificateCompletedFile = #Variables.CertificateTemplateDir# & "library/ReportExports/" & #Variables.ParticipantFilename# & ".pdf">
-	<cfscript>
-		PDFCompletedCertificate = CreateObject("java", "java.io.FileOutputStream").init(CertificateCompletedFile);
-		PDFMasterCertificateTemplate = CreateObject("java", "com.itextpdf.text.pdf.PdfReader").init(CertificateMasterTemplate);
-		PDFStamper = CreateObject("java", "com.itextpdf.text.pdf.PdfStamper").init(PDFMasterCertificateTemplate, PDFCompletedCertificate);
-		PDFStamper.setFormFlattening(true);
-		PDFFormFields = PDFStamper.getAcroFields();
-		PDFFormFields.setField("PGPEarned", Variables.PGPEarned);
-		PDFFormFields.setField("ParticipantName", Variables.ParticipantName);
-		PDFFormFields.setField("EventTitle", GetCertificateForSelectedEvent.ShortTitle);
-		PDFFormFields.setField("EventDate", DateFormat(GetCertificateForSelectedEvent.EventDate, "full"));
-		PDFFormFields.setField("SignDate", DateFormat(GetCertificateForSelectedEvent.EventDate, "mm/dd/yyyy"));
-		PDFStamper.close();
-	</cfscript>
+<cfelseif isDefined("URL.EventID") and isDefined("URL.DisplayCertificate")>
 	<cfoutput>
-		<div align="center"><h4>Viewing Requested Certificate</h4></div>
-		<div class="alert-box notice">Click <a href="" class="art-button">here</a> to return to the listing of events for a different certificate.</div>
-		<hr>
-		<table class="art-article" border="0" align="center" width="100%" cellspacing="0" cellpadding="0">
-			<tbody>
-				<tr>
-					<td style="border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; width: 99%; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;">
-						<embed src="/plugins/EventRegistration/library/ReportExports/#Variables.ParticipantFilename#.pdf" width="850" height="900">
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<fieldset>
+					<legend>Certificate: #Session.GetSelectedEvent.ShortTitle#</legend>
+				</fieldset>
+				<embed src="#Session.CertificateCompletedFile#" width="100%" height="650">
+			</div>
+			<div class="panel-footer">
+				<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.eventhistory" class="btn btn-primary btn-small" alt="Event Listing Button">Return to My Event History</a>
+			</div>
+		</div>
 	</cfoutput>
 </cfif>
-
-
-
-
-
-<!---
-
-
-
-
-
-
-
---->

@@ -2,7 +2,7 @@
 <cfmailpart type="text/plain">
 #getRegisteredUserInfo.FName# #getRegisteredUserInfo.LName#,
 
-Here is a copy of your registration cancellation for your records. 
+Here is a copy of your registration cancellation for your records.
 
 Event Title: #GetRegisteredEvent.ShortTitle#
 Event Date: #DateFormat(GetRegisteredEvent.EventDate, "full")#
@@ -11,7 +11,7 @@ Event Date: #DateFormat(GetRegisteredEvent.EventDate, "full")#
 This event has been cancelled from your account. If this was done in error you will need to reregister for this event if space is available.
 
 
-Note: This email address is not valid and is not read by a human individual. This email address is strictly for system notifications that are sent from this system.
+Note: Replies to this automated email address are not monitored by staff. If you have questions or issues contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')#
 </cfmailpart>
 <cfmailpart type="text/html">
 	<html><body>
@@ -26,7 +26,7 @@ Note: This email address is not valid and is not read by a human individual. Thi
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">This event has been cancelled from your account. If this was done in error you will need to reregister for this event if space is available.</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Note: This email address is not valid and is not read by a human individual. This email address is strictly for system notifications that are sent from this system.</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Note: Replies to this automated email address are not monitored by staff. If you have questions or issues contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')#</td></tr>
 		</table>
 	</body></html>
 </cfmailpart>

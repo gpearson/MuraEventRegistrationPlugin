@@ -187,7 +187,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</cfquery>
 							<tr bgcolor="###iif(currentrow MOD 2,DE('ffffff'),DE('efefef'))#">
 								<td width="50%">(<a href="http://#cgi.server_name#/?Info=#getAvailableEvents.TContent_ID#">#getAvailableEvents.TContent_ID#</a>) / #getAvailableEvents.ShortTitle#</td>
-								<td width="15%">#DateFormat(getAvailableEvents.EventDate, "mmm dd, yy")#</td>
+								<td width="15%">#DateFormat(getAvailableEvents.EventDate, "mm/dd/yyyy")#</td>
 								<td>
 									<a href="#buildURL('admin:events.updateevent_review')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Update</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.cancelevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Cancel</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.emailregistered')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Email Registered</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.emailattended')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Email Attended</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.copypriorevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Copy</a><br />
 									<a href="#buildURL('admin:events.geteventinfo')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Info</a>&nbsp;&nbsp;<a href="#buildURL('admin:events.registeruserforevent')#&EventID=#getAvailableEvents.TContent_ID#" class="art-button">Register</a>

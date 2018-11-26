@@ -1,11 +1,4 @@
 <cfif not isDefined("URL.EventID") and Session.Mura.IsLoggedIn EQ "True">
-
-	<cfquery name="GetRegisteredEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-		SELECT eEvents.ShortTitle, eEvents.EventDate, eRegistrations.AttendedEvent, eRegistrations.RegistrationID,  eRegistrations.OnWaitingList, eRegistrations.EventID, eEvents.PGPAvailable, eEvents.PGPPoints
-		FROM eRegistrations INNER JOIN eEvents ON eEvents.TContent_ID = eRegistrations.EventID
-		WHERE eRegistrations.User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-		ORDER BY eRegistrations.RegistrationDate DESC
-	</cfquery>
 	<cfoutput>
 		<cfif isDefined("URL.CancelEventAborted")>
 			<br>
@@ -29,7 +22,7 @@
 				<cfloop query="GetRegisteredEvents">
 				<tr style="font-face: Arial; font-weight: normal; font-size: 12px;">
 					<td width="50%">#GetRegisteredEvents.ShortTitle#</td>
-					<td width="25%">#DateFormat(GetRegisteredEvents.EventDate, "short")#</td>
+					<td width="25%">#DateFormat(GetRegisteredEvents.EventDate, "mm/dd/yyyy")#</td>
 					<td>
 						<cfif GetRegisteredEvents.AttendedEvent EQ 0>
 							<a href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=public:usermenu.manageregistrations" class="art-button" alt="Cancel Event">Manage Registration</a>

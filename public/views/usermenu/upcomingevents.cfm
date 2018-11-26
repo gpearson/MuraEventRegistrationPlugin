@@ -3,7 +3,7 @@
 		<div class="panel panel-default">
 			<div class="panel-body">
 				<fieldset>
-					<legend>List of Registered Events</legend>
+					<legend>List of Upcoming Events</legend>
 				</fieldset>
 				<cfif isDefined("URL.RegistrationCancelled")>
 					<cfswitch expression="#URL.RegistrationCancelled#">
@@ -66,16 +66,63 @@
 				</cfif>
 				<table class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
 					<tr>
-						<td>Event Title</td>
-						<td>Primary Date</td>
-						<td width="15%"></td>
+						<td width="50%">Event Title</td>
+						<td width="15%">Primary Date</td>
+						<td>&nbsp;</td>
 					</tr>
 					<cfif Session.GetRegisteredEvents.RecordCount GTE 1>
 						<cfloop query="Session.GetRegisteredEvents">
 							<tr>
 							<td>#Session.GetRegisteredEvents.ShortTitle#</td>
-							<td>#dateFormat(Session.GetRegisteredEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate, "ddd")#)</td>
-							<td width="15%"><a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.cancelregistration&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small" alt="Event Information">Cancel</a> | <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small" alt="Event Information">View</a></td>
+							<td>
+								<cfif LEN(Session.GetRegisteredEvents.EventDate) and LEN(Session.GetRegisteredEvents.EventDate1) or LEN(Session.GetRegisteredEvents.EventDate2) or LEN(Session.GetRegisteredEvents.EventDate3) or LEN(Session.GetRegisteredEvents.EventDate4)>
+									<cfif DateDiff("d", Now(), Session.GetRegisteredEvents.EventDate) LT 0>
+										<div style="Color: ##CCCCCC;">#DateFormat(Session.GetRegisteredEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate, "ddd")#)</div>
+									<cfelse>
+										#DateFormat(Session.GetRegisteredEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate, "ddd")#)<br>
+									</cfif>
+									<cfif LEN(Session.GetRegisteredEvents.EventDate1)>
+										<cfif DateDiff("d", Now(), Session.GetRegisteredEvents.EventDate1) LT 0>
+											<div style="Color: ##AAAAAA;">#DateFormat(Session.GetRegisteredEvents.EventDate1, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate1, "ddd")#)</div>
+										<cfelse>
+											#DateFormat(Session.GetRegisteredEvents.EventDate1, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate1, "ddd")#)<br>
+										</cfif>
+									</cfif>
+									<cfif LEN(Session.GetRegisteredEvents.EventDate2)>
+										<cfif DateDiff("d", Now(), Session.GetRegisteredEvents.EventDate2) LT 0>
+											<div class="text-danger">#DateFormat(Session.GetRegisteredEvents.EventDate2, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate2, "ddd")#)</div>
+										<cfelse>
+											#DateFormat(Session.GetRegisteredEvents.EventDate2, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate2, "ddd")#)<br>
+										</cfif>
+									</cfif>
+									<cfif LEN(Session.GetRegisteredEvents.EventDate3)>
+										<cfif DateDiff("d", Now(), Session.GetRegisteredEvents.EventDate3) LT 0>
+											<div class="text-danger">#DateFormat(Session.GetRegisteredEvents.EventDate3, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate3, "ddd")#)</div>
+										<cfelse>
+											#DateFormat(Session.GetRegisteredEvents.EventDate3, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate3, "ddd")#)<br>
+										</cfif>
+									</cfif>
+									<cfif LEN(Session.GetRegisteredEvents.EventDate4)>
+										<cfif DateDiff("d", Now(), Session.GetRegisteredEvents.EventDate4) LT 0>
+											<div class="text-danger">#DateFormat(Session.GetRegisteredEvents.EventDate4, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate4, "ddd")#)</div>
+										<cfelse>
+											#DateFormat(Session.GetRegisteredEvents.EventDate4, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate4, "ddd")#)
+										</cfif>
+									</cfif>
+								<cfelse>
+									#DateFormat(Session.GetRegisteredEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate, "ddd")#)
+								</cfif>
+							</td>
+							<td>
+								<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small pull-right" alt="Event Information">View Event Info</a>
+								<div class="pull-right">&nbsp;</div>
+								<cfif DateDiff("d", Now(), Session.GetRegisteredEvents.Registration_Deadline) GTE 0>
+									<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.cancelregistration&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small pull-right" alt="Event Information">Cancel Registration</a>
+								<cfelse>
+									<button type="button" class="btn btn-secondary btn-small pull-right">Cancel Deadline Passed</button>
+								</cfif>
+
+							</td>
 							</tr>
 						</cfloop>
 					<cfelse>
@@ -164,7 +211,9 @@
 						<tr>
 						<td>#Session.GetRegisteredEvents.ShortTitle#</td>
 						<td>#dateFormat(Session.GetRegisteredEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate, "ddd")#)</td>
-						<td width="15%"><a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.cancelregistration&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small" alt="Event Information">Cancel</a> | <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small" alt="Event Information">View</a></td>
+						<td width="15%">
+
+							<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.cancelregistration&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small" alt="Event Information">Cancel</a> | <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.GetRegisteredEvents.EventID#" class="btn btn-primary btn-small" alt="Event Information">View Event Info</a></td>
 						</tr>
 					</cfloop>
 				</table>
