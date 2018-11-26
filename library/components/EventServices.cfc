@@ -250,9 +250,9 @@
 		<cfset requestContent = #Replace(variables.requestContent, "%40", "@", "ALL")#>
 		<cfset requestContent = #Replace(variables.requestContent, "%20", " ", "ALL")#>
 		<cfset requestContent = #Replace(variables.requestContent, "%2B", " ", "ALL")#>
-		<cfset Info = #ListLast(variables.requestContent, "&")#>
-		<cfset requestinfo = #DeserializeJSON(Variables.Info)#>
-
+		<cfset Info = #ListLast(ListLast(variables.requestContent, "&"), "=")#>
+		<cfset requestinfo = #DeserializeJSON(Info)#>
+		
 		<cfquery name="CheckAccount" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
 			Select UserID, Fname, Lname, Email
 			From tusers
