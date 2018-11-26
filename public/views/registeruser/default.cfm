@@ -1,12 +1,12 @@
 <cfif not isDefined("URL.FormRetry")>
 	<cfoutput>
-		<cfset captcha = #Session.Captcha#>
-		<cfset captchaHash = Hash(captcha)>
+		<cfscript>
+			lang = 'en';
+		</cfscript>
+		<script src='https://www.google.com/recaptcha/api.js?h1=#lang#'></script>
 		<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
 			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-			<cfinput type="hidden" name="CaptchaEncrypted" value="#Variables.CaptchaHash#">
 			<cfinput type="hidden" name="InActive" value="1">
-			<cfinput type="hidden" name="HumanValidation" value="#Variables.Captcha#">
 			<cfinput type="hidden" name="formSubmit" value="true">
 			<div class="panel panel-default">
 				<div class="panel-body">
@@ -18,23 +18,23 @@
 						<legend>Your Information</legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="YourFirstName" class="control-label col-sm-3">First Name:&nbsp;</label>
+						<label for="YourFirstName" class="control-label col-sm-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" id="fName" name="fName" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="YourLastName" class="control-label col-sm-3">Last Name:&nbsp;</label>
+						<label for="YourLastName" class="control-label col-sm-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" id="lName" name="lName" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="YourEmail" class="control-label col-sm-3">School/Business Email:&nbsp;</label>
+						<label for="YourEmail" class="control-label col-sm-3">School/Business Email:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" id="UserName" name="UserName" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="YourDesiredPassword" class="control-label col-sm-3">Desired Password:&nbsp;</label>
+						<label for="YourDesiredPassword" class="control-label col-sm-3">Desired Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-6"><cfinput type="password" class="form-control" id="Password" name="Password" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="VerifyDesiredPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
+						<label for="VerifyDesiredPassword" class="control-label col-sm-3">Verify Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-6"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -53,11 +53,14 @@
 						<legend>Account Security</legend>
 					</fieldset>
 					<div class="form-group">
+						<div class="col-sm-6"><div class="g-recaptcha" data-sitekey="6Le6hw0UAAAAAHty8-RZLBzpnHjc348j7U0nrxdh"></div></div>
+						<!---
 						<label for="HumanChecker" class="control-label col-sm-3">In order to prevent abuse from automatic systems, please type the letters or numbers in the box below:&nbsp;</label>
 						<div class="col-sm-6">
 							<cfimage action="captcha" difficulty="medium" text="#captcha#" fonts="arial,times roman, tahoma" height="150" width="500" /><br><br />
 							<cfinput name="ValidateCaptcha" type="text" required="yes" message="Input Captcha Text" />
 						</div>
+						--->
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -68,10 +71,12 @@
 	</cfoutput>
 <cfelseif isDefined("URL.FormRetry")>
 	<cfoutput>
+		<cfscript>
+			lang = 'en';
+		</cfscript>
+		<script src='https://www.google.com/recaptcha/api.js?h1=#lang#'></script>
 		<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
 			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-			<cfinput type="hidden" name="CaptchaEncrypted" value="#Session.FormData.CaptchaEncrypted#">
-			<cfinput type="hidden" name="HumanValidation" value="#Session.FormData.HumanValidation#">
 			<cfinput type="hidden" name="InActive" value="1">
 			<cfinput type="hidden" name="formSubmit" value="true">
 			<div class="panel panel-default">
@@ -92,23 +97,23 @@
 						<legend>Your Information</legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="YourFirstName" class="control-label col-sm-3">First Name:&nbsp;</label>
+						<label for="YourFirstName" class="control-label col-sm-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" value="#Session.FormData.fName#" id="fName" name="fName" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="YourLastName" class="control-label col-sm-3">Last Name:&nbsp;</label>
+						<label for="YourLastName" class="control-label col-sm-3">Last Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" value="#Session.FormData.lName#" id="lName" name="lName" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="YourEmail" class="control-label col-sm-3">Email Address:&nbsp;</label>
+						<label for="YourEmail" class="control-label col-sm-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" value="#Session.FormData.UserName#" id="UserName" name="UserName" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="YourDesiredPassword" class="control-label col-sm-3">Desired Password:&nbsp;</label>
+						<label for="YourDesiredPassword" class="control-label col-sm-3">Desired Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-6"><cfinput type="password" class="form-control" value="#Session.FormData.Password#" id="Password" name="Password" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="VerifyDesiredPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
+						<label for="VerifyDesiredPassword" class="control-label col-sm-3">Verify Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-6"><cfinput type="password" class="form-control" value="#Session.FormData.VerifyPassword#" id="VerifyPassword" name="VerifyPassword" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -127,11 +132,14 @@
 						<legend>Account Security</legend>
 					</fieldset>
 					<div class="form-group">
+						<div class="col-sm-6"><div class="g-recaptcha" data-sitekey="6Le6hw0UAAAAAHty8-RZLBzpnHjc348j7U0nrxdh"></div></div>
+						<!---
 						<label for="HumanChecker" class="control-label col-sm-3">In order to prevent abuse from automatic systems, please type the letters or numbers in the box below:&nbsp;</label>
 						<div class="col-sm-6">
-							<cfimage action="captcha" difficulty="medium" text="#Session.FormData.HumanValidation#" fonts="arial,times roman, tahoma" height="150" width="500" /><br>
+							<cfimage action="captcha" difficulty="medium" text="#captcha#" fonts="arial,times roman, tahoma" height="150" width="500" /><br><br />
 							<cfinput name="ValidateCaptcha" type="text" required="yes" message="Input Captcha Text" />
 						</div>
+						--->
 					</div>
 				</div>
 				<div class="panel-footer">

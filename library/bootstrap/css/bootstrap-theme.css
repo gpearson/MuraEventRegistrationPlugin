@@ -419,6 +419,15 @@ fieldset[disabled] .btn-danger.active {
   background-repeat: repeat-x;
   border-color: #b2dba1;
 }
+.alert-featured {
+  background-image: -webkit-linear-gradient(top, #dbf4d0 0%, #c8e5bc 100%);
+  background-image:      -o-linear-gradient(top, #dbf4d0 0%, #c8e5bc 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#dbf4d0), to(#c8e5bc));
+  background-image:         linear-gradient(to bottom, #dbf4d0 0%, #c8e5bc 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffdff0d8', endColorstr='#ffc8e5bc', GradientType=0);
+  background-repeat: repeat-x;
+  border-color: #b2dba1;
+}
 .alert-info {
   background-image: -webkit-linear-gradient(top, #d9edf7 0%, #b9def0 100%);
   background-image:      -o-linear-gradient(top, #d9edf7 0%, #b9def0 100%);

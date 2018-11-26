@@ -14,13 +14,15 @@ Line 42: Change to the Plugin Name for the cfimport line
 <cfset temp = #QuerySetCell(PaperTemplateQuery, "OptionName", "Avery 5395")#>
 <cfoutput>
 	<div class="panel panel-default">
-		<div class="panel-heading"><h1>Event Name Badges: #Session.getSelectedEvent.ShortTitle#</h1></div>
 		<cfif not isDefined("Session.FormInput.StepOne.PaperTemplate")>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal" enctype="multipart/form-data">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="EventID" value="#URL.EventID#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Event Name Badges: #Session.getSelectedEvent.ShortTitle#</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="PaperTemplate" class="control-label col-sm-3">Paper Template Number:&nbsp;</label>
 						<div class="col-sm-8">
@@ -31,12 +33,15 @@ Line 42: Change to the Plugin Name for the cfimport line
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Event Listing">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Display Name Badges"><br /><br />
 				</div>
 			</cfform>
 		<cfelseif isDefined("Session.FormInput.StepOne.PaperTemplate")>
 			<div class="panel-body">
+				<fieldset>
+						<legend><h2>Event Name Badges: #Session.getSelectedEvent.ShortTitle#</h2></legend>
+					</fieldset>
 			<div class="alert alert-info">Below is the PDF Document with Registered Participants who have signed up for this event</div>
 			<cfif ListLen(Session.SignInSheet.EventDates) GTE 2 and not isDefined("URL.EventDatePOS")>
 				<table class="table" width="100%" cellspacing="0" cellpadding="0">
@@ -180,8 +185,12 @@ Line 42: Change to the Plugin Name for the cfimport line
 				</div>
 				<cfif isDefined("URL.EventDatePOS")>
 					<div class="panel-footer">
-						<a href="#buildurl('eventcoord:events.default')#" class="btn btn-primary pull-left">Back to Main Screen</a>
+						<a href="#buildurl('eventcoord:events.default')#" class="btn btn-primary pull-left">Back to Event Listing</a>
 						<a href="#buildurl('eventcoord:events.namebadges&EventID=#URL.EventID#')#" class="btn btn-primary pull-right">View Another Day's SignIn Sheet</a><br /><br />
+					</div>
+				<cfelse>
+					<div class="panel-footer">
+						<a href="#buildurl('eventcoord:events.default')#" class="btn btn-primary pull-left">Back to Event Listing</a><br /><br />
 					</div>
 				</cfif>
 			</cfif>

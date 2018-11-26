@@ -129,7 +129,7 @@
 		<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>
 
 		<cfquery name="getRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select RegistrationID, RegistrationDate, User_ID, EventID, RequestsMeal, IVCParticipant, AttendeePrice, RegisterByUserID, OnWaitingList, Comments, WebinarParticipant
+			Select RegistrationID, RegistrationDate, User_ID, EventID, RequestsMeal, IVCParticipant, AttendeePrice, RegisterByUserID, OnWaitingList, Comments, WebinarParticipant, RegisterForEventDate1, RegisterForEventDate2, RegisterForEventDate3, RegisterForEventDate4, RegisterForEventDate5, RegisterForEventDate6, RegisterForEventSessionAM, RegisterForEventSessionPM
 			From p_EventRegistration_UserRegistrations
 			Where TContent_ID = <cfqueryparam value="#Arguments.RegistrationRecordID#" cfsqltype="cf_sql_integer">
 		</cfquery>
@@ -149,7 +149,7 @@
 		</cfif>
 
 		<cfquery name="getEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, LongDescription, Event_StartTime, Event_EndTime, PGPPoints, MealProvided, AllowVideoConference, VideoConferenceInfo, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, LocationID, LocationRoomID, PGPAvailable, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost
+			Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, LongDescription, Event_StartTime, Event_EndTime, PGPPoints, MealProvided, AllowVideoConference, VideoConferenceInfo, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, LocationID, LocationRoomID, PGPAvailable, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, EventHasDailySessions, Session1BeginTime, Session1EndTime, Session2BeginTime, Session2EndTime
 			From p_EventRegistration_Events
 			Where TContent_ID = <cfqueryparam value="#getRegistration.EventID#" cfsqltype="cf_sql_integer">
 		</cfquery>
@@ -214,7 +214,7 @@
 			<cffile action="Write" file="#Variables.UserRegistrationiCalAbsoluteFilename#" output="#Variables.UserRegistrationiCalData#">
 		</cfif>
 
-		<cfset reportQuery = QueryNew("ParticipantFName,ParticipantLName,RegistrationDate,RegisteredBy,EventTitle,EventDates,LogoPath,DistantEdParticipant,RequestsMeal,EventLocation,LocationQRCode,PGPPoints")>
+		<cfset reportQuery = QueryNew("ParticipantFName,ParticipantLName,RegistrationDate,RegisteredBy,EventTitle,EventDates,LogoPath,DistantEdParticipant,RequestsMeal,EventLocation,LocationQRCode,PGPPoints,EventSessionTimes")>
 		<cfset LogoPathLoc = "/plugins/" & #rc.pc.getPackage()# & "/library/images/NIESC_Logo.png">
 		<cfset temp = QueryAddRow(reportQuery, 1)>
 		<cfset temp = QuerySetCell(reportQuery, "ParticipantFName", getRegisteredUserInfo.Fname)>
@@ -230,15 +230,33 @@
 		<cfset temp = QuerySetCell(reportQuery, "LocationQRCode", Variables.FacilityFileDirAndImage)>
 		<cfset temp = QuerySetCell(reportQuery, "PGPPoints", Variables.PGPPointsFormatted)>
 
-		<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
-		<cfset ReportDirLoc = "/plugins/" & #rc.pc.getPackage()# & "/library/reports/">
-		<cfset ReportExportDirLoc = "/plugins/" & #rc.pc.getPackage()# & "/library/ReportExports/">
-		<cfloop from="1" to="#getRegistration.RecordCount#" step="1" index="i"><cfset LogoPath[i] = #ExpandPath(LogoPathLoc)#></cfloop>
-		<cfset temp = QueryAddColumn(getRegistration, "LogoPath", "VarChar", Variables.LogoPath)>
-		<cfset ReportDirectory = #ExpandPath(ReportDirLoc)# >
-
-		<cfset ReportExportLoc = #ExpandPath(ReportExportDirLoc)# & #getRegistration.RegistrationID# & "-EventConfirmation.pdf" >
-		<jr:jasperreport jrxml="#ReportDirLoc#/EventConfirmationPage.jrxml" query="#reportQuery#" exportfile="#ReportExportLoc#" exportType="pdf" />
+		<cfif getEvent.EventHasDailySessions EQ 1>
+			<cfif getRegistration.RegisterForEventSessionAM EQ 1>
+				<cfset EventSessionTimesDisplay = #timeFormat(getEvent.Session1BeginTime, "hh:mm tt")# & " till " & #timeFormat(getEvent.Session1EndTime, "hh:mm tt")#>
+			</cfif>
+			<cfif getRegistration.RegisterForEventSessionPM EQ 1>
+				<cfset EventSessionTimesDisplay = #timeFormat(getEvent.Session2BeginTime, "hh:mm tt")# & " till " & #timeFormat(getEvent.Session2EndTime, "hh:mm tt")#>
+			</cfif>
+			<cfset temp = QuerySetCell(reportQuery, "EventSessionTimes", variables.EventSessionTimesDisplay)>
+			<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
+			<cfset ReportDirLoc = "/plugins/" & #rc.pc.getPackage()# & "/library/reports/">
+			<cfset ReportExportDirLoc = "/plugins/" & #rc.pc.getPackage()# & "/library/ReportExports/">
+			<cfloop from="1" to="#getRegistration.RecordCount#" step="1" index="i"><cfset LogoPath[i] = #ExpandPath(LogoPathLoc)#></cfloop>
+			<cfset temp = QueryAddColumn(getRegistration, "LogoPath", "VarChar", Variables.LogoPath)>
+			<cfset ReportDirectory = #ExpandPath(ReportDirLoc)# >
+			<cfset ReportExportLoc = #ExpandPath(ReportExportDirLoc)# & #getRegistration.RegistrationID# & "-EventConfirmation.pdf" >
+			<jr:jasperreport jrxml="#ReportDirLoc#/EventConfirmationPageWithSessions.jrxml" query="#reportQuery#" exportfile="#ReportExportLoc#" exportType="pdf" />
+		<cfelse>
+			<cfset temp = QuerySetCell(reportQuery, "EventSessionTimes", "")>
+			<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
+			<cfset ReportDirLoc = "/plugins/" & #rc.pc.getPackage()# & "/library/reports/">
+			<cfset ReportExportDirLoc = "/plugins/" & #rc.pc.getPackage()# & "/library/ReportExports/">
+			<cfloop from="1" to="#getRegistration.RecordCount#" step="1" index="i"><cfset LogoPath[i] = #ExpandPath(LogoPathLoc)#></cfloop>
+			<cfset temp = QueryAddColumn(getRegistration, "LogoPath", "VarChar", Variables.LogoPath)>
+			<cfset ReportDirectory = #ExpandPath(ReportDirLoc)# >
+			<cfset ReportExportLoc = #ExpandPath(ReportExportDirLoc)# & #getRegistration.RegistrationID# & "-EventConfirmation.pdf" >
+			<jr:jasperreport jrxml="#ReportDirLoc#/EventConfirmationPage.jrxml" query="#reportQuery#" exportfile="#ReportExportLoc#" exportType="pdf" />
+		</cfif>
 
 		<cfswitch expression="#Variables.RegisteredBy#">
 			<cfcase value="self">

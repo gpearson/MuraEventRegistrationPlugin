@@ -24,7 +24,12 @@
 					<fieldset>
 						<legend>Registering for Event: #Session.getSelectedEvent.ShortTitle#</legend>
 					</fieldset>
-					<p class="alert alert-info">Please complete the following information to register for this event. All electronic communication from this system will be sent to the Participant's Email Address</p>
+					<div class="alert alert-info">Please complete the following information to register for this event. All electronic communication from this system will be sent to the Participant's Email Address
+					<cfif Session.getSelectedEvent.EventHasDailySessions EQ 1><p align="center"><hr>
+					<strong>Session 1:</strong> #timeFormat(Session.getSelectedEvent.Session1BeginTime, "hh:mm tt")# till #timeFormat(Session.getSelectedEvent.Session1EndTime, "hh:mm tt")#<br>
+					<strong>Session 2:</strong> #timeFormat(Session.getSelectedEvent.Session2BeginTime, "hh:mm tt")# till #timeFormat(Session.getSelectedEvent.Session2EndTime, "hh:mm tt")#<br>
+					</p></cfif>
+					</div>
 					<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
 						<p class="alert alert-info">You will be registered for the First Date of this event by default.<br>Event Date: #DateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#<br>
 							<cfif isDate(Session.getSelectedEvent.EventDate1)>
@@ -63,7 +68,7 @@
 						<div class="col-sm-8"><p class="form-control-static">#Variables.UserActiveMembership#</p></div>
 					</div>
 					<div class="form-group">
-						<label for="RegisterAdditionalIndividuals" class="control-label col-sm-3">Register Additional Individuals?:&nbsp;</label>
+						<label for="RegisterAdditionalIndividuals" class="control-label col-sm-3">Register Additional Individuals?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfif Session.UserRegistrationInfo.UserAlreadyRegistered EQ true>
 								<cfselect name="RegisterAdditionalIndividuals" class="form-control" Required="Yes" Multiple="No" selected="1" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Do you want to Register Additional Individuals</option></cfselect>
@@ -72,51 +77,61 @@
 							</cfif>
 						</div>
 					</div>
+					<cfif Session.getSelectedEvent.EventHasDailySessions EQ 1>
+						<div class="form-group">
+						<label for="AttendSession1" class="control-label col-sm-3">Attend Session 1:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-sm-8"><cfselect name="AttendSession1" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 1</option></cfselect></div>
+						</div>
+						<div class="form-group">
+						<label for="AttendSession2" class="control-label col-sm-3">Attend Session 2:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-sm-8"><cfselect name="AttendSession2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 2</option></cfselect></div>
+						</div>
+					</cfif>
 					<cfif Session.getSelectedEvent.MealProvided EQ 1>
 						<div class="form-group">
-						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;</label>
+						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="StayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="1" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect></div>
 						</div>
 					</cfif>
 					<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
 						<div class="form-group">
-						<label for="RegisterAllDates" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#?:&nbsp;</label>
+						<label for="RegisterAllDates" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="RegisterDate" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
 						</div>
 						<cfif isDate(Session.getSelectedEvent.EventDate1)>
 							<div class="form-group">
-							<label for="RegisterDate2" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate1, "mm/dd/yyyy")#?:&nbsp;</label>
+							<label for="RegisterDate2" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate1, "mm/dd/yyyy")#?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8"><cfselect name="RegisterDate1" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
 							</div>
 						</cfif>
 						<cfif isDate(Session.getSelectedEvent.EventDate2)>
 							<div class="form-group">
-							<label for="RegisterDate3" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate2, "mm/dd/yyyy")#?:&nbsp;</label>
+							<label for="RegisterDate3" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate2, "mm/dd/yyyy")#?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8"><cfselect name="RegisterDate2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
 							</div>
 						</cfif>
 						<cfif isDate(Session.getSelectedEvent.EventDate3)>
 							<div class="form-group">
-							<label for="RegisterDate4" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate3, "mm/dd/yyyy")#?:&nbsp;</label>
+							<label for="RegisterDate4" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate3, "mm/dd/yyyy")#?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8"><cfselect name="RegisterDate3" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
 							</div>
 						</cfif>
 						<cfif isDate(Session.getSelectedEvent.EventDate4)>
 							<div class="form-group">
-							<label for="RegisterDate5" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate4, "mm/dd/yyyy")#?:&nbsp;</label>
+							<label for="RegisterDate5" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate4, "mm/dd/yyyy")#?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8"><cfselect name="RegisterDate4" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
 							</div>
 						</cfif>
 						<cfif isDate(Session.getSelectedEvent.EventDate5)>
 							<div class="form-group">
-							<label for="RegisterDate6" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate5, "mm/dd/yyyy")#?:&nbsp;</label>
+							<label for="RegisterDate6" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate5, "mm/dd/yyyy")#?&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8"><cfselect name="RegisterDate5" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
 							</div>
 						</cfif>
 					</cfif>
 					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
 						<div class="form-group">
-						<label for="AttendViaWebinar" class="control-label col-sm-3">Attend via Webinar?:&nbsp;</label>
+						<label for="AttendViaWebinar" class="control-label col-sm-3">Attend via Webinar?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="AttendViaWebinar" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend via Webinar Option</option></cfselect></div>
 						</div>
 					<cfelseif Session.getSelectedEvent.WebinarAvailable EQ 0>
@@ -148,7 +163,7 @@
 					</cfif>
 					<cfif Session.UserRegistrationInfo.VideoConferenceOption EQ "True">
 						<div class="form-group">
-						<label for="AttendViaIVC" class="control-label col-sm-3">Attend via Video Conference?:&nbsp;</label>
+						<label for="AttendViaIVC" class="control-label col-sm-3">Attend via Video Conference?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="AttendViaIVC" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Will you attend via Video Conferencing Equipment</option></cfselect></div>
 						</div>
 					</cfif>
@@ -316,7 +331,7 @@
 						<div class="col-sm-8"><p class="form-control-static">#Variables.UserActiveMembership#</p></div>
 					</div>
 					<div class="form-group">
-						<label for="RegisterAdditionalIndividuals" class="control-label col-sm-3">Register Additional Individuals?:&nbsp;</label>
+						<label for="RegisterAdditionalIndividuals" class="control-label col-sm-3">Register Additional Individuals?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfif Session.UserRegistrationInfo.UserAlreadyRegistered EQ true>
 								<cfselect name="RegisterAdditionalIndividuals" class="form-control" Required="Yes" Multiple="No" selected="1" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Do you want to Register Additional Individuals</option></cfselect>
@@ -329,9 +344,20 @@
 							</cfif>
 						</div>
 					</div>
+					<cfif Session.getSelectedEvent.EventHasDailySessions EQ 1>
+						<div class="form-group">
+						<label for="AttendSession1" class="control-label col-sm-3">Attend Session 1:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-sm-8"><cfselect name="AttendSession1" class="form-control" Required="Yes" Multiple="No" selected="#Session.FormInput.AttendSession1#" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 1</option></cfselect></div>
+						</div>
+						<div class="form-group">
+						<label for="AttendSession2" class="control-label col-sm-3">Attend Session 2:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-sm-8"><cfselect name="AttendSession2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.FormInput.AttendSession2#" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 2</option></cfselect></div>
+						</div>
+					</cfif>
+
 					<cfif Session.getSelectedEvent.MealProvided EQ 1>
 						<div class="form-group">
-						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;</label>
+						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfif isDefined("Session.FormInput.StayForMeal")>
 								<cfselect name="StayForMeal" class="form-control" selected="#Session.FormInput.StayForMeal#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect>
@@ -342,7 +368,7 @@
 					</cfif>
 					<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
 						<div class="form-group">
-						<label for="RegisterAllDates" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#?:&nbsp;</label>
+						<label for="RegisterAllDates" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfif isDefined("Session.FormInput.RegisterDate")>
 								<cfselect name="RegisterDate" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.FormInput.RegisterDate#" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
@@ -352,7 +378,7 @@
 						</div>
 						<cfif isDate(Session.getSelectedEvent.EventDate1)>
 							<div class="form-group">
-							<label for="RegisterDate2" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate1, "mm/dd/yyyy")#?:&nbsp;</label>
+							<label for="RegisterDate2" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate1, "mm/dd/yyyy")#?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8">
 								<cfif isDefined("Session.FormInput.RegisterDate1")>
 									<cfselect name="RegisterDate1" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.FormInput.RegisterDate1#" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
@@ -363,7 +389,7 @@
 						</cfif>
 						<cfif isDate(Session.getSelectedEvent.EventDate2)>
 							<div class="form-group">
-							<label for="RegisterDate3" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate2, "mm/dd/yyyy")#?:&nbsp;</label>
+							<label for="RegisterDate3" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate2, "mm/dd/yyyy")#?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8">
 								<cfif isDefined("Session.FormInput.RegisterDate2")>
 									<cfselect name="RegisterDate2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.FormInput.RegisterDate2#" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
@@ -374,7 +400,7 @@
 						</cfif>
 						<cfif isDate(Session.getSelectedEvent.EventDate3)>
 							<div class="form-group">
-							<label for="RegisterDate4" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate3, "mm/dd/yyyy")#?:&nbsp;</label>
+							<label for="RegisterDate4" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate3, "mm/dd/yyyy")#?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8">
 								<cfif isDefined("Session.FormInput.RegisterDate3")>
 									<cfselect name="RegisterDate3" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery"  selected="#Session.FormInput.RegisterDate3#" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
@@ -385,7 +411,7 @@
 						</cfif>
 						<cfif isDate(Session.getSelectedEvent.EventDate4)>
 							<div class="form-group">
-							<label for="RegisterDate5" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate4, "mm/dd/yyyy")#?:&nbsp;</label>
+							<label for="RegisterDate5" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate4, "mm/dd/yyyy")#?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8">
 								<cfif isDefined("Session.FormInput.RegisterDate4")>
 									<cfselect name="RegisterDate4" class="form-control" Required="Yes" Multiple="No"  selected="#Session.FormInput.RegisterDate4#" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
@@ -396,7 +422,7 @@
 						</cfif>
 						<cfif isDate(Session.getSelectedEvent.EventDate5)>
 							<div class="form-group">
-							<label for="RegisterDate6" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate5, "mm/dd/yyyy")#?:&nbsp;</label>
+							<label for="RegisterDate6" class="control-label col-sm-3">Register for #DateFormat(Session.getSelectedEvent.EventDate5, "mm/dd/yyyy")#?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8">
 								<cfif isDefined("Session.FormInput.RegisterDate5")>
 									<cfselect name="RegisterDate5" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.FormInput.RegisterDate5#" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend this event date</option></cfselect></div>
@@ -408,7 +434,7 @@
 					</cfif>
 					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
 						<div class="form-group">
-						<label for="AttendViaWebinar" class="control-label col-sm-3">Attend via Webinar?:&nbsp;</label>
+						<label for="AttendViaWebinar" class="control-label col-sm-3">Attend via Webinar?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfif isDefined("Session.FormInput.AttendViaWebinar")>
 								<cfselect name="AttendViaWebinar" class="form-control" Selected="#Session.FormInput.AttendViaWebinar#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend via Webinar Option</option></cfselect>
@@ -446,7 +472,7 @@
 					</cfif>
 					<cfif Session.UserRegistrationInfo.VideoConferenceOption EQ "True">
 						<div class="form-group">
-						<label for="AttendViaIVC" class="control-label col-sm-3">Attend via Video Conference?:&nbsp;</label>
+						<label for="AttendViaIVC" class="control-label col-sm-3">Attend via Video Conference?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
 							<cfif isDefined("Session.FormInput.AttendViaWebinar")>
 								<cfselect name="AttendViaIVC" class="form-control" Selected="#Session.FormInput.AttendViaIVC#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Will you attend via Video Conferencing Equipment</option></cfselect>

@@ -24,19 +24,19 @@
 				<div class="panel-body">
 					<cfif Session.getSelectedEvent.MealProvided EQ 1>
 						<div class="form-group">
-						<label for="StayForMeal" class="control-label col-sm-4">Will All New Participants be Staying for Meal?:&nbsp;</label>
+						<label for="StayForMeal" class="control-label col-sm-4">Will All New Participants be Staying for Meal?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="StayForMeal" class="form-control" Selected="#Session.FormInput.StayForMeal#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Everyone Registering be staying for Meal</option></cfselect></div>
 						</div>
 					</cfif>
 					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
 						<div class="form-group">
-						<label for="AttendViaWebinar" class="control-label col-sm-4">Will All New Participants be Attending via Webinar?:&nbsp;</label>
+						<label for="AttendViaWebinar" class="control-label col-sm-4">Will All New Participants be Attending via Webinar?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="AttendViaWebinar" class="form-control" Selected="#Session.FormInput.AttendViaWebinar#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Everyone Registering attend via Webinar Option</option></cfselect></div>
 						</div>
 					</cfif>
 					<cfif Session.UserRegistrationInfo.VideoConferenceOption EQ "True">
 						<div class="form-group">
-						<label for="AttendViaIVC" class="control-label col-sm-4">Will All New Participants be Attending via Video Conference?:&nbsp;</label>
+						<label for="AttendViaIVC" class="control-label col-sm-4">Will All New Participants be Attending via Video Conference?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="AttendViaIVC" class="form-control" Selected="#Session.FormInput.AttendViaIVC#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Will Everyone Registering attend via Video Conferencing Equipment</option></cfselect></div>
 						</div>
 					</cfif>

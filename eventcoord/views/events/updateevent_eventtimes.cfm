@@ -37,14 +37,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 	</script>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="EventID" value="#URL.EventID#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
+					</fieldset>
 					<div class="form-group">
-						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
+						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" value="#DateFormat(Session.getSelectedEvent.Registration_Deadline, 'mm/dd/yyyy')#" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -52,30 +54,32 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_BeginTime" name="Registration_BeginTime" value="#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, 'hh:mm tt')#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_StartTime" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
+						<label for="Event_StartTime" class="control-label col-sm-3">Event Start Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_StartTime" name="Event_StartTime" value="#TimeFormat(Session.getSelectedEvent.Event_StartTime, 'hh:mm tt')#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_EndTime" class="control-label col-sm-3">Event End Time:&nbsp;</label>
+						<label for="Event_EndTime" class="control-label col-sm-3">Event End Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_EndTime" name="Event_EndTime" value="#TimeFormat(Session.getSelectedEvent.Event_EndTime, 'hh:mm tt')#" required="yes"></div>
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Event Review">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Event Section"><br /><br />
 				</div>
 			</cfform>
 		</div>
 	<cfelseif isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="EventID" value="#Session.FormData.EventID#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
+					</fieldset>
 					<div class="form-group">
-						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
+						<label for="Registration_Deadline" class="control-label col-sm-3">Registration Deadline:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_Deadline" name="Registration_Deadline" value="#DateFormat(Session.getSelectedEvent.Registration_Deadline, 'mm/dd/yyyy')#" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -83,16 +87,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Registration_BeginTime" name="Registration_BeginTime" value="#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, 'hh:mm tt')#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_StartTime" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
+						<label for="Event_StartTime" class="control-label col-sm-3">Event Start Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_StartTime" name="Event_StartTime" value="#TimeFormat(Session.getSelectedEvent.Event_StartTime, 'hh:mm tt')#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="Event_EndTime" class="control-label col-sm-3">Event End Time:&nbsp;</label>
+						<label for="Event_EndTime" class="control-label col-sm-3">Event End Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="Event_EndTime" name="Event_EndTime" value="#TimeFormat(Session.getSelectedEvent.Event_EndTime, 'hh:mm tt')#" required="yes"></div>
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Event Review">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Event Section"><br /><br />
 				</div>
 			</cfform>
