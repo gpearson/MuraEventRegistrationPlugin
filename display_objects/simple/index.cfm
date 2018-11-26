@@ -1,4 +1,3 @@
-<cfsilent>
 <!---
 
 This file is part of MuraFW1
@@ -8,8 +7,9 @@ Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
 --->
-</cfsilent>
 <cfoutput>
-	<h2>Another Page</h2>
-	<p>Yep! Here's another page in the 'Main' Admin section.</p>
+  <div class="mfw1-example">
+    <h3>MuraFW1 Simple Display Object</h3>
+    <p>This is just a simple display object and has nothing to do with FW/1 itself.</p>
+  </div>
 </cfoutput>
