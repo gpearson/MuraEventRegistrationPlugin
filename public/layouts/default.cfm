@@ -2,7 +2,7 @@
 	<div class="container">
 		<!--- PRIMARY NAV --->
 		<div class="row-fluid">
-			<nav class="navbar">
+			<nav class="navbar navbar-inverse navigation-clean">
 				<div class="navbar-inner">
 					<div class="navbar-header">
 						<a class="navbar-brand"><!--- #HTMLEditFormat(rc.pc.getPackage())# ---></a>

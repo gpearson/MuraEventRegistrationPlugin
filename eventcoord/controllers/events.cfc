@@ -3711,10 +3711,7 @@
 			</cfloop>
 			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterrevenue&EventID=#URL.EventID#" addtoken="false">
 		</cfif>
-
 	</cffunction>
-
-
 
 	<cffunction name="viewprofitlossreport" returntype="any" output="true">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">

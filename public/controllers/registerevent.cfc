@@ -117,7 +117,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfset Session.UserRegistrationInfo.VideoConferenceOption = False>
 				</cfif>
 
-				<cfif Session.getActiveMembership.RecordCount EQ 1>
+				<cfif Session.getActiveMembership.Active EQ 1>
 					<cfset Session.UserRegistrationInfo.UserGetsMembershipPrice = True>
 					<cfset Session.UserRegistrationInfo.UserEventPrice = #Session.getSelectedEvent.MemberCost#>
 					<cfset Session.UserRegistrationInfo.GroupEventPrice = #Session.getSelectedEvent.GroupMemberCost#>
