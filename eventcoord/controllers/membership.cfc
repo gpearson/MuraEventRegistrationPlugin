@@ -5,8 +5,12 @@
 		<cfquery name="Session.getMemberships" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 			Select TContent_ID, OrganizationName, OrganizationDomainName, StateDOE_IDNumber, StateDOE_State, Active, Physical_Address, Physical_City, Physical_State, Physical_ZipCode, Mailing_Address, Mailing_City, Mailing_State, Mailing_ZipCode, Primary_PhoneNumber, Primary_FaxNumber, AccountsPayable_EmailAddress, AccountsPayable_ContactName
 			From p_EventRegistration_Membership
-			Where Site_ID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
 			Order by OrganizationName ASC
+		</cfquery>
+		<cfquery name="Session.getSiteConfig" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select ProcessPayments_Stripe, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_ApiID, SmartyStreets_APIToken
+			From p_EventRegistration_SiteConfig
+			Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
 		</cfquery>
 	</cffunction>
 
@@ -140,15 +144,18 @@
 			<cfquery name="Session.getSelectedMembership" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select TContent_ID, OrganizationName, OrganizationDomainName, StateDOE_IDNumber, StateDOE_State, StateDOE_ESCESAMembership, Active, Mailing_Address, Mailing_City, Mailing_State, Mailing_ZipCode, Mailing_ZipPlus4, Mailing_DeliveryPointBarcode, Primary_PhoneNumber, Primary_FaxNumber, Physical_Address, Physical_City, Physical_State, Physical_ZipCode, Physical_ZipPlus4, Physical_DeliveryPointBarcode, Physical_Latitude, Physical_Longitude, Physical_TimeZone, Physical_DST, Physical_UTCOffset, Physical_CountyName, Physical_CongressionalDistrict, Physical_CarrierRoute, AccountsPayable_EmailAddress, AccountsPayable_ContactName, ReceiveInvoicesByEmail
 				From p_EventRegistration_Membership
-				Where Site_ID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">  and
-					TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.MembershipID#">
+				Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.MembershipID#">
 				Order by OrganizationName ASC
 			</cfquery>
 			<cfquery name="Session.getESCESAAgencies" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select TContent_ID, OrganizationName, OrganizationDomainName, Mailing_Address, Mailing_City, Mailing_State, Mailing_ZipCode, Primary_PhoneNumber, Primary_FaxNumber, Physical_Address, Physical_City, Physical_State, Physical_ZipCode
 				From p_EventRegistration_StateESCOrganizations
-				Where Site_ID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
 				Order by Physical_State ASC, OrganizationName ASC
+			</cfquery>
+			<cfquery name="Session.getSiteConfig" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select ProcessPayments_Stripe, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_ApiID, SmartyStreets_APIToken
+				From p_EventRegistration_SiteConfig
+				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
 			</cfquery>
 		<cfelseif isDefined("FORM.formSubmit")>
 			<cflock timeout="60" scope="Session" type="Exclusive">
@@ -203,125 +210,224 @@
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.editmembership&FormRetry=True&MembershipID=#URL.MembershipID#" addtoken="false">
 			</cfif>
 
-			<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/SmartyStreets").init(apitoken="O7Oqgg8yl1gV8bJ8572g", apiid="665cc2f2-cacd-6406-3cdc-6bb580e4ac78", verbose=true)>
+			<cfquery name="InsertMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				update p_EventRegistration_Membership
+				Set OrganizationName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
+					OrganizationDomainName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
+					Active = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
+					lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+					lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+				Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+			</cfquery>
 
-			<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
-				<cfscript>
-					PassedAddress = {
-						street = #URLEncodedFormat(FORM.MailingAddress)#,
-						city = #URLEncodedFormat(FORM.MailingCity)#,
-						state = #FORM.MailingState#,
-						zipcode = #FORM.MailingZipCode#
-					};
-					MailingAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
-				</cfscript>
+			<cfif Session.getSiteConfig.SmartyStreets_Enabled EQ true>
+				<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/SmartyStreets").init(apitoken="#Session.getSiteConfig.SmartyStreets_APIToken#", apiid="#Session.getSiteConfig.SmartyStreets_APIID#", verbose=true)>
 
-				<cfif LEN(MailingAddressGeoCoded.Result.errordetail) GT 0>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
-							arrayAppend(Session.FormErrors, address);
-						</cfscript>
-					</cflock>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.editmembership&FormRetry=True&MembershipID=#URL.MembershipID#" addtoken="false">
-				<cfelseif ArrayLen(Variables.MailingAddressGeoCoded.Data) GT 0>
+				<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
+					<cfscript>
+						PassedAddress = { street = #FORM.MailingAddress#, city = #FORM.MailingCity#, state = #FORM.MailingState#, zipcode = #FORM.MailingZipCode# };
+						MailingAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
+					</cfscript>
+
+					<cfif LEN(MailingAddressGeoCoded.Result.errordetail) GT 0>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								address = {property="BusinessAddress",message="#MailingAddressGeoCoded.Result.errordetail#"};
+								arrayAppend(Session.FormErrors, address);
+							</cfscript>
+						</cflock>
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
+					<cfelseif ArrayLen(Variables.MailingAddressGeoCoded.Data) GT 0>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_Membership
+							Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.MailingAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
+								Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].city_name)#">,
+								Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
+								Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].zipcode)#">,
+								Mailing_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+								Mailing_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+						</cfquery>
+					<cfelse>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_Membership
+							Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingAddress)#">,
+								Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingCity)#">,
+								Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingState)#">,
+								Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingZipCode)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+						</cfquery>
+					</cfif>
+				</cfif>
+
+				<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
+					<cfscript>
+						PassedAddress = { street = #FORM.PhysicalAddress#, city = #FORM.PhysicalCity#, state = #FORM.PhysicalState#, zipcode = #FORM.PhysicalZipCode# };
+						PhysicalAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
+					</cfscript>
+
+					<cfif LEN(PhysicalAddressGeoCoded.Result.errordetail) GT 0>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								address = {property="BusinessAddress",message="#PhysicalAddressGeoCoded.Result.errordetail#"};
+								arrayAppend(Session.FormErrors, address);
+							</cfscript>
+						</cflock>
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
+					<cfelseif ArrayLen(Variables.PhysicalAddressGeoCoded.Data) GT 0>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_Membership
+							Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.PhysicalAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
+								Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
+								Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
+								Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
+								Physical_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+								Physical_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
+								Physical_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
+								Physical_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
+								Physical_DST = <cfqueryparam cfsqltype="cf_sql_bit" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].dst)#">,
+								Physical_UTCOffset = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].utc_offset)#">,
+								Physical_CountyName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].county_name)#">,
+								Physical_CarrierRoute = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].carrier_route)#">,
+								Physical_CongressionalDistrict = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].congressional_district)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+						</cfquery>
+					<cfelse>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_Membership
+							Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalAddress)#">,
+								Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalCity)#">,
+								Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalState)#">,
+								Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalZipCode)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+						</cfquery>
+					</cfif>
+				</cfif>
+			<cfelse>
+				<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
 					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 						update p_EventRegistration_Membership
-						Set OrganizationName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
-							Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.MailingAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
-							Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].city_name)#">,
-							Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
-							Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].zipcode)#">,
-							Mailing_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].plus4_code)#">,
-							Mailing_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
-							Primary_PhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
-							Primary_FaxNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
-							OrganizationDomainName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
-							StateDOE_IDNUmber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
-							StateDOE_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
-							StateDOE_ESCESAMembership = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.StateESCMembership#">,
-							Active = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
-							AccountsPayable_EmailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableEmailAddress#">,
-							AccountsPayable_ContactName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableContactName#">,
-							ReceiveInvoicesByEmail = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.ReceiveInvoicesByEmail#">,
-							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
-						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
-					</cfquery>
-				<cfelse>
-					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						update p_EventRegistration_Membership
-						Set OrganizationName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
-							Primary_PhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
-							Primary_FaxNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
-							OrganizationDomainName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
-							StateDOE_IDNUmber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
-							StateDOE_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
-							StateDOE_ESCESAMembership = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.StateESCMembership#">,
-							Active = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
-							AccountsPayable_EmailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableEmailAddress#">,
-							AccountsPayable_ContactName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableContactName#">,
-							ReceiveInvoicesByEmail = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.ReceiveInvoicesByEmail#">,
+						Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingAddress)#">,
+							Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingCity)#">,
+							Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingState)#">,
+							Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingZipCode)#">,
 							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
 						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
 					</cfquery>
 				</cfif>
-			<cfelse>
-				<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					update p_EventRegistration_Membership
-					Set OrganizationName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
-						Primary_PhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
-						Primary_FaxNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
-						OrganizationDomainName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
-						StateDOE_IDNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
-						StateDOE_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
-						StateDOE_ESCESAMembership = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.StateESCMembership#">,
-						Active = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
-						AccountsPayable_EmailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableEmailAddress#">,
-						AccountsPayable_ContactName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableContactName#">,
-						ReceiveInvoicesByEmail = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.ReceiveInvoicesByEmail#">,
-						lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-						lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
-					Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
-				</cfquery>
-			</cfif>
 
-			<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
-				<cfscript>
-					PassedAddress = {
-						street = #FORM.PhysicalAddress#,
-						city = #FORM.PhysicalCity#,
-						state = #FORM.PhysicalState#,
-						zipcode = #FORM.PhysicalZipCode#
-					};
-					PhysicalAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
-				</cfscript>
-
-				<cfif LEN(PhysicalAddressGeoCoded.Result.errordetail) GT 0>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
-							arrayAppend(Session.FormErrors, address);
-						</cfscript>
-					</cflock>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.editmembership&FormRetry=True&MembershipID=#URL.MembershipID#" addtoken="false">
-				<cfelseif ArrayLen(Variables.PhysicalAddressGeoCoded.Data) GT 0>
+				<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
 					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 						update p_EventRegistration_Membership
-						Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.PhysicalAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
-							Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
-							Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
-							Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
-							Physical_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
-							Physical_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
-							Physical_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
-							Physical_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
-							Physical_DST = <cfqueryparam cfsqltype="cf_sql_bit" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].dst)#">,
-							Physical_UTCOffset = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].utc_offset)#">,
-							Physical_CountyName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].county_name)#">,
-							Physical_CarrierRoute = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].carrier_route)#">,
-							Physical_CongressionalDistrict = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].congressional_district)#">,
+						Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalAddress)#">,
+							Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalCity)#">,
+							Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalState)#">,
+							Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalZipCode)#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.PrimaryPhoneNumber")>
+				<cfif LEN(FORM.PrimaryPhoneNumber)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set Primary_PhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.PrimaryFaxNumber")>
+				<cfif LEN(FORM.PrimaryFaxNumber)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set Primary_FaxNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.StateDOEIDNumber")>
+				<cfif LEN(FORM.StateDOEIDNumber)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set StateDOE_IDNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.StateDOEState")>
+				<cfif LEN(FORM.StateDOEState)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set StateDOE_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.StateESCMembership")>
+				<cfif LEN(FORM.StateESCMembership)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set StateDOE_ESCESAMembership = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.StateESCMembership#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.AccountsPayableEmailAddress")>
+				<cfif LEN(FORM.AccountsPayableEmailAddress)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set AccountsPayable_EmailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableEmailAddress#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.AccountsPayableContactName")>
+				<cfif LEN(FORM.AccountsPayableContactName)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set AccountsPayable_ContactName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableContactName#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.ReceiveInvoicesByEmail")>
+				<cfif LEN(FORM.ReceiveInvoicesByEmail)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set ReceiveInvoicesByEmail = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.ReceiveInvoicesByEmail#">,
 							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
 						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
@@ -339,8 +445,12 @@
 			<cfquery name="Session.getESCESAAgencies" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select TContent_ID, OrganizationName, OrganizationDomainName, Mailing_Address, Mailing_City, Mailing_State, Mailing_ZipCode, Primary_PhoneNumber, Primary_FaxNumber, Physical_Address, Physical_City, Physical_State, Physical_ZipCode
 				From p_EventRegistration_StateESCOrganizations
-				Where Site_ID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
 				Order by Physical_State ASC, OrganizationName ASC
+			</cfquery>
+			<cfquery name="Session.getSiteConfig" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select ProcessPayments_Stripe, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_ApiID, SmartyStreets_APIToken
+				From p_EventRegistration_SiteConfig
+				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
 			</cfquery>
 		<cfelseif isDefined("FORM.formSubmit")>
 			<cflock timeout="60" scope="Session" type="Exclusive">
@@ -403,115 +513,227 @@
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
 			</cfif>
 
-			<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/SmartyStreets").init(apitoken="O7Oqgg8yl1gV8bJ8572g", apiid="665cc2f2-cacd-6406-3cdc-6bb580e4ac78", verbose=true)>
+			<cfquery name="InsertMembershipInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				insert into p_EventRegistration_Membership(Site_ID, OrganizationName, OrganizationDomainName, Active, dateCreated, lastUpdateBy, lastUpdated)
+				Values(
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="NIESCEvents">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
+					<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
+					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
+					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">
+				)
+			</cfquery>
 
-			<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
-				<cfscript>
-					PassedAddress = {
-						street = #FORM.MailingAddress#,
-						city = #FORM.MailingCity#,
-						state = #FORM.MailingState#,
-						zipcode = #FORM.MailingZipCode#
-					};
-					MailingAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
-				</cfscript>
+			<cfif Session.getSiteConfig.SmartyStreets_Enabled EQ true>
+				<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/SmartyStreets").init(apitoken="#Session.getSiteConfig.SmartyStreets_APIToken#", apiid="#Session.getSiteConfig.SmartyStreets_APIID#", verbose=true)>
 
-				<cfif LEN(MailingAddressGeoCoded.Result.errordetail) GT 0>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
-							arrayAppend(Session.FormErrors, address);
-						</cfscript>
-					</cflock>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
-				<cfelse>
-					<cfquery name="updateMembershipInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						insert into p_EventRegistration_Membership(Site_ID, OrganizationName, Mailing_Address, Mailing_City, Mailing_State, Mailing_ZipCode, Mailing_ZipPlus4, Mailing_DeliveryPointBarcode,
-						Primary_PhoneNumber, Primary_FaxNumber, OrganizationDomainName, StateDOE_IDNUmber, StateDOE_State, StateDOE_ESCESAMembership, Active,
-						 AccountsPayable_EmailAddress, AccountsPayable_ContactName, ReceiveInvoicesByEmail, dateCreated, lastUpdated, lastUpdateBy)
-						Values(
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.MailingAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].city_name)#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].zipcode)#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].plus4_code)#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
-							<cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.StateESCMembership#">,
-							<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableEmailAddress#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableContactName#">,
-							<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.ReceiveInvoicesByEmail#">,
-							<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-							<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
-						)
-					</cfquery>
+				<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
+					<cfscript>
+						PassedAddress = { street = #FORM.MailingAddress#, city = #FORM.MailingCity#, state = #FORM.MailingState#, zipcode = #FORM.MailingZipCode# };
+						MailingAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
+					</cfscript>
+
+					<cfif LEN(MailingAddressGeoCoded.Result.errordetail) GT 0>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								address = {property="BusinessAddress",message="#MailingAddressGeoCoded.Result.errordetail#"};
+								arrayAppend(Session.FormErrors, address);
+							</cfscript>
+						</cflock>
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
+					<cfelseif ArrayLen(Variables.MailingAddressGeoCoded.Data) GT 0>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_Membership
+							Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.MailingAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
+								Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].city_name)#">,
+								Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
+								Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].zipcode)#">,
+								Mailing_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+								Mailing_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+						</cfquery>
+					<cfelse>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_Membership
+							Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingAddress)#">,
+								Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingCity)#">,
+								Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingState)#">,
+								Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingZipCode)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+						</cfquery>
+					</cfif>
+				</cfif>
+
+				<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
+					<cfscript>
+						PassedAddress = { street = #FORM.PhysicalAddress#, city = #FORM.PhysicalCity#, state = #FORM.PhysicalState#, zipcode = #FORM.PhysicalZipCode# };
+						PhysicalAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
+					</cfscript>
+
+					<cfif LEN(PhysicalAddressGeoCoded.Result.errordetail) GT 0>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								address = {property="BusinessAddress",message="#PhysicalAddressGeoCoded.Result.errordetail#"};
+								arrayAppend(Session.FormErrors, address);
+							</cfscript>
+						</cflock>
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
+					<cfelseif ArrayLen(Variables.PhysicalAddressGeoCoded.Data) GT 0>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_Membership
+							Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.PhysicalAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
+								Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
+								Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
+								Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
+								Physical_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+								Physical_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
+								Physical_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
+								Physical_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
+								Physical_DST = <cfqueryparam cfsqltype="cf_sql_bit" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].dst)#">,
+								Physical_UTCOffset = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].utc_offset)#">,
+								Physical_CountyName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].county_name)#">,
+								Physical_CarrierRoute = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].carrier_route)#">,
+								Physical_CongressionalDistrict = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].congressional_district)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+						</cfquery>
+					<cfelse>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_Membership
+							Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalAddress)#">,
+								Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalCity)#">,
+								Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalState)#">,
+								Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalZipCode)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+						</cfquery>
+					</cfif>
 				</cfif>
 			<cfelse>
-				<cfquery name="updateMembershipInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					insert into p_EventRegistration_Membership(Site_ID, OrganizationName, Primary_PhoneNumber, Primary_FaxNumber, OrganizationDomainName, StateDOE_IDNUmber, StateDOE_State, StateDOE_ESCESAMembership, Active, AccountsPayable_EmailAddress, AccountsPayable_ContactName, ReceiveInvoicesByEmail, dateCreated, lastUpdated, lastUpdateBy)
-					Values(
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
-						<cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.StateESCMembership#">,
-						<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableEmailAddress#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableContactName#">,
-						<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.ReceiveInvoicesByEmail#">,
-						<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-						<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
-					)
-				</cfquery>
-			</cfif>
-
-			<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
-				<cfscript>
-					PassedAddress = {
-						street = #FORM.PhysicalAddress#,
-						city = #FORM.PhysicalCity#,
-						state = #FORM.PhysicalState#,
-						zipcode = #FORM.PhysicalZipCode#
-					};
-					PhysicalAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
-				</cfscript>
-
-				<cfif LEN(PhysicalAddressGeoCoded.Result.errordetail) GT 0>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
-							arrayAppend(Session.FormErrors, address);
-						</cfscript>
-					</cflock>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
-				<cfelse>
+				<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
 					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 						update p_EventRegistration_Membership
-						Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.PhysicalAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
-							Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
-							Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
-							Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
-							Physical_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
-							Physical_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
-							Physical_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
-							Physical_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
-							Physical_DST = <cfqueryparam cfsqltype="cf_sql_bit" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].dst)#">,
-							Physical_UTCOffset = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].utc_offset)#">,
-							Physical_CountyName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].county_name)#">,
-							Physical_CarrierRoute = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].carrier_route)#">,
-							Physical_CongressionalDistrict = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].congressional_district)#">,
+						Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingAddress)#">,
+							Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingCity)#">,
+							Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingState)#">,
+							Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingZipCode)#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+
+				<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalAddress)#">,
+							Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalCity)#">,
+							Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalState)#">,
+							Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalZipCode)#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.PrimaryPhoneNumber")>
+				<cfif LEN(FORM.PrimaryPhoneNumber)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set Primary_PhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.PrimaryFaxNumber")>
+				<cfif LEN(FORM.PrimaryFaxNumber)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set Primary_FaxNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.StateDOEIDNumber")>
+				<cfif LEN(FORM.StateDOEIDNumber)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set StateDOE_IDNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.StateDOEState")>
+				<cfif LEN(FORM.StateDOEState)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set StateDOE_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.StateESCMembership")>
+				<cfif LEN(FORM.StateESCMembership)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set StateDOE_ESCESAMembership = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.StateESCMembership#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.AccountsPayableEmailAddress")>
+				<cfif LEN(FORM.AccountsPayableEmailAddress)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set AccountsPayable_EmailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableEmailAddress#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.AccountsPayableContactName")>
+				<cfif LEN(FORM.AccountsPayableContactName)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set AccountsPayable_ContactName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AccountsPayableContactName#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.ReceiveInvoicesByEmail")>
+				<cfif LEN(FORM.ReceiveInvoicesByEmail)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_Membership
+						Set ReceiveInvoicesByEmail = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.ReceiveInvoicesByEmail#">,
 							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
 						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
@@ -520,6 +742,7 @@
 			</cfif>
 			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.default&UserAction=InformationUpdated&Successful=True" addtoken="false">
 		</cfif>
+
 	</cffunction>
 
 	<cffunction name="listescesa" returntype="any" output="false">
@@ -528,7 +751,6 @@
 		<cfquery name="Session.getStateESCESAs" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 			Select TContent_ID, OrganizationName, OrganizationDomainName, StateDOE_IDNumber, StateDOE_State, Mailing_Address, Mailing_City, Mailing_State, Physical_City, Physical_State, Mailing_ZipCode, Primary_PhoneNumber, Primary_FaxNumber
 			From p_EventRegistration_StateESCOrganizations
-			Where Site_ID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
 			Order by OrganizationName ASC
 		</cfquery>
 	</cffunction>
@@ -692,120 +914,178 @@
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addstateesc&FormRetry=True" addtoken="false">
 			</cfif>
 
+			<cfquery name="InsertStateESCESAInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				insert into p_EventRegistration_StateESCOrganizations(Site_ID, OrganizationName, OrganizationDomainName, dateCreated, lastUpdateBy, lastUpdated)
+				Values(
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="NIESCEvents">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
+					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
+					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">
+				)
+			</cfquery>
 
-			<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/SmartyStreets").init(apitoken="O7Oqgg8yl1gV8bJ8572g", apiid="665cc2f2-cacd-6406-3cdc-6bb580e4ac78", verbose=true)>
+			<cfif Session.getSiteConfig.SmartyStreets_Enabled EQ true>
+				<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/SmartyStreets").init(apitoken="#Session.getSiteConfig.SmartyStreets_APIToken#", apiid="#Session.getSiteConfig.SmartyStreets_APIID#", verbose=true)>
 
-			<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
-				<cfscript>
-					PassedAddress = {
-						street = #URLEncodedFormat(FORM.MailingAddress)#,
-						city = #URLEncodedFormat(FORM.MailingCity)#,
-						state = #FORM.MailingState#,
-						zipcode = #FORM.MailingZipCode#
-					};
-					MailingAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
-				</cfscript>
+				<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
+					<cfscript>
+						PassedAddress = { street = #FORM.MailingAddress#, city = #FORM.MailingCity#, state = #FORM.MailingState#, zipcode = #FORM.MailingZipCode# };
+						MailingAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
+					</cfscript>
 
-				<cfif LEN(MailingAddressGeoCoded.Result.errordetail) GT 0>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
-							arrayAppend(Session.FormErrors, address);
-						</cfscript>
-					</cflock>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addstateesc&FormRetry=True" addtoken="false">
-				<cfelseif ArrayLen(Variables.MailingAddressGeoCoded.Data) GT 0>
-					<cfquery name="updateMembershipInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						insert into p_EventRegistration_StateESCOrganizations(Site_ID, OrganizationName, Mailing_Address, Mailing_City, Mailing_State, Mailing_ZipCode, Mailing_ZipPlus4, Mailing_DeliveryPointBarcode, Primary_PhoneNumber, Primary_FaxNumber, OrganizationDomainName, StateDOE_IDNUmber, StateDOE_State, dateCreated, lastUpdated, lastUpdateBy)
-						Values(
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.MailingAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].city_name)#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].zipcode)#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].plus4_code)#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
-							<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-							<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
-						)
-					</cfquery>
-				<cfelse>
-					<cfquery name="updateMembershipInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						insert into p_EventRegistration_StateESCOrganizations(Site_ID, OrganizationName, Primary_PhoneNumber, Primary_FaxNumber, OrganizationDomainName, StateDOE_IDNUmber, StateDOE_State, dateCreated, lastUpdated, lastUpdateBy)
-						Values(
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
-							<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-							<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
-						)
-					</cfquery>
+					<cfif LEN(MailingAddressGeoCoded.Result.errordetail) GT 0>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								address = {property="BusinessAddress",message="#MailingAddressGeoCoded.Result.errordetail#"};
+								arrayAppend(Session.FormErrors, address);
+							</cfscript>
+						</cflock>
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
+					<cfelseif ArrayLen(Variables.MailingAddressGeoCoded.Data) GT 0>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_StateESCOrganizations
+							Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.MailingAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
+								Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].city_name)#">,
+								Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
+								Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].zipcode)#">,
+								Mailing_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+								Mailing_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+						</cfquery>
+					<cfelse>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_StateESCOrganizations
+							Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingAddress)#">,
+								Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingCity)#">,
+								Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingState)#">,
+								Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingZipCode)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+						</cfquery>
+					</cfif>
+				</cfif>
+
+				<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
+					<cfscript>
+						PassedAddress = { street = #FORM.PhysicalAddress#, city = #FORM.PhysicalCity#, state = #FORM.PhysicalState#, zipcode = #FORM.PhysicalZipCode# };
+						PhysicalAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
+					</cfscript>
+
+					<cfif LEN(PhysicalAddressGeoCoded.Result.errordetail) GT 0>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								address = {property="BusinessAddress",message="#PhysicalAddressGeoCoded.Result.errordetail#"};
+								arrayAppend(Session.FormErrors, address);
+							</cfscript>
+						</cflock>
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
+					<cfelseif ArrayLen(Variables.PhysicalAddressGeoCoded.Data) GT 0>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_StateESCOrganizations
+							Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.PhysicalAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
+								Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
+								Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
+								Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
+								Physical_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+								Physical_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
+								Physical_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
+								Physical_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
+								Physical_DST = <cfqueryparam cfsqltype="cf_sql_bit" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].dst)#">,
+								Physical_UTCOffset = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].utc_offset)#">,
+								Physical_CountyName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].county_name)#">,
+								Physical_CarrierRoute = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].carrier_route)#">,
+								Physical_CongressionalDistrict = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].congressional_district)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+						</cfquery>
+					<cfelse>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_StateESCOrganizations
+							Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalAddress)#">,
+								Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalCity)#">,
+								Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalState)#">,
+								Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalZipCode)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+						</cfquery>
+					</cfif>
 				</cfif>
 			<cfelse>
-				<cfquery name="updateMembershipInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					insert into p_EventRegistration_StateESCOrganizations(Site_ID, OrganizationName, Primary_PhoneNumber, Primary_FaxNumber, OrganizationDomainName, StateDOE_IDNUmber, StateDOE_State, dateCreated, lastUpdated, lastUpdateBy)
-					Values(
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
-						<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-						<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.Lname#">
-					)
-				</cfquery>
-			</cfif>
-
-			<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
-				<cfscript>
-					PassedAddress = {
-						street = #FORM.PhysicalAddress#,
-						city = #FORM.PhysicalCity#,
-						state = #FORM.PhysicalState#,
-						zipcode = #FORM.PhysicalZipCode#
-					};
-					PhysicalAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
-				</cfscript>
-
-				<cfif LEN(PhysicalAddressGeoCoded.Result.errordetail) GT 0>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
-							arrayAppend(Session.FormErrors, address);
-						</cfscript>
-					</cflock>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
-				<cfelse>
+				<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
 					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 						update p_EventRegistration_StateESCOrganizations
-						Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.PhysicalAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
-							Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
-							Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
-							Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
-							Physical_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
-							Physical_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
-							Physical_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
-							Physical_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
-							Physical_DST = <cfqueryparam cfsqltype="cf_sql_bit" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].dst)#">,
-							Physical_UTCOffset = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].utc_offset)#">,
-							Physical_CountyName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].county_name)#">,
-							Physical_CarrierRoute = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].carrier_route)#">,
-							Physical_CongressionalDistrict = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].congressional_district)#">,
+						Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingAddress)#">,
+							Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingCity)#">,
+							Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingState)#">,
+							Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingZipCode)#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+
+				<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_StateESCOrganizations
+						Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalAddress)#">,
+							Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalCity)#">,
+							Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalState)#">,
+							Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalZipCode)#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.PrimaryPhoneNumber")>
+				<cfif LEN(FORM.PrimaryPhoneNumber)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_StateESCOrganizations
+						Set Primary_PhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.PrimaryFaxNumber")>
+				<cfif LEN(FORM.PrimaryFaxNumber)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_StateESCOrganizations
+						Set Primary_FaxNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.StateDOEIDNumber")>
+				<cfif LEN(FORM.StateDOEIDNumber)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_StateESCOrganizations
+						Set StateDOE_IDNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.StateDOEState")>
+				<cfif LEN(FORM.StateDOEState)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_StateESCOrganizations
+						Set StateDOE_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
 							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
 						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
@@ -823,8 +1103,7 @@
 			<cfquery name="Session.getSelectedESC" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select TContent_ID, OrganizationName, OrganizationDomainName, StateDOE_IDNumber, StateDOE_State, Mailing_Address, Mailing_City, Mailing_State, Mailing_ZipCode, Mailing_ZipPlus4, Primary_PhoneNumber, Primary_FaxNumber, Physical_Address, Physical_City, Physical_State, Physical_ZipCode, Physical_ZipPlus4, Physical_DeliveryPointBarcode, Physical_Latitude, Physical_Longitude, Physical_TimeZone, Physical_DST, Physical_UTCOffset, Physical_CountyName, Physical_CarrierRoute, Physical_CongressionalDistrict
 				From p_EventRegistration_StateESCOrganizations
-				Where Site_ID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">  and
-					TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.MembershipID#">
+				Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.MembershipID#">
 				Order by Physical_State ASC, OrganizationName ASC
 			</cfquery>
 		<cfelseif isDefined("FORM.formSubmit")>
@@ -839,55 +1118,129 @@
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.listescesa" addtoken="false">
 			</cfif>
 
-			<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/SmartyStreets").init(apitoken="O7Oqgg8yl1gV8bJ8572g", apiid="665cc2f2-cacd-6406-3cdc-6bb580e4ac78", verbose=true)>
+			<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				update p_EventRegistration_StateESCOrganizations
+				Set OrganizationName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
+					OrganizationDomainName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
+					StateDOE_IDNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
+					StateDOE_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
+					lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+					lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+				Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+			</cfquery>
 
-			<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
-				<cfscript>
-					PassedAddress = {
-						street = #URLEncodedFormat(FORM.MailingAddress)#,
-						city = #URLEncodedFormat(FORM.MailingCity)#,
-						state = #FORM.MailingState#,
-						zipcode = #FORM.MailingZipCode#
-					};
-					MailingAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
-				</cfscript>
+			<cfif Session.getSiteConfig.SmartyStreets_Enabled EQ true>
+				<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/SmartyStreets").init(apitoken="#Session.getSiteConfig.SmartyStreets_APIToken#", apiid="#Session.getSiteConfig.SmartyStreets_APIID#", verbose=true)>
 
-				<cfif LEN(MailingAddressGeoCoded.Result.errordetail) GT 0>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
-							arrayAppend(Session.FormErrors, address);
-						</cfscript>
-					</cflock>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.editmembership&FormRetry=True&MembershipID=#URL.MembershipID#" addtoken="false">
-				<cfelseif ArrayLen(Variables.MailingAddressGeoCoded.Data) GT 0>
+				<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
+					<cfscript>
+						PassedAddress = { street = #FORM.MailingAddress#, city = #FORM.MailingCity#, state = #FORM.MailingState#, zipcode = #FORM.MailingZipCode# };
+						MailingAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
+					</cfscript>
+
+					<cfif LEN(MailingAddressGeoCoded.Result.errordetail) GT 0>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								address = {property="BusinessAddress",message="#MailingAddressGeoCoded.Result.errordetail#"};
+								arrayAppend(Session.FormErrors, address);
+							</cfscript>
+						</cflock>
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
+					<cfelseif ArrayLen(Variables.MailingAddressGeoCoded.Data) GT 0>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_StateESCOrganizations
+							Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.MailingAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
+								Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].city_name)#">,
+								Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
+								Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].zipcode)#">,
+								Mailing_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+								Mailing_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+						</cfquery>
+					<cfelse>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_StateESCOrganizations
+							Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingAddress)#">,
+								Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingCity)#">,
+								Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingState)#">,
+								Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingZipCode)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+						</cfquery>
+					</cfif>
+				</cfif>
+
+				<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
+					<cfscript>
+						PassedAddress = { street = #FORM.PhysicalAddress#, city = #FORM.PhysicalCity#, state = #FORM.PhysicalState#, zipcode = #FORM.PhysicalZipCode# };
+						PhysicalAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
+					</cfscript>
+
+					<cfif LEN(PhysicalAddressGeoCoded.Result.errordetail) GT 0>
+						<cflock timeout="60" scope="SESSION" type="Exclusive">
+							<cfscript>
+								address = {property="BusinessAddress",message="#PhysicalAddressGeoCoded.Result.errordetail#"};
+								arrayAppend(Session.FormErrors, address);
+							</cfscript>
+						</cflock>
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.addmembership&FormRetry=True" addtoken="false">
+					<cfelseif ArrayLen(Variables.PhysicalAddressGeoCoded.Data) GT 0>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_StateESCOrganizations
+							Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.PhysicalAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
+								Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
+								Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
+								Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
+								Physical_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+								Physical_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
+								Physical_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
+								Physical_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
+								Physical_DST = <cfqueryparam cfsqltype="cf_sql_bit" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].dst)#">,
+								Physical_UTCOffset = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].utc_offset)#">,
+								Physical_CountyName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].county_name)#">,
+								Physical_CarrierRoute = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].carrier_route)#">,
+								Physical_CongressionalDistrict = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].congressional_district)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+						</cfquery>
+					<cfelse>
+						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							update p_EventRegistration_StateESCOrganizations
+							Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalAddress)#">,
+								Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalCity)#">,
+								Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalState)#">,
+								Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalZipCode)#">,
+								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+							Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+						</cfquery>
+					</cfif>
+				</cfif>
+			<cfelse>
+				<cfif LEN(FORM.MailingAddress) and LEN(FORM.MailingCity) and LEN(FORM.MailingState) and LEN(FORM.MailingZipCode)>
 					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 						update p_EventRegistration_StateESCOrganizations
-						Set OrganizationName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
-							OrganizationDomainName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
-							StateDOE_IDNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
-							StateDOE_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
-							Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.MailingAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
-							Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].city_name)#">,
-							Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
-							Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].zipcode)#">,
-							Mailing_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['components'].plus4_code)#">,
-							Mailing_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.MailingAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
-							Primary_PhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
-							Primary_FaxNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
+						Set Mailing_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingAddress)#">,
+							Mailing_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingCity)#">,
+							Mailing_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingState)#">,
+							Mailing_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.MailingZipCode)#">,
 							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
 						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
 					</cfquery>
-				<cfelse>
+				</cfif>
+
+				<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
 					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 						update p_EventRegistration_StateESCOrganizations
-						Set OrganizationName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationName#">,
-							OrganizationDomainName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.OrganizationDomainName#">,
-							StateDOE_IDNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
-							StateDOE_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
-							Primary_PhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
-							Primary_FaxNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
+						Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalAddress)#">,
+							Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalCity)#">,
+							Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalState)#">,
+							Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PhysicalZipCode)#">,
 							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
 						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
@@ -895,41 +1248,47 @@
 				</cfif>
 			</cfif>
 
-			<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
-				<cfscript>
-					PassedAddress = {
-						street = #FORM.PhysicalAddress#,
-						city = #FORM.PhysicalCity#,
-						state = #FORM.PhysicalState#,
-						zipcode = #FORM.PhysicalZipCode#
-					};
-					PhysicalAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
-				</cfscript>
-
-				<cfif LEN(PhysicalAddressGeoCoded.Result.errordetail) GT 0>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
-							arrayAppend(Session.FormErrors, address);
-						</cfscript>
-					</cflock>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.editstateesc&FormRetry=True&MembershipID=#URL.MembershipID#" addtoken="false">
-				<cfelseif ArrayLen(Variables.PhysicalAddressGeoCoded.Data) GT 0>
+			<cfif isDefined("FORM.PrimaryPhoneNumber")>
+				<cfif LEN(FORM.PrimaryPhoneNumber)>
 					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 						update p_EventRegistration_StateESCOrganizations
-						Set Physical_Address = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.PhysicalAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
-							Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
-							Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
-							Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
-							Physical_ZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
-							Physical_DeliveryPointBarcode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['delivery_point_barcode'])#">,
-							Physical_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
-							Physical_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
-							Physical_DST = <cfqueryparam cfsqltype="cf_sql_bit" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].dst)#">,
-							Physical_UTCOffset = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].utc_offset)#">,
-							Physical_CountyName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].county_name)#">,
-							Physical_CarrierRoute = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].carrier_route)#">,
-							Physical_CongressionalDistrict = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].congressional_district)#">,
+						Set Primary_PhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryPhoneNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.PrimaryFaxNumber")>
+				<cfif LEN(FORM.PrimaryFaxNumber)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_StateESCOrganizations
+						Set Primary_FaxNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryFaxNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.StateDOEIDNumber")>
+				<cfif LEN(FORM.StateDOEIDNumber)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_StateESCOrganizations
+						Set StateDOE_IDNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEIDNumber#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">
+					</cfquery>
+				</cfif>
+			</cfif>
+
+			<cfif isDefined("FORM.StateDOEState")>
+				<cfif LEN(FORM.StateDOEState)>
+					<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						update p_EventRegistration_StateESCOrganizations
+						Set StateDOE_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.StateDOEState#">,
 							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
 						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.MembershipID#">

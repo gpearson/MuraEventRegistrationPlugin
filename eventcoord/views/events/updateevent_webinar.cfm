@@ -19,6 +19,22 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 <cfoutput>
 	<script src="/requirements/ckeditor/ckeditor.js"></script>
+	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency-1.4.0.js"></script>
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency.all.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function()
+			{
+				$('##WebinarMemberCost').blur(function() {
+					$('##WebinarMemberCost').formatCurrency();
+				});
+
+				$('##WebinarNonMemberCost').blur(function() {
+					$('##WebinarNonMemberCost').formatCurrency();
+				});
+
+		});
+	</script>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
@@ -61,11 +77,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="WebinarMemberCost" class="control-label col-sm-3">Member Cost to Participate:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="WebinarMemberCost" name="WebinarMemberCost" value="#Session.getSelectedEvent.WebinarMemberCost#" required="no"></p></div>
+						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="WebinarMemberCost" name="WebinarMemberCost" value="#DollarFormat(Session.getSelectedEvent.WebinarMemberCost)#" required="no"></p></div>
 					</div>
 					<div class="form-group">
 						<label for="WebinarNonMemberCost" class="control-label col-sm-3">NonMember Cost to Participate:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="WebinarNonMemberCost" name="WebinarNonMemberCost" value="#Session.getSelectedEvent.WebinarNonMemberCost#" required="no"></p></div>
+						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="WebinarNonMemberCost" name="WebinarNonMemberCost" value="#DollarFormat(Session.getSelectedEvent.WebinarNonMemberCost)#" required="no"></p></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -116,11 +132,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="WebinarMemberCost" class="control-label col-sm-3">Member Cost to Participate:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="WebinarMemberCost" name="WebinarMemberCost" value="#Session.getSelectedEvent.WebinarMemberCost#" required="no"></p></div>
+						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="WebinarMemberCost" name="WebinarMemberCost" value="#DollarFormat(Session.getSelectedEvent.WebinarMemberCost)#" required="no"></p></div>
 					</div>
 					<div class="form-group">
 						<label for="WebinarNonMemberCost" class="control-label col-sm-3">NonMember Cost to Participate:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="WebinarNonMemberCost" name="WebinarNonMemberCost" value="#Session.getSelectedEvent.WebinarNonMemberCost#" required="no"></p></div>
+						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="WebinarNonMemberCost" name="WebinarNonMemberCost" value="#DollarFormat(Session.getSelectedEvent.WebinarNonMemberCost)#" required="no"></p></div>
 					</div>
 				</div>
 				<div class="panel-footer">

@@ -243,18 +243,17 @@
 		<cfset Info = #ListLast(variables.requestContent, "&")#>
 		<cfset requestinfo = #DeserializeJSON(Variables.Info)#>
 
-		<cfquery name="CheckAccount" Datasource="#requestinfo.DBINfo.Datasource#" username="#requestinfo.DBINfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
+		<cfquery name="CheckAccount" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
 			Select UserID, Fname, Lname, Email
 			From tusers
-			Where SiteID = <cfqueryparam value="#requestinfo.DBINfo.SiteID#" cfsqltype="cf_sql_varchar"> and
-				UserName = <cfqueryparam value="#requestinfo.UserInfo.Email#" cfsqltype="cf_sql_varchar">
+			Where UserName = <cfqueryparam value="#requestinfo.UserInfo.Email#" cfsqltype="cf_sql_varchar">
 			Order by Lname, Fname
 		</cfquery>
 
 		<cfif CheckAccount.RecordCount EQ 0>
-			<cfset NewUser = #Application.userManager.readByUsername(requestinfo.UserInfo.Email, requestinfo.DBINfo.SiteID)#>
+			<cfset NewUser = #Application.userManager.readByUsername(requestinfo.UserInfo.Email, requestinfo.DBInfo.SiteID)#>
 			<cfset NewUser.setInActive(1)>
-			<cfset NewUser.setSiteID(requestinfo.DBINfo.SiteID)>
+			<cfset NewUser.setSiteID('NIESCEvents')>
 			<cfset NewUser.setFname(Replace(requestinfo.UserInfo.Fname, "+", " ", "ALL"))>
 			<cfset NewUser.setLname(Replace(requestinfo.UserInfo.Lname, "+", " ", "ALL"))>
 			<cfset NewUser.setUsername(requestinfo.UserInfo.Email)>
@@ -262,8 +261,10 @@
 			<cfset AddNewAccount = #Application.userManager.save(NewUser)#>
 			<cfset NewUserAccountID = #Variables.AddNewAccount.GetUserID()#>
 
-			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(requestinfo.DBINfo.PackageName)#/library/components/EmailServices")>
-			<cfset temp = #SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID)#>
+			<cfif RequestInfo.DBInfo.EmailConfirmations EQ true>
+				<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(requestinfo.DBInfo.PackageName)#/library/components/EmailServices")>
+				<cfset temp = #SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID)#>
+			</cfif>
 			<cfreturn SerializeJSON(True)>
 		<cfelse>
 			<cfreturn SerializeJSON(FALSE)>

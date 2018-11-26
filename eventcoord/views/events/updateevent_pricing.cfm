@@ -18,9 +18,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 
 <cfoutput>
-	<script>
-		$(function() {
-			$("##EarlyBird_RegistrationDeadline").datepicker();
+	<script src="/requirements/ckeditor/ckeditor.js"></script>
+	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency-1.4.0.js"></script>
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrnecy.all.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function()
+			{
+				$('##MemberCost').blur(function() {
+					$('##MemberCost').formatCurrency();
+				});
+				
+				$('##NonMemberCost').blur(function() {
+					$('##NonMemberCost').formatCurrency();
+				});
 		});
 	</script>
 	<cfif not isDefined("URL.FormRetry")>
@@ -35,11 +46,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</fieldset>
 					<div class="form-group">
 						<label for="MemberCost" class="control-label col-sm-3">Member Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" value="#Session.getSelectedEvent.MemberCost#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" value="#DollarFormat(Session.getSelectedEvent.MemberCost)#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="NonMemberCost" class="control-label col-sm-3">Non Member Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" value="#Session.getSelectedEvent.NonMemberCost#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" value="#DollarFormat(Session.getSelectedEvent.NonMemberCost)#" required="yes"></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -60,11 +71,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</fieldset>
 					<div class="form-group">
 						<label for="MemberCost" class="control-label col-sm-3">Member Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" value="#Session.getSelectedEvent.MemberCost#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" value="#DollarFormat(Session.getSelectedEvent.MemberCost)#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="NonMemberCost" class="control-label col-sm-3">Non Member Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" value="#Session.getSelectedEvent.NonMemberCost#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="NonMemberCost" name="NonMemberCost" value="#DollarFormat(Session.getSelectedEvent.NonMemberCost)#" required="yes"></div>
 					</div>
 				</div>
 				<div class="panel-footer">

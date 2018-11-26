@@ -37,15 +37,15 @@
 						</cfselect></div>
 					</div>
 					<div class="form-group">
-						<label for="StateDOEIDNumber" class="control-label col-sm-3">State DOE ID Number:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<label for="StateDOEIDNumber" class="control-label col-sm-3">State DOE ID Number:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEIDNumber" name="StateDOEIDNumber" value="#Session.getSelectedMembership.StateDOE_IDNumber#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="StateDOEState" class="control-label col-sm-3">State DOE State:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<label for="StateDOEState" class="control-label col-sm-3">State DOE State:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEState" name="StateDOEState" value="#Session.getSelectedMembership.StateDOE_State#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="StateESCMembership" class="control-label col-sm-3">ESC/ESA Membership Affiliation:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<label for="StateESCMembership" class="control-label col-sm-3">ESC/ESA Membership Affiliation:&nbsp;</label>
 						<div class="col-sm-8"><cfselect name="StateESCMembership" class="form-control" required="no" Multiple="No" query="Session.getESCESAAgencies" selected="#Session.getSelectedMembership.StateDOE_ESCESAMembership#" value="TContent_ID" Display="OrganizationName" queryposition="below">
 							<option value="0">No ESC/ESA Membership?</option>
 						</cfselect></div>

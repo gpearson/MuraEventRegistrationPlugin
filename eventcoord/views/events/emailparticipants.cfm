@@ -15,7 +15,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfset temp = #QuerySetCell(YesNoQuery, "ID", 1)#>
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 <cfoutput>
-	<script type="text/javascript" src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/field-wordcounter.js"></script>
+	<script src="/requirements/ckeditor/ckeditor.js"></script>
+	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
 	<div class="panel panel-default">
 		<cfform action="" method="post" id="AddEvent" class="form-horizontal" enctype="multipart/form-data">
 			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
@@ -35,7 +36,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8">
 							<textarea height="15" width="250" class="form-control" id="EmailMsg" name="EmailMsg"></textarea><br>
 							<script type="text/javascript">
-								$("textarea").textareaCounter({limit: 250});
+								CKEDITOR.replace('EmailMsg', {
+								// Define the toolbar groups as it is a more accessible solution.
+								toolbarGroups: [
+									{"name":"basicstyles","groups":["basicstyles"]},
+									{"name":"links","groups":["links"]},
+									{"name":"paragraph","groups":["list","blocks"]},
+									{"name":"document","groups":["mode"]},
+									{"name":"insert","groups":["insert"]},
+									{"name":"styles","groups":["styles"]},
+									{"name":"about","groups":["about"]}
+								],
+								// Remove the redundant buttons from toolbar groups defined above.
+								removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+							} );
 							</script>
 						</div>
 					</div>
@@ -149,7 +163,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8">
 							<textarea height="15" width="250" class="form-control" id="EmailMsg" name="EmailMsg">#Session.FormData.EMailMsg#</textarea><br>
 							<script type="text/javascript">
-								$("textarea").textareaCounter({limit: 250});
+								CKEDITOR.replace('EmailMsg', {
+								// Define the toolbar groups as it is a more accessible solution.
+								toolbarGroups: [
+									{"name":"basicstyles","groups":["basicstyles"]},
+									{"name":"links","groups":["links"]},
+									{"name":"paragraph","groups":["list","blocks"]},
+									{"name":"document","groups":["mode"]},
+									{"name":"insert","groups":["insert"]},
+									{"name":"styles","groups":["styles"]},
+									{"name":"about","groups":["about"]}
+								],
+								// Remove the redundant buttons from toolbar groups defined above.
+								removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+							} );
 							</script>
 						</div>
 					</div>

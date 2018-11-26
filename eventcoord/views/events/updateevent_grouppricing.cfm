@@ -19,6 +19,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 <cfoutput>
 	<script src="/requirements/ckeditor/ckeditor.js"></script>
+	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency-1.4.0.js"></script>
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency.all.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function()
+			{
+				$('##GroupMemberCost').blur(function() {
+					$('##GroupMemberCost').formatCurrency();
+				});
+
+				$('##GroupNonMemberCost').blur(function() {
+					$('##GroupNonMemberCost').formatCurrency();
+				});
+		});
+	</script>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
@@ -40,11 +55,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
 						<label for="GroupMemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupMemberCost" name="GroupMemberCost" value="#Session.getSelectedEvent.GroupMemberCost#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupMemberCost" name="GroupMemberCost" value="#DollarFormat(Session.getSelectedEvent.GroupMemberCost)#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="GroupNonMemberCost" class="control-label col-sm-3">NonMember Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupNonMemberCost" name="GroupNonMemberCost" value="#Session.getSelectedEvent.GroupNonMemberCost#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupNonMemberCost" name="GroupNonMemberCost" value="#DollarFormat(Session.getSelectedEvent.GroupNonMemberCost)#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="GroupPriceRequirements" class="control-label col-sm-3">Requirements to Acquire Pricing:&nbsp;</label>
@@ -95,11 +110,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
 						<label for="GroupMemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupMemberCost" name="GroupMemberCost" value="#Session.getSelectedEvent.GroupMemberCost#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupMemberCost" name="GroupMemberCost" value="#DollarFormat(Session.getSelectedEvent.GroupMemberCost)#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="GroupNonMemberCost" class="control-label col-sm-3">NonMember Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupNonMemberCost" name="GroupNonMemberCost" value="#Session.getSelectedEvent.GroupNonMemberCost#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupNonMemberCost" name="GroupNonMemberCost" value="#DollarFormat(Session.getSelectedEvent.GroupNonMemberCost)#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="GroupPriceRequirements" class="control-label col-sm-3">Requirements to Acquire Pricing:&nbsp;</label>

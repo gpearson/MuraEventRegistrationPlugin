@@ -11,6 +11,18 @@
 <cfset temp = #QuerySetCell(YesNoQuery, "ID", 1)#>
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 <cfoutput>
+	<script src="/requirements/ckeditor/ckeditor.js"></script>
+	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency-1.4.0.js"></script>
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency.all.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function()
+			{
+				$('##RoomFees').blur(function() {
+					$('##RoomFees').formatCurrency();
+				});
+		});
+	</script>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
@@ -31,7 +43,7 @@
 					</div>
 					<div class="form-group">
 						<label for="RoomFees" class="control-label col-sm-3">Room Fee:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomFees" name="RoomFees" value="#Session.getSelectedFacilityRoom.RoomFees#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomFees" name="RoomFees" value="#DollarFormat(Session.getSelectedFacilityRoom.RoomFees)#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Active" class="control-label col-sm-3">Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
@@ -107,7 +119,7 @@
 					</div>
 					<div class="form-group">
 						<label for="RoomFees" class="control-label col-sm-3">Room Fee:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomFees" name="RoomFees" value="#Session.FormInput.RoomFees#" required="yes"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="RoomFees" name="RoomFees" value="#DollarFormat(Session.FormInput.RoomFees)#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="Active" class="control-label col-sm-3">Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>

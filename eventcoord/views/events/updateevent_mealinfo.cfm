@@ -21,14 +21,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 	<script src="/requirements/ckeditor/ckeditor.js"></script>
 	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
 	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency-1.4.0.js"></script>
-	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrnecy.all.js"></script>
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency.all.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function()
 			{
 				$('##MealCost').blur(function() {
 					$('##MealCost').formatCurrency();
 				});
-		});	}
+		});
 	</script>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
@@ -66,10 +66,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="MealCost" class="control-label col-sm-3">Meal Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MealCost" name="MealCost" value="#Session.getSelectedEvent.MealCost#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MealCost" name="MealCost" value="#DollarFormat(Session.getSelectedEvent.MealCost)#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="MealNotes" class="control-label col-sm-3">Meal Information:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<label for="MealNotes" class="control-label col-sm-3">Meal Information:&nbsp;</label>
 						<div class="col-sm-8">
 							<textarea name="MealNotes" id="MealNotes" class="form-control" cols="80" rows="10">#Session.getSelectedEvent.Meal_Notes#</textarea>
 							<script>CKEDITOR.replace('MealNotes', {
@@ -132,7 +132,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="MealCost" class="control-label col-sm-3">Meal Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PGPPoints" name="PGPPoints" value="#Session.getSelectedEvent.MealCost#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PGPPoints" name="PGPPoints" value="#DollarFormat(Session.getSelectedEvent.MealCost)#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="MealNotes" class="control-label col-sm-3">Meal Information:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>

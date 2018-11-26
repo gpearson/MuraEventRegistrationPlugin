@@ -37,7 +37,7 @@ Line 42: Change to the Plugin Name for the cfimport line
 						<cfset temp = QuerySetCell(getParticipants, "Fname", Session.getRegisteredparticipants.Fname)>
 						<cfset temp = QuerySetCell(getParticipants, "Lname", Session.getRegisteredparticipants.Lname)>
 						<cfset temp = QuerySetCell(getParticipants, "Email", Session.getRegisteredparticipants.Email)>
-							<cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)>
+						<cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)>
 						<cfset temp = QuerySetCell(getParticipants, "ShortTitle", Session.getRegisteredparticipants.ShortTitle)>
 						<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", Session.getRegisteredparticipants.EventDateFormat)>
 						<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
@@ -55,12 +55,26 @@ Line 42: Change to the Plugin Name for the cfimport line
 					<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
 					<cfset LogoPath = ArrayNew(1)>
 					<cfloop from="1" to="#getParticipants.RecordCount#" step="1" index="i">
-						<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo.png")#>
+						<cfswitch expression="#rc.$.siteConfig('siteID')#">
+							<cfcase value="NIESCEvents">
+								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo.png")#>
+							</cfcase>
+							<cfcase value="NWIESCEvents">
+								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NWIESC_Logo.png")#>
+							</cfcase>
+						</cfswitch>
 					</cfloop>
 					<cfset temp = QueryAddColumn(getParticipants, "NIESCLogoPath", "VarChar", Variables.LogoPath)>
 					<cfset ReportDirectory = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/reports/")# >
 					<cfset ReportExportLoc = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/")# & #URL.EventID# & "EventSignInSheet.pdf" >
-					<jr:jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
+					<cfswitch expression="#rc.$.siteConfig('siteID')#">
+						<cfcase value="NIESCEvents">
+							<jr:jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
+						</cfcase>
+						<cfcase value="NWIESCEvents">
+							<jr:jasperreport jrxml="#ReportDirectory#/NWIESCEventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
+						</cfcase>
+					</cfswitch>
 					<embed src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/#URL.EventID#EventSignInSheet.pdf" width="100%" height="650">
 				<cfelseif isDefined("URL.EventDatePOS")>
 					<cfswitch expression="#URL.EventDatePOS#">
@@ -153,12 +167,26 @@ Line 42: Change to the Plugin Name for the cfimport line
 					<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
 					<cfset LogoPath = ArrayNew(1)>
 					<cfloop from="1" to="#getParticipants.RecordCount#" step="1" index="i">
-						<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo.png")#>
+						<cfswitch expression="#rc.$.siteConfig('siteID')#">
+							<cfcase value="NIESCEvents">
+								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo.png")#>
+							</cfcase>
+							<cfcase value="NWIESCEvents">
+								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NWIESC_TransparentLogo.png")#>
+							</cfcase>
+						</cfswitch>
 					</cfloop>
 					<cfset temp = QueryAddColumn(getParticipants, "NIESCLogoPath", "VarChar", Variables.LogoPath)>
 					<cfset ReportDirectory = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/reports/")# >
 					<cfset ReportExportLoc = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/")# & #URL.EventID# & "EventSignInSheet.pdf" >
-					<jr:jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
+					<cfswitch expression="#rc.$.siteConfig('siteID')#">
+						<cfcase value="NIESCEvents">
+							<jr:jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
+						</cfcase>
+						<cfcase value="NWIESCEvents">
+							<jr:jasperreport jrxml="#ReportDirectory#/NWIESCEventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
+						</cfcase>
+					</cfswitch>
 					<embed src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/#URL.EventID#EventSignInSheet.pdf" width="100%" height="650">
 				</cfif>
 			</cfif>

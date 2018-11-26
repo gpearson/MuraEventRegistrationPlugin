@@ -7,7 +7,7 @@ You are receiving the email because the facilitator of the event titled #Argumen
 
 Message Details Below
 
-#Arguments.ParticipantInfo.EmailMessageBody#
+#Arguments.ParticipantInfo.EmailMessageTextBody#
 
 <cfif StructKeyExists(Arguments.ParticipantInfo, "WebLinksInEmail")>Web Link(s):
 <cfloop query="#Arguments.ParticipantInfo.WebLinksInEmail#">#Arguments.ParticipantInfo.WebLinksInEmail.ResourceLink#<br></cfloop>
@@ -29,7 +29,7 @@ Note: Replies to this automated email address are not monitored by staff. If you
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Message Details Below</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#Arguments.ParticipantInfo.EmailMessageBody#</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#Arguments.ParticipantInfo.EmailMessageHTMLBody#</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<cfif StructKeyExists(Arguments.ParticipantInfo, "WebLinksInEmail")>
 				<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Web Link(s):<br>
@@ -57,7 +57,7 @@ You are receiving the email because the facilitator of the event titled #Argumen
 
 Message Details Below
 
-#Arguments.ParticipantInfo.EmailMessageBody#
+#Arguments.ParticipantInfo.EmailMessageTextBody#
 
 <cfif StructKeyExists(Arguments.ParticipantInfo, "WebLinksInEmail")>Web Link(s):
 <cfloop query="#Arguments.ParticipantInfo.WebLinksInEmail#">#Arguments.ParticipantInfo.WebLinksInEmail.ResourceLink#<br></cfloop>
@@ -79,7 +79,7 @@ Note: Replies to this automated email address are not monitored by staff. If you
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Message Details Below</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#Arguments.ParticipantInfo.EmailMessageBody#</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#Arguments.ParticipantInfo.EmailMessageHTMLBody#</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<cfif StructKeyExists(Arguments.ParticipantInfo, "WebLinksInEmail")>
 				<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Web Link(s):<br>

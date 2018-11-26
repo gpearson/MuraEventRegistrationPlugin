@@ -70,7 +70,7 @@ component displayname="SmartyStreets" hint="LiveAddress API v2.3.1 wrapper" {
             param name="arguments.city" default="";
             param name="arguments.state" default="";
             param name="arguments.zipcode" default="";
-            param name="arguments.lastline" default="";
+           // param name="arguments.lastline" default="";
 
             if (arguments.street EQ "") {
                 throw(message="You must supply street address.");
@@ -97,11 +97,12 @@ component displayname="SmartyStreets" hint="LiveAddress API v2.3.1 wrapper" {
 
 	       // send a request to the API (token must be in URL)
             local.service = new http(
-                url = "#getApiUrl()#?auth-id=#getApiID()#&auth-token=#getApiToken()#&#urlparams#",
+                url = "#getApiUrl()#?auth-id=#getApiID()#&auth-token=#getApiToken()##urlparams#",
                 method = "GET",
                 useragent = getUserAgent()
             );
 
+		 
 		  temp = local.service.getParams();
 
 
@@ -110,6 +111,8 @@ component displayname="SmartyStreets" hint="LiveAddress API v2.3.1 wrapper" {
             if (getVerbose()) {
                 local.output.result = local.result;
             }
+
+
 
 		  // check if request is handled
 		  if (local.result.responseheader.status_code NEQ 200) {

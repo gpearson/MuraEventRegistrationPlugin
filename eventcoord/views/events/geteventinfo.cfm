@@ -157,7 +157,8 @@
 						<td style="width: 300px;"><address><strong>#Session.EventInfo.EventFacility.FacilityName#</strong><br>
 						#Session.EventInfo.EventFacility.PhysicalAddress#<BR>
 						#Session.EventInfo.EventFacility.PhysicalCity#, #Session.EventInfo.EventFacility.PhysicalState# #Session.EventInfo.EventFacility.PhysicalZipCode#</address><br>
-						<abbr title="Phone">P:</abbr> #Session.EventInfo.EventFacility.PrimaryVoiceNumber#
+						<cfif LEN(Session.EventInfo.EventFacility.PrimaryVoiceNumber)><abbr title="Phone">P:</abbr> #Session.EventInfo.EventFacility.PrimaryVoiceNumber#<br></cfif>
+						<cfif LEN(Session.EventInfo.EventFacility.BusinessWebsite)><abbr title="Phone">W:</abbr> <A href="#Session.EventInfo.EventFacility.BusinessWebsite#" alt="Facility Website URL" target="_blank">#Session.EventInfo.EventFacility.BusinessWebsite#</a></cfif>
 						</td>
 						<td colspan="1" rowspan="4" style="width: 475px; text-align: center; vertical-align: top;">
 						<link rel="stylesheet" href="/plugins/#Variables.Framework.Package#/library/LeafLet/leaflet.css" />

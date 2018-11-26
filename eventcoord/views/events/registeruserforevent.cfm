@@ -558,6 +558,7 @@
 						</div>
 					</cfform>
 				</div>
+				<cfif not isDefined("Session.UserRegister.FirstStep.EmailConfirmations")><cfset Session.UserRegister.FirstStep.EmailConfirmations = false></cfif>
 				<script type="text/javascript">
 					function AddRow() {
 						var msg;
@@ -569,6 +570,7 @@
 							PackageName: "#rc.pc.getPackage()#",
 							CGIScriptName: "#CGI.Script_name#",
 							CGIPathInfo: "#CGI.path_info#",
+							EmailConfirmations: "#Session.UserRegister.FirstStep.EmailConfirmations#",
 							SiteID: "#rc.$.siteConfig('siteID')#",
 							SiteName: "#rc.$.siteConfig('site')#",
 							ContactName: "#rc.$.siteConfig('ContactName')#",

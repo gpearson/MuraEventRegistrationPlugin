@@ -196,7 +196,7 @@
 										<tr>
 											<td>#Session.getSelectedFacilityRooms.RoomName#</td>
 											<td>#Session.getSelectedFacilityRooms.Capacity#</td>
-											<td>#Session.getSelectedFacilityRooms.RoomFees#</td>
+											<td>#DollarFormat(Session.getSelectedFacilityRooms.RoomFees)#</td>
 											<td><cfswitch expression="#Session.getSelectedFacilityRooms.Active#"><cfcase value="1">Yes</cfcase><cfdefaultcase>No</cfdefaultcase></cfswitch></td>
 											<td><a href="#buildURL('eventcoord:facility.editfacilityroom')#&FacilityID=#URL.FacilityID#&FacilityRoomID=#Session.getSelectedFacilityRooms.TContent_ID#" class="btn btn-primary btn-small">Update</a></td>
 										</tr>
@@ -365,7 +365,7 @@
 										<tr>
 											<td>#Session.getSelectedFacilityRooms.RoomName#</td>
 											<td>#Session.getSelectedFacilityRooms.Capacity#</td>
-											<td>#Session.getSelectedFacilityRooms.RoomFees#</td>
+											<td>#DollarFormat(Session.getSelectedFacilityRooms.RoomFees)#</td>
 											<td><cfswitch expression="#Session.getSelectedFacilityRooms.Active#"><cfcase value="1">Yes</cfcase><cfdefaultcase>No</cfdefaultcase></cfswitch></td>
 											<td><a href="#buildURL('eventcoord:facility.editfacilityroom')#&FacilityID=#URL.FacilityID#&FacilityRoomID=#Session.getSelectedFacilityRooms.TContent_ID#" class="btn btn-primary btn-small">Update</a></td>
 										</tr>

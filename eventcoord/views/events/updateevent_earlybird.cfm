@@ -18,10 +18,26 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 
 <cfoutput>
+	<script src="/requirements/ckeditor/ckeditor.js"></script>
+	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency-1.4.0.js"></script>
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency.all.js"></script>
 	<script>
 		$(function() {
 			$("##EarlyBird_RegistrationDeadline").datepicker();
 		});
+	</script>
+	<script type="text/javascript">
+		$(document).ready(function()
+			{
+				$('##EarlyBird_MemberCost').blur(function() {
+					$('##EarlyBird_MemberCost').formatCurrency();
+				});
+
+				$('##EarlyBird_NonMemberCost').blur(function() {
+					$('##EarlyBird_NonMemberCost').formatCurrency();
+				});
+		});	}
 	</script>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
@@ -48,11 +64,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="EarlyBird_MemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_MemberCost" name="EarlyBird_MemberCost" value="#Session.getSelectedEvent.EarlyBird_MemberCost#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_MemberCost" name="EarlyBird_MemberCost" value="#DollarFormat(Session.getSelectedEvent.EarlyBird_MemberCost)#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EarlyBird_NonMemberCost" class="control-label col-sm-3">NonMember Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_NonMemberCost" name="EarlyBird_NonMemberCost" value="#Session.getSelectedEvent.EarlyBird_NonMemberCost#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_NonMemberCost" name="EarlyBird_NonMemberCost" value="#DollarFormat(Session.getSelectedEvent.EarlyBird_NonMemberCost)#" required="no"></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -86,11 +102,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="EarlyBird_MemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_MemberCost" name="EarlyBird_MemberCost" value="#Session.getSelectedEvent.EarlyBird_MemberCost#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_MemberCost" name="EarlyBird_MemberCost" value="#DollarFormat(Session.getSelectedEvent.EarlyBird_MemberCost)#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EarlyBird_NonMemberCost" class="control-label col-sm-3">NonMember Cost:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_NonMemberCost" name="EarlyBird_NonMemberCost" value="#Session.getSelectedEvent.EarlyBird_NonMemberCost#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_NonMemberCost" name="EarlyBird_NonMemberCost" value="#DollarFormat(Session.getSelectedEvent.EarlyBird_NonMemberCost)#" required="no"></div>
 					</div>
 				</div>
 				<div class="panel-footer">

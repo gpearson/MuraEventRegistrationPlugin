@@ -7,7 +7,7 @@
 				<cfquery name="Session.getUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Select UserID, FName, LName, UserName, Company, LastLogin, LastUpdate, InActive, Created
 					From tusers
-					Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and GroupName is null and Username is not null
+					Where GroupName is null and Username is not null
 					Order by LName ASC, FName ASC
 				</cfquery>
 			</cfcase>
@@ -15,7 +15,7 @@
 				<cfquery name="Session.getUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Select UserID, FName, LName, UserName, Company, LastLogin, LastUpdate, InActive, Created
 					From tusers
-					Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and GroupName is null
+					Where GroupName is null
 					Order by LName ASC, FName ASC
 				</cfquery>
 			</cfcase>
@@ -154,14 +154,12 @@
 			<cfquery name="Session.getSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select Fname, Lname, UserName, Email, Company, JobTitle, mobilePhone, Website, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, InActive
 				From tusers
-				Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">  and
-					UserID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#URL.UserID#">
+				Where UserID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#URL.UserID#">
 			</cfquery>
 			<cfquery name="Session.getEventGroups" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select UserID, GroupName
 				From tusers
-				Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and InActive = <cfqueryparam cfsqltype="cf_sql_bit" value="0"> and
-					GroupName Like <cfqueryparam cfsqltype="cf_sql_varchar" value="%Event%">
+				Where InActive = <cfqueryparam cfsqltype="cf_sql_bit" value="0"> and GroupName Like <cfqueryparam cfsqltype="cf_sql_varchar" value="%Event%">
 				Order by GroupName ASC
 			</cfquery>
 		<cfelseif isDefined("FORM.formSubmit")>
@@ -304,8 +302,7 @@
 			<cfquery name="Session.getSelectedUser" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select Fname, Lname, UserName, Email, Company, JobTitle, mobilePhone, Website, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, InActive
 				From tusers
-				Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">  and
-					UserID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.FormInput.UserID#">
+				Where UserID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.FormInput.UserID#">
 			</cfquery>
 		<cfelseif isDefined("FORM.formSubmit")>
 			<cflock timeout="60" scope="Session" type="Exclusive">
@@ -353,8 +350,7 @@
 			<cfquery name="Session.getEventGroups" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select UserID, GroupName
 				From tusers
-				Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and InActive = <cfqueryparam cfsqltype="cf_sql_bit" value="0"> and
-					GroupName Like <cfqueryparam cfsqltype="cf_sql_varchar" value="%Event%">
+				Where InActive = <cfqueryparam cfsqltype="cf_sql_bit" value="0"> and GroupName Like <cfqueryparam cfsqltype="cf_sql_varchar" value="%Event%">
 				Order by GroupName ASC
 			</cfquery>
 
@@ -399,7 +395,7 @@
 				</cfscript>
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.adduser&FormRetry=True" addtoken="false">
 			</cfif>
-			<cfif not isValid("email", FORM.UserName)>
+			<cfif not isValid("email", FORM.Email)>
 				<cfscript>
 					errormsg = {property="EmailMsg",message="Please enter a valid email address for this user account."};
 					arrayAppend(Session.FormErrors, errormsg);
@@ -424,7 +420,7 @@
 			<!--- Initiates the User Bean --->
 			<cfset NewUser = #Application.userManager.readByUsername(form.Email, rc.$.siteConfig('siteID'))#>
 			<cfset NewUser.setInActive(FORM.InActive)>
-			<cfset NewUser.setSiteID(rc.$.siteConfig('siteID'))>
+			<cfset NewUser.setSiteID('NIESCEvents')>
 			<cfset NewUser.setFname(FORM.FName)>
 			<cfset NewUser.setLname(FORM.LName)>
 			<cfset NewUser.setCompany(FORM.Company)>

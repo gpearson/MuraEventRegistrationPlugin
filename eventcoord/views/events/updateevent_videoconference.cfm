@@ -19,6 +19,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 <cfoutput>
 	<script src="/requirements/ckeditor/ckeditor.js"></script>
+	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency-1.4.0.js"></script>
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency.all.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function()
+			{
+				$('##VideoConferenceCost').blur(function() {
+					$('##VideoConferenceCost').formatCurrency();
+				});
+		});
+	</script>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
@@ -61,7 +72,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="VideoConferenceCost" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="VideoConferenceCost" name="VideoConferenceCost" value="#Session.getSelectedEvent.VideoConferenceCost#" required="no"></p></div>
+						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="VideoConferenceCost" name="VideoConferenceCost" value="#DollarFormat(Session.getSelectedEvent.VideoConferenceCost)#" required="no"></p></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -112,7 +123,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="VideoConferenceCost" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="VideoConferenceCost" name="VideoConferenceCost" value="#Session.getSelectedEvent.VideoConferenceCost#" required="no"></p></div>
+						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="VideoConferenceCost" name="VideoConferenceCost" value="#DollarFormat(Session.getSelectedEvent.VideoConferenceCost)#" required="no"></p></div>
 					</div>
 				</div>
 				<div class="panel-footer">

@@ -76,7 +76,14 @@ Line 42: Change to the Plugin Name for the cfimport line
 					<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
 					<cfset LogoPath = ArrayNew(1)>
 					<cfloop from="1" to="#getParticipants.RecordCount#" step="1" index="i">
-						<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo_Transparent.png")#>
+						<cfswitch expression="#rc.$.siteConfig('siteID')#">
+							<cfcase value="NIESCEvents">
+								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo.png")#>
+							</cfcase>
+							<cfcase value="NWIESCEvents">
+								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NWIESC_TransparentLogo.png")#>
+							</cfcase>
+						</cfswitch>
 					</cfloop>
 					<cfset temp = QueryAddColumn(getParticipants, "NIESCLogoPath", "VarChar", Variables.LogoPath)>
 					<cfset ReportDirectory = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/reports/")# >
@@ -174,7 +181,14 @@ Line 42: Change to the Plugin Name for the cfimport line
 					<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
 					<cfset LogoPath = ArrayNew(1)>
 					<cfloop from="1" to="#getParticipants.RecordCount#" step="1" index="i">
-						<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo_Transparent.png")#>
+						<cfswitch expression="#rc.$.siteConfig('siteID')#">
+							<cfcase value="NIESCEvents">
+								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo.png")#>
+							</cfcase>
+							<cfcase value="NWIESCEvents">
+								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NWIESC_TransparentLogo.png")#>
+							</cfcase>
+						</cfswitch>
 					</cfloop>
 					<cfset temp = QueryAddColumn(getParticipants, "NIESCLogoPath", "VarChar", Variables.LogoPath)>
 					<cfset ReportDirectory = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/reports/")# >
