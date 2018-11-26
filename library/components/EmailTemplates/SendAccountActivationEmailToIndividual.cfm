@@ -2,7 +2,7 @@
 <cfmailpart type="text/plain">
 #getUserAccount.fName# #getUserAccount.lName#,
 
-You have successfully registered an account on the #rc.$.siteConfig('site')# event registration system. Please click the link below to activate your account. Failure to click the link below will prevent you from registering for events.
+You have successfully registered an account on the #rc.$.siteConfig('site')#. Please click the link below to activate your account. Failure to click the link below will prevent you from registering for events.
 
 #Variables.AccountActiveLink#
 
@@ -13,7 +13,7 @@ Note: Replies to this automated email address are not monitored by staff. If you
 		<table border="0" align="center" width="100%" cellspacing="0" cellpadding="0">
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#getUserAccount.fName# #getUserAccount.lName#,</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">You have successfully registered an account on the #rc.$.siteConfig('site')# event registration system. Please click the link below to activate your account. Failure to click the link below will prevent you from registering for events.</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">You have successfully registered an account on the #rc.$.siteConfig('site')#. Please click the link below to activate your account. Failure to click the link below will prevent you from registering for events.</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#Variables.AccountActiveLink#</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>

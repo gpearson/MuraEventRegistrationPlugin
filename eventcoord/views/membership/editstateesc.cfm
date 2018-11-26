@@ -57,6 +57,10 @@
 						<label for="MailingZipCode" class="control-label col-sm-3">ZipCode:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingZipCode" name="MailingZipCode" value="#Session.getSelectedESC.Mailing_ZipCode#" required="no"></div>
 					</div>
+					<div class="form-group">
+						<label for="MailingZipPlus4" class="control-label col-sm-3">Zip + 4:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingZipPlus4" name="MailingZipPlus4" value="#Session.getSelectedESC.Mailing_ZipPlus4#" required="no"></div>
+					</div>
 					<fieldset>
 						<legend><h2>Physical Address Information</h2></legend>
 					</fieldset>
@@ -75,6 +79,10 @@
 					<div class="form-group">
 						<label for="PhysicalZipCode" class="control-label col-sm-3">ZipCode:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" value="#Session.getSelectedESC.Physical_ZipCode#" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="PhysicalZipPlus4" class="control-label col-sm-3">Zip + 4:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipPlus4" name="PhysicalZipPlus4" value="#Session.getSelectedESC.Physical_ZipPlus4#" required="no"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Phone Information</h2></legend>

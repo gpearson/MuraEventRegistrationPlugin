@@ -46,7 +46,55 @@
 					Select UserID, LName, FName, UserName, Company, LastLogin, Created, InActive
 					From Session.getUsers
 					<cfif Arguments.sidx NEQ "">
-						Where #URL.searchField# LIKE '%#URL.searchString#'
+						<cfswitch expression="#URL.searchOper#">
+							<cfcase value="eq">
+								Where #URL.searchField# = '#URL.searchString#'
+							</cfcase>
+							<cfcase value="ne">
+								<!--- Not Equal --->
+								Where #URL.searchField# = '#URL.searchString#'
+							</cfcase>
+							<cfcase value="bw">
+								<!--- Begin With --->
+								Where #URL.searchField# = '#URL.searchString#'
+							</cfcase>
+							<cfcase value="bn">
+								<!--- Does Not Begin With  --->
+								Where #URL.searchField# = '#URL.searchString#'
+							</cfcase>
+							<cfcase value="ew">
+								<!--- Ends With --->
+								Where #URL.searchField# = '#URL.searchString#'
+							</cfcase>
+							<cfcase value="en">
+								<!--- Does Not End With --->
+								Where #URL.searchField# = '#URL.searchString#'
+							</cfcase>
+							<cfcase value="cn">
+								<!--- Contains --->
+								Where #URL.searchField# LIKE '%#URL.searchString#%'
+							</cfcase>
+							<cfcase value="nc">
+								<!--- Does Not Contain --->
+								Where #URL.searchField# = '#URL.searchString#'
+							</cfcase>
+							<cfcase value="nu">
+								<!--- Is Null --->
+								Where #URL.searchField# = '#URL.searchString#'
+							</cfcase>
+							<cfcase value="nn">
+								<!--- Is Not Null --->
+								Where #URL.searchField# = '#URL.searchString#'
+							</cfcase>
+							<cfcase value="in">
+								<!--- Is In --->
+								Where #URL.searchField# = '#URL.searchString#'
+							</cfcase>
+							<cfcase value="ni">
+								<!--- Is Not In --->
+								Where #URL.searchField# = '#URL.searchString#'
+							</cfcase>
+						</cfswitch>
 						Order By #Arguments.sidx# #Arguments.sord#
 					</cfif>
 				</cfquery>

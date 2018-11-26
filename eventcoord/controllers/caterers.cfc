@@ -117,68 +117,54 @@
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:caterers.editcaterer&FormRetry=True&CatererID=#URL.CatererID#" addtoken="false">
 			</cfif>
 
-			<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/GoogleGeoCoder")>
-			<cfset AddressGeoCoded = #GeoCodeCFC.GeoCodeAddress(Form.PhysicalAddress, FORM.PhysicalCity, FORM.PhysicalState, FORM.PhysicalZipCode)#>
-			<cfif AddressGeoCoded[1].ErrorMessage NEQ "OK">
-				<cflock timeout="60" scope="SESSION" type="Exclusive">
-					<cfscript>
-						address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
-						arrayAppend(Session.FormErrors, address);
-					</cfscript>
-				</cflock>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:caterers.editcaterer&FormRetry=True&CatererID=#URL.CatererID#" addtoken="false">
-			<cfelse>
-				<cfset CombinedPhysicalAddress = #AddressGeoCoded[1].AddressStreetNumber# & " " & #AddressGeoCoded[1].AddressStreetNameShort#>
+			<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/SmartyStreets").init(apitoken="O7Oqgg8yl1gV8bJ8572g", apiid="665cc2f2-cacd-6406-3cdc-6bb580e4ac78", verbose=true)>
 
-				<cfquery name="updateCatererInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					update p_EventRegistration_Caterers
-					Set FacilityName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.FacilityName#">,
-						PhysicalAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.CombinedPhysicalAddress#">,
-						PhysicalCity = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.AddressGeoCoded[1].AddressCityName)#">,
-						PhysicalState = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.AddressGeoCoded[1].AddressStateNameShort)#">,
-						PhysicalZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.AddressGeoCoded[1].AddressZipCode)#">,
-						PrimaryVoiceNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryVoiceNumber#">,
-						BusinessWebsite = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.BusinessWebsite#">,
-						ContactName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactName#">,
-						ContactPhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactPhoneNumber#">,
-						ContactEmail = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactEmail#">,
-						PaymentTerms = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PaymentTerms#">,
-						DeliveryInfo = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.DeliveryInfo#">,
-						GuaranteeInformation = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.GuaranteeInformation#">,
-						AdditionalNotes = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AdditionalNotes#">,
-						lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-						lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.Lname#">,
-						Active = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">
-					Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.CatererID#">
-				</cfquery>
-
-				<cfif isDefined("Variables.AddressGeoCoded[1].AddressZipCodeFour")>
+			<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
+				<cfscript>
+					PassedAddress = {
+						street = #FORM.PhysicalAddress#,
+						city = #FORM.PhysicalCity#,
+						state = #FORM.PhysicalState#,
+						zipcode = #FORM.PhysicalZipCode#
+					};
+					PhysicalAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
+				</cfscript>
+				<cfif LEN(PhysicalAddressGeoCoded.Result.errordetail) GT 0>
+					<cflock timeout="60" scope="SESSION" type="Exclusive">
+						<cfscript>
+							address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
+							arrayAppend(Session.FormErrors, address);
+						</cfscript>
+					</cflock>
+					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:caterers.editcaterer&FormRetry=True&CatererID=#URL.CatererID#" addtoken="false">
+				<cfelseif ArrayLen(Variables.PhysicalAddressGeoCoded.Data) GT 0>
 					<cfquery name="updateCatererInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 						update p_EventRegistration_Caterers
-						Set PhysicalZip4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.AddressGeoCoded[1].AddressZipCodeFour)#">
-						Where  TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.CatererID#">
+						Set FacilityName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.FacilityName#">,
+							PhysicalAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.PhysicalAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
+							Physical_City = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
+							Physical_State = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
+							Physical_ZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
+							PhysicalZip4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+							PrimaryVoiceNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryVoiceNumber#">,
+							BusinessWebsite = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.BusinessWebsite#">,
+							ContactName = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactName#">,
+							ContactPhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactPhoneNumber#">,
+							ContactEmail = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactEmail#">,
+							PaymentTerms = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PaymentTerms#">,
+							DeliveryInfo = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.DeliveryInfo#">,
+							GuaranteeInformation = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.GuaranteeInformation#">,
+							AdditionalNotes = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AdditionalNotes#">,
+							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
+							Active = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
+							GeoCode_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
+							GeoCode_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
+						Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.CatererID#">
 					</cfquery>
+					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:caterers.default&UserAction=InformationUpdated&Successful=True" addtoken="false">
 				</cfif>
-
-				<cfquery name="updateFacilityGeoCode" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update p_EventRegistration_Caterers
-					Set GeoCode_Latitude = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressLatitude)#" cfsqltype="cf_sql_varchar">,
-						GeoCode_Longitude = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressLongitude)#" cfsqltype="cf_sql_varchar">,
-						<cfif isDefined("Variables.AddressGeoCoded[1].AddressTownshipNameLong")>
-							GeoCode_Township = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressTownshipNameLong)#" cfsqltype="cf_sql_varchar">,
-						</cfif>
-						<cfif isDefined("Variables.AddressGeoCoded[1].NeighborhoodNameLong")>
-							GeoCode_Neighborhood = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].NeighborhoodNameLong)#" cfsqltype="cf_sql_varchar">,
-						</cfif>
-						GeoCode_StateLongName = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressStateNameLong)#" cfsqltype="cf_sql_varchar">,
-						GeoCode_CountryShortName = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressCountryNameShort)#" cfsqltype="cf_sql_varchar">,
-						isAddressVerified = <cfqueryparam value="1" cfsqltype="cf_sql_bit">,
-						lastUpdated = #Now()#, lastUpdateBy = <cfqueryparam value="#Session.Mura.Fname# #Session.Mura.Lname#" cfsqltype="cf_sql_varchar">
-					Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.CatererID#">
-				</cfquery>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:caterers.default&UserAction=InformationUpdated&Successful=True" addtoken="false">
 			</cfif>
-
 		</cfif>
 	</cffunction>
 
@@ -225,72 +211,56 @@
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:caterers.addcaterer&FormRetry=True" addtoken="false">
 			</cfif>
 
-			<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/GoogleGeoCoder")>
-			<cfset AddressGeoCoded = #GeoCodeCFC.GeoCodeAddress(Form.PhysicalAddress, FORM.PhysicalCity, FORM.PhysicalState, FORM.PhysicalZipCode)#>
-			<cfif AddressGeoCoded[1].ErrorMessage NEQ "OK">
-				<cflock timeout="60" scope="SESSION" type="Exclusive">
-					<cfscript>
-						address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
-						arrayAppend(Session.FormErrors, address);
-					</cfscript>
-				</cflock>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:caterers.addcaterer&FormRetry=True" addtoken="false">
-			<cfelse>
-				<cfset CombinedPhysicalAddress = #AddressGeoCoded[1].AddressStreetNumber# & " " & #AddressGeoCoded[1].AddressStreetNameShort#>
+			<cfset GeoCodeCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/SmartyStreets").init(apitoken="O7Oqgg8yl1gV8bJ8572g", apiid="665cc2f2-cacd-6406-3cdc-6bb580e4ac78", verbose=true)>
 
-				<cfquery name="updateCatererInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					insert into p_EventRegistration_Caterers(Site_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, DeliveryInfo, GuaranteeInformation, AdditionalNotes, dateCreated, Active, lastUpdateBy)
-					Values(
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.FacilityName#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.CombinedPhysicalAddress#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.AddressGeoCoded[1].AddressCityName)#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.AddressGeoCoded[1].AddressStateNameShort)#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.AddressGeoCoded[1].AddressZipCode)#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryVoiceNumber#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.BusinessWebsite#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactName#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactPhoneNumber#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactEmail#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PaymentTerms#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.DeliveryInfo#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.GuaranteeInformation#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AdditionalNotes#">,
-						<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-						<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.FName# #Session.Mura.LName#">
-					)
-				</cfquery>
-
-				<cfif isDefined("Variables.AddressGeoCoded[1].AddressZipCodeFour")>
-					<cfquery name="updateCatererInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						update p_EventRegistration_Caterers
-						Set PhysicalZip4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.AddressGeoCoded[1].AddressZipCodeFour)#">
-						Where  TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.generatedkey#">
+			<cfif LEN(FORM.PhysicalAddress) and LEN(FORM.PhysicalCity) and LEN(FORM.PhysicalState) and LEN(FORM.PhysicalZipCode)>
+				<cfscript>
+					PassedAddress = {
+						street = #FORM.PhysicalAddress#,
+						city = #FORM.PhysicalCity#,
+						state = #FORM.PhysicalState#,
+						zipcode = #FORM.PhysicalZipCode#
+					};
+					PhysicalAddressGeoCoded = GeoCodeCFC.invoke(argumentCollection = PassedAddress);
+				</cfscript>
+				<cfif LEN(PhysicalAddressGeoCoded.Result.errordetail) GT 0>
+					<cflock timeout="60" scope="SESSION" type="Exclusive">
+						<cfscript>
+							address = {property="BusinessAddress",message="#Variables.AddressGeoCoded[1].ErrorMessageText#"};
+							arrayAppend(Session.FormErrors, address);
+						</cfscript>
+					</cflock>
+					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:caterers.addcaterer&FormRetry=True" addtoken="false">
+				<cfelseif ArrayLen(Variables.PhysicalAddressGeoCoded.Data) GT 0>
+					<cfquery name="updateCatererInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						insert into p_EventRegistration_Caterers(Site_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, DeliveryInfo, GuaranteeInformation, AdditionalNotes, dateCreated, Active, lastUpdateBy, GeoCode_Latitude, GeoCode_Longitude)
+						Values(
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.FacilityName#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Variables.PhysicalAddressGeoCoded.Data[1]['Delivery_Line_1']#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PrimaryVoiceNumber#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.BusinessWebsite#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactName#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactPhoneNumber#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.ContactEmail#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.PaymentTerms#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.DeliveryInfo#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.GuaranteeInformation#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.AdditionalNotes#">,
+							<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+							<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
+							<cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
+							<cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">
+						)
 					</cfquery>
 				</cfif>
-
-				<cfquery name="updateFacilityGeoCode" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update p_EventRegistration_Caterers
-					Set GeoCode_Latitude = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressLatitude)#" cfsqltype="cf_sql_varchar">,
-						GeoCode_Longitude = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressLongitude)#" cfsqltype="cf_sql_varchar">,
-						<cfif isDefined("Variables.AddressGeoCoded[1].AddressTownshipNameLong")>
-							GeoCode_Township = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressTownshipNameLong)#" cfsqltype="cf_sql_varchar">,
-						</cfif>
-						<cfif isDefined("Variables.AddressGeoCoded[1].NeighborhoodNameLong")>
-							GeoCode_Neighborhood = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].NeighborhoodNameLong)#" cfsqltype="cf_sql_varchar">,
-						</cfif>
-						GeoCode_StateLongName = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressStateNameLong)#" cfsqltype="cf_sql_varchar">,
-						GeoCode_CountryShortName = <cfqueryparam value="#Trim(Variables.AddressGeoCoded[1].AddressCountryNameShort)#" cfsqltype="cf_sql_varchar">,
-						isAddressVerified = <cfqueryparam value="1" cfsqltype="cf_sql_bit">,
-						lastUpdated = #Now()#, lastUpdateBy = <cfqueryparam value="#Session.Mura.Fname# #Session.Mura.Lname#" cfsqltype="cf_sql_varchar">
-					Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.generatedkey#">
-				</cfquery>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:caterers.default&UserAction=CatererAdded&Successful=True" addtoken="false">
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:caterers.default&UserAction=InformationAdded&Successful=True" addtoken="false">
 			</cfif>
 		</cfif>
 	</cffunction>
-
-
-
 </cfcomponent>

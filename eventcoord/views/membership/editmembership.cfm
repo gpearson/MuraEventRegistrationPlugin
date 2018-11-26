@@ -69,24 +69,44 @@
 						<label for="MailingZipCode" class="control-label col-sm-3">ZipCode:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingZipCode" name="MailingZipCode" value="#Session.getSelectedMembership.Mailing_ZipCode#" required="no"></div>
 					</div>
+					<div class="form-group">
+						<label for="MailingZipPlus4" class="control-label col-sm-3">Zip + 4:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingZipPlus4" name="MailingZipPlus4" value="#Session.getSelectedMembership.Mailing_ZipPlus4#" required="no"></div>
+					</div>
 					<fieldset>
 						<legend><h2>Physical Address Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
 						<label for="PhysicalAddress" class="control-label col-sm-3">Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" value="#Session.getSelectedMembership.Physical_Address#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" value="#Session.getSelectedMembership.Physical_Address#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="PhysicalCity" class="control-label col-sm-3">City:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalCity" name="PhysicalCity" value="#Session.getSelectedMembership.Physical_City#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalCity" name="PhysicalCity" value="#Session.getSelectedMembership.Physical_City#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="PhysicalState" class="control-label col-sm-3">State:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalState" name="PhysicalState" value="#Session.getSelectedMembership.Physical_State#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalState" name="PhysicalState" value="#Session.getSelectedMembership.Physical_State#" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="PhysicalZipCode" class="control-label col-sm-3">ZipCode:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" value="#Session.getSelectedMembership.Physical_ZipCode#" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" value="#Session.getSelectedMembership.Physical_ZipCode#" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="PhysicalZipPlus4" class="control-label col-sm-3">Zip + 4:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipPlus4" name="PhysicalZipPlus4" value="#Session.getSelectedMembership.Physical_ZipPlus4#" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="PhysicalLatitude" class="control-label col-sm-3">Address Latitude:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalLatitude" name="PhysicalLatitude" value="#Session.getSelectedMembership.Physical_Latitude#" disabled="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="PhysicalLongitude" class="control-label col-sm-3">Address Longitude:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalLongitude" name="PhysicalLongitude" value="#Session.getSelectedMembership.Physical_Longitude#" disabled="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="PhysicalCountyName" class="control-label col-sm-3">Address County Name:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalCountyName" name="PhysicalCountyName" value="#Session.getSelectedMembership.Physical_CountyName#" disabled="yes"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Phone Organization</h2></legend>
