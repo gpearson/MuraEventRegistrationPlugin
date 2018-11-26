@@ -611,17 +611,21 @@
 	</cfif>
 	<div class="panel panel-default">
 		<div class="panel-body">
+			<fieldset>
+				<legend><h2>Calendar of Events</h2></legend>
+			</fieldset>
 			<cfif Session.getFeaturedEvents.RecordCount>
+				<div class="alert alert-featured">
 				<fieldset>
-					<legend><h2>Featured Events or Workshops</h2></legend>
+					<legend><h2>Featured</h2></legend>
 				</fieldset>
 				<table class="table table-striped table-bordered">
 					<thead class="thead-default">
 						<tr>
-							<th width="50%">Event Title</th>
-							<th width="15%">Event Date</th>
-							<th width="20%">Event Actions</th>
-							<th width="15%">Event Attributes</th>
+							<th style="background: white;" width="50%">Event Title</th>
+							<th style="background: white;" width="15%">Event Date</th>
+							<th style="background: white;" width="20%">Event Actions</th>
+							<th style="background: white;" width="15%">Event Attributes</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -689,11 +693,9 @@
 						</cfloop>
 					</tbody>
 				</table>
+				</div>
 			</cfif>
 			<cfif Session.getNonFeaturedEvents.RecordCount>
-				<fieldset>
-					<legend><h2>Calendar of Events</h2></legend>
-				</fieldset>
 				<table class="table table-striped table-bordered">
 					<thead class="thead-default">
 						<tr>

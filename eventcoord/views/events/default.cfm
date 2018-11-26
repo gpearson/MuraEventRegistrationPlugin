@@ -444,7 +444,45 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfcase value="AddedEvent">
 							<cfif isDefined("URL.Successful")>
 								<cfif URL.Successful EQ "true">
-									<div class="alert alert-success"><p>You have successfully added a new event to the database.</p></div>
+									<div id="modelWindowDialog" class="modal fade">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+													<h3>Event Has Been Added</h3>
+												</div>
+												<div class="modal-body">
+													<p class="alert alert-success">You have successfully added a new event to the database.</p>
+												</div>
+												<div class="modal-footer">
+													<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<script type='text/javascript'>
+										(function() {
+											'use strict';
+											function remoteModal(idModal){
+												var vm = this;
+												vm.modal = $(idModal);
+												if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+												if( window.location.hash == idModal ){ openModal(); }
+												var services = { open: openModal, close: closeModal };
+												return services;
+												function openModal(){
+													vm.modal.modal('show');
+												}
+												function closeModal(){
+													vm.modal.modal('hide');
+												}
+											}
+											Window.prototype.remoteModal = remoteModal;
+										})();
+										$(function(){
+											window.remoteModal('##modelWindowDialog');
+										});
+									</script>
 									<cfif isDefined("URL.FacebookPost")>
 										<div class="alert alert-warning"><p>The event was not posted to Facebook even though the option was selected to post this event to Facebook. Within the Site Configuration, the necessary information needed to post to Facebook was not entered.</p></div>
 									</cfif>
@@ -470,9 +508,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</tfoot>
 					<tbody>
 						<cfloop query="Session.getAvailableEvents">
+
 							<cfquery name="getRegisteredParticipantsForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 								SELECT p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.IVCParticipant, tusers.Fname, tusers.Lname, tusers.Company, tusers.Email, SUBSTRING_INDEX(tusers.Email,"@",-1) AS Domain, p_EventRegistration_Events.ShortTitle, Date_FORMAT(p_EventRegistration_Events.EventDate, "%a, %M %d, %Y") as EventDateFormat, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4,
-									p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM
+									p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM, p_EventRegistration_UserRegistrations.OnWaitingList
 								FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.EventID
 								WHERE p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
 									p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
@@ -537,19 +576,29 @@ http://www.apache.org/licenses/LICENSE-2.0
 								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 									Event_ID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer">
 							</cfquery>
-							<tr>
+							<cfquery name="checkIncomeVerified" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Select AttendeePriceVerified
+								From p_EventRegistration_UserRegistrations
+								Where EventID = <cfqueryparam value="#Session.getAvailableEvents.TContent_ID#" cfsqltype="cf_sql_integer"> and
+									Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+								Group by AttendeePriceVerified
+							</cfquery>
+							<tr <cfif Session.getAvailableEvents.Active EQ 0></cfif>>
 								<td width="50%">(<a href="http://#cgi.server_name#/?Info=#Session.getAvailableEvents.TContent_ID#">#Session.getAvailableEvents.TContent_ID#</a>) / #Session.getAvailableEvents.ShortTitle#<cfif LEN(Session.getAvailableEvents.Presenters)><cfquery name="getPresenter" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">Select FName, LName From tusers where UserID = <cfqueryparam value="#Session.getAvailableEvents.Presenters#" cfsqltype="cf_sql_varchar"></cfquery><br><em>Presenter: #getPresenter.FName# #getPresenter.Lname#</em></cfif></td>
 								<td width="15%">
+									<cfset ValidDate = 0>
 									<cfif LEN(Session.getAvailableEvents.EventDate) and LEN(Session.getAvailableEvents.EventDate1) or LEN(Session.getAvailableEvents.EventDate2) or LEN(Session.getAvailableEvents.EventDate3) or LEN(Session.getAvailableEvents.EventDate4)>
 										<cfif DateDiff("d", Now(), Session.getAvailableEvents.EventDate) LT 0>
 											<div style="Color: ##CCCCCC;">#DateFormat(Session.getAvailableEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate, "ddd")#)</div>
 										<cfelse>
+											<cfset ValidDate = 1>
 											#DateFormat(Session.getAvailableEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate, "ddd")#)<br>
 										</cfif>
 										<cfif LEN(Session.getAvailableEvents.EventDate1)>
 											<cfif DateDiff("d", Now(), Session.getAvailableEvents.EventDate1) LT 0>
 												<div style="Color: ##AAAAAA;">#DateFormat(Session.getAvailableEvents.EventDate1, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate1, "ddd")#)</div>
 											<cfelse>
+												<cfset ValidDate = 1>
 												#DateFormat(Session.getAvailableEvents.EventDate1, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate1, "ddd")#)<br>
 											</cfif>
 										</cfif>
@@ -557,6 +606,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 											<cfif DateDiff("d", Now(), Session.getAvailableEvents.EventDate2) LT 0>
 												<div class="text-danger">#DateFormat(Session.getAvailableEvents.EventDate2, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate2, "ddd")#)</div>
 											<cfelse>
+												<cfset ValidDate = 1>
 												#DateFormat(Session.getAvailableEvents.EventDate2, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate2, "ddd")#)<br>
 											</cfif>
 										</cfif>
@@ -564,6 +614,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 											<cfif DateDiff("d", Now(), Session.getAvailableEvents.EventDate3) LT 0>
 												<div class="text-danger">#DateFormat(Session.getAvailableEvents.EventDate3, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate3, "ddd")#)</div>
 											<cfelse>
+												<cfset ValidDate = 1>
 												#DateFormat(Session.getAvailableEvents.EventDate3, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate3, "ddd")#)<br>
 											</cfif>
 										</cfif>
@@ -571,11 +622,37 @@ http://www.apache.org/licenses/LICENSE-2.0
 											<cfif DateDiff("d", Now(), Session.getAvailableEvents.EventDate4) LT 0>
 												<div class="text-danger">#DateFormat(Session.getAvailableEvents.EventDate4, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate4, "ddd")#)</div>
 											<cfelse>
+												<cfset ValidDate = 1>
 												#DateFormat(Session.getAvailableEvents.EventDate4, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate4, "ddd")#)
 											</cfif>
 										</cfif>
 									<cfelse>
+										<cfif DateDiff("d", Now(), Session.getAvailableEvents.EventDate) LT 0>
+										<cfelse>
+											<cfset ValidDate = 1>
+										</cfif>
 										#DateFormat(Session.getAvailableEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.getAvailableEvents.EventDate, "ddd")#)
+									</cfif>
+									<cfif Session.getAvailableEvents.Active EQ 0><div class="alert alert-danger small">Event not displayed<hr>Click Update Event to change settings</div>
+									<cfelseif Session.getAvailableEvents.AcceptRegistrations EQ 0>
+										<div class="alert alert-warning small">Registration Closed<hr>Click Update Event to change settings</div>
+									<cfelse>
+										<cfif ValidDate EQ 1>
+											<cfif DateDiff("d", Session.getAvailableEvents.Registration_Deadline, Now()) GT 0>
+												<div class="alert alert-warning small">Registration Passed<hr>Click Update Event to change settings</div>
+											<cfelse>
+												<cfquery name="WaitingListCount" dbtype="query">
+													Select OnWaitingList
+													From getRegisteredParticipantsForEvent
+													Where OnWaitingList = <cfqueryparam value="1" cfsqltype="cf_sql_integer">
+												</cfquery>
+												<cfif Session.getAvailableEvents.MaxParticipants EQ getRegisteredParticipantsForEvent.RecordCount>
+													<div class="alert alert-success small">Event Full<hr></div>
+												<cfelseif WaitingListCount.RecordCount>
+													<div class="alert alert-danger small">Event Full<br>#WaitingListCount.RecordCount# on Waiting List<hr>Click Update Event to change settings</div>
+												</cfif>
+											</cfif>
+										</cfif>
 									</cfif>
 								</td>
 								<td>
@@ -596,8 +673,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 									<a href="#buildURL('eventcoord:events.updateevent_review')#&EventID=#Session.getAvailableEvents.TContent_ID#" role="button" class="btn btn-primary btn-small"><small>Update Event</small></a>
 									<a href="#buildURL('eventcoord:events.cancelevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Cancel Event</small></a>
 									<a href="#buildURL('eventcoord:events.copyevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Copy Event</small></a><br>
-									<cfif getAttendedParticipantsForEvent.RecordCount><a href="#buildURL('eventcoord:events.enterexpenses')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Enter Expenses</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Enter Expenses</small></button></cfif>
-									<cfif getEventExpenses.RecordCount><a href="#buildURL('eventcoord:events.generateprofitlossreport')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Generate Profit/Loss Report</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Generate Profit/Loss Report</small></button></cfif><br />
+									<cfif getAttendedParticipantsForEvent.RecordCount and Session.getAvailableEvents.EventInvoicesGenerated EQ 0><a href="#buildURL('eventcoord:events.enterexpenses')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Expenses</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Expenses</small></button></cfif>
+									<cfif getAttendedParticipantsForEvent.RecordCount and Session.getAvailableEvents.EventInvoicesGenerated EQ 0><a href="#buildURL('eventcoord:events.enterrevenue')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Revenue</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Revenue</small></button></cfif>
+									<cfset IncomeCompleted = 0>
+									<cfif checkIncomeVerified.RecordCount EQ 1 and CheckIncomeVerified.AttendeePriceVerified EQ 1><cfset IncomeCOmpleted = 1></cfif>
+									<cfif getEventExpenses.RecordCount and Variables.IncomeCompleted EQ 1><a href="#buildURL('eventcoord:events.viewprofitlossreport')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>View Profit/Loss Report</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>View Profit/Loss Report</small></button></cfif><br />
 								</td>
 							</tr>
 						</cfloop>

@@ -36,6 +36,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</cfselect>
 						</div>
 					</div>
+					<div class="form-group">
+						<label for="DisplayEvent" class="control-label col-sm-3">Display Event:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="Active" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.Active#" Display="OptionName"  queryposition="below">
+								<option value="----">Display Event</option>
+							</cfselect>
+						</div>
+					</div>
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Event Review">
@@ -58,6 +66,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8">
 							<cfselect name="AcceptRegistrations" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormData.AcceptRegistrations#" Display="OptionName"  queryposition="below">
 								<option value="----">Allow Registrations</option>
+							</cfselect>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="DisplayEvent" class="control-label col-sm-3">Display Event:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="Active" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.FormData.Active#" Display="OptionName"  queryposition="below">
+								<option value="----">Display Event</option>
 							</cfselect>
 						</div>
 					</div>

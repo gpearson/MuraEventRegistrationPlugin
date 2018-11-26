@@ -118,6 +118,32 @@
 					</cfif>
 					<br>
 					<fieldset>
+						<legend><h3>Event Daily Session Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_dailysessions&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
+					<div class="form-group">
+						<label for="EventHasDailySessions" class="control-label col-sm-3">Event has Daily Sessions:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.EventHasDailySessions#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
+					</div>
+					<cfif Session.getSelectedEvent.EventHasDailySessions EQ 1>
+						<div class="form-group">
+							<label for="EventSession1_StartTime" class="control-label col-sm-3">First Session Begin Time:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#timeFormat(Session.getSelectedEvent.Session1BeginTime, "hh:mm tt")#</p></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession1_EndTime" class="control-label col-sm-3">First Session End Time:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#timeFormat(Session.getSelectedEvent.Session1EndTime, "hh:mm tt")#</p></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession2_StartTime" class="control-label col-sm-3">Second Session Begin Time:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#timeFormat(Session.getSelectedEvent.Session2BeginTime, "hh:mm tt")#</p></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession2_EndTime" class="control-label col-sm-3">Second Session End Time:&nbsp;</label>
+							<div class="col-sm-8"><p class="form-control-static">#timeFormat(Session.getSelectedEvent.Session2EndTime, "hh:mm tt")#</p></div>
+						</div>
+					</cfif>
+					<br>
+					<fieldset>
 						<legend><h3>Event Standard Pricing Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_pricing&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
 					</fieldset>
 					<div class="form-group">
@@ -275,6 +301,10 @@
 					<div class="form-group">
 						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.AcceptRegistrations#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
+					</div>
+					<div class="form-group">
+						<label for="DisplayEvent" class="control-label col-sm-3">Display Event:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.Active#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
 					</div>
 				</div>
 				<div class="panel-footer">

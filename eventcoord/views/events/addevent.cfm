@@ -109,6 +109,22 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</div>
 					<div class="form-group">
+						<label for="EventHaveSessions" class="control-label col-sm-3">Event has Daily Sessions:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="EventHaveSessions" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
+								<option value="----">Will Event have 2 Sessions on a Single Day</option>
+							</cfselect>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="EventHasBreakoutSessions" class="control-label col-sm-3">Event has Breakout Sessions:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="EventBreakoutSessions" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
+								<option value="----">Will Event have breakout Sessions</option>
+							</cfselect>
+						</div>
+					</div>
+					<div class="form-group">
 						<label for="EarlyBird_RegistrationAvailable" class="control-label col-sm-3">Earlybird Registration Available:&nbsp;</label>
 						<div class="col-sm-8">
 							<cfselect name="EarlyBird_RegistrationAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">

@@ -12,6 +12,22 @@
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 
 <cfoutput>
+	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrency-1.4.0.js"></script>
+	<script type="text/javascript" src="#pluginPath#/includes/assets/js/jquery.formatCurrnecy.all.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function()
+			{
+				$('##MemberCost').blur(function() {
+					$('##MemberCost').formatCurrency();
+				});
+
+				$('##NonMemberCost').blur(function() {
+					$('##NonMemberCost').formatCurrency();
+				});
+			});
+
+	</script>
 	<script>
 		$(function() {
 			$("##EventDate").datepicker();
@@ -31,6 +47,22 @@
 				controlType: 'select'
 			});
 			$("##Event_EndTime").timepicker({
+				timeFormat: 'h:i A',
+				controlType: 'select'
+			});
+			$("##EventSession1_StartTime").timepicker({
+				timeFormat: 'h:i A',
+				controlType: 'select'
+			});
+			$("##EventSession2_StartTime").timepicker({
+				timeFormat: 'h:i A',
+				controlType: 'select'
+			});
+			$("##EventSession1_EndTime").timepicker({
+				timeFormat: 'h:i A',
+				controlType: 'select'
+			});
+			$("##EventSession2_EndTime").timepicker({
 				timeFormat: 'h:i A',
 				controlType: 'select'
 			});
@@ -202,6 +234,36 @@
 							</cfselect>
 						</div>
 					</div>
+					<br />
+					<fieldset>
+						<legend><h2>Event has Daily Sessions</h2></legend>
+					</fieldset>
+					<div class="form-group">
+						<label for="EventHaveSessions" class="control-label col-sm-3">Event has Daily Sessions:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="EventHaveSessions" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.UserSuppliedInfo.FirstStep.EventHaveSessions#"  queryposition="below">
+								<option value="----">Will Event have 2 Sessions on a Single Day</option>
+							</cfselect>
+						</div>
+					</div>
+					<cfif Session.UserSuppliedInfo.FirstStep.EventHaveSessions EQ 1>
+						<div class="form-group">
+							<label for="EventSession1_StartTime" class="control-label col-sm-3">First Session Begin Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession1_StartTime" name="EventSession1_StartTime" value="#Session.UserSuppliedInfo.SecondStep.EventSession1_StartTime#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession1_EndTime" class="control-label col-sm-3">First Session End Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession1_EndTime" name="EventSession1_EndTime" value="#Session.UserSuppliedInfo.SecondStep.EventSession1_EndTime#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession2_StartTime" class="control-label col-sm-3">Second Session Begin Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession2_StartTime" name="EventSession2_StartTime" value="#Session.UserSuppliedInfo.SecondStep.EventSession2_StartTime#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession2_EndTime" class="control-label col-sm-3">Second Session End Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession2_EndTime" name="EventSession2_EndTime" value="#Session.UserSuppliedInfo.SecondStep.EventSession2_EndTime#" required="yes"></div>
+						</div>
+					</cfif>
 					<br />
 					<fieldset>
 						<legend><h2>Event Featured Information</h2></legend>
@@ -446,8 +508,6 @@
 			}
 		</script>
 	<cfelseif isDefined("URL.FormRetry")>
-		<cfdump var="#Session.UserSuppliedInfo#">
-		<cfabort>
 		<div class="panel panel-default">
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
@@ -612,6 +672,36 @@
 							</cfselect>
 						</div>
 					</div>
+					<br />
+					<fieldset>
+						<legend><h2>Event has Daily Sessions</h2></legend>
+					</fieldset>
+					<div class="form-group">
+						<label for="EventHaveSessions" class="control-label col-sm-3">Event has Daily Sessions:&nbsp;</label>
+						<div class="col-sm-8">
+							<cfselect name="EventHaveSessions" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.UserSuppliedInfo.FinalStep.EventHaveSessions#"  queryposition="below">
+								<option value="----">Will Event have 2 Sessions on a Single Day</option>
+							</cfselect>
+						</div>
+					</div>
+					<cfif Session.UserSuppliedInfo.FinalStep.EventHaveSessions EQ 1>
+						<div class="form-group">
+							<label for="EventSession1_StartTime" class="control-label col-sm-3">First Session Begin Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession1_StartTime" name="EventSession1_StartTime" value="#Session.UserSuppliedInfo.FinalStep.EventSession1_StartTime#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession1_EndTime" class="control-label col-sm-3">First Session End Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession1_EndTime" name="EventSession1_EndTime" value="#Session.UserSuppliedInfo.FinalStep.EventSession1_EndTime#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession2_StartTime" class="control-label col-sm-3">Second Session Begin Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession2_StartTime" name="EventSession2_StartTime" value="#Session.UserSuppliedInfo.FinalStep.EventSession2_StartTime#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession2_EndTime" class="control-label col-sm-3">Second Session End Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession2_EndTime" name="EventSession2_EndTime" value="#Session.UserSuppliedInfo.FinalStep.EventSession2_EndTime#" required="yes"></div>
+						</div>
+					</cfif>
 					<br />
 					<fieldset>
 						<legend><h2>Event Featured Information</h2></legend>

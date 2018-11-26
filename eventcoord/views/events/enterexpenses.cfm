@@ -11,113 +11,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 </cfsilent>
 <cfoutput>
 	<div class="panel panel-default">
-		<cfif isDefined("URL.UserAction")>
-			<cfswitch expression="#URL.UserAction#">
-				<cfcase value="ModifyExpenses">
-					<div class="panel-body">
-					<cfif isDefined("URL.Successful")>
-						<cfif URL.Successful EQ "true">
-							<div class="alert alert-success"><p>You have successfully updated an expense for this event.</p></div>
-						</cfif>
-					</cfif>
-					</div>
-				</cfcase>
-				<cfcase value="EnterExpenses">
-					<div class="panel-body">
-					<cfif isDefined("URL.Successful")>
-						<cfif URL.Successful EQ "true">
-							<div id="modelWindowDialog" class="modal fade">
-								<div class="modal-dialog">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
-											<h3>Expense Added to this Event</h3>
-										</div>
-										<div class="modal-body">
-											<p class="alert alert-success">You have successfully added an expense to this event.</p>
-										</div>
-										<div class="modal-footer">
-											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<script type='text/javascript'>
-								(function() {
-									'use strict';
-									function remoteModal(idModal){
-										var vm = this;
-										vm.modal = $(idModal);
-										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
-										if( window.location.hash == idModal ){ openModal(); }
-										var services = { open: openModal, close: closeModal };
-										return services;
-										function openModal(){
-											vm.modal.modal('show');
-										}
-										function closeModal(){
-											vm.modal.modal('hide');
-										}
-									}
-									Window.prototype.remoteModal = remoteModal;
-								})();
-								$(function(){
-									window.remoteModal('##modelWindowDialog');
-								});
-							</script>
-						</cfif>
-					</cfif>
-					</div>
-				</cfcase>
-				<cfcase value="DeleteExpenses">
-					<div class="panel-body">
-					<cfif isDefined("URL.Successful")>
-						<cfif URL.Successful EQ "true">
-							<div id="modelWindowDialog" class="modal fade">
-								<div class="modal-dialog">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
-											<h3>Expense Deleted from this Event</h3>
-										</div>
-										<div class="modal-body">
-											<p class="alert alert-success">You have successfully deleted an existing expense for this event.</p>
-										</div>
-										<div class="modal-footer">
-											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<script type='text/javascript'>
-								(function() {
-									'use strict';
-									function remoteModal(idModal){
-										var vm = this;
-										vm.modal = $(idModal);
-										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
-										if( window.location.hash == idModal ){ openModal(); }
-										var services = { open: openModal, close: closeModal };
-										return services;
-										function openModal(){
-											vm.modal.modal('show');
-										}
-										function closeModal(){
-											vm.modal.modal('hide');
-										}
-									}
-									Window.prototype.remoteModal = remoteModal;
-								})();
-								$(function(){
-									window.remoteModal('##modelWindowDialog');
-								});
-							</script>
-						</cfif>
-					</cfif>
-					</div>
-				</cfcase>
-			</cfswitch>
-		</cfif>
 		<cfif isDefined("URL.FormRetry")>
 			<div id="modelWindowDialog" class="modal fade">
 				<div class="modal-dialog">
@@ -194,21 +87,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<tr>
 								<td colspan="3">
 									<div class="form-group">
-										<label for="ExpenseName" class="control-label col-sm-3">Expense Type:&nbsp;</label>
-										<div class="col-sm-8">
+										<label for="ExpenseName" class="control-label col-sm-1">Type:&nbsp;</label>
+										<div class="col-sm-4">
 											<cfselect name="ExpenseID" class="form-control" Required="Yes" Multiple="No" query="Session.getAvailableExpenseList" value="TContent_ID" Display="Expense_Name"  queryposition="below">
 												<option value="----">Select Expense Name from List?</option>
 											</cfselect>
 										</div>
-										<!--- <div align="center" class="alert-box notice">No Event Expenses have been located within the database. Please click <a href="#buildURL('eventcoord:events.addeventexpenses')#&EventID=#URL.EventID#" class="art-button">here</a> to add a new expense for this event.</div>--->
-								</td>
-							</tr>
-							<tr>
-								<td colspan="3">
-									<div class="form-group">
-										<label for="ExpenseAmount" class="control-label col-sm-3">Expense Amount:&nbsp;</label>
-										<div class="col-sm-8"><cfinput type="text" class="form-control" id="ExpenseAmount" name="ExpenseAmount" required="no"></div>
-										<!--- <div align="center" class="alert-box notice">No Event Expenses have been located within the database. Please click <a href="#buildURL('eventcoord:events.addeventexpenses')#&EventID=#URL.EventID#" class="art-button">here</a> to add a new expense for this event.</div> --->
+										<label for="ExpenseAmount" class="control-label col-sm-1">Amount:&nbsp;</label>
+										<div class="col-sm-3"><cfinput type="text" class="form-control" id="ExpenseAmount" name="ExpenseAmount" required="no"></div>
+										<div class="col-sm-3"><cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add Expense"></div>
+									</div>
 								</td>
 							</tr>
 						</tfoot>
@@ -226,21 +114,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<tr>
 								<td colspan="3">
 									<div class="form-group">
-										<label for="ExpenseName" class="control-label col-sm-3">Expense Type:&nbsp;</label>
-										<div class="col-sm-8">
+										<label for="ExpenseName" class="control-label col-sm-1">Type:&nbsp;</label>
+										<div class="col-sm-4">
 											<cfselect name="ExpenseID" class="form-control" Required="Yes" Multiple="No" query="Session.getAvailableExpenseList" value="TContent_ID" Display="Expense_Name"  queryposition="below">
 												<option value="----">Select Expense Name from List?</option>
 											</cfselect>
 										</div>
-										<!--- <div align="center" class="alert-box notice">No Event Expenses have been located within the database. Please click <a href="#buildURL('eventcoord:events.addeventexpenses')#&EventID=#URL.EventID#" class="art-button">here</a> to add a new expense for this event.</div> --->
-								</td>
-							</tr>
-							<tr>
-								<td colspan="3">
-									<div class="form-group">
-										<label for="ExpenseAmount" class="control-label col-sm-3">Expense Amount:&nbsp;</label>
-										<div class="col-sm-8"><cfinput type="text" class="form-control" id="ExpenseAmount" name="ExpenseAmount" required="no"></div>
-										<!--- <div align="center" class="alert-box notice">No Event Expenses have been located within the database. Please click <a href="#buildURL('eventcoord:events.addeventexpenses')#&EventID=#URL.EventID#" class="art-button">here</a> to add a new expense for this event.</div> --->
+										<label for="ExpenseAmount" class="control-label col-sm-1">Amount:&nbsp;</label>
+										<div class="col-sm-3"><cfinput type="text" class="form-control" id="ExpenseAmount" name="ExpenseAmount" required="no"></div>
+										<div class="col-sm-3"><cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add Expense"></div>
+									</div>
 								</td>
 							</tr>
 						</tbody>
@@ -353,15 +236,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfif URL.UserAction EQ "UpdateExpense">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Event Expenses"><br /><br />
 				<cfelse>
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Enter Event Expenses">
-					<span class="pull-right">&nbsp;&nbsp;</span>
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Generate Profit/Loss Report">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Enter Revenue">
 					<br /><br />
 				</cfif>
 			<cfelse>
-				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Enter Event Expenses">
-				<span class="pull-right">&nbsp;&nbsp;</span>
-				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Generate Profit/Loss Report">
+				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Enter Revenue">
 				<br /><br />
 			</cfif>
 		</div>

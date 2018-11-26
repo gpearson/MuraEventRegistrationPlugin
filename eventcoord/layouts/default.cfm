@@ -16,7 +16,7 @@
 										<a href="#CGI.Script_name##CGI.path_info#?doaction=logout">Account Logout</a>
 									</li>
 									<li class="<cfif rc.action eq 'public:main.login'>active</cfif>">
-										<a href="#CGI.Script_name##CGI.path_info#?display=login">Manage Profile</a>
+										<a href="#buildURL('eventcoord:usermenu.editprofile')#"><i class="icon-home"></i> Manage Profile</a>
 									</li>
 								<cfelse>
 									<li class="<cfif rc.action eq 'public:main.login'>active</cfif>">
@@ -124,6 +124,12 @@
 					--->
 				</div>
 			</nav>
+			<cfif Session.Mura.IsLoggedIn EQ "True">
+				<div class="text-right">
+					Current User: #Session.Mura.FName# #Session.Mura.LName# (#Session.Mura.Company#) <a href="#CGI.Script_name##CGI.path_info#?doaction=logout" class="btn btn-sm btn-primary">Logout</a><br>
+					<hr>
+				</div>
+			</cfif>
 		</div>
 		<div class="row-fluid">
 			<!--- SUB-NAV --->

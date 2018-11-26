@@ -19,6 +19,22 @@ http://www.apache.org/licenses/LICENSE-2.0
 			$("##Featured_StartDate").datepicker();
 			$("##Featured_EndDate").datepicker();
 			$("##EarlyBird_RegistrationDeadline").datepicker();
+			$("##EventSession1_StartTime").timepicker({
+				timeFormat: 'h:i A',
+				controlType: 'select'
+			});
+			$("##EventSession2_StartTime").timepicker({
+				timeFormat: 'h:i A',
+				controlType: 'select'
+			});
+			$("##EventSession1_EndTime").timepicker({
+				timeFormat: 'h:i A',
+				controlType: 'select'
+			});
+			$("##EventSession2_EndTime").timepicker({
+				timeFormat: 'h:i A',
+				controlType: 'select'
+			});
 		});
 	</script>
 	<cfset pluginPath = rc.$.globalConfig('context') & '/plugins/' & rc.pluginConfig.getPackage() />
@@ -218,6 +234,27 @@ http://www.apache.org/licenses/LICENSE-2.0
 									<option value="----">Select Location of Event</option>
 								</cfselect>
 							</div>
+						</div>
+					</cfif>
+					<cfif Session.UserSuppliedInfo.FirstStep.EventHaveSessions EQ 1>
+						<fieldset>
+							<legend><h2>Event Session Information</h2></legend>
+						</fieldset>
+						<div class="form-group">
+							<label for="EventSession1_StartTime" class="control-label col-sm-3">First Session Begin Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession1_StartTime" name="EventSession1_StartTime" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession1_EndTime" class="control-label col-sm-3">First Session End Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession1_EndTime" name="EventSession1_EndTime" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession2_StartTime" class="control-label col-sm-3">Second Session Begin Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession2_StartTime" name="EventSession2_StartTime" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="EventSession2_EndTime" class="control-label col-sm-3">Second Session End Time:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventSession2_EndTime" name="EventSession2_EndTime" required="yes"></div>
 						</div>
 					</cfif>
 				</div>

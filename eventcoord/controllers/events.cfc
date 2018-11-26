@@ -4,7 +4,7 @@
 
 		<cfset PriorDate = #DateAdd("m", -8, Now())#>
 		<cfquery name="Session.getAvailableEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, PGPAvailable, MemberCost, NonMemberCost, Presenters
+			Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, PGPAvailable, MemberCost, NonMemberCost, Presenters, Active, AcceptRegistrations, Registration_Deadline, MaxParticipants, EventInvoicesGenerated
 			From p_EventRegistration_Events
 			Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 				EventDate >= <cfqueryparam value="#Variables.PriorDate#" cfsqltype="cf_sql_date"> and
@@ -38,6 +38,8 @@
 			<cfif FORM.AllowVideoConference EQ "----"><cfset FORM.AllowVideoConference = 0></cfif>
 			<cfif FORM.WebinarEvent EQ "----"><cfset FORM.WebinarEvent = 0></cfif>
 			<cfif FORM.PostEventToFB EQ "----"><cfset FORM.PostEventToFB = 0></cfif>
+			<cfif FORM.EventBreakoutSessions EQ "----"><cfset FORM.EventBreakoutSessions = 0></cfif>
+			<cfif FORM.EventHaveSessions EQ "----"><cfset FORM.EventHaveSessions = 0></cfif>
 
 			<cflock timeout="60" scope="Session" type="Exclusive">
 				<cfset Session.UserSuppliedInfo = StructNew()>
@@ -529,6 +531,80 @@
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_review&FormRetry=True" addtoken="false">
 			</cfif>
 
+			<cfif FORM.EventHaveSessions EQ "----">
+				<cfscript>
+						eventdate = {property="Registration_Deadline",message="Please select whether this single event will have multiple sessions on the same day."};
+						arrayAppend(Session.FormErrors, eventdate);
+					</cfscript>
+					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_review&FormRetry=True" addtoken="false">
+			</cfif>
+
+			<cfif FORM.EventHaveSessions EQ 1>
+				<!--- Create Date Object from User Inputted Time from Event First Session Begin Time  --->
+				<cfset EventSession1StartTimeHours = #ListFirst(FORM.EventSession1_StartTime, ":")#>
+				<cfset EventSession1StartTimeMinutes = #Left(ListLast(FORM.EventSession1_StartTime, ":"), 2)#>
+				<cfset EventSession1StartTimeAMPM = #Right(ListLast(FORM.EventSession1_StartTime, ":"), 2)#>
+				<cfif EventSession1StartTimeAMPM EQ "PM">
+					<cfswitch expression="#Variables.EventSession1StartTimeHours#">
+						<cfcase value="12">
+							<cfset EventSession1StartTimeHours = #Variables.EventSession1StartTimeHours#>
+						</cfcase>
+						<cfdefaultcase>
+							<cfset EventSession1StartTimeHours = #Variables.EventSession1StartTimeHours# + 12>
+						</cfdefaultcase>
+					</cfswitch>
+				</cfif>
+				<cfset EventSession1StartTimeObject = #CreateTime(Variables.EventSession1StartTimeHours, Variables.EventSession1StartTimeMinutes, 0)#>
+
+				<!--- Create Date Object from User Inputted Time from Event First Session End Time  --->
+				<cfset EventSession1EndTimeHours = #ListFirst(FORM.EventSession1_EndTime, ":")#>
+				<cfset EventSession1EndTimeMinutes = #Left(ListLast(FORM.EventSession1_EndTime, ":"), 2)#>
+				<cfset EventSession1EndTimeAMPM = #Right(ListLast(FORM.EventSession1_EndTime, ":"), 2)#>
+				<cfif EventSession1EndTimeAMPM EQ "PM">
+					<cfswitch expression="#Variables.EventSession1EndTimeHours#">
+						<cfcase value="12">
+							<cfset EventSession1EndTimeHours = #Variables.EventSession1EndTimeHours#>
+						</cfcase>
+						<cfdefaultcase>
+							<cfset EventSession1EndTimeHours = #Variables.EventSession1EndTimeHours# + 12>
+						</cfdefaultcase>
+					</cfswitch>
+				</cfif>
+				<cfset EventSession1EndTimeObject = #CreateTime(Variables.EventSession1EndTimeHours, Variables.EventSession1EndTimeMinutes, 0)#>
+
+				<cfset EventSession2StartTimeHours = #ListFirst(FORM.EventSession2_StartTime, ":")#>
+				<cfset EventSession2StartTimeMinutes = #Left(ListLast(FORM.EventSession2_StartTime, ":"), 2)#>
+				<cfset EventSession2StartTimeAMPM = #Right(ListLast(FORM.EventSession2_StartTime, ":"), 2)#>
+				<cfif EventSession2StartTimeAMPM EQ "PM">
+					<cfswitch expression="#Variables.EventSession2StartTimeHours#">
+						<cfcase value="12">
+							<cfset EventSession2StartTimeHours = #Variables.EventSession2StartTimeHours#>
+						</cfcase>
+						<cfdefaultcase>
+							<cfset EventSession2StartTimeHours = #Variables.EventSession2StartTimeHours# + 12>
+						</cfdefaultcase>
+					</cfswitch>
+				</cfif>
+				<cfset EventSession2StartTimeObject = #CreateTime(Variables.EventSession2StartTimeHours, Variables.EventSession2StartTimeMinutes, 0)#>
+
+				<!--- Create Date Object from User Inputted Time from Event First Session End Time  --->
+				<cfset EventSession2EndTimeHours = #ListFirst(FORM.EventSession2_EndTime, ":")#>
+				<cfset EventSession2EndTimeMinutes = #Left(ListLast(FORM.EventSession2_EndTime, ":"), 2)#>
+				<cfset EventSession2EndTimeAMPM = #Right(ListLast(FORM.EventSession2_EndTime, ":"), 2)#>
+				<cfif EventSession2EndTimeAMPM EQ "PM">
+					<cfswitch expression="#Variables.EventSession2EndTimeHours#">
+						<cfcase value="12">
+							<cfset EventSession2EndTimeHours = #Variables.EventSession2EndTimeHours#>
+						</cfcase>
+						<cfdefaultcase>
+							<cfset EventSession2EndTimeHours = #Variables.EventSession2EndTimeHours# + 12>
+						</cfdefaultcase>
+					</cfswitch>
+				</cfif>
+				<cfset EventSession2EndTimeObject = #CreateTime(Variables.EventSession2EndTimeHours, Variables.EventSession2EndTimeMinutes, 0)#>
+
+			</cfif>
+
 			<!--- Create Date Object from User Inputted Time from Event Start Time --->
 			<cfset EventStartTimeHours = #ListFirst(FORM.Event_StartTime, ":")#>
 			<cfset EventStartTimeMinutes = #Left(ListLast(FORM.Event_StartTime, ":"), 2)#>
@@ -735,6 +811,20 @@
 									EarlyBird_RegistrationDeadline = #CreateDate(ListLast(FORM.EarlyBird_RegistrationDeadline, "/"), ListFirst(FORM.EarlyBird_RegistrationDeadline, "/"), ListGetAt(FORM.EarlyBird_RegistrationDeadline, 2, "/"))#,
 									EarlyBird_MemberCost = "#FORM.EarlyBird_MemberCost#",
 									EarlyBird_NonMemberCost = "#FORM.EarlyBird_NonMemberCost#",
+									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
+							</cfquery>
+						</cfif>
+
+						<cfif FORM.EventHaveSessions EQ 1>
+							<cfquery name="updateNewEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Update p_EventRegistration_Events
+								Set EventHasDailySessions = <cfqueryparam value="#FORM.EventHaveSessions#" cfsqltype="cf_sql_bit">,
+									Session1BeginTime = <cfqueryparam value="#Variables.EventSession1StartTimeObject#" cfsqltype="cf_sql_time">,
+									Session1EndTime = <cfqueryparam value="#Variables.EventSession1EndTimeObject#" cfsqltype="cf_sql_time">,
+									Session2BeginTime = <cfqueryparam value="#Variables.EventSession2StartTimeObject#" cfsqltype="cf_sql_time">,
+									Session2EndTime = <cfqueryparam value="#Variables.EventSession2EndTimeObject#" cfsqltype="cf_sql_time">,
 									lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
 									lastUpdateBy = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
 								Where TContent_ID = <cfqueryparam value="#insertNewEvent.GENERATED_KEY#" cfsqltype="cf_sql_integer">
@@ -1210,7 +1300,7 @@
 						Insert into p_EventRegistration_Events(Site_ID, ShortTitle, EventDate, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, EarlyBird_RegistrationAvailable, ViewGroupPricing, PGPAvailable, MealProvided, AllowVideoConference, AcceptRegistrations, Facilitator, dateCreated, MaxParticipants, Active, lastUpdated, lastUpdateBy, EventCancelled, WebinarAvailable, PostedTo_Facebook, PostedTo_Twitter)
 						Values (
 							<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#Session.getSelectedEvent.ShortTitle#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="Copy of #Session.getSelectedEvent.ShortTitle#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="#Session.getSelectedEvent.EventDate#" cfsqltype="cf_sql_date">,
 							<cfqueryparam value="#Session.getSelectedEvent.LongDescription#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="#Session.getSelectedEvent.Event_StartTime#" cfsqltype="cf_sql_time">,
@@ -1224,11 +1314,11 @@
 							<cfqueryparam value="#Session.getSelectedEvent.PGPAvailable#" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#Session.getSelectedEvent.MealProvided#" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#Session.getSelectedEvent.AllowVideoConference#" cfsqltype="cf_sql_bit">,
-							<cfqueryparam value="#Session.getSelectedEvent.AcceptRegistrations#" cfsqltype="cf_sql_bit">,
+							<cfqueryparam value="0" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
 							<cfqueryparam value="#Session.getSelectedEvent.MaxParticipants#" cfsqltype="cf_sql_integer">,
-							<cfqueryparam value="#Session.getSelectedEvent.Active#" cfsqltype="cf_sql_integer">,
+							<cfqueryparam value="0" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
 							<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="#Session.getSelectedEvent.EventCancelled#" cfsqltype="cf_sql_bit">,
@@ -1544,7 +1634,14 @@
 						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:main.default&UserAction=EventCopied&Successful=False" addtoken="false">
 					</cfcatch>
 				</cftry>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default&UserAction=EventCopied&Successful=True" addtoken="false">
+				<cfswitch expression="#application.configbean.getDBType()#">
+					<cfcase value="mysql">
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_review&EventID=#insertNewEvent.GENERATED_KEY#" addtoken="false">
+					</cfcase>
+					<cfcase value="mssql">
+						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_review&EventID=#insertNewEvent.IdentityCol#" addtoken="false">
+					</cfcase>
+				</cfswitch>
 			</cfif>
 		</cfif>
 	</cffunction>
@@ -2031,7 +2128,7 @@
 
 		<cfif isDefined("URL.EventID")>
 			<cfquery name="getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewGroupPricing, GroupMemberCost, GroupNonMemberCost, GroupPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Presenters, Facilitator, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, Presenters
+				Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewGroupPricing, GroupMemberCost, GroupNonMemberCost, GroupPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Presenters, Facilitator, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, EventHasDailySessions, Session1BeginTime, Session1EndTime, Session2BeginTime, Session2EndTime
 				From p_EventRegistration_Events
 				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 					TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
@@ -3519,41 +3616,41 @@
 							Event_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
 							TContent_ID = <cfqueryparam value="#URL.EventRecID#" cfsqltype="cf_sql_integer">
 					</cfquery>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterexpenses&UserAction=DeleteExpenses&Successful=True&EventID=#URL.EventID#" addtoken="false">
+					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterexpenses&EventID=#URL.EventID#" addtoken="false">
 				</cfcase>
 			</cfswitch>
 		<cfelseif isDefined("FORM.formSubmit") and isDefined("FORM.EventID") and isDefined("FORM.EventRecID")>
-			<cfif FORM.UserAction EQ "Generate Profit/Loss Report">
+			<cfif FORM.UserAction EQ "Enter Revenue">
 				<cfset temp = StructDelete(Session, "getSelectedEvent")>
 				<cfset temp = StructDelete(Session, "getAvailableExpenseList")>
 				<cfset temp = StructDelete(Session, "getAvailableEventExpenses")>
 				<cfset temp = StructDelete(Session, "getSelectedEventExpenses")>
 				<cfset temp = StructDelete(Session, "FormErrors")>
 				<cfif isDefined("Session.FormInput")><cfset temp = StructDelete(Session, "FormInput")></cfif>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.generateprofitlossreport&EventID=#URL.EventID#" addtoken="false">
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterrevenue&EventID=#URL.EventID#" addtoken="false">
 			</cfif>
 			<cfquery name="UpdateEventExpense" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Update p_EventRegistration_EventExpenses
 				Set Expense_ID = <cfqueryparam value="#FORM.ExpenseID#" cfsqltype="cf_sql_integer">,
-					Cost_Amount = <cfqueryparam value="#FORM.ExpenseAmount#" cfsqltype="cf_sql_integer">
+					Cost_Amount = <cfqueryparam value="#FORM.ExpenseAmount#" cfsqltype="cf_sql_money">
 				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 					Event_ID = <cfqueryparam value="#FORM.EventID#" cfsqltype="cf_sql_integer"> and
 					TContent_ID = <cfqueryparam value="#URL.EventRecID#" cfsqltype="cf_sql_integer">
 			</cfquery>
-			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterexpenses&UserAction=ModifyExpenses&Successful=True&EventID=#URL.EventID#" addtoken="false">
+			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterexpenses&EventID=#URL.EventID#" addtoken="false">
 		<cfelseif isDefined("FORM.formSubmit") and isDefined("FORM.EventID") and not isDefined("FORM.EventRecID")>
 			<cflock timeout="60" scope="Session" type="Exclusive">
 				<cfset Session.FormErrors = #ArrayNew()#>
 				<cfset Session.FormInput = #StructCopy(FORM)#>
 			</cflock>
 
-			<cfif FORM.UserAction EQ "Generate Profit/Loss Report">
+			<cfif FORM.UserAction EQ "Enter Revenue">
 				<cfset temp = StructDelete(Session, "getSelectedEvent")>
 				<cfset temp = StructDelete(Session, "getAvailableExpenseList")>
 				<cfset temp = StructDelete(Session, "getAvailableEventExpenses")>
 				<cfset temp = StructDelete(Session, "FormErrors")>
 				<cfif isDefined("Session.FormInput")><cfset temp = StructDelete(Session, "FormInput")></cfif>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.generateprofitlossreport&EventID=#URL.EventID#" addtoken="false">
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterrevenue&EventID=#URL.EventID#" addtoken="false">
 			</cfif>
 
 			<cfif FORM.UserAction EQ "Back to Event Listing">
@@ -3585,17 +3682,16 @@
 					<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
 				)
 			</cfquery>
-			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterexpenses&UserAction=EnterExpenses&Successful=True&EventID=#FORM.EventID#" addtoken="false">
+			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterexpenses&EventID=#FORM.EventID#" addtoken="false">
 		<cfelse>
 
 		</cfif>
-
 	</cffunction>
 
-	<cffunction name="generateprofitlossreport" returntype="any" output="true">
+	<cffunction name="enterrevenue" returntype="any" output="true">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
-		<cfif not isDefined("FORM.formSubmit") and isDefined("URL.EventID") and not isDefined("URL.UserAction")>
+		<cfif not isDefined("FORM.formSubmit") and isDefined("URL.EventID")>
 			<cfquery name="Session.getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewGroupPricing, GroupMemberCost, GroupNonMemberCost, GroupPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Facilitator, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, Presenters
 				From p_EventRegistration_Events
@@ -3605,13 +3701,12 @@
 			</cfquery>
 
 			<cfquery name="Session.GetSelectedEventRegistrations" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				SELECT p_EventRegistration_UserRegistrations.TContent_ID, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.AttendeePrice, tusers.Fname, tusers.Lname, tusers.Email, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4,
+				SELECT p_EventRegistration_UserRegistrations.TContent_ID, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.AttendeePrice, p_EventRegistration_UserRegistrations.RegistrationDate, tusers.Fname, tusers.Lname, tusers.Email, SUBSTRING_INDEX(tusers.Email,"@",-1) AS Domain, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4,
 					p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM, p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6,
-					p_EventRegistration_UserRegistrations.AttendedEventSessionAM, p_EventRegistration_UserRegistrations.AttendedEventSessionPM
+					p_EventRegistration_UserRegistrations.AttendedEventSessionAM, p_EventRegistration_UserRegistrations.AttendedEventSessionPM, p_EventRegistration_UserRegistrations.AttendeePriceVerified
 				FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.EventID
 				WHERE (p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-					p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  and
-					p_EventRegistration_UserRegistrations.AttendeePriceVerified = <cfqueryparam value="0" cfsqltype="cf_sql_bit">) and
+					p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 					(
 					(p_EventRegistration_UserRegistrations.AttendedEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
 					(p_EventRegistration_UserRegistrations.AttendedEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
@@ -3619,9 +3714,234 @@
 					(p_EventRegistration_UserRegistrations.AttendedEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
 					(p_EventRegistration_UserRegistrations.AttendedEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
 					(p_EventRegistration_UserRegistrations.AttendedEventDate6 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate6 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">)
-					)
-				ORDER BY tusers.Lname ASC, tusers.Fname ASC
+					))
+				ORDER BY Domain ASC, tusers.Lname ASC, tusers.Fname ASC
 			</cfquery>
+		<cfelseif isDefined("FORM.formSubmit") and isDefined("FORM.EventID")>
+			<cfif FORM.UserAction EQ "Back to Event Listing">
+				<cfset temp = StructDelete(Session, "getSelectedEvent")>
+				<cfset temp = StructDelete(Session, "getAvailableExpenseList")>
+				<cfset temp = StructDelete(Session, "getAvailableEventExpenses")>
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cfif isDefined("Session.FormInput")><cfset temp = StructDelete(Session, "FormInput")></cfif>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default" addtoken="false">
+			</cfif>
+
+			<cfset Participant = StructNew()>
+
+			<cfloop list="#FORM.fieldnames#" index="i" delimiters=",">
+				<cfif ListContains(i, "Participants", "_")>
+					<cfset Participant[i] = StructNew()>
+					<cfset Participant[i]['RecordID'] = #ListLast(i, "_")#>
+					<cfset Participant[i]['Amount'] = #FORM[i]#>
+				</cfif>
+			</cfloop>
+
+			<cfloop collection=#Variables.Participant# item="RecNo">
+				<cfquery name="UpdateAttendeePrice" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Update p_EventRegistration_UserRegistrations
+					Set AttendeePrice = <cfqueryparam value="#Variables.Participant[RecNo]['Amount']#" cfsqltype="cf_sql_money">,
+						AttendeePriceVerified = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+					Where TContent_ID = <cfqueryparam value="#Variables.Participant[RecNo]['RecordID']#" cfsqltype="cf_sql_integer">
+				</cfquery>
+			</cfloop>
+			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.enterrevenue&EventID=#URL.EventID#" addtoken="false">
+		</cfif>
+
+	</cffunction>
+
+
+
+	<cffunction name="viewprofitlossreport" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif not isDefined("FORM.formSubmit") and isDefined("URL.EventID") and not isDefined("URL.UserAction")>
+			<cfquery name="getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select TContent_ID, ShortTitle, Site_ID, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, EventInvoicesGenerated
+				From p_EventRegistration_Events
+				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+					TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
+					Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and EventCancelled = <cfqueryparam value="0" cfsqltype="cf_sql_bit">
+			</cfquery>
+			<cfset temp = QueryAddColumn(getSelectedEvent, "EventDateDisplay")>
+			<cfset LogoPath = ArrayNew(1)>
+			<cfloop from="1" to="#getSelectedEvent.RecordCount#" step="1" index="i">
+				<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_LogoSM.png")#>
+			</cfloop>
+			<cfset temp = QueryAddColumn(getSelectedEvent, "ImagePath", "VarChar", Variables.LogoPath)>
+			<cfset EventDates = "">
+			<cfif isDate(getSelectedEvent.EventDate)><cfset EventDates = #DateFormat(getSelectedEvent.EventDate, "mm/dd/yyyy")# & " (" & #DateFormat(getSelectedEvent.EventDate, "ddd")# & ")"></cfif>
+			<cfif isDate(getSelectedEvent.EventDate1)><cfset EventDates = Variables.EventDates & "; " & #DateFormat(getSelectedEvent.EventDate1, "mm/dd/yyyy")# & " (" & #DateFormat(getSelectedEvent.EventDate1, "ddd")# & ")"></cfif>
+			<cfif isDate(getSelectedEvent.EventDate2)><cfset EventDates = Variables.EventDates & "; " & #DateFormat(getSelectedEvent.EventDate2, "mm/dd/yyyy")# & " (" & #DateFormat(getSelectedEvent.EventDate2, "ddd")# & ")"></cfif>
+			<cfif isDate(getSelectedEvent.EventDate3)><cfset EventDates = Variables.EventDates & "; " & #DateFormat(getSelectedEvent.EventDate3, "mm/dd/yyyy")# & " (" & #DateFormat(getSelectedEvent.EventDate3, "ddd")# & ")"></cfif>
+			<cfif isDate(getSelectedEvent.EventDate4)><cfset EventDates = Variables.EventDates & "; " & #DateFormat(getSelectedEvent.EventDate4, "mm/dd/yyyy")# & " (" & #DateFormat(getSelectedEvent.EventDate4, "ddd")# & ")"></cfif>
+			<cfif isDate(getSelectedEvent.EventDate5)><cfset EventDates = Variables.EventDates & "; " & #DateFormat(getSelectedEvent.EventDate5, "mm/dd/yyyy")# & " (" & #DateFormat(getSelectedEvent.EventDate5, "ddd")# & ")"></cfif>
+			<cfset temp = QuerySetCell(getSelectedEvent, "EventDateDisplay", Variables.EventDates)>
+			<cfset temp = QueryAddColumn(getSelectedEvent, "TotalRevenue")>
+			<cfset temp = QueryAddColumn(getSelectedEvent, "TotalExpenses")>
+			<cfset temp = QueryAddColumn(getSelectedEvent, "ProfitOrLoss")>
+
+			<cfquery name="GetEventExpenses" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select p_EventRegistration_ExpenseList.Expense_Name, p_EventRegistration_EventExpenses.Cost_Amount
+				From p_EventRegistration_EventExpenses INNER JOIN p_EventRegistration_ExpenseList ON p_EventRegistration_ExpenseList.TContent_ID = p_EventRegistration_EventExpenses.Expense_ID
+				WHere p_EventRegistration_EventExpenses.Event_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
+			</cfquery>
+			<cfset EventTotalExpenses = 0>
+			<cfloop query="GetEventExpenses">
+				<cfset EventTotalExpenses = #Variables.EventTotalExpenses# + #GetEventExpenses.Cost_Amount#>
+			</cfloop>
+			<cfset temp = QuerySetCell(getSelectedEvent, "TotalExpenses", Variables.EventTotalExpenses)>
+
+			<cfquery name="GetSelectedEventRegistrations" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				SELECT p_EventRegistration_UserRegistrations.TContent_ID, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.AttendeePrice, p_EventRegistration_UserRegistrations.RegistrationDate, tusers.Fname, tusers.Lname, tusers.Email, SUBSTRING_INDEX(tusers.Email,"@",-1) AS Domain, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4,
+					p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM, p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6,
+					p_EventRegistration_UserRegistrations.AttendedEventSessionAM, p_EventRegistration_UserRegistrations.AttendedEventSessionPM, p_EventRegistration_UserRegistrations.AttendeePriceVerified
+				FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.EventID
+				WHERE (p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
+					p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+					(
+					(p_EventRegistration_UserRegistrations.AttendedEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
+					(p_EventRegistration_UserRegistrations.AttendedEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
+					(p_EventRegistration_UserRegistrations.AttendedEventDate3 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate3 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
+					(p_EventRegistration_UserRegistrations.AttendedEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
+					(p_EventRegistration_UserRegistrations.AttendedEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
+					(p_EventRegistration_UserRegistrations.AttendedEventDate6 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate6 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">)
+					))
+				ORDER BY Domain ASC, tusers.Lname ASC, tusers.Fname ASC
+			</cfquery>
+			<cfset temp = QueryAddColumn(GetSelectedEventRegistrations, "OrganizationName")>
+			<cfset temp = QueryAddColumn(GetSelectedEventRegistrations, "OrganizationMember")>
+			<cfset temp = QueryAddColumn(GetSelectedEventRegistrations, "AttendeeTotalDays")>
+
+			<cfloop query="GetSelectedEventRegistrations">
+				<cfquery name="getCorpInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select OrganizationName, Active
+					From p_EventRegistration_Membership
+					Where OrganizationDomainName = <cfqueryparam value="#GetSelectedEventRegistrations.Domain#" cfsqltype="cf_sql_varchar">
+				</cfquery>
+				<cfif getCorpInfo.RecordCount>
+					<cfset temp = QuerySetCell(GetSelectedEventRegistrations, "OrganizationName", getCorpInfo.OrganizationName, GetSelectedEventRegistrations.CurrentRow)>
+					<cfif getCorpInfo.Active EQ 1>
+						<cfset temp = QuerySetCell(GetSelectedEventRegistrations, "OrganizationMember", "Member", GetSelectedEventRegistrations.CurrentRow)>
+					<cfelse>
+						<cfset temp = QuerySetCell(GetSelectedEventRegistrations, "OrganizationMember", "Non-Member", GetSelectedEventRegistrations.CurrentRow)>
+					</cfif>
+				</cfif>
+				<cfset TotalDaysAttended = 0>
+				<cfif GetSelectedEventRegistrations.AttendedEventDate1 EQ 1><cfset TotalDaysAttended = #Variables.TotalDaysAttended# + 1></cfif>
+				<cfif GetSelectedEventRegistrations.AttendedEventDate2 EQ 1><cfset TotalDaysAttended = #Variables.TotalDaysAttended# + 1></cfif>
+				<cfif GetSelectedEventRegistrations.AttendedEventDate3 EQ 1><cfset TotalDaysAttended = #Variables.TotalDaysAttended# + 1></cfif>
+				<cfif GetSelectedEventRegistrations.AttendedEventDate4 EQ 1><cfset TotalDaysAttended = #Variables.TotalDaysAttended# + 1></cfif>
+				<cfif GetSelectedEventRegistrations.AttendedEventDate5 EQ 1><cfset TotalDaysAttended = #Variables.TotalDaysAttended# + 1></cfif>
+				<cfif GetSelectedEventRegistrations.AttendedEventDate6 EQ 1><cfset TotalDaysAttended = #Variables.TotalDaysAttended# + 1></cfif>
+				<cfif GetSelectedEventRegistrations.AttendedEventSessionAM EQ 1><cfset TotalDaysAttended = #Variables.TotalDaysAttended# + 1></cfif>
+				<cfif GetSelectedEventRegistrations.AttendedEventSessionPM EQ 1><cfset TotalDaysAttended = #Variables.TotalDaysAttended# + 1></cfif>
+				<cfset temp = QuerySetCell(GetSelectedEventRegistrations, "AttendeeTotalDays", Variables.TotalDaysAttended, GetSelectedEventRegistrations.CurrentRow)>
+			</cfloop>
+
+			<cfset EventTotalIncome = 0>
+			<cfloop query="GetSelectedEventRegistrations">
+				<cfif GetSelectedEventRegistrations.AttendeePriceVerified EQ 1>
+					<cfset EventTotalIncome = #Variables.EventTotalIncome# + (#GetSelectedEventRegistrations.AttendeeTotalDays# * #GetSelectedEventRegistrations.AttendeePrice#)>
+				</cfif>
+			</cfloop>
+			<cfset EventProfitLoss = #Variables.EventTotalIncome# - #Variables.EventTotalExpenses#>
+			<cfset temp = QuerySetCell(getSelectedEvent, "TotalRevenue", Variables.EventTotalIncome)>
+			<cfset temp = QuerySetCell(getSelectedEvent, "ProfitOrLoss", Variables.EventProfitLoss)>
+
+			<cfquery name="EventInfoDropTable_EventProfitLossReport" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Drop Table if Exists p_EventRegistration_EventProfitLossReport
+			</cfquery>
+			<cfquery name="EventInfoDropTable_EventProfitLossReportExpenses" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Drop Table if Exists p_EventRegistration_EventProfitLossReportExpenses
+			</cfquery>
+			<cfquery name="EventInfoDropTable_EventProfitLossReportRevenue" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Drop Table if Exists p_EventRegistration_EventProfitLossReportRevenue
+			</cfquery>
+
+			<cfquery name="EventInfoCreateTemporaryTable_EventProfitLossReport" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				CREATE TABLE `p_EventRegistration_EventProfitLossReport` (
+					`TContent_ID` int(10) NOT NULL, `Site_ID` varchar(20) NOT NULL DEFAULT '', `ShortTitle` tinytext NOT NULL, `EventDate` date NOT NULL DEFAULT '1980-01-01', `EventDate1` date DEFAULT NULL, `EventDate2` date DEFAULT NULL, `EventDate3` date DEFAULT NULL, `EventDate4` date DEFAULT NULL, `EventDate5` date DEFAULT NULL, `EventDateDisplay` tinytext DEFAULT NULL, `ImagePath` tinytext DEFAULT NULL, `TotalRevenue` decimal(12,2) DEFAULT NULL, `TotalExpenses` decimal(12,2) DEFAULT NULL, `ProfitOrLoss` decimal(12,2) DEFAULT NULL ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+			</cfquery>
+
+			<cfquery name="EventInfoCreateTemporaryTable_EventProfitLossReportExpenses" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Create Table `p_EventRegistration_EventProfitLossReportExpenses` ( `Expense_Name` tinytext NOT NULL, `Cost_Amount` double(8,2) NOT NULL ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+			</cfquery>
+
+			<cfquery name="EventInfoCreateTemporaryTable_EventProfitLossReportExpenses" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Create Table `p_EventRegistration_EventProfitLossReportRevenue` ( `Domain` tinytext NOT NULL,
+					`Fname` tinytext NOT NULL,
+					`Lname` tinytext NOT NULL,
+					`AttendeePrice` tinytext NOT NULL,
+					`OrganizationName` tinytext NOT NULL,
+					`OrganizationMember` tinytext NOT NULL,
+					`AttendeeTotalDays` int(10) NOT NULL,
+					`AttendeeTotalFee` double(8,2) NOT NULL
+				) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+			</cfquery>
+
+			<cfloop query="getSelectedEvent">
+				<cfquery name="EventInfoCreateTemporaryTable_EventProfitLossReport" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Insert into p_EventRegistration_EventProfitLossReport(TContent_ID,Site_ID,ShortTitle,EventDate,EventDate1,EventDate2,EventDate3,EventDate4,EventDate5,EventDateDisplay,TotalRevenue,TotalExpenses,ProfitOrLoss,ImagePath)
+					Values(
+						<cfqueryparam value="#getSelectedEvent.TContent_ID#" cfsqltype="cf_sql_integer">,
+						<cfqueryparam value="#getSelectedEvent.Site_ID#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#getSelectedEvent.ShortTitle#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#getSelectedEvent.EventDate#" cfsqltype="cf_sql_date">,
+						<cfqueryparam value="#getSelectedEvent.EventDate1#" cfsqltype="cf_sql_date">,
+						<cfqueryparam value="#getSelectedEvent.EventDate2#" cfsqltype="cf_sql_date">,
+						<cfqueryparam value="#getSelectedEvent.EventDate3#" cfsqltype="cf_sql_date">,
+						<cfqueryparam value="#getSelectedEvent.EventDate4#" cfsqltype="cf_sql_date">,
+						<cfqueryparam value="#getSelectedEvent.EventDate5#" cfsqltype="cf_sql_date">,
+						<cfqueryparam value="#getSelectedEvent.EventDateDisplay#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#getSelectedEvent.TotalRevenue#" cfsqltype="cf_sql_money">,
+						<cfqueryparam value="#getSelectedEvent.TotalExpenses#" cfsqltype="cf_sql_money">,
+						<cfqueryparam value="#getSelectedEvent.ProfitOrLoss#" cfsqltype="cf_sql_money">,
+						<cfqueryparam value="#getSelectedEvent.ImagePath#" cfsqltype="cf_sql_varchar">
+					)
+				</cfquery>
+			</cfloop>
+
+			<cfloop query="GetEventExpenses">
+				<cfquery name="EventInfoCreateTemporaryTable_EventProfitLossReportExpenses" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Insert into p_EventRegistration_EventProfitLossReportExpenses(Expense_Name, Cost_Amount)
+					Values(
+						<cfqueryparam value="#GetEventExpenses.Expense_Name#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#GetEventExpenses.Cost_Amount#" cfsqltype="cf_sql_money">
+					)
+				</cfquery>
+			</cfloop>
+
+			<cfloop query="GetSelectedEventRegistrations">
+				<cfset AttendeeTotalFee = #GetSelectedEventRegistrations.AttendeePrice# * #GetSelectedEventRegistrations.AttendeeTotalDays#>
+				<cfquery name="EventInfoCreateTemporaryTable_EventProfitLossReportRevenue" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Insert into p_EventRegistration_EventProfitLossReportRevenue( Domain, Fname, Lname, AttendeePrice, OrganizationName, OrganizationMember, AttendeeTotalDays, AttendeeTotalFee)
+					Values(
+						<cfqueryparam value="#GetSelectedEventRegistrations.Domain#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#GetSelectedEventRegistrations.Fname#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#GetSelectedEventRegistrations.Lname#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#GetSelectedEventRegistrations.AttendeePrice#" cfsqltype="cf_sql_money">,
+						<cfqueryparam value="#GetSelectedEventRegistrations.OrganizationName#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#GetSelectedEventRegistrations.OrganizationMember#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#GetSelectedEventRegistrations.AttendeeTotalDays#" cfsqltype="cf_sql_integer">,
+						<cfqueryparam value="#Variables.AttendeeTotalFee#" cfsqltype="cf_sql_money">
+					)
+				</cfquery>
+			</cfloop>
+
+			<cfset ReportDirectory = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/reports/")# >
+			<cfset ReportExportLoc = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/")# & #URL.EventID# & "-" & "EventProfitLossReport.pdf" >
+			<cfset URLReportExportLoc = "/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/" & #URL.EventID# & "-" & "EventProfitLossReport.pdf" >
+			<cfset Session.PLReport = StructNew()>
+			<cfset Session.PLReport.ReportDirectory = Variables.ReportDirectory>
+			<cfset Session.PLReport.ReportExportLoc = Variables.ReportExportLoc>
+			<cfset Session.PLReport.EventInvoicesGenerated = #getSelectedEvent.EventInvoicesGenerated#>
+			<cfset Session.PLReport.URLReportExportLoc = #Variables.URLReportExportLoc#>
+			<cfset Session.PLReport.GetSelectedEventRegistrations = #StructCopy(GetSelectedEventRegistrations)#>
+
+			<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
+			<jr:jasperreport jrxml="#ReportDirectory#/EventProfitLossReport.jrxml" dsn="#rc.$.globalConfig('datasource')#"  exportfile="#ReportExportLoc#" exportType="pdf" />
+
 		<cfelseif isDefined("FORM.formSubmit") and isDefined("FORM.EventID") and not isDefined("URL.userAction")>
 			<cfif FORM.UserAction EQ "Back to Event Listing">
 				<cfset temp = StructDelete(Session, "FormData")>
@@ -3649,40 +3969,6 @@
 				</cfquery>
 			</cfloop>
 			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.generateprofitlossreport&UserAction=ShowReport&EventID=#FORM.EventID#" addtoken="false">
-		<cfelseif not isDefined("FORM.formSubmit") and isDefined("URL.EventID") and isDefined("URL.UserAction")>
-			<cfquery name="Session.getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewGroupPricing, GroupMemberCost, GroupNonMemberCost, GroupPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Facilitator, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, Presenters
-				From p_EventRegistration_Events
-				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-					TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-					Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and EventCancelled = <cfqueryparam value="0" cfsqltype="cf_sql_bit">
-			</cfquery>
-
-			<cfquery name="Session.getSelectedEventExpenses" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				SELECT p_EventRegistration_ExpenseList.Expense_Name, p_EventRegistration_EventExpenses.Cost_Amount, p_EventRegistration_EventExpenses.TContent_ID, p_EventRegistration_EventExpenses.Expense_ID
-				FROM p_EventRegistration_ExpenseList INNER JOIN p_EventRegistration_EventExpenses ON p_EventRegistration_EventExpenses.Expense_ID = p_EventRegistration_ExpenseList.TContent_ID
-				Where p_EventRegistration_EventExpenses.Event_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-					p_EventRegistration_EventExpenses.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-			</cfquery>
-
-			<cfquery name="Session.GetSelectedEventRegistrations" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				SELECT p_EventRegistration_UserRegistrations.TContent_ID, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.AttendeePrice, tusers.Fname, tusers.Lname, tusers.Email, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4,
-					p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM, p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6,
-					p_EventRegistration_UserRegistrations.AttendedEventSessionAM, p_EventRegistration_UserRegistrations.AttendedEventSessionPM
-				FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.EventID
-				WHERE (p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-					p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-					p_EventRegistration_UserRegistrations.AttendeePriceVerified = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) and
-					(
-					(p_EventRegistration_UserRegistrations.AttendedEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
-					(p_EventRegistration_UserRegistrations.AttendedEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
-					(p_EventRegistration_UserRegistrations.AttendedEventDate3 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate3 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
-					(p_EventRegistration_UserRegistrations.AttendedEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
-					(p_EventRegistration_UserRegistrations.AttendedEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">) OR
-					(p_EventRegistration_UserRegistrations.AttendedEventDate6 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and p_EventRegistration_UserRegistrations.RegisterForEventDate6 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">)
-					)
-				ORDER BY tusers.Lname ASC, tusers.Fname ASC
-			</cfquery>
 		</cfif>
 	</cffunction>
 
@@ -3831,7 +4117,7 @@
 
 		<cfif not isDefined("FORM.FormSubmit") and isDefined("URL.EventID")>
 			<cfquery name="Session.getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewGroupPricing, GroupMemberCost, GroupNonMemberCost, GroupPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Facilitator, Presenters, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, Presenters
+				Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewGroupPricing, GroupMemberCost, GroupNonMemberCost, GroupPriceRequirements, PGPAvailable, PGPPoints, MealProvided, MealProvidedBy, MealCost_Estimated, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Facilitator, Presenters, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, EventHasDailySessions, Session1BeginTime, Session1EndTime, Session2BeginTime, Session2EndTime
 				From p_EventRegistration_Events
 				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 					TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
@@ -3905,9 +4191,19 @@
 					</cflock>
 					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_acceptregistrations&FormRetry=True&EventID=#URL.EventID#">
 				</cfif>
+				<cfif FORM.Active EQ "----">
+					<cflock timeout="60" scope="SESSION" type="Exclusive">
+						<cfscript>
+							address = {property="BusinessAddress",message="Please select one of the options as to whether to display this event or not."};
+							arrayAppend(Session.FormErrors, address);
+						</cfscript>
+					</cflock>
+					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_acceptregistrations&FormRetry=True&EventID=#URL.EventID#">
+				</cfif>
 				<cfquery name="updateEventSection" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Update p_EventRegistration_Events
 					Set AcceptRegistrations = <cfqueryparam value="#FORM.AcceptRegistrations#" cfsqltype="cf_sql_bit">,
+						Active = <cfqueryparam value="#FORM.Active#" cfsqltype="cf_sql_bit">,
 						lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
 						lastUpdateBy = <cfqueryparam value="#Session.Mura.FName# #Session.Mura.LName#" cfsqltype="cf_sql_varchar">
 					Where TContent_ID = <cfqueryparam value="#FORM.EventID#" cfsqltype="cf_sql_integer">
@@ -4285,6 +4581,32 @@
 		</cfif>
 	</cffunction>
 
+	<cffunction name="updateevent_dailysessions" returntype="any" output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif not isDefined("FORM.FormSubmit") and isDefined("URL.EventID")>
+
+		<cfelseif isDefined("FORM.FormSubmit") and isDefined("FORM.EventID")>
+			<cfif FORM.UserAction EQ "Back to Event Review"><cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_review&EventID=#URL.EventID#" addtoken="false"></cfif>
+			<cfif FORM.UserAction EQ "Update Event Section">
+				<cfset Session.FormData = #StructCopy(FORM)#>
+				<cfset Session.FormErrors = #ArrayNew()#>
+				<cfquery name="updateEventSection" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Update p_EventRegistration_Events
+					Set EventHasDailySessions = <cfqueryparam value="#FORM.EventHaveSessions#" cfsqltype="cf_sql_bit">,
+						Session1BeginTime = <cfqueryparam value="#FORM.EventSession1_StartTime#" cfsqltype="cf_sql_timestamp">,
+						Session1EndTime = <cfqueryparam value="#FORM.EventSession1_EndTime#" cfsqltype="cf_sql_timestamp">,
+						Session2BeginTime = <cfqueryparam value="#FORM.EventSession2_StartTime#" cfsqltype="cf_sql_timestamp">,
+						Session2EndTime = <cfqueryparam value="#FORM.EventSession2_EndTime#" cfsqltype="cf_sql_timestamp">,
+						lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+						lastUpdateBy = <cfqueryparam value="#Session.Mura.FName# #Session.Mura.LName#" cfsqltype="cf_sql_varchar">
+					Where TContent_ID = <cfqueryparam value="#FORM.EventID#" cfsqltype="cf_sql_integer">
+				</cfquery>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_review&EventID=#URL.EventID#" addtoken="false">
+			</cfif>
+		</cfif>
+	</cffunction>
+
 	<cffunction name="updateevent_presenter" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
@@ -4531,6 +4853,11 @@
 				<cfset temp = StructDelete(Session, "GetSelectedEventRegistrations")>
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.default" addtoken="false">
 			</cfif>
+			<cfquery name="updateEventGeneratedInvoices" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Update p_EventRegistration_Events
+				Set EventInvoicesGenerated = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+				Where TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
+			</cfquery>
 			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
 			<cfquery name="GetOrganizations" dbtype="query">
 				Select Domain

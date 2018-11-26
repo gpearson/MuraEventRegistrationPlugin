@@ -5,6 +5,7 @@
 <cfset temp = QueryAddRow(YesNoQuery, 1)>
 <cfset temp = #QuerySetCell(YesNoQuery, "ID", 1)#>
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
+
 <cfif not isDefined("URL.formRetry")>
 	<cfoutput>
 		<div class="panel panel-default">
@@ -95,8 +96,6 @@
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Back to Event Listing"> |
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Event History"> |
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Upcoming Events">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Account Profile"><br /><br />
 				</div>
 			</cfform>
@@ -244,8 +243,6 @@
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Back to Event Listing"> |
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Event History"> |
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Upcoming Events">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Account Profile"><br /><br />
 				</div>
 			</cfform>

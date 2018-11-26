@@ -24,7 +24,12 @@
 					<fieldset>
 						<legend>Registering for Event: #Session.getSelectedEvent.ShortTitle#</legend>
 					</fieldset>
-					<p class="alert alert-info">Please complete the following information to register for this event. All electronic communication from this system will be sent to the Participant's Email Address</p>
+					<div class="alert alert-info">Please complete the following information to register for this event. All electronic communication from this system will be sent to the Participant's Email Address
+					<cfif Session.getSelectedEvent.EventHasDailySessions EQ 1><p align="center"><hr>
+					<strong>Session 1:</strong> #timeFormat(Session.getSelectedEvent.Session1BeginTime, "hh:mm tt")# till #timeFormat(Session.getSelectedEvent.Session1EndTime, "hh:mm tt")#<br>
+					<strong>Session 2:</strong> #timeFormat(Session.getSelectedEvent.Session2BeginTime, "hh:mm tt")# till #timeFormat(Session.getSelectedEvent.Session2EndTime, "hh:mm tt")#<br>
+					</p></cfif>
+					</div>
 					<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
 						<p class="alert alert-info">You will be registered for the First Date of this event by default.<br>Event Date: #DateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#<br>
 							<cfif isDate(Session.getSelectedEvent.EventDate1)>
@@ -72,6 +77,16 @@
 							</cfif>
 						</div>
 					</div>
+					<cfif Session.getSelectedEvent.EventHasDailySessions EQ 1>
+						<div class="form-group">
+						<label for="AttendSession1" class="control-label col-sm-3">Attend Session 1:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="AttendSession1" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 1</option></cfselect></div>
+						</div>
+						<div class="form-group">
+						<label for="AttendSession2" class="control-label col-sm-3">Attend Session 2:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="AttendSession2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 2</option></cfselect></div>
+						</div>
+					</cfif>
 					<cfif Session.getSelectedEvent.MealProvided EQ 1>
 						<div class="form-group">
 						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;</label>
@@ -329,6 +344,17 @@
 							</cfif>
 						</div>
 					</div>
+					<cfif Session.getSelectedEvent.EventHasDailySessions EQ 1>
+						<div class="form-group">
+						<label for="AttendSession1" class="control-label col-sm-3">Attend Session 1:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="AttendSession1" class="form-control" Required="Yes" Multiple="No" selected="#Session.FormInput.AttendSession1#" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 1</option></cfselect></div>
+						</div>
+						<div class="form-group">
+						<label for="AttendSession2" class="control-label col-sm-3">Attend Session 2:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="AttendSession2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.FormInput.AttendSession2#" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 2</option></cfselect></div>
+						</div>
+					</cfif>
+
 					<cfif Session.getSelectedEvent.MealProvided EQ 1>
 						<div class="form-group">
 						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;</label>
