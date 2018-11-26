@@ -1,3 +1,8 @@
+<cfsilent>
+	<cfif Session.Mura.IsLoggedIn EQ False>
+		<cflocation url="#CGI.Script_name##CGI.path_info#">
+	</cfif>
+</cfsilent>
 <cfoutput>
 	<div class="container">
 		<!--- PRIMARY NAV --->
@@ -101,8 +106,11 @@
 						<li class="<cfif rc.action contains 'eventcoord:reports'>active</cfif>">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('eventcoord:reports.default')#">Report Menu <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li class="<cfif rc.action eq 'eventcoord:reports.default'>active</cfif>">
+								<li class="<cfif rc.action eq 'eventcoord:reports.yearendreport'>active</cfif>">
 									<a href="#buildURL('eventcoord:reports.yearendreport')#">Year End Report</a>
+								</li>
+								<li class="<cfif rc.action eq 'eventcoord:reports.membership'>active</cfif>">
+									<a href="#buildURL('eventcoord:reports.membership')#">Membership Report</a>
 								</li>
 							</ul>
 						</li>

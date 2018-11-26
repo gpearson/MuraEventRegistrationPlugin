@@ -60,6 +60,16 @@
 		<cfreturn (Arguments.Radians * 180 / PI()) />
 	</cffunction>
 
+	<cffunction name="ConvertCurrencyToDecimal" returntype="numeric" output="false" hint="I convert currency values to decimal for database">
+		<cfargument name="Amount" type="string" required="true" hint="I am the currency amount to convert.">
+
+		<cfset temp = #Replace(Arguments.Amount, '$', '', 'all')#>
+		<cfset temp = #Replace(variables.temp, ',', '', 'all')#>
+		<cfset newnumber = #NumberFormat(Variables.temp, '99999999.9999')#>
+		<cfreturn variables.newnumber>
+
+	</cffunction>
+
 	<cffunction name="iCalUS" returntype="String" output="false" hint="Create iCal Event for Registered Users">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 		<cfargument name="RegistrationRecordID" required="true" type="numeric">

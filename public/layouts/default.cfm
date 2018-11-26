@@ -1,3 +1,8 @@
+<cfsilent>
+	<cfif Session.Mura.IsLoggedIn EQ False>
+		<cflocation url="#CGI.Script_name##CGI.path_info#">
+	</cfif>
+</cfsilent>
 <cfoutput>
 	<div class="container">
 		<!--- PRIMARY NAV --->

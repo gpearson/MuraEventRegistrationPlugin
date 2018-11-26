@@ -50,10 +50,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 				});
 		</script>
 	<cfelse>
+		<cfset ParticipantsGettingCertificate = 0>
+		<cfloop query="#Session.EventNumberRegistrations#">
+			<cfif (Session.EventNumberRegistrations.RegisterForEventDate1 EQ 1 and Session.EventNumberRegistrations.AttendedEventDate1 EQ 1) OR (Session.EventNumberRegistrations.RegisterForEventDate2 EQ 1 and Session.EventNumberRegistrations.AttendedEventDate2 EQ 1) OR (Session.EventNumberRegistrations.RegisterForEventDate3 EQ 1 and Session.EventNumberRegistrations.AttendedEventDate3 EQ 1) OR (Session.EventNumberRegistrations.RegisterForEventDate4 EQ 1 and Session.EventNumberRegistrations.AttendedEventDate4 EQ 1) OR (Session.EventNumberRegistrations.RegisterForEventDate5 EQ 1 and Session.EventNumberRegistrations.AttendedEventDate5 EQ 1) OR (Session.EventNumberRegistrations.RegisterForEventDate6 EQ 1 and Session.EventNumberRegistrations.AttendedEventDate6 EQ 1)>
+			<cfset ParticipantsGettingCertificate = #Variables.ParticipantsGettingCertificate# + 1>
+			</cfif>
+		</cfloop>
 
 		<script src="/requirements/ckeditor/ckeditor.js"></script>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Send PGP Certificate to Participant who attended event titled:</h1><h3>#Session.getSelectedEvent.ShortTitle#</h3><br><p>Number of Attended Participants Receiving Certificate: #Session.EventNumberRegistrations.RecordCount#</p></div>
+			<div class="panel-heading"><h1>Send PGP Certificate to Participant who attended event titled:</h1><h3>#Session.getSelectedEvent.ShortTitle#</h3><br><p>Number of Attended Participants Receiving Certificate: #Variables.ParticipantsGettingCertificate#</p></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">

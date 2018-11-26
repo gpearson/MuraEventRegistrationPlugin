@@ -340,7 +340,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</cfquery>
 			<cfif getUserProfile.RecordCount EQ 0>
 				<cfquery name="insertUserToUserMatrix" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Insert into p_EventRegistration_UserMatrix(Site_ID, User_ID, created, lastUpdateBy, lastUpdated)
+					Insert into p_EventRegistration_UserMatrix(Site_ID, User_ID, dateCreated, lastUpdateBy, lastUpdated)
 					Values(
 						<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
 						<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,

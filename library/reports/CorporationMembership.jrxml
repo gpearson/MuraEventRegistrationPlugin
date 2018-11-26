@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2017-08-29T12:02:19 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="CorporationMembership" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="da0089a5-2d76-4266-b797-91cb3e2b83bf">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="LogoPath" class="java.lang.String"/>
+	<field name="OrganizationName" class="java.lang.String"/>
+	<field name="Active" class="java.lang.String"/>
+	<field name="OrganizationDomainName" class="java.lang.String"/>
+	<field name="AffilitationName" class="java.lang.String"/>
+	<sortField name="AffilitationName"/>
+	<sortField name="OrganizationName"/>
+	<group name="GroupByAffilitationName">
+		<groupExpression><![CDATA[$F{AffilitationName}]]></groupExpression>
+		<groupHeader>
+			<band height="46">
+				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<textField>
+					<reportElement x="0" y="2" width="544" height="30" forecolor="#FF0400" uuid="31853096-713c-4b45-88d5-93bd4ceae309"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{AffilitationName}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="80" height="79" uuid="0512b8b0-dd3a-46a6-b875-9016ac1c9ef4"/>
+				<imageExpression><![CDATA[$F{LogoPath}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="90" y="0" width="460" height="30" uuid="614f5b39-d436-42a4-ae8f-133257bfe6df"/>
+				<textElement textAlignment="Center">
+					<font size="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Organization Membership Status Report"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="33" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField>
+				<reportElement x="70" y="1" width="460" height="30" uuid="8d1f425b-663a-4600-9c7b-f5bb969d5ac8"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Sorted by Affiliation then by Organization Name"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="34" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField>
+				<reportElement x="10" y="0" width="240" height="30" uuid="88ae85f8-9ffb-4c92-938f-f743049fa35a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Organization Name"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="260" y="0" width="190" height="30" uuid="85be2b1d-40ea-466b-b1bf-9662213f6fce"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Domain Name"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="460" y="0" width="90" height="30" forecolor="#000000" uuid="0845553f-87cf-4700-8903-22dc5de64766"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Membership"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="34" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField>
+				<reportElement x="10" y="0" width="240" height="30" uuid="abfd4196-6a7d-416c-ba05-4b93f20079f4"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{OrganizationName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="260" y="0" width="190" height="30" uuid="24d61c0e-ba77-43c4-975a-d66c99406ddf"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{OrganizationDomainName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="460" y="0" width="90" height="30" uuid="13af8d51-df08-4dcf-a490-7d60b5314d79"/>
+				<textFieldExpression><![CDATA[$F{Active}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</summary>
+</jasperReport>

@@ -25,7 +25,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<fieldset>
 						<legend><h2>Year End Report</h2></legend>
 					</fieldset>
-					<div class="alert alert-info">Please complete the following information to display this report for the selected year period.</div>
+					<div class="alert alert-info">Please complete the following information to display this report for the selected year period. This will create a CSV (Comma Seperated Value) file that can be read by Microsoft Excell or compatible program to view the information.</div>
 					<div class="form-group">
 						<label for="BeginYearDate" class="control-label col-sm-3">Year Start Date:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="BegYearDate" name="BegYearDate" required="no"></div>
@@ -33,6 +33,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="EndYearDate" class="control-label col-sm-3">Year End Date:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EndYearDate" name="EndYearDate" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="Membership" class="control-label col-sm-3">Membership Agency:&nbsp;</label>
+						<div class="col-sm-8"><cfselect name="MembershipID" class="form-control" Required="Yes" Multiple="No" query="Session.QueryForReport.GetMembershipAgencies" value="TContent_ID" Display="OrganizationName"  queryposition="below">
+							<option value="----">Select Which Membership Agnecy you want to base report on</option>
+							<option value="0">Not a Member of ESC/ESA</option></cfselect>
+						</div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -91,7 +98,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<fieldset>
 						<legend><h2>Year End Report</h2></legend>
 					</fieldset>
-					<div class="alert alert-info">Please complete the following information to display this report for the selected year period.</div>
+					<div class="alert alert-info">Please complete the following information to display this report for the selected year period. The report will only show events that have not been cancelled.</div>
 					<div class="form-group">
 						<label for="BeginYearDate" class="control-label col-sm-3">Year Start Date:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="BegYearDate" value="#Session.FormData.BegYearDate#" name="BegYearDate" required="no"></div>
@@ -113,16 +120,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<fieldset>
 					<legend><h2>Year End Report</h2></legend>
 				</fieldset>
-				<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
-				<cfset ReportDirectory = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/reports/")# >
-				<cfset ReportName = #DateFormat(Session.FormData.BegYearDate, "yyyy")# & "-" & #DateFormat(Session.FormData.EndYearDate, "yyyy")# & "-YearEndReport.pdf">
-				<cfset ReportExportLoc = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/")# & #Variables.ReportName#>
-				<jr:jasperreport jrxml="#ReportDirectory#/YearEndEventReport.jrxml" query="#Session.QueryForReport#" exportfile="#ReportExportLoc#" exportType="pdf" />
-				<embed src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/#Variables.ReportName#" width="100%" height="650">
+				<p>Your report has been generated and ready to be downloaded. Please click <a href="#Session.ReportQuery.ReportURLLocation##Session.ReportQuery.ReportFileName#" target="_blank">#Session.ReportQuery.ReportFileName#</a> to download your report</p>
 			</div>
 		</div>
 		<div class="panel-footer">
-			<a href="" class="btn btn-primary pull-left">Back to Main Menu</a><br /><br />
+			<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:main.default" class="btn btn-primary pull-left">Back to Main Menu</a><br /><br />
 		</div>
 	</cfif>
 </cfoutput>

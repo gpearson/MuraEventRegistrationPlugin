@@ -197,6 +197,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate)#>
 					<cfelseif DateDiff("d", Now(), getFeaturedEvents.EventDate) LT 0 and DateDiff("d", Now(), getFeaturedEvents.EventDate1) GT 0>
 						<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate1)#>
+					<!--- 
 					<cfelseif DateDiff("d", Now(), getFeaturedEvents.EventDate1) LT 0>
 						<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate2)#>
 					<cfelseif DateDiff("d", Now(), getFeaturedEvents.EventDate2) LT 0>
@@ -205,6 +206,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate4)#>
 					<cfelseif DateDiff("d", Now(), getFeaturedEvents.EventDate4) LT 0>
 						<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate5)#>
+						--->
 					</cfif>
 					<cfset temp = #QuerySetCell(getNonFeaturedEvents, "EventDate", getFeaturedEvents.EventDate)#>
 					<cfset temp = #QuerySetCell(getNonFeaturedEvents, "TContent_ID", getFeaturedEvents.TContent_ID)#>
