@@ -390,7 +390,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfset temp = StructDelete(Session, "FormInput")>
 						<cfset temp = StructDelete(Session, "UserRegistrationInfo")>
 						<cfset temp = StructDelete(Session, "getActiveMembership")>
-						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" addtoken="false">
+						<cfif Session.Mura.EventCoordinatorRole EQ 1>
+							<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" addtoken="false">
+						<cfelse>
+							<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" addtoken="false">
+						</cfif>
 						<cfcatch type="Database">
 							<cfdump var="#CFCATCH#"><cfabort>
 						</cfcatch>

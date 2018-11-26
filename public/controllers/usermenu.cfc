@@ -48,7 +48,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfquery name="getEventCatererInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber
 					From p_EventRegistration_Caterers
-					Where TContent_ID = <cfqueryparam value="#Session.GetRegistrationInfo.MealProvidedBy#" cfsqltype="cf_sql_integer">
+					Where TContent_ID = <cfqueryparam value="#GetRegistrationInfo.MealProvidedBy#" cfsqltype="cf_sql_integer">
 				</cfquery>
 				<cfset Session.getEventCaterer = #StructCopy(getEventCatererInfo)#>
 			</cfif>
