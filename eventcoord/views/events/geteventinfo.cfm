@@ -1,6 +1,6 @@
 <cfoutput>
 	<div class="panel panel-default">
-		<div class="panel-heading"><h2>Event Information: #Session.EventInfo.SelectedEvent.ShortTitle#</h1></div>
+		<div class="panel-heading"><h2 align="center">#Session.EventInfo.SelectedEvent.ShortTitle# <cfif Len(Session.EventInfo.SelectedEvent.Presenters)>(#Session.EventInfo.EventPresenter.FName# #Session.EventInfo.EventPresenter.Lname#)</cfif></h2></div>
 		<div class="panel-body">
 			<table class="table" width="100%" cellspacing="0" cellpadding="0">
 				<tbody>
@@ -231,8 +231,8 @@
 					</tr>
 					<cfif Len(Session.EventInfo.SelectedEvent.Presenters)>
 						<tr>
-							<td style="width: 155px;"><span style="font-weight: bold;">Presenter(s)</span></td>
-							<td colspan="3" style="width: 740px;"></td>
+							<td style="width: 155px;"><span style="font-weight: bold;">Presenter</span></td>
+							<td colspan="3" style="width: 740px;">#Session.EventInfo.EventPresenter.Fname# #Session.EventInfo.EventPresenter.Lname#</td>
 						</tr>
 					</cfif>
 					<tr>

@@ -139,21 +139,21 @@
 					<hr>
 					<h2 class="panel-title">Event Special Pricing Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_specialpricing&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
 					<div class="form-group">
-						<label for="ViewSpecialPricing" class="control-label col-sm-3">Special Price Available:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.ViewSpecialPricing#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
+						<label for="ViewSpecialPricing" class="control-label col-sm-3">Group Price Available:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.ViewGroupPricing#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
 					</div>
-					<cfif Session.getSelectedEvent.ViewSpecialPricing EQ 1>
+					<cfif Session.getSelectedEvent.ViewGroupPricing EQ 1>
 						<div class="form-group">
 						<label for="SpecialPriceRequirements" class="control-label col-sm-3">Requirements:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.SpecialPriceRequirements#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.GroupPriceRequirements#</p></div>
 						</div>
 						<div class="form-group">
 						<label for="SpecialMemberCost" class="control-label col-sm-3">Speical Member Price:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.SpecialMemberCost)#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.GroupMemberCost)#</p></div>
 						</div>
 						<div class="form-group">
 						<label for="SpecialNonMemberCost" class="control-label col-sm-3">Special NonMember Price:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.SpecialNonMemberCost)#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.GroupNonMemberCost)#</p></div>
 						</div>
 					</cfif>
 					<hr>
@@ -233,6 +233,12 @@
 					<div class="form-group">
 						<label for="MaxParticipants" class="control-label col-sm-3">Max Participants:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.MaxParticipants#</p></div>
+					</div>
+					<hr>
+					<h2 class="panel-title">Presenter <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_presenter&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<div class="form-group">
+						<label for="Presenter" class="control-label col-sm-3">Presenter:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedPresenter.FName# #Session.getSelectedPresenter.Lname#</p></div>
 					</div>
 					<hr>
 					<h2 class="panel-title">Registrations <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_acceptregistrations&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
