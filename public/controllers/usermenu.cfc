@@ -1,227 +1,244 @@
-/*
-
-This file is part of MuraFW1
-
-Copyright 2010-2013 Stephen J. Withington, Jr.
-Licensed under the Apache License, Version v2.0
-http://www.apache.org/licenses/LICENSE-2.0
-
-*/
 <cfcomponent output="false" persistent="false" accessors="true">
 	<cffunction name="default" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
-	</cffunction>
-
-	<cffunction name="eventhistory" returntype="any" output="false">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
-		<cfif not isDefined("FORM.formSubmit")>
-			<cfquery name="Session.GetPastRegisteredEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				SELECT p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5,
-					p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6,
-					p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.PGPPoints, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.OnWaitingList,
-					p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.AttendeePriceVerified, p_EventRegistration_UserRegistrations.AttendeePrice,
-					p_EventRegistration_UserRegistrations.EventID
-				FROM p_EventRegistration_Events INNER JOIN p_EventRegistration_UserRegistrations on p_EventRegistration_UserRegistrations.EventID = p_EventRegistration_Events.TContent_ID
-				WHERE p_EventRegistration_UserRegistrations.User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
-					DateDiff(EventDate, Now()) < <cfqueryparam value="0" cfsqltype="cf_sql_integer">
-				ORDER BY p_EventRegistration_Events.EventDate DESC
-			</cfquery>
-		</cfif>
-	</cffunction>
-
-	<cffunction name="updateregistration" returntype="any" output="false">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
-		<cfif not isDefined("FORM.formSubmit")>
-			<cfquery name="GetRegistrationInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				SELECT p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5,
-					p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6,
-					p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.PGPPoints, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.OnWaitingList,
-					p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.AttendeePriceVerified, p_EventRegistration_UserRegistrations.AttendeePrice,
-					p_EventRegistration_UserRegistrations.EventID, p_EventRegistration_Events.MealIncluded, p_EventRegistration_Events.MealAvailable, p_EventRegistration_Events.MealCost, p_EventRegistration_Events.Meal_Notes, p_EventRegistration_Events.MealProvidedBy
-				FROM p_EventRegistration_Events INNER JOIN p_EventRegistration_UserRegistrations on p_EventRegistration_UserRegistrations.EventID = p_EventRegistration_Events.TContent_ID
-				WHERE p_EventRegistration_UserRegistrations.RegistrationID = <cfqueryparam value="#URL.RegistrationID#" cfsqltype="cf_sql_varchar">
-			</cfquery>
-			<cfif GetRegistrationInfo.MealAvailable EQ 1 and GetRegistrationInfo.MealIncluded EQ 0>
-				<cfquery name="getEventCatererInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber
-					From p_EventRegistration_Caterers
-					Where TContent_ID = <cfqueryparam value="#GetRegistrationInfo.MealProvidedBy#" cfsqltype="cf_sql_integer">
-				</cfquery>
-				<cfset Session.getEventCaterer = #StructCopy(getEventCatererInfo)#>
-			</cfif>
-			<cfset Session.GetRegistrationInfo = #StructCopy(GetRegistrationInfo)#>
-		<cfelseif isDefined("FORM.formSubmit")>
-			<cfquery name="GetRegistrationInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				SELECT p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5,
-					p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6,
-					p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.PGPPoints, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.OnWaitingList,
-					p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.AttendeePriceVerified, p_EventRegistration_UserRegistrations.AttendeePrice,
-					p_EventRegistration_UserRegistrations.EventID, p_EventRegistration_Events.MealIncluded, p_EventRegistration_Events.MealAvailable, p_EventRegistration_Events.MealCost, p_EventRegistration_Events.Meal_Notes, p_EventRegistration_Events.MealProvidedBy
-				FROM p_EventRegistration_Events INNER JOIN p_EventRegistration_UserRegistrations on p_EventRegistration_UserRegistrations.EventID = p_EventRegistration_Events.TContent_ID
-				WHERE p_EventRegistration_UserRegistrations.RegistrationID = <cfqueryparam value="#FORM.RegistrationID#" cfsqltype="cf_sql_varchar">
-			</cfquery>
-			<cftry>
-				<cfquery name="updateRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update p_EventRegistration_UserRegistrations
-					Set RequestsMeal = <cfqueryparam value="#FORM.StayForMeal#" cfsqltype="cf_sql_bit">
-					WHere RegistrationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.RegistrationID#">
-				</cfquery>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.upcomingevents&UserAction=RegistrationUpdated&Successful=True" addtoken="false">
-				<cfcatch type="any">
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.upcomingevents&UserAction=RegistrationUpdated&Successful=False" addtoken="false">
-				</cfcatch>
-			</cftry>
-
-
-		</cfif>
-	</cffunction>
-
-	<cffunction name="upcomingevents" returntype="any" output="false">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
-		<cfif not isDefined("FORM.formSubmit")>
-			<cfquery name="Session.GetRegisteredEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				SELECT p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.Registration_Deadline, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5,
-					p_EventRegistration_Events.Presenters, p_EventRegistration_Events.Event_StartTime, p_EventRegistration_Events.Event_EndTime, p_EventRegistration_Events.Registration_Deadline, p_EventRegistration_Events.LongDescription, p_EventRegistration_Events.EventAgenda,
-					p_EventRegistration_Events.EventTargetAudience, p_EventRegistration_Events.EventStrategies, p_EventRegistration_Events.EventSpecialInstructions, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.MealAvailable, p_EventRegistration_Events.WebinarAvailable,
-					p_EventRegistration_Events.WebinarConnectInfo, p_EventRegistration_Events.WebinarMemberCost, p_EventRegistration_Events.WebinarNonMemberCost, p_EventRegistration_Events.LocationID, p_EventRegistration_Events.LocationRoomID,
-					p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6,
-					p_EventRegistration_UserRegistrations.RegistrationID,  p_EventRegistration_UserRegistrations.OnWaitingList, p_EventRegistration_UserRegistrations.EventID, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.PGPPoints
-				FROM p_EventRegistration_UserRegistrations INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.EventID
-				WHERE p_EventRegistration_UserRegistrations.User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-				ORDER BY p_EventRegistration_UserRegistrations.RegistrationDate DESC
-			</cfquery>
-		</cfif>
-	</cffunction>
-
-	<cffunction name="cancelregistration" returntype="any" output="false">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
-		<cfif not isDefined("FORM.formSubmit")>
-			<cfquery name="Session.GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				SELECT p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5,
-					p_EventRegistration_Events.Presenters, p_EventRegistration_Events.Event_StartTime, p_EventRegistration_Events.Event_EndTime, p_EventRegistration_Events.Registration_Deadline, p_EventRegistration_Events.LongDescription, p_EventRegistration_Events.EventAgenda,
-					p_EventRegistration_Events.EventTargetAudience, p_EventRegistration_Events.EventStrategies, p_EventRegistration_Events.EventSpecialInstructions, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.MealAvailable, p_EventRegistration_Events.WebinarAvailable,
-					p_EventRegistration_Events.WebinarConnectInfo, p_EventRegistration_Events.WebinarMemberCost, p_EventRegistration_Events.WebinarNonMemberCost, p_EventRegistration_Events.LocationID, p_EventRegistration_Events.LocationRoomID,
-					p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6,
-					p_EventRegistration_UserRegistrations.RegistrationID,  p_EventRegistration_UserRegistrations.OnWaitingList, p_EventRegistration_UserRegistrations.EventID, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.PGPPoints
-				FROM p_EventRegistration_UserRegistrations INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.EventID
-				WHERE p_EventRegistration_UserRegistrations.User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
-					p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
-				ORDER BY p_EventRegistration_UserRegistrations.RegistrationDate DESC
-			</cfquery>
-			<cfif LEN(Session.GetSelectedEvent.Presenters)>
-				<cfquery name="Session.EventPresenter" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select FName, LName
-					From tusers
-					Where UserID = <cfqueryparam value="#Session.GetSelectedEvent.Presenters#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-			<cfif Session.GetSelectedEvent.LocationID GT 0>
-				<cfquery name="Session.GetEventFacility" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, GeoCode_Latitude, GeoCode_Longitude
-					From p_EventRegistration_Facility
-					Where TContent_ID = <cfqueryparam value="#Session.GetSelectedEvent.LocationID#" cfsqltype="cf_sql_integer">
-				</cfquery>
-				<cfquery name="Session.GetEventFacilityRoom" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select RoomName
-					From p_EventRegistration_FacilityRooms
-					Where Facility_ID = <cfqueryparam value="#Session.GetSelectedEvent.LocationID#" cfsqltype="cf_sql_integer"> and
-						TContent_ID = <cfqueryparam value="#Session.GetSelectedEvent.LocationRoomID#" cfsqltype="cf_sql_integer">
-				</cfquery>
-			</cfif>
-		<cfelseif isDefined("FORM.formSubmit")>
-			<cfset Session.FormErrors = #ArrayNew()#>
-			<cfset Session.FormData = #StructCopy(FORM)#>
-
-			<cfif FORM.UserAction EQ "Back to Manage Registrations">
-				<cfset temp = StructDelete(Session, "FormErrors")>
-				<cfset temp = StructDelete(Session, "FormData")>
-				<cfset temp = StructDelete(Session, "GetSelectedEvent")>
-				<cfset temp = StructDelete(Session, "GetEventFacility")>
-				<cfset temp = StructDelete(Session, "GetEventFacilityRoom")>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.manageregistrations" addtoken="false">
-			</cfif>
-
-			<cfif FORM.CancelRegistration EQ "----">
-				<cfscript>
-					errormsg = {property="EmailMsg",message="Do you want to cancel your registration for this event? Select Yes or No below."};
-					arrayAppend(Session.FormErrors, errormsg);
-				</cfscript>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.cancelregistration&EventID=#FORM.EventID#&FormRetry=True" addtoken="false">
-			</cfif>
-
-			<cfif FORM.CancelRegistration EQ 1>
-				<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
-				<cfset Info = StructNew()>
-				<cfset Info.RegistrationID = #Session.GetSelectedEvent.RegistrationID#>
-				<cfset Info.FormData = #StructCopy(Session.FormData)#>
-				<cfset temp = #SendEmailCFC.SendEventCancellationToSingleParticipant(rc, Variables.Info)#>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.manageregistrations&RegistrationCancelled=True" addtoken="false">
-			<cfelse>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.manageregistrations&EventID=#FORM.EventID#&RegistrationCancelled=False" addtoken="false">
-			</cfif>
-		</cfif>
-	</cffunction>
-
-	<cffunction name="getcertificate" returntype="any" output="false">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
-		<cfif not isDefined("URL.EventID")>
-			<cfquery name="Session.GetRegisteredEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				SELECT p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5,
-					p_EventRegistration_Events.Presenters, p_EventRegistration_Events.Event_StartTime, p_EventRegistration_Events.Event_EndTime, p_EventRegistration_Events.Registration_Deadline, p_EventRegistration_Events.LongDescription, p_EventRegistration_Events.EventAgenda,
-					p_EventRegistration_Events.EventTargetAudience, p_EventRegistration_Events.EventStrategies, p_EventRegistration_Events.EventSpecialInstructions, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.MealAvailable, p_EventRegistration_Events.WebinarAvailable,
-					p_EventRegistration_Events.WebinarConnectInfo, p_EventRegistration_Events.WebinarMemberCost, p_EventRegistration_Events.WebinarNonMemberCost, p_EventRegistration_Events.LocationID, p_EventRegistration_Events.LocationRoomID,
-					p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6,
-					p_EventRegistration_UserRegistrations.RegistrationID,  p_EventRegistration_UserRegistrations.OnWaitingList, p_EventRegistration_UserRegistrations.EventID, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.PGPPoints
-				FROM p_EventRegistration_UserRegistrations INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.EventID
-				WHERE p_EventRegistration_UserRegistrations.User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
-					p_EventRegistration_Events.PGPAvailable = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-				ORDER BY p_EventRegistration_UserRegistrations.RegistrationDate DESC
-			</cfquery>
-		<cfelseif isDefined("URL.EventID") and isDefined("URL.DisplayCertificate")>
-			<cfquery name="GetSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				SELECT p_EventRegistration_Events.TContent_ID, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.PGPPoints, tusers.Fname, tusers.Lname
-				FROM p_EventRegistration_UserRegistrations INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.EventID
-				INNER JOIN tusers on tusers.UserID = p_EventRegistration_UserRegistrations.User_ID
-				WHERE p_EventRegistration_UserRegistrations.User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
-					p_EventRegistration_Events.PGPAvailable = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> and
-					p_EventRegistration_Events.TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
-			</cfquery>
-
-			<cfset CurLoc = #ExpandPath("/")#>
-			<cfset CertificateTemplateDir = #Variables.CurLoc# & "plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/reports/">
-			<cfset CertificateExportTemplateDir = #Variables.CurLoc# & "plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/">
-			<cfset CertificateMasterTemplate = #Variables.CertificateTemplateDir# & "NIESCRisePGPCertificateTemplate.pdf">
-			<cfset ParticipantName = #GetSelectedEvent.FName# & " " & #GetSelectedEvent.LName#>
-			<cfset ParticipantFilename = #Replace(Variables.ParticipantName, " ", "", "all")#>
-			<cfset ParticipantFilename = #Replace(Variables.ParticipantFilename, ".", "", "all")#>
-			<cfset PGPEarned = "PGP Earned: " & #NumberFormat(GetSelectedEvent.PGPPoints, "99.9")#>
-			<cfset CertificateCompletedFile = #Variables.CertificateExportTemplateDir# & #GetSelectedEvent.TContent_ID# & "-" & #Variables.ParticipantFilename# & ".pdf">
-			<cfset Session.CertificateCompletedFile = "/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/" & #GetSelectedEvent.TContent_ID# & "-" & #Variables.ParticipantFilename# & ".pdf">
-			<cfset Session.GetSelectedEvent = StructCopy(GetSelectedEvent)>
-			<cfscript>
-				PDFCompletedCertificate = CreateObject("java", "java.io.FileOutputStream").init(CertificateCompletedFile);
-				PDFMasterCertificateTemplate = CreateObject("java", "com.itextpdf.text.pdf.PdfReader").init(CertificateMasterTemplate);
-				PDFStamper = CreateObject("java", "com.itextpdf.text.pdf.PdfStamper").init(PDFMasterCertificateTemplate, PDFCompletedCertificate);
-				PDFStamper.setFormFlattening(true);
-				PDFFormFields = PDFStamper.getAcroFields();
-				PDFFormFields.setField("PGPEarned", Variables.PGPEarned);
-				PDFFormFields.setField("ParticipantName", Variables.ParticipantName);
-				PDFFormFields.setField("EventTitle", GetSelectedEvent.ShortTitle);
-				PDFFormFields.setField("EventDate", DateFormat(GetSelectedEvent.EventDate, "full"));
-				PDFFormFields.setField("SignDate", DateFormat(GetSelectedEvent.EventDate, "mm/dd/yyyy"));
-				PDFStamper.close();
-			</cfscript>
-		</cfif>
+		
+		
 	</cffunction>
 
 	<cffunction name="forgotpassword" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif not isDefined("FORM.formSubmit") and not isDefined("URL.ShortURL") and not isDefined("URL.Key")>
+
+		<cfelseif not isDefined("FORM.formSubmit") and not isDefined("FORM.formUpdateAccountPassword") and isDefined("URL.ShortURL")>
+			<cfquery Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#" name="GetFullLink">
+				Select TContent_ID, FullLink
+				From p_EventRegistration_ShortURL
+				Where Site_ID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and
+					ShortLink = <cfqueryparam cfsqltype="cf_sql_varchar" value="#URL.ShortURL#"> and
+					Active = <cfqueryparam cfsqltype="cf_sql_bit" value="1">
+			</cfquery>
+
+			<cfif GetFullLink.RecordCount EQ 0>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="The Link you clicked on to reset a user's account password has either expired or is no longer valid."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			<cfelse>
+				<cfquery Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#" name="UpdateShortURLLinkActiveStatus">
+				Update p_EventRegistration_ShortURL
+				Set Active = <cfqueryparam cfsqltype="cf_sql_bit" value="0">,
+					lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">
+				Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#GetFullLink.TContent_ID#">
+				</cfquery>
+				<cflocation url="#GetFullLink.FullLink#" addtoken="false">
+			</cfif>
+		<cfelseif not isDefined("FORM.formSubmit") and not isDefined("URL.ShortURL") and isDefined("URL.Key")>
+			<cfset KeyAsString = #ToString(ToBinary(URL.Key))#>
+			<cfset Session.PasswordKey = StructNew()>
+			<cfset Session.PasswordKey.UserID = #ListLast(ListFirst(Variables.KeyAsString, "&"), "=")#>
+			<cfset Session.PasswordKey.DateCreated = #ListLast(ListLast(Variables.KeyAsString, "&"), "=")#>
+
+			<cfif DateDiff("n", Session.PasswordKey.DateCreated, Now()) GT 45>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="The Password Reset Request Link has expired due to being longer than 45 minutes between the time someone requested it and it was clicked. No changes to the current account has been done. If you would like to reset your password please visit the Forgot Password Link under Home again and enter your email address."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=PasswordTimeExpired" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=PasswordTimeExpired" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+
+		<cfelseif isDefined("FORM.formSubmit") and not isDefined("FORM.formUpdateAccountPassword") and not isDefined("URL.ShortURL")>
+			<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+				<cfset GoogleReCaptchaCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/recaptcha")>
+			</cfif>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfset Session.FormErrors = #ArrayNew()#>
+				<cfset Session.FormInput = #StructCopy(FORM)#>
+			</cflock>
+			<cfif FORM.SendInquiry EQ "Back to Current Events">
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cfset temp = StructDelete(Session, "FormInput")>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+			<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+				<cfif StructKeyExists(form, 'g-recaptcha-response')>
+					<cfset CheckCaptcha = #GoogleReCaptchaCFC.verifyResponse(secret='#Session.SiteConfigSettings.Google_ReCaptchaSecretKey#',response=form['g-recaptcha-response'], remoteip=cgi.remote_add)#>
+					<cfif CheckCaptcha.success EQ "false">
+						<cfscript>
+							InvalidPassword = {property="VerifyPassword",message="We have detected that the form was completed by a Computer Robot. We ask that this form be completed by a human being."};
+							arrayAppend(Session.FormErrors, InvalidPassword);
+						</cfscript>
+						<cfif LEN(cgi.path_info)>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True" >
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True" >
+						</cfif>
+						<cflocation url="#variables.newurl#" addtoken="false">
+					</cfif>
+				</cfif>
+			</cfif>
+			<cfif not isValid("email", FORM.UserEmailAddress)>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please update the entered email address as it does not appear to be in proper email format."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+
+			<cfset userRecord = #rc.$.getBean('user').loadBy(username='#FORM.UserEmailAddress#', siteid='#rc.$.siteConfig("siteid")#').getAsStruct()#>
+			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>	
+			<cfset EventServicesCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>	
+		
+			<cfif LEN(userRecord.Username) EQ 0>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="The email address entered was not located in the database of registered users. Please check the entered email address and try again. If you have issues please contact us so we can assist in getting your password reset."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			<cfelse>
+				<cfset ValueToEncrypt = "UserID=" & #userRecord.UserID# & "&" & "Created=" & #userRecord.created# & "&DateSent=" & #Now()#>
+				<cfset EncryptedValue = #Tobase64(Variables.ValueToEncrypt)#>
+				<cfset AccountVars = "Key=" & #Variables.EncryptedValue#>
+				<cfif LEN(cgi.path_info)>
+					<cfset AccountPasswordLink = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & #Variables.AccountVars#>
+				<cfelse>
+					<cfset AccountPasswordLink = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & #Variables.AccountVars#>
+				</cfif>
+				<cfset ShortURLPasswordLink = #EventServicesCFC.insertShortURLContent(rc, Variables.AccountPasswordLink)#>
+
+				<cfif LEN(cgi.path_info)>
+					<cfif rc.$.siteConfig('useSSL') EQ 1>
+						<cfset ShortURLLink = "https://" & #rc.$.siteconfig('domain')# & "/" & #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
+					<cfelse>
+						<cfset ShortURLLink = "http://" & #rc.$.siteconfig('domain')# & "/" & #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
+					</cfif>
+				<cfelse>
+					<cfif rc.$.siteConfig('useSSL') EQ 1>
+						<cfset ShortURLLink = "https://" & #rc.$.siteconfig('domain')# & "/" & #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
+					<cfelse>
+						<cfset ShortURLLink = "http://" & #rc.$.siteconfig('domain')# & "/" & #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
+					</cfif>
+				</cfif>
+				<cfif LEN(rc.$.siteConfig('mailserverip')) EQ 0>
+					<cfset temp = #SendEmailCFC.SendForgotPasswordRequest(rc, userRecord, ShortURLLink, '127.0.0.1')#>
+				<cfelse>
+					<cfif LEN(rc.$.siteConfig('mailserverusername')) and LEN(rc.$.siteConfig('mailserverpassword'))>
+						<cfif rc.$.siteConfig('mailserverssl') EQ "True">
+							<cfset temp = #SendEmailCFC.SendForgotPasswordRequest(rc, userRecord, ShortURLLink, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'), "True")#>
+						<cfelse>
+							<cfset temp = #SendEmailCFC.SendForgotPasswordRequest(rc, userRecord, ShortURLLink, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'))#>
+						</cfif>
+					<cfelse>
+						<cfset temp = #SendEmailCFC.SendForgotPasswordRequest(rc, userRecord, ShortURLLink, rc.$.siteConfig('mailserverip'))#>
+					</cfif>
+				</cfif>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=PasswordRequestSent" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=PasswordRequestSent" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+		<cfelseif isDefined("FORM.formSubmit") and isDefined("FORM.formUpdateAccountPassword")>
+			<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+				<cfset GoogleReCaptchaCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/recaptcha")>
+			</cfif>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfset Session.FormErrors = #ArrayNew()#>
+				<cfset Session.FormInput = #StructCopy(FORM)#>
+			</cflock>
+			<cfif FORM.SendInquiry EQ "Back to Current Events">
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cfset temp = StructDelete(Session, "FormInput")>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+			<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+				<cfif StructKeyExists(form, 'g-recaptcha-response')>
+					<cfset CheckCaptcha = #GoogleReCaptchaCFC.verifyResponse(secret='#Session.SiteConfigSettings.Google_ReCaptchaSecretKey#',response=form['g-recaptcha-response'], remoteip=cgi.remote_add)#>
+					<cfif CheckCaptcha.success EQ "false">
+						<cfscript>
+							InvalidPassword = {property="VerifyPassword",message="We have detected that the form was completed by a Computer Robot. We ask that this form be completed by a human being."};
+							arrayAppend(Session.FormErrors, InvalidPassword);
+						</cfscript>
+						<cfif LEN(cgi.path_info)>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True&Key=#URL.Key#" >
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True&Key=#URL.Key#">
+						</cfif>
+						<cflocation url="#variables.newurl#" addtoken="false">
+					</cfif>
+				</cfif>
+			</cfif>
+			<cfif LEN(FORM.NewPassword) LT 5 or LEN(FORM.NewVerifyPassword) LT 5>
+				<cfscript>
+					InvalidPassword = {property="VerifyPassword",message="The system detected the password field(s) were too short. Please enter a password that is longer than 5 characters in length."};
+					arrayAppend(Session.FormErrors, InvalidPassword);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True&Key=#URL.Key#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True&Key=#URL.Key#">
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			<cfelseif FORM.NewPassword NEQ FORM.NewVerifyPassword>
+				<cfscript>
+					InvalidPassword = {property="VerifyPassword",message="The system detected the password field(s) did not match each other. Please update these fields so they match and then your password can be updated."};
+					arrayAppend(Session.FormErrors, InvalidPassword);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True&Key=#URL.Key#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&FormRetry=True&Key=#URL.Key#">
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+			
+			<cfset userRecord = #rc.$.getBean('user').loadBy(username='#FORM.UserID#', siteid='#rc.$.siteConfig("siteid")#')#>
+			<cfset temp = #userRecord.setPasswordNoCache('#FORM.NewVerifyPassword#')#>
+			<cfset AddNewAccount = #userRecord.save()#>
+			<cfif LEN(cgi.path_info)>
+				<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=PasswordResetSuccessfully" >
+			<cfelse>
+				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=PasswordResetSuccessfully">
+			</cfif>
+			<cflocation url="#variables.newurl#" addtoken="false">
+
+		</cfif>
+
+		<!--- 
+
+
 		<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
 		<cfset GoogleReCaptchaCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/recaptcha")>
 		<cfif not isDefined("FORM.formSubmit") and not isDefined("URL.Key") and not isDefined("FORM.submitPasswordChange")>
@@ -268,40 +285,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfset Session.FormErrors = #ArrayNew()#>
 			<cfset Session.FormData = #StructCopy(FORM)#>
 
-			<cfif not isValid("email", FORM.Email)>
-				<cfscript>
-					UsernameNotValid = {property="UserName",message="The Email Address is not a valid email address. We use this email address as the communication method to get you information regarding events that you signup for."};
-					arrayAppend(Session.FormErrors, UsernameNotValid);
-				</cfscript>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#rc.pc.getPackage()#action=public:usermenu.forgotpassword&FormRetry=True" addtoken="false">
-			</cfif>
+			
+			
 
-			<cfif StructKeyExists(form, 'g-recaptcha-response')>
-				<cfset CheckCaptcha = #GoogleReCaptchaCFC.verifyResponse(secret='6Le6hw0UAAAAAMfQXFE5H3AJ4PnGmADX9v468d93',response=form['g-recaptcha-response'], remoteip=cgi.remote_add)#>
-				<cfif CheckCaptcha.success EQ "false">
-					<cfscript>
-						InvalidPassword = {property="VerifyPassword",message="We have detected that the form was completed by a Computer Robot. We ask that this form be completed by a human being."};
-						arrayAppend(Session.FormErrors, InvalidPassword);
-					</cfscript>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#rc.pc.getPackage()#action=public:registeruser.default&FormRetry=True" addtoken="false">
-				</cfif>
-			</cfif>
-
-			<cfquery name="CheckAccount" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select UserID, UserName, FName, Lname, Email, created
-				From tusers
-				Where UserName = <cfqueryparam value="#FORM.Email#" cfsqltype="cf_sql_varchar"> and
-					SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
-			</cfquery>
-
+			
 			<cfif CheckAccount.RecordCount EQ 0>
-				<cflock timeout="60" scope="SESSION" type="Exclusive">
-					<cfscript>
-						errormsg = {property="HumanChecker",message="We did not locate an account for the email address you entered. Please check the entered email address."};
-						arrayAppend(Session.FormErrors, errormsg);
-					</cfscript>
-				</cflock>
-				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.forgotpassword&FormRetry=True">
+				
 			<cfelse>
 				<cfset ValueToEncrypt = "UserID=" & #CheckAccount.UserID# & "&" & "Created=" & #CheckAccount.created# & "&DateSent=" & #Now()#>
 				<cfset EncryptedValue = #Tobase64(Variables.ValueToEncrypt)#>
@@ -311,232 +300,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=PasswordRequestSent">
 			</cfif>
 		</cfif>
+	--->
 	</cffunction>
-
-	<cffunction name="makeRandomString" ReturnType="String" output="False">
-		<cfset var chars = "23456789ABCDEFGHJKMNPQRSTUVWXYZ">
-		<cfset var length = RandRange(4,7)>
-		<cfset var result = "">
-		<cfset var i = "">
-		<cfset var char = "">
-		<cfscript>
-			for (i = 1; i < length; i++) {
-				char = mid(chars, randRange(1, len(chars)), 1);
-				result &= char;
-			}
-		</cfscript>
-		<cfreturn result>
-	</cffunction>
-
-	<cffunction name="editprofile" returntype="any" output="false">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
-		<cfif not isDefined("FORM.formSubmit")>
-			<cfquery name="getUserProfile" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select tusers.UserName, tusers.FName, tusers.Lname, tusers.Email, tusers.Company, tusers.JobTitle, tusers.mobilePhone, tusers.Website, tusers.LastLogin, tusers.LastUpdate, tusers.LastUpdateBy, tusers.LastUpdateByID, tusers.InActive, tusers.created, p_EventRegistration_UserMatrix.School_District, p_EventRegistration_UserMatrix.TeachingGrade, p_EventRegistration_UserMatrix.TeachingSubject, p_EventRegistration_UserMatrix.ReceiveMarketingFlyers
-				From tusers INNER JOIN p_EventRegistration_UserMatrix ON p_EventRegistration_UserMatrix.User_ID = tusers.UserID
-				Where tusers.UserID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
-					tusers.SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
-			</cfquery>
-			<cfif getUserProfile.RecordCount EQ 0>
-				<cfquery name="insertUserToUserMatrix" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Insert into p_EventRegistration_UserMatrix(Site_ID, User_ID, dateCreated, lastUpdateBy, lastUpdated)
-					Values(
-						<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
-						<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
-						<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-						<cfqueryparam value="#Session.Mura.Fname# #Session.Mura.Lname#" cfsqltype="cf_sql_varchar">,
-						<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">
-					)
-				</cfquery>
-				<cfquery name="getUserProfile" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select tusers.UserName, tusers.FName, tusers.Lname, tusers.Email, tusers.Company, tusers.JobTitle, tusers.mobilePhone, tusers.Website, tusers.LastLogin, tusers.LastUpdate, tusers.LastUpdateBy, tusers.LastUpdateByID, tusers.InActive, tusers.created, p_EventRegistration_UserMatrix.School_District, p_EventRegistration_UserMatrix.TeachingGrade, p_EventRegistration_UserMatrix.TeachingSubject, p_EventRegistration_UserMatrix.ReceiveMarketingFlyers
-					From tusers INNER JOIN p_EventRegistration_UserMatrix ON p_EventRegistration_UserMatrix.User_ID = tusers.UserID
-					Where tusers.UserID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
-						tusers.SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
-				</cfquery>
-			</cfif>
-			<cfquery name="Session.getGradeLevels" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select TContent_ID, GradeLevel
-				From p_EventRegistration_GradeLevels
-				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-				Order by GradeLevel
-			</cfquery>
-			<cfquery name="Session.getGradeSubjects" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select TContent_ID, GradeSubject
-				From p_EventRegistration_GradeSubjects
-				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-				Order by GradeSubject
-			</cfquery>
-
-			<cfset Session.getUserProfile = #StructCopy(getUserProfile)#>
-		<cfelseif isDefined("FORM.formSubmit")>
-			<cfset Session.FormErrors = #ArrayNew()#>
-			<cfset Session.FormData = #StructCopy(FORM)#>
-
-			<cfif FORM.UserAction EQ "Back to Event Listing">
-				<cfset temp = StructDelete(Session, "FormErrors")>
-				<cfset temp = StructDelete(Session, "FormData")>
-				<cfset temp = StructDelete(Session, "getUserProfile")>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" addtoken="false">
-			</cfif>
-
-			<cfif FORM.UserAction EQ "My Event History">
-				<cfset temp = StructDelete(Session, "FormErrors")>
-				<cfset temp = StructDelete(Session, "FormData")>
-				<cfset temp = StructDelete(Session, "getUserProfile")>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.eventhistory" addtoken="false">
-			</cfif>
-
-			<cfif FORM.UserAction EQ "My Upcoming Events">
-				<cfset temp = StructDelete(Session, "FormErrors")>
-				<cfset temp = StructDelete(Session, "FormData")>
-				<cfset temp = StructDelete(Session, "getUserProfile")>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.upcomingevents" addtoken="false">
-			</cfif>
-
-			<cfif LEN(FORM.Password) OR LEN(FORM.VerifyPassword)>
-				<cfif FORM.Password NEQ FORM.VerifyPassword>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							errormsg = {property="HumanChecker",message="The Password and Verify Password Fields did not match. Please correct."};
-							arrayAppend(Session.FormErrors, errormsg);
-						</cfscript>
-					</cflock>
-					<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.editprofile&FormRetry=True">
-				<cfelse>
-					<cfset NewUser = #Application.userManager.readByUsername(form.UserID, rc.$.siteConfig('siteID'))#>
-					<cfset NewUser.setPassword(FORM.Password)>
-					<cfset NewUser.setSiteID(rc.$.siteConfig('siteID'))>
-					<cfset AddNewAccount = #Application.userManager.save(NewUser)#>
-				</cfif>
-			</cfif>
-
-			<cfif FORM.ReceiveMarketingFlyers EQ "----">
-				<cflock timeout="60" scope="SESSION" type="Exclusive">
-					<cfscript>
-						errormsg = {property="HumanChecker",message="Please select your option to receive upcoming marketing flyers that we send electronically."};
-						arrayAppend(Session.FormErrors, errormsg);
-					</cfscript>
-				</cflock>
-				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.editprofile&FormRetry=True">
-			</cfif>
-
-			<cfquery name="getOrigionalUserValues" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select fName, LName, Email, Company, JobTitle, mobilePhone, website
-				From tusers
-				Where UserID = <cfqueryparam value="#FORM.UserID#" cfsqltype="cf_sql_varchar"> and SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-			</cfquery>
-
-			<cfquery name="getOrigionalUserMatrixValues" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select TeachingGrade, TeachingSubject, ReceiveMarketingFlyers
-				From p_EventRegistration_UserMatrix
-				Where User_ID = <cfqueryparam value="#FORM.UserID#" cfsqltype="cf_sql_varchar"> and Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-			</cfquery>
-
-			<cfparam name="UserEditProfile" type="boolean" default="0">
-
-			<cfif Session.FormData.fName NEQ getOrigionalUserValues.FName>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update tusers
-					Set fName = <cfqueryparam value="#Session.FormData.FName#" cfsqltype="cf_sql_varchar">,
-						lastUpdate = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
-						lastUpdateByID = <cfqueryparam value="#Session.FormData.UserID#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.ReceiveMarketingFlyers NEQ getOrigionalUserMatrixValues.ReceiveMarketingFlyers>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update p_EventRegistration_UserMatrix
-					Set ReceiveMarketingFlyers = <cfqueryparam value="#FORM.ReceiveMarketingFlyers#" cfsqltype="cf_sql_bit">,
-						lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">
-					Where User_ID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.lName NEQ getOrigionalUserValues.FName>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update tusers
-					Set lName = <cfqueryparam value="#Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
-						lastUpdate = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
-						lastUpdateByID = <cfqueryparam value="#Session.FormData.UserID#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.JobTitle NEQ getOrigionalUserValues.JobTitle>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update tusers
-					Set JobTitle = <cfqueryparam value="#Session.FormData.JobTitle#" cfsqltype="cf_sql_varchar">,
-						lastUpdate = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
-						lastUpdateByID = <cfqueryparam value="#Session.FormData.UserID#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.mobilePhone NEQ getOrigionalUserValues.mobilePhone>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update tusers
-					Set mobilePhone = <cfqueryparam value="#Session.FormData.mobilePhone#" cfsqltype="cf_sql_varchar">,
-						lastUpdate = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
-						lastUpdateByID = <cfqueryparam value="#Session.FormData.UserID#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.website NEQ getOrigionalUserValues.website>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update tusers
-					Set website = <cfqueryparam value="#Session.FormData.website#" cfsqltype="cf_sql_varchar">,
-						lastUpdate = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
-						lastUpdateByID = <cfqueryparam value="#Session.FormData.UserID#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.GradeLevel NEQ "----" and  Session.FormData.GradeLevel NEQ getOrigionalUserMatrixValues.TeachingGrade>
-				<cfset UserEditProfile = 1>
-				<cfquery name="updateTeachingGrade" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update p_EventRegistration_UserMatrix
-					Set TeachingGrade = <cfqueryparam value="#Session.FormData.GradeLevel#" cfsqltype="cf_sql_integer">,
-						lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.GradeSubjects NEQ "----" and  Session.FormData.GradeSubjects NEQ getOrigionalUserMatrixValues.TeachingSubject>
-				<cfset UserEditProfile = 1>
-				<cfquery name="updateTeachingSubject" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Update p_EventRegistration_UserMatrix
-					Set TeachingSubject = <cfqueryparam value="#Session.FormData.GradeSubjects#" cfsqltype="cf_sql_integer">,
-						lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Variables.UserEditProfile EQ 1>
-				<cfset Session.Mura.fName = #Session.FormData.fName#>
-				<cfset Session.Mura.lName = #Session.FormData.lName#>
-				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=UserProfileUpdated">
-			<cfelse>
-				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default">
-			</cfif>
-		</cfif>
-	</cffunction>
-
+	
 </cfcomponent>

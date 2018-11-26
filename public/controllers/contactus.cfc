@@ -1,102 +1,232 @@
 <cfcomponent output="false" persistent="false" accessors="true">
-	<cffunction name="sendfeedback" returntype="any" output="true">
+	<cffunction name="default" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
+		
 		<cfif not isDefined("FORM.formSubmit")>
+			<cfquery name="SiteConfigSettings" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select TContent_ID, dateCreated, lastUpdated, lastUpdateBy, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL
+				From p_EventRegistration_SiteConfig
+				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
+			</cfquery>
+			<cfset Session.SiteConfigSettings = StructCopy(SiteConfigSettings)>
+		<cfelse>
+			<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+				<cfset GoogleReCaptchaCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/recaptcha")>
+			</cfif>
 			<cflock timeout="60" scope="Session" type="Exclusive">
-				<cfif not isDefined("Session.FormErrors")>
-					<cfset Session.FormErrors = #ArrayNew()#>
-				</cfif>
-				<cfquery name="getSiteSettings" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select ProcessPayments_Stripe, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_ENabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken
-					From p_EventRegistration_SiteConfig
-					Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-				<cfif not isDefined("Session.EventRegistration.SiteSettings")>
-					<cfset Session.EventRegistration = StructNew()>
-				</cfif>
-				<cfset Session.EventRegistration.SiteSettings = #StructCopy(getSiteSettings)#>
+				<cfset Session.FormErrors = #ArrayNew()#>
+				<cfset Session.FormInput = #StructCopy(FORM)#>
 			</cflock>
-		<cfelseif isDefined("FORM.formSubmit")>
-			<cfset Session.FormData = #StructCopy(FORM)#>
-			<cfset Session.FormErrors = #ArrayNew()#>
-			<cfset GoogleReCaptchaCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/recaptcha")>
-
-			<cfif Session.EventRegistration.SiteSettings.Google_ReCaptchaEnabled EQ 1>
+			<cfif FORM.SendInquiry EQ "Back to Current Events">
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cfset temp = StructDelete(Session, "FormInput")>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+			<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
 				<cfif StructKeyExists(form, 'g-recaptcha-response')>
-					<cfset CheckCaptcha = #GoogleReCaptchaCFC.verifyResponse(secret='6Le6hw0UAAAAAMfQXFE5H3AJ4PnGmADX9v468d93',response=form['g-recaptcha-response'], remoteip=cgi.remote_add)#>
+					<cfset CheckCaptcha = #GoogleReCaptchaCFC.verifyResponse(secret='#Session.SiteConfigSettings.Google_ReCaptchaSecretKey#',response=form['g-recaptcha-response'], remoteip=cgi.remote_add)#>
 					<cfif CheckCaptcha.success EQ "false">
 						<cfscript>
 							InvalidPassword = {property="VerifyPassword",message="We have detected that the form was completed by a Computer Robot. We ask that this form be completed by a human being."};
 							arrayAppend(Session.FormErrors, InvalidPassword);
 						</cfscript>
-						<cflocation url="#CGI.Script_name##CGI.path_info#?#rc.pc.getPackage()#action=public:contactus.sendfeedback&FormRetry=True" addtoken="false">
+						<cfif isDefined("URL.EventID")>
+							<cfif LEN(cgi.path_info)>
+								<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True&EventID=#URL.EventID#" >
+							<cfelse>
+								<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True&EventID=#URL.EventID#" >
+							</cfif>
+						<cfelse>
+							<cfif LEN(cgi.path_info)>
+								<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True" >
+							<cfelse>
+								<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True" >
+							</cfif>
+						</cfif>
+						<cflocation url="#variables.newurl#" addtoken="false">
 					</cfif>
 				</cfif>
 			</cfif>
-			<cfif FORM.BestContactMethod EQ 0>
+			<cfif FORM.BestContactMethod EQ "----">
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please make a selection on the Best Contact Method for a reply on this inquiry"};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif isDefined("URL.EventID")>
+					<cfif LEN(cgi.path_info)>
+						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True&EventID=#URL.EventID#" >
+					<cfelse>
+						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True&EventID=#URL.EventID#" >
+					</cfif>
+				<cfelse>
+					<cfif LEN(cgi.path_info)>
+						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True" >
+					<cfelse>
+						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True" >
+					</cfif>
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			<cfelseif FORM.BestContactMethod EQ 0>
 				<cfif not isValid("email", FORM.ContactEmail)>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							errormsg = {property="EmailAddr",message="Email Address is not in proper format"};
-							arrayAppend(Session.FormErrors, errormsg);
-						</cfscript>
-					</cflock>
-					<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:contactus.sendfeedback&FormRetry=True">
+					<cfscript>
+						errormsg = {property="EmailMsg",message="Please update the entered email address as it does not appear to be in proper email format."};
+						arrayAppend(Session.FormErrors, errormsg);
+					</cfscript>
+					<cfif isDefined("URL.EventID")>
+						<cfif LEN(cgi.path_info)>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True&EventID=#URL.EventID#" >
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True&EventID=#URL.EventID#" >
+						</cfif>
+					<cfelse>
+						<cfif LEN(cgi.path_info)>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True" >
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True" >
+						</cfif>
+					</cfif>
+					<cflocation url="#variables.newurl#" addtoken="false">
 				</cfif>
 			<cfelseif FORM.BestContactMethod EQ 1>
 				<cfif Len(FORM.ContactPhone) LTE 7>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							errormsg = {property="ContactNumber",message="Please enter your contact phone number with area code so we can reply to your inquiry"};
-							arrayAppend(Session.FormErrors, errormsg);
-						</cfscript>
-					</cflock>
-					<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:contactus.sendfeedback&FormRetry=True">
+					<cfscript>
+						errormsg = {property="EmailMsg",message="Please update the entered telephone number with area code so we can reply to your inquiry."};
+						arrayAppend(Session.FormErrors, errormsg);
+					</cfscript>
+					<cfif isDefined("URL.EventID")>
+						<cfif LEN(cgi.path_info)>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True&EventID=#URL.EventID#" >
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True&EventID=#URL.EventID#" >
+						</cfif>
+					<cfelse>
+						<cfif LEN(cgi.path_info)>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True" >
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True" >
+						</cfif>
+					</cfif>
+					<cflocation url="#variables.newurl#" addtoken="false">
 				</cfif>
 				<cfif not isValid("telephone", FORM.ContactPhone)>
-					<cflock timeout="60" scope="SESSION" type="Exclusive">
-						<cfscript>
-							errormsg = {property="ContactNumber",message="Please enter proper telephone number format so we can reply to your inquiry"};
-							arrayAppend(Session.FormErrors, errormsg);
-						</cfscript>
-					</cflock>
-					<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:contactus.sendfeedback&FormRetry=True">
+					<cfscript>
+						errormsg = {property="EmailMsg",message="Please update the entered telephone number in proper United States Telephone Format so we can reply to your inquiry."};
+						arrayAppend(Session.FormErrors, errormsg);
+					</cfscript>
+					<cfif isDefined("URL.EventID")>
+						<cfif LEN(cgi.path_info)>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True&EventID=#URL.EventID#" >
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True&EventID=#URL.EventID#" >
+						</cfif>
+					<cfelse>
+						<cfif LEN(cgi.path_info)>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True" >
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:contactus.default&FormRetry=True" >
+						</cfif>
+					</cfif>
+					<cflocation url="#variables.newurl#" addtoken="false">
 				</cfif>
+			
 			</cfif>
 			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
-			<cfif isDefined("Session.FormData.SendTo")>
-				<cfswitch expression="#Session.FormData.SendTo#">
+			<cfif isDefined("Session.FormInput.SendTo")>
+				<cfswitch expression="#Session.FormInput.SendTo#">
 					<cfcase value="Presenter">
-						<cfset temp = #SendEmailCFC.SendCommentFormToPresenter(rc, Session.FormData)#>
-						<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#URL.EventID#&SentInquiry=true">
+						<cfif LEN(rc.$.siteConfig('mailserverip')) EQ 0>
+							<cfset temp = #SendEmailCFC.SendCommentFormToPresenter(rc, Session.FormInput, '127.0.0.1')#>
+						<cfelse>
+							<cfif LEN(rc.$.siteConfig('mailserverusername')) and LEN(rc.$.siteConfig('mailserverpassword'))>
+								<cfif rc.$.siteConfig('mailserverssl') EQ "True">
+									<cfset temp = #SendEmailCFC.SendCommentFormToPresenter(rc, Session.FormInput, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'), "True")#>
+								<cfelse>
+									<cfset temp = #SendEmailCFC.SendCommentFormToPresenter(rc, Session.FormInput, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'))#>
+								</cfif>
+							<cfelse>
+								<cfset temp = #SendEmailCFC.SendCommentFormToPresenter(rc, Session.FormInput, rc.$.siteConfig('mailserverip'))#>
+							</cfif>
+						</cfif>
+						<cfif isDefined("URL.EventID")>
+							<cfif LEN(cgi.path_info)>
+								<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&EventID=#URL.EventID#&SentInquiry=true" >
+							<cfelse>
+								<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&EventID=#URL.EventID#&SentInquiry=true" >
+							</cfif>
+						<cfelse>
+							<cfif LEN(cgi.path_info)>
+								<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&SentInquiry=true" >
+							<cfelse>
+								<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&SentInquiry=true" >
+							</cfif>
+						</cfif>
+						<cflocation url="#variables.newurl#" addtoken="false">
 					</cfcase>
 					<cfcase value="Facilitator">
-						<cfset temp = #SendEmailCFC.SendCommentFormToFacilitator(rc, Session.FormData)#>
-						<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#URL.EventID#&SentInquiry=true">
+						<cfif LEN(rc.$.siteConfig('mailserverip')) EQ 0>
+							<cfset temp = #SendEmailCFC.SendCommentFormToFacilitator(rc, Session.FormInput, '127.0.0.1')#>
+						<cfelse>
+							<cfif LEN(rc.$.siteConfig('mailserverusername')) and LEN(rc.$.siteConfig('mailserverpassword'))>
+								<cfif rc.$.siteConfig('mailserverssl') EQ "True">
+									<cfset temp = #SendEmailCFC.SendCommentFormToFacilitator(rc, Session.FormInput, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'), "True")#>
+								<cfelse>
+									<cfset temp = #SendEmailCFC.SendCommentFormToFacilitator(rc, Session.FormInput, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'))#>
+								</cfif>
+							<cfelse>
+								<cfset temp = #SendEmailCFC.SendCommentFormToFacilitator(rc, Session.FormInput, rc.$.siteConfig('mailserverip'))#>
+							</cfif>
+						</cfif>
+						<cfif isDefined("URL.EventID")>
+							<cfif LEN(cgi.path_info)>
+								<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&EventID=#URL.EventID#&SentInquiry=true" >
+							<cfelse>
+								<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&EventID=#URL.EventID#&SentInquiry=true" >
+							</cfif>
+						<cfelse>
+							<cfif LEN(cgi.path_info)>
+								<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&SentInquiry=true" >
+							<cfelse>
+								<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&SentInquiry=true" >
+							</cfif>
+						</cfif>
+						<cflocation url="#variables.newurl#" addtoken="false">
 					</cfcase>
 				</cfswitch>
 			<cfelse>
-				<cfset temp = #SendEmailCFC.SendCommentFormToAdmin(rc, Session.FormData)#>
-				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:contactus.default&SentInquiry=true">
+				<cfif LEN(rc.$.siteConfig('mailserverip')) EQ 0>
+					<cfset temp = #SendEmailCFC.SendCommentFormToAdmin(rc, Session.FormInput, '127.0.0.1')#>
+				<cfelse>
+					<cfif LEN(rc.$.siteConfig('mailserverusername')) and LEN(rc.$.siteConfig('mailserverpassword'))>
+						<cfif rc.$.siteConfig('mailserverssl') EQ "True">
+							<cfset temp = #SendEmailCFC.SendCommentFormToAdmin(rc, Session.FormInput, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'), "True")#>
+						<cfelse>
+							<cfset temp = #SendEmailCFC.SendCommentFormToAdmin(rc, Session.FormInput, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'))#>
+						</cfif>
+					<cfelse>
+						<cfset temp = #SendEmailCFC.SendCommentFormToAdmin(rc, Session.FormInput, rc.$.siteConfig('mailserverip'))#>
+					</cfif>
+				</cfif>
+				<cfif isDefined("URL.EventID")>
+					<cfif LEN(cgi.path_info)>
+						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&EventID=#URL.EventID#&SentInquiry=true" >
+					<cfelse>
+						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&EventID=#URL.EventID#&SentInquiry=true" >
+					</cfif>
+				<cfelse>
+					<cfif LEN(cgi.path_info)>
+						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&SentInquiry=true" >
+					<cfelse>
+						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&SentInquiry=true" >
+					</cfif>
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
-
 		</cfif>
 	</cffunction>
-
-	<cffunction name="makeRandomString" ReturnType="String" output="False">
-		<cfset var chars = "23456789ABCDEFGHJKMNPQRSTUVWXYZ">
-		<cfset var length = RandRange(4,7)>
-		<cfset var result = "">
-		<cfset var i = "">
-		<cfset var char = "">
-		<cfscript>
-			for (i = 1; i < length; i++) {
-				char = mid(chars, randRange(1, len(chars)), 1);
-				result &= char;
-			}
-		</cfscript>
-		<cfreturn result>
-	</cffunction>
-
+	
 </cfcomponent>

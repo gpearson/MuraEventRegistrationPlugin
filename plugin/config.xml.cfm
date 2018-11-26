@@ -12,7 +12,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 	<plugin>
 
 		<!-- Name : the name of the plugin -->
-		<name>#variables.framework.package#</name>
+		<name>#variables.framework.packageName#</name>
 
 		<!-- Package : a unique, variable-safe name for the plugin -->
 		<package>#variables.framework.package#</package>

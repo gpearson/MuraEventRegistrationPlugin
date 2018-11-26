@@ -1,4 +1,93 @@
 <cfcomponent displayName="Event Registration Email Routines">
+	<cffunction name="SendCommentFormToAdmin" ReturnType="Any" Output="True">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="EmailInfo" type="struct" Required="True">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+
+		<cfquery name="getAdminGroup" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select Email
+			From tusers
+			Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				UserName = <cfqueryparam value="admin" cfsqltype="cf_sql_varchar">
+		</cfquery>
+		<cfinclude template="EmailTemplates/CommentFormInquiryTemplateToAdmin.cfm">
+	</cffunction>
+
+	<cffunction name="SendCommentFormToPresenter" ReturnType="Any" Output="True">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="EmailInfo" type="struct" Required="True">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfquery name="getEventPresenter" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select Presenters
+			From p_EventRegistration_Events
+			Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				TContent_ID = <cfqueryparam value="#Arguments.EmailInfo.EventID#" cfsqltype="cf_sql_integer">
+		</cfquery>
+
+		<cfquery name="getEventPresenterInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select FName, Lname, Email
+			From tusers
+			Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				UserID = <cfqueryparam value="#getEventPresenter.Presenters#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+		<cfinclude template="EmailTemplates/CommentFormInquiryTemplateToPresenter.cfm">
+	</cffunction>
+
+	<cffunction name="SendCommentFormToFacilitator" ReturnType="Any" Output="True">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="EmailInfo" type="struct" Required="True">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfquery name="getEventFacilitator" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select Facilitator
+			From p_EventRegistration_Events
+			Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				TContent_ID = <cfqueryparam value="#Arguments.EmailInfo.EventID#" cfsqltype="cf_sql_integer">
+		</cfquery>
+
+		<cfquery name="getEventFacilitatorInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select FName, Lname, Email
+			From tusers
+			Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+				UserID = <cfqueryparam value="#getEventFacilitator.Facilitator#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+		<cfinclude template="EmailTemplates/CommentFormInquiryTemplateToFacilitator.cfm">
+	</cffunction>
+
+	<cffunction name="SendForgotPasswordRequest" returntype="Any" Output="False">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="AccountQuery" required="true" type="struct">
+		<cfargument name="PasswordLink" required="true" type="String">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+		<cfinclude template="EmailTemplates/SendLostPasswordVerifyFormToUser.cfm">
+	</cffunction>
+
+
+
+
+	
+
 	<cffunction name="SendAccountActivationEmail" returntype="Any" Output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 		<cfargument name="UserID" type="String" Required="True">
@@ -55,58 +144,9 @@
 		<cfinclude template="EmailTemplates/AccountActivationConfirmationEmailToIndividual.cfm">
 	</cffunction>
 
-	<cffunction name="SendCommentFormToAdmin" ReturnType="Any" Output="True">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-		<cfargument name="EmailInfo" type="struct" Required="True">
+	
 
-		<cfquery name="getAdminGroup" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select Email
-			From tusers
-			Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-				UserName = <cfqueryparam value="admin" cfsqltype="cf_sql_varchar">
-		</cfquery>
-		<cfinclude template="EmailTemplates/CommentFormInquiryTemplateToAdmin.cfm">
-	</cffunction>
-
-	<cffunction name="SendCommentFormToPresenter" ReturnType="Any" Output="True">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-		<cfargument name="EmailInfo" type="struct" Required="True">
-
-		<cfquery name="getEventPresenter" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select Presenters
-			From p_EventRegistration_Events
-			Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-				TContent_ID = <cfqueryparam value="#Arguments.EmailInfo.EventID#" cfsqltype="cf_sql_integer">
-		</cfquery>
-
-		<cfquery name="getEventPresenterInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select FName, Lname, Email
-			From tusers
-			Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-				UserID = <cfqueryparam value="#getEventPresenter.Presenters#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-		<cfinclude template="EmailTemplates/CommentFormInquiryTemplateToPresenter.cfm">
-	</cffunction>
-
-	<cffunction name="SendCommentFormToFacilitator" ReturnType="Any" Output="True">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-		<cfargument name="EmailInfo" type="struct" Required="True">
-
-		<cfquery name="getEventFacilitator" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select Facilitator
-			From p_EventRegistration_Events
-			Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-				TContent_ID = <cfqueryparam value="#Arguments.EmailInfo.EventID#" cfsqltype="cf_sql_integer">
-		</cfquery>
-
-		<cfquery name="getEventFacilitatorInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select FName, Lname, Email
-			From tusers
-			Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-				UserID = <cfqueryparam value="#getEventFacilitator.Facilitator#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-		<cfinclude template="EmailTemplates/CommentFormInquiryTemplateToFacilitator.cfm">
-	</cffunction>
+	
 
 	<cffunction name="SendEventCancellationToSingleParticipant" returntype="Any" Output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
@@ -513,12 +553,7 @@
 		<cfinclude template="EmailTemplates/SendEmailStatementOfCorporationAttendance.cfm">
 	</cffunction>
 
-	<cffunction name="SendForgotPasswordRequest" returntype="Any" Output="False">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-		<cfargument name="AccountQuery" required="true" type="query">
-		<cfargument name="PasswordLink" required="true" type="String">
-		<cfinclude template="EmailTemplates/SendLostPasswordVerifyFormToUser.cfm">
-	</cffunction>
+	
 
 
 

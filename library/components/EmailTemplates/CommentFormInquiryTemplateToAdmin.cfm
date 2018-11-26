@@ -1,15 +1,16 @@
-<cfmail To="#getAdminGroup.Email# <#getAdminGroup.Email#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Event Registration Comment Inquiry" server="127.0.0.1">
+<cfmail To="#getEventFacilitatorInformation.FName# #getEventFacilitatorInformation.Lname# <#getEventFacilitatorInformation.Email#>" from="#rc.$.siteConfig('contact')#" subject="Event Registration Comment Inquiry" server="#Arguments.mailServerHostname#" username="#Arguments.MailServerUsername#" password="#Arguments.MailServerPassword#" usessl="#Arguments.MailServerSSL#" port="#Arguments.MailServerPort#">
+<cfmail To="#getAdminGroup.Email# <#getAdminGroup.Email#>" from="#rc.$.siteConfig('contact')#" subject="Event Registration Comment Inquiry" server="#Arguments.mailServerHostname#" username="#Arguments.MailServerUsername#" password="#Arguments.MailServerPassword#" usessl="#Arguments.MailServerSSL#" port="#Arguments.MailServerPort#">
 <cfmailpart type="text/plain">
 Event Registration Administrator,
 
 The individual listed below submitted the following information through the Comment Form.
 
 
-Individual's Name': #Arguments.ContactInfo.ContactFirstName# #Arguments.ContactInfo.ContactLastName#
-Email Address: #Arguments.EmailInfo.ContactFormEmail#
-Telephone Number: #Arguments.EmailInfo.ContactFormNumber#
-Best Contact Method: #Arguments.EmailInfo.ContactBy#
-
+Individual's Name': #Arguments.EmailInfo.ContactFirstName# #Arguments.EmailInfo.ContactLastName#
+Email Address: #Arguments.EmailInfo.ContactEmail#
+Telephone Number: #Arguments.EmailInfo.ContactPhone#
+Best Contact Method: <cfswitch expression="#Arguments.EmailInfo.BestContactMethod#"><cfcase value="0">By Email</cfcase><cfcase value="1">By Telephone</cfcase></cfswitch>
+<cfif isDefined("Arguments.EmailInfo.EventTitle")>Event Title: #Arguments.EmailInfo.EventTitle#<cfelse> </cfif>
 Question:
 
 #Arguments.EmailInfo.InquiryMessage#
@@ -31,6 +32,7 @@ Note: Replies to this automated email address are not monitored by staff. If you
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Email Address: #Arguments.EmailInfo.ContactEmail#</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Telephone Number: #Arguments.EmailInfo.ContactPhone#</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Best Contact Method: <cfswitch expression="#Arguments.EmailInfo.BestContactMethod#"><cfcase value="0">By Email</cfcase><cfcase value="1">By Telephone</cfcase></cfswitch></td></tr>
+			<cfif isDefined("Arguments.EmailInfo.EventTitle")><tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Event Title: #Arguments.EmailInfo.EventTitle#</td></tr><cfelse><tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr></cfif>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Question: #Arguments.EmailInfo.InquiryMessage#</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>

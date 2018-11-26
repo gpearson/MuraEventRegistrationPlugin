@@ -9,4 +9,4 @@
 *
 */
 </cfscript>
-<mura name="MuraFW1 App2" contenttypes="*" iconclass="mi-leaf"></mura>
+<mura name="Event Registration Plugin" contenttypes="*" iconclass="mi-leaf"></mura>

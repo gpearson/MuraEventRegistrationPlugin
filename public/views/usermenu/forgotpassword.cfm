@@ -1,203 +1,265 @@
-<cfif not isDefined("URL.FormRetry") and not isDefined("URL.Key")>
-	<cfoutput>
-		<cfscript>
-			lang = 'en';
-		</cfscript>
-		<script src='https://www.google.com/recaptcha/api.js?h1=#lang#'></script>
-		<cfform action="" method="post" id="ForgotPasswordForm" class="form-horizontal">
-			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-			<cfinput type="hidden" name="formSubmit" value="true">
-			<div class="panel panel-default">
+<cfsilent>
+	<cfset BestContactMethodQuery = QueryNew("ID,OptionName", "Integer,VarChar")>
+	<cfset temp = QueryAddRow(BestContactMethodQuery, 1)>
+	<cfset temp = #QuerySetCell(BestContactMethodQuery, "ID", 0)#>
+	<cfset temp = #QuerySetCell(BestContactMethodQuery, "OptionName", "By Email")#>
+	<cfset temp = QueryAddRow(BestContactMethodQuery, 1)>
+	<cfset temp = #QuerySetCell(BestContactMethodQuery, "ID", 1)#>
+	<cfset temp = #QuerySetCell(BestContactMethodQuery, "OptionName", "By Telephone")#>
+	<cfif not isDefined("Session.PluginFramework")>
+		<cflock timeout="60" scope="Session" type="Exclusive">
+			<cfset Session.PluginFramework = StructCopy(Variables.Framework)>
+		</cflock>
+	</cfif>
+</cfsilent>
+<cfoutput>
+	<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+		<cfscript>lang = 'en';</cfscript>
+		<cfsavecontent variable="htmlhead"><cfoutput><script src='https://www.google.com/recaptcha/api.js?h1=#lang#'></script></cfoutput></cfsavecontent>
+		<cfhtmlhead text="#htmlhead#" />
+	</cfif>
+	<cfif Session.Mura.IsLoggedIn EQ True><cfset userRecord = #rc.$.getBean('user').loadBy(username='#Session.Mura.Username#', siteid='#rc.$.siteConfig("siteid")#').getAllValues()#></cfif>
+	<cfif not isDefined("URL.FormRetry") and not isDefined("URL.ShortURL") and not isDefined("URL.Key")>
+		<div class="panel panel-default">
+			<div class="panel-heading"><h2>Request Forgot Password</h2></div>
+			<cfform action="" method="post" id="ContactUsForm" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<br />
+				<div class="alert alert-info">Please enter the email address registered for your account to request a temporary password to be sent to you.</div>
 				<div class="panel-body">
 					<fieldset>
-						<legend>Retrieve Lost Password</legend>
-					</fieldset>
-					<div class="well">Please enter your school/business email address and this system will send a special link to you.</div>
-					<div class="form-group">
-						<label for="EmailAddress" class="control-label col-sm-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-6"><cfinput type="text" class="form-control" id="Email" name="Email" required="yes"></div>
-					</div>
-					<fieldset>
-						<legend>Account Security</legend>
+						<legend><h2>Your Contact Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<div class="col-sm-6"><div class="g-recaptcha" data-sitekey="6Le6hw0UAAAAAHty8-RZLBzpnHjc348j7U0nrxdh"></div></div>
-						<!---
-						<label for="HumanChecker" class="control-label col-sm-3">In order to prevent abuse from automatic systems, please type the letters or numbers in the box below:&nbsp;</label>
-						<div class="col-sm-6">
-							<cfimage action="captcha" difficulty="medium" text="#captcha#" fonts="arial,times roman, tahoma" height="150" width="500" /><br><br />
-							<cfinput name="ValidateCaptcha" type="text" required="yes" message="Input Captcha Text" />
+						<label for="EmailAddress" class="control-label col-sm-3">Email Address:&nbsp;</label>
+						<div class="col-sm-9">
+							<cfinput type="text" class="form-control" id="UserEmailAddress" name="UserEmailAddress" required="no">
 						</div>
-						--->
 					</div>
+					<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+						<fieldset>
+							<legend><h2>Human Detection</h2></legend>
+						</fieldset>
+						<div class="form-group">
+							<div class="col-sm-12">
+								<div class="g-recaptcha" data-sitekey="#Session.SiteConfigSettings.Google_ReCaptchaSiteKey#"></div>
+							</div>
+						</div>
+					</cfif>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Retrieve Password"><br /><br />
+					<cfinput type="Submit" name="SendInquiry" class="btn btn-primary pull-left" value="Back to Current Events">&nbsp;
+					<cfinput type="Submit" name="SendInquiry" class="btn btn-primary pull-right" value="Send Temporary Password"><br /><br />
 				</div>
-			</div>
-		</cfform>
-	</cfoutput>
-<cfelseif isDefined("URL.FormRetry") and not isDefined("URL.Key")>
-	<cfoutput>
-		<cfscript>
-			lang = 'en';
-		</cfscript>
-		<script src='https://www.google.com/recaptcha/api.js?h1=#lang#'></script>
-		<cfform action="" method="post" id="ForgotPasswordForm" class="form-horizontal">
-			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-			<cfinput type="hidden" name="formSubmit" value="true">
-			<cfif isDefined("Session.FormErrors")>
+			</cfform>
+		</div>
+	<cfelseif isDefined("URL.FormRetry") and not isDefined("URL.ShortURL") and not isDefined("URL.Key")>
+		<div class="panel panel-default">
+			<div class="panel-heading"><h2>Request Forgot Password</h2></div>
+			<cfform action="" method="post" id="ContactUsForm" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfif isDefined("Session.FormErrors")>
 					<cfif ArrayLen(Session.FormErrors)>
-					<div id="modelWindowDialog" class="modal fade">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
-									<h3>Missing Information to Request Password Reset</h3>
-								</div>
-								<div class="modal-body">
-									<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
-								</div>
-								<div class="modal-footer">
-									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+						<div id="modelWindowDialog" class="modal fade">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+										<h3>Missing Information</h3>
+									</div>
+									<div class="modal-body">
+										<p class="alert alert-danger">#Session.FormErrors[1].Message#</p>
+									</div>
+									<div class="modal-footer">
+										<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<script type='text/javascript'>
-						(function() {
-							'use strict';
-							function remoteModal(idModal){
-								var vm = this;
-								vm.modal = $(idModal);
-
-								if( vm.modal.length == 0 ) { return false; } else { openModal(); }
-
-								if( window.location.hash == idModal ){ openModal(); }
-
-								var services = { open: openModal, close: closeModal };
-								return services;
-								///////////////
-
-								// method to open modal
-								function openModal(){
-									vm.modal.modal('show');
+						<script type='text/javascript'>
+							(function() {
+								'use strict';
+								function remoteModal(idModal){
+									var vm = this;
+									vm.modal = $(idModal);
+									if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+									if( window.location.hash == idModal ){ openModal(); }
+									var services = { open: openModal, close: closeModal };
+									return services;
+									function openModal(){
+										vm.modal.modal('show');
+									}
+									function closeModal(){
+										vm.modal.modal('hide');
+									}
 								}
-
-								// method to close modal
-								function closeModal(){
-									vm.modal.modal('hide');
-								}
-							}
-							Window.prototype.remoteModal = remoteModal;
-						})();
-
-						$(function(){
-							window.remoteModal('##modelWindowDialog');
-						});
-					</script>
+								Window.prototype.remoteModal = remoteModal;
+							})();
+							$(function(){
+								window.remoteModal('##modelWindowDialog');
+							});
+						</script>
 					</cfif>
 				</cfif>
-			<div class="panel panel-default">
+				<br />
+				<div class="alert alert-info">Please enter the email address registered for your account to request a temporary password to be sent to you.</div>
 				<div class="panel-body">
 					<fieldset>
-						<legend>Retrieve Lost Password</legend>
-					</fieldset>
-					<div class="well">Please enter your school/business email address and this system will send a special link to you.</div>
-					<div class="form-group">
-						<label for="EmailAddress" class="control-label col-sm-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-6"><cfinput type="text" class="form-control" id="Email" name="Email" required="yes" value="#Session.FormData.Email#"></div>
-					</div>
-					<fieldset>
-						<legend>Account Security</legend>
+						<legend><h2>Your Contact Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<div class="col-sm-6"><div class="g-recaptcha" data-sitekey="6Le6hw0UAAAAAHty8-RZLBzpnHjc348j7U0nrxdh"></div></div>
-						<!---
-						<label for="HumanChecker" class="control-label col-sm-3">In order to prevent abuse from automatic systems, please type the letters or numbers in the box below:&nbsp;</label>
-						<div class="col-sm-6">
-							<cfimage action="captcha" difficulty="medium" text="#captcha#" fonts="arial,times roman, tahoma" height="150" width="500" /><br><br />
-							<cfinput name="ValidateCaptcha" type="text" required="yes" message="Input Captcha Text" />
+						<label for="EmailAddress" class="control-label col-sm-3">Email Address:&nbsp;</label>
+						<div class="col-sm-9">
+							<cfinput type="text" class="form-control" id="UserEmailAddress" name="UserEmailAddress" value="#Session.FormInput.UserEmailAddress#" required="no">
 						</div>
-						--->
 					</div>
+					<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+						<fieldset>
+							<legend><h2>Human Detection</h2></legend>
+						</fieldset>
+						<div class="form-group">
+							<div class="col-sm-12">
+								<div class="g-recaptcha" data-sitekey="#Session.SiteConfigSettings.Google_ReCaptchaSiteKey#"></div>
+							</div>
+						</div>
+					</cfif>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Retrieve Password"><br /><br />
+					<cfinput type="Submit" name="SendInquiry" class="btn btn-primary pull-left" value="Back to Current Events">&nbsp;
+					<cfinput type="Submit" name="SendInquiry" class="btn btn-primary pull-right" value="Send Temporary Password"><br /><br />
 				</div>
-			</div>
-		</cfform>
-		<div id="eventPGPCertificate" class="modal fade">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
-						<h3>Event Attribute</h3>
-					</div>
-					<div class="modal-body">
-						<p>Upon successfull completion of this event, Professional Growth Certificates will be sent to you via the registered email address this system has on file for you.</p>
-					</div>
-					<div class="modal-footer">
-						<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
-	</cfoutput>
-<cfelseif not isDefined("URL.FormRetry") and isDefined("URL.Key")>
-	<cfoutput>
-		<cfform action="" method="post" id="ForgotPasswordForm" class="form-horizontal">
-			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-			<cfinput type="hidden" name="UserID" value="#Session.PasswordKey.UserID#">
-			<cfinput type="hidden" name="formSubmit" value="true">
-			<cfinput type="hidden" name="submitPasswordChange" value="true">
-			<div class="panel panel-default">
+			</cfform>
+		</div>
+	<cfelseif not isDefined("URL.FormRetry") and not isDefined("URL.ShortURL") and isDefined("URL.Key")>
+		<div class="panel panel-default">
+			<div class="panel-heading"><h2>User Account Desired Password</h2></div>
+			<cfform action="" method="post" id="ContactUsForm" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="UserID" value="#Session.PasswordKey.UserID#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfinput type="hidden" name="formUpdateAccountPassword" value="true">
+				<br />
+				<div class="alert alert-info">Please enter the desired password which you would like to use for your account.</div>
 				<div class="panel-body">
 					<fieldset>
-						<legend>Create New Password</legend>
+						<legend><h2>Your New Account Password Information</h2></legend>
 					</fieldset>
-					<div class="well">Please enter a new password in the fields below and click the Change Password Button</div>
 					<div class="form-group">
-						<label for="DesiredPassword" class="control-label col-sm-3">Desired Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-6"><cfinput type="password" class="form-control" id="DesiredPassword" name="DesiredPassword" required="yes"></div>
+						<label for="NewPassword" class="control-label col-sm-3">Desired Password:&nbsp;</label>
+						<div class="col-sm-9">
+							<cfinput type="password" class="form-control" id="NewPassword" name="NewPassword" required="no">
+						</div>
 					</div>
 					<div class="form-group">
-						<label for="VerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-6"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" required="yes"></div>
+						<label for="NewVerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
+						<div class="col-sm-9">
+							<cfinput type="password" class="form-control" id="NewVerifyPassword" name="NewVerifyPassword" required="no">
+						</div>
 					</div>
+					<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+						<fieldset>
+							<legend><h2>Human Detection</h2></legend>
+						</fieldset>
+						<div class="form-group">
+							<div class="col-sm-12">
+								<div class="g-recaptcha" data-sitekey="#Session.SiteConfigSettings.Google_ReCaptchaSiteKey#"></div>
+							</div>
+						</div>
+					</cfif>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Change Password"><br /><br />
+					<cfinput type="Submit" name="SendInquiry" class="btn btn-primary pull-left" value="Back to Current Events">&nbsp;
+					<cfinput type="Submit" name="SendInquiry" class="btn btn-primary pull-right" value="Update Account Password"><br /><br />
 				</div>
-			</div>
-		</cfform>
-	</cfoutput>
-<cfelseif isDefined("URL.FormRetry") and isDefined("URL.Key")>
-	<cfoutput>
-		<cfform action="" method="post" id="ForgotPasswordForm" class="form-horizontal">
-			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
-			<cfinput type="hidden" name="UserID" value="#Session.PasswordKey.UserID#">
-			<cfinput type="hidden" name="formSubmit" value="true">
-			<cfinput type="hidden" name="submitPasswordChange" value="true">
-			<div class="panel panel-default">
+			</cfform>
+		</div>
+	<cfelseif isDefined("URL.FormRetry") and not isDefined("URL.ShortURL") and isDefined("URL.Key")>
+		<div class="panel panel-default">
+			<div class="panel-heading"><h2>User Account Desired Password</h2></div>
+			<cfform action="" method="post" id="ContactUsForm" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="UserID" value="#Session.PasswordKey.UserID#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfinput type="hidden" name="formUpdateAccountPassword" value="true">
+				<cfif isDefined("Session.FormErrors")>
+					<cfif ArrayLen(Session.FormErrors)>
+						<div id="modelWindowDialog" class="modal fade">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+										<h3>Missing Information</h3>
+									</div>
+									<div class="modal-body">
+										<p class="alert alert-danger">#Session.FormErrors[1].Message#</p>
+									</div>
+									<div class="modal-footer">
+										<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<script type='text/javascript'>
+							(function() {
+								'use strict';
+								function remoteModal(idModal){
+									var vm = this;
+									vm.modal = $(idModal);
+									if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+									if( window.location.hash == idModal ){ openModal(); }
+									var services = { open: openModal, close: closeModal };
+									return services;
+									function openModal(){
+										vm.modal.modal('show');
+									}
+									function closeModal(){
+										vm.modal.modal('hide');
+									}
+								}
+								Window.prototype.remoteModal = remoteModal;
+							})();
+							$(function(){
+								window.remoteModal('##modelWindowDialog');
+							});
+						</script>
+					</cfif>
+				</cfif>
+				<br />
+				<div class="alert alert-info">Please enter the desired password which you would like to use for your account.</div>
 				<div class="panel-body">
 					<fieldset>
-						<legend>Create New Password</legend>
+						<legend><h2>Your New Account Password Information</h2></legend>
 					</fieldset>
-					<div class="well">Please enter a new password in the fields below and click the Change Password Button</div>
 					<div class="form-group">
-						<label for="DesiredPassword" class="control-label col-sm-3">Desired Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-6"><cfinput type="password" class="form-control" id="DesiredPassword" name="DesiredPassword" required="yes"></div>
+						<label for="NewPassword" class="control-label col-sm-3">Desired Password:&nbsp;</label>
+						<div class="col-sm-9">
+							<cfinput type="password" class="form-control" id="NewPassword" name="NewPassword" value="#Session.FormInput.NewPassword#" required="no">
+						</div>
 					</div>
 					<div class="form-group">
-						<label for="VerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-6"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" required="yes"></div>
+						<label for="NewVerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
+						<div class="col-sm-9">
+							<cfinput type="password" class="form-control" id="NewVerifyPassword" name="NewVerifyPassword" value="#Session.FormInput.NewVerifyPassword#" required="no">
+						</div>
 					</div>
+					<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+						<fieldset>
+							<legend><h2>Human Detection</h2></legend>
+						</fieldset>
+						<div class="form-group">
+							<div class="col-sm-12">
+								<div class="g-recaptcha" data-sitekey="#Session.SiteConfigSettings.Google_ReCaptchaSiteKey#"></div>
+							</div>
+						</div>
+					</cfif>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Change Password"><br /><br />
+					<cfinput type="Submit" name="SendInquiry" class="btn btn-primary pull-left" value="Back to Current Events">&nbsp;
+					<cfinput type="Submit" name="SendInquiry" class="btn btn-primary pull-right" value="Update Account Password"><br /><br />
 				</div>
-			</div>
-		</cfform>
-	</cfoutput>
-</cfif>
+			</cfform>
+		</div>
+	</cfif>
+</cfoutput>

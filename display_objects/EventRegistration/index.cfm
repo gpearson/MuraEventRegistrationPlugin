@@ -8,5 +8,7 @@
 * http://www.apache.org/licenses/LICENSE-2.0
 *
 */
+
+include '../../config.fw1.cfm';
+WriteOutput(new EventRegistration.Application(variables.framework).doAction('public:main.default'));
 </cfscript>
-<mura name="MuraFW1 App1" contenttypes="*" iconclass="mi-leaf"></mura>

@@ -1,12 +1,3 @@
-/*
-
-This file is part of MuraFW1
-
-Copyright 2010-2016 Stephen J. Withington, Jr.
-Licensed under the Apache License, Version v2.0
-http://www.apache.org/licenses/LICENSE-2.0
-
-*/
 <cfcomponent extends="controller" output="false" persistent="false" accessors="true">
 	<cffunction name="default" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
@@ -29,11 +20,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfset temp = StructDelete(Session, "SiteConfigSettings")>
 				
 				<cfif LEN(cgi.path_info)>
-					<cfdump var="#LEN(cgi.path_info)#" abort="true">
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default" >
 				<cfelse>
 					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default" >
-					<cflocation url="#variables.newurl#" addtoken="false">
 				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 
 			<cfif FORM.ProcessPaymentsStripe EQ "----">
@@ -44,7 +35,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="If you would like to enable Stripe Processing of Payments, please enter your Stripe API Keys for both the Live Processing and the Test Processing of this payment processor."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			<cfelse>
 				<cfif FORM.StripeTestMode EQ "----" and LEN(FORM.StripeTestAPIKey) EQ 0 and LEN(FORM.StripeLiveAPIKey) EQ 0>
@@ -54,7 +49,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 						errormsg = {property="EmailMsg",message="Please Enter the Stripe API Key for the Stripe Testing Server so you can process test payments through the stripe server."};
 						arrayAppend(Session.FormErrors, errormsg);
 					</cfscript>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True">
+					<cfif LEN(cgi.path_info)>
+						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+					<cfelse>
+						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+					</cfif>
 					<cflocation url="#variables.newurl#" addtoken="false">
 				</cfif>
 			</cfif>
@@ -66,7 +65,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="Please Enter the Facebook Application Credientials to allow this plugin to post to the companies profile page."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 
@@ -77,7 +80,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="Please Enter the Google Captcha Site Key and Secret Key for this to work properly."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 
@@ -88,7 +95,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="Please Enter the Smarty Streets API ID and API Token from your account to enable address verification through this API Service."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif FORM.SmartyStreetsEnabled EQ "----">
@@ -133,11 +144,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 							arrayAppend(Session.FormErrors, eventdate);
 							arrayAppend(Session.FormErrors, cfcatch);
 						</cfscript>
-						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True">
+						<cfif LEN(cgi.path_info)>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+						</cfif>
 						<cflocation url="#variables.newurl#" addtoken="false">
 					</cfcatch>
 				</cftry>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			<cfelse>
 				<cftry>
@@ -175,11 +194,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 							arrayAppend(Session.FormErrors, eventdate);
 							arrayAppend(Session.FormErrors, cfcatch);
 						</cfscript>
-						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True">
+						<cfif LEN(cgi.path_info)>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+						</cfif>
 						<cflocation url="#variables.newurl#" addtoken="false">
 					</cfcatch>
 				</cftry>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 		</cfif>
@@ -362,7 +389,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfset temp = StructDelete(Session, "FormInput")>
 				<cfset temp = StructDelete(Session, "GetEventGroups")>
 				<cfset temp = StructDelete(Session, "GetUsers")>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain">
+
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 
@@ -371,7 +403,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					eventdate = {property="Registration_Deadline",message="Please select if this account holder's account is active or not"};
 					arrayAppend(Session.FormErrors, eventdate);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif LEN(FORM.Password) LT 5>
@@ -379,7 +415,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="The Password Field must be longer than 5 characters."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif LEN(FORM.VerifyPassword) LT 5>
@@ -387,7 +427,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="The Verify Password Field must be longer than 5 characters."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif FORM.Password NEQ FORM.VerifyPassword>
@@ -395,7 +439,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="The Password Field and the Verify Password Field did not match. Please check these fields and try to submit this request again."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif not isValid("email", FORM.Email)>
@@ -403,7 +451,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="Please enter a valid email address for this user account."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif LEN(FORM.FName) LT 3>
@@ -411,7 +463,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="Please enter the users first name for their account. This will be used on all emails, certificates, signin sheets, etc."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif LEN(FORM.LName) LT 3>
@@ -419,7 +475,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="Please enter the users last name for their account. This will be used on all emails, certificates, signin sheets."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 
@@ -456,7 +516,11 @@ http://www.apache.org/licenses/LICENSE-2.0
           			<cfdump var="#AddNewAccount.getErrors()#"><cfabort>
           		</cfif>
           	</cfif>
-        	<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain&UserAction=AccountCreated&Successful=True">
+          	<cfif LEN(cgi.path_info)>
+				<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain&UserAction=AccountCreated&Successful=True" >
+			<cfelse>
+				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain&UserAction=AccountCreated&Successful=True" >
+			</cfif>
 			<cflocation url="#variables.newurl#" addtoken="false">
 		</cfif>
 	</cffunction>
@@ -489,11 +553,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfset temp = StructDelete(Session, "GetEventGroups")>
 				<cfset temp = StructDelete(Session, "GetSelectedUser")>
 				<cfset temp = StructDelete(Session, "GetUsers")>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif FORM.UserAction EQ "Change Password">
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 
@@ -505,9 +577,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfset temp = #userRecord.set('InActive', 0)#>
 				<cfset AddNewAccount = #userRecord.save()#>
 				<cfif LEN(AddNewAccount.getErrors()) EQ 0>
-          			<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#&UserAction=UserAccountActivated&Successful=True">
+					<cfif LEN(cgi.path_info)>
+						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#&UserAction=UserAccountActivated&Successful=True" >
+					<cfelse>
+						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#&UserAction=UserAccountActivated&Successful=True" >
+					</cfif>
 					<cflocation url="#variables.newurl#" addtoken="false">
-          		<cfelse>
+				<cfelse>
           			<cfdump var="#AddNewAccount.getErrors()#"><cfabort>
           		</cfif>
 			</cfif>
@@ -530,7 +606,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="Please Select if this Account Holder's Account is InActive or Not."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif LEN(FORM.FName) EQ 0>
@@ -538,7 +618,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="Please enter the First Name of this new user account."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 
@@ -547,7 +631,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="Please enter the Last Name of this new user account."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif not isValid("email", FORM.EMail)>
@@ -555,7 +643,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="Please enter a valid email address for this user account."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfset userRecord = $.getBean('user').loadBy(username='#FORM.UserName#', siteid='#$.siteConfig("siteid")#')>
@@ -617,7 +709,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</cfquery>
 					</cfif>
 				</cfif>
-          		<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain&UserID=#Session.FormInput.UserID#&UserAction=UserAccountUpdated&Successful=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain&UserID=#Session.FormInput.UserID#&UserAction=UserAccountUpdated&Successful=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain&UserID=#Session.FormInput.UserID#&UserAction=UserAccountUpdated&Successful=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
           	<cfelse>
           		<cfdump var="#AddNewAccount.getErrors()#"><cfabort>
@@ -641,7 +737,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</cflock>
 			<cfif FORM.UserAction EQ "Back to User Management">
 				<cfset temp = StructDelete(Session, "FormErrors")>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif LEN(FORM.Password) LT 5>
@@ -649,7 +749,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="The Password Field must be longer than 5 characters."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif LEN(FORM.VerifyPassword) LT 5>
@@ -657,7 +761,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="The Verify Password Field must be longer than 5 characters."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif FORM.Password NEQ FORM.VerifyPassword>
@@ -665,7 +773,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					errormsg = {property="EmailMsg",message="The Password Field and the Verify Password Field did not match. Please check these fields and try to submit this request again."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<!--- Initiates the User Bean --->
@@ -675,7 +787,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfset temp = #userRecord.set('lastupdatebyid', '#Session.Mura.UserID#')#>
 			<cfset temp = #userRecord.setPasswordNoCache('#FORM.VerifyPassword#')#>
 			<cfset AddNewAccount = #userRecord.save()#>
-			<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#&UserAction=AccountPasswordChanged&Successful=True">
+			<cfif LEN(cgi.path_info)>
+				<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#&UserAction=AccountPasswordChanged&Successful=True" >
+			<cfelse>
+				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#&UserAction=AccountPasswordChanged&Successful=True" >
+			</cfif>
 			<cflocation url="#variables.newurl#" addtoken="false">
 		</cfif>
 	</cffunction>
