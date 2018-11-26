@@ -47,7 +47,7 @@ component accessors="true" extends="FacebookBase" {
 	 * @description Facebook App constructor
 	 * @hint Requires an appId and its secretKey
 	 */
-	public Any function init(required String appId, required String secretKey, String apiVersion = "v2.1") {
+	public Any function init(required String appId, required String secretKey, String apiVersion = "v2.10") {
 		if (!isPersistentDataEnabled()) {
 			throw(message="Persistent scope is not available (by default session scope, so you must enable session management for this CFML application)", type="UnvailablePersistentScope");
 		}

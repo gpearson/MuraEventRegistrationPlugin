@@ -136,7 +136,7 @@
 					<cfif Session.EventInfo.SelectedEvent.PGPAvailable GT 0 and Session.EventInfo.SelectedEvent.MealAvailable EQ 1>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">PGP Points:</span></td>
-						<td style="width: 390px;">#NumberFormat(Session.EventInfo.SelectedEvent.PGPPoints, "999.99")#</td>
+						<td style="width: 390px;">#NumberFormat(Session.EventInfo.SelectedEvent.PGPPoints, "999.99")#<cfif LEN(Session.EventInfo.SelectedEvent.EventDate1) or LEN(Session.EventInfo.SelectedEvent.EventDate2) or LEN(Session.EventInfo.SelectedEvent.EventDate3) or LEN(Session.EventInfo.SelectedEvent.EventDate4)> Per Day</cfif></td>
 						<td style="width: 175px;"><span style="font-weight: bold;">Meal Provided:</span></td>
 						<td style="width: 175px;"><cfif Session.EventInfo.SelectedEvent.MealAvailable EQ 1>Yes<cfelse>No</cfif></td>
 						</tr>

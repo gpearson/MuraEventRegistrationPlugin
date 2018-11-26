@@ -23,7 +23,7 @@
 
 		<cfset var arrCaterers = ArrayNew(1)>
 		<cfif isDefined("URL._search")>
-			<cfif URL._search EQ "false">
+			<cfif URL._search EQ "true">
 				<cfquery name="getFacilities" dbtype="Query">
 					Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryVoiceNumber, Active
 					From Session.getFacilities
@@ -90,10 +90,7 @@
 				<cfquery name="getFacilities" dbtype="Query">
 					Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryVoiceNumber, Active
 					From Session.getFacilities
-					<cfif Arguments.sidx NEQ "">
-						Where #URL.searchField# LIKE '%#URL.searchString#'
-						Order By #Arguments.sidx# #Arguments.sord#
-					</cfif>
+					Order By #Arguments.sidx# #Arguments.sord#
 				</cfquery>
 			</cfif>
 		<cfelse>
@@ -226,7 +223,7 @@
 								PhysicalCity = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
 								PhysicalState = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
 								PhysicalZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
-								PhysicalZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+								PhysicalZip4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
 								GeoCode_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
 								GeoCode_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
 								USPS_CarrierRoute = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].carrier_route)#">,

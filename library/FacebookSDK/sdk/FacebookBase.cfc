@@ -41,7 +41,7 @@ component accessors="true" {
 	 * @description Facebook Graph API constructor
 	 * @hint Requires an application or user accessToken
 	 */
-	public Any function init(String appId = "", String apiVersion = "v2.1") {
+	public Any function init(String appId = "", String apiVersion = "v2.10") {
 		setAppId(arguments.appId);
 		setApiVersion(arguments.apiVersion);
 		return this;

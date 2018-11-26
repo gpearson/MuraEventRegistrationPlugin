@@ -28,7 +28,7 @@ component extends="FacebookBase" {
 	 * @description Facebook Graph API constructor
 	 * @hint Requires an application or user accessToken, appId is only used to invalidate current session if an invalid token is detected
 	 */
-	public Any function init(String accessToken = "", String appId = "", Numeric timeout = 10, String apiVersion = "v2.1") {
+	public Any function init(String accessToken = "", String appId = "", Numeric timeout = 10, String apiVersion = "v2.10") {
 		super.init(appId=arguments.appId, apiVersion=arguments.apiVersion);
 		variables.ACCESS_TOKEN = arguments.accessToken;
 		variables.TIMEOUT = arguments.timeout;
@@ -741,7 +741,7 @@ component extends="FacebookBase" {
 	 * @hint Requires the publish_stream permission.
 	 */
 	public String function publishLink(required String profileId, required String link, String caption = "", String description = "", String message = "", String name = "") {
-		var httpService = new Http(url="https://graph.facebook.com/#getApiVersion()#/#arguments.profileId#/links", method="POST", timeout=variables.TIMEOUT);
+		var httpService = new Http(url="https://graph.facebook.com/#getApiVersion()#/#arguments.profileId#/feed", method="POST", timeout=variables.TIMEOUT);
 		var result = {};
 		httpService.addParam(type="url", name="access_token", value=variables.ACCESS_TOKEN);
 		httpService.addParam(type="formField", name="link", value="#arguments.link#");

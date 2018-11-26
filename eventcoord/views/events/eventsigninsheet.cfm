@@ -49,13 +49,9 @@ Line 42: Change to the Plugin Name for the cfimport line
 						<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
 						<cfif Session.getRegisteredParticipants.IVCParticipant EQ 1><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "No")></cfif>
 						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate1", Session.getRegisteredparticipants.RegisterForEventDate1)>
-						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate2", Session.getRegisteredparticipants.RegisterForEventDate2)>
-						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate3", Session.getRegisteredparticipants.RegisterForEventDate3)>
-						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate4", Session.getRegisteredparticipants.RegisterForEventDate4)>
-						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate5", Session.getRegisteredparticipants.RegisterForEventDate5)>
-						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate6", Session.getRegisteredparticipants.RegisterForEventDate6)>
-						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventSessionAM", Session.getRegisteredparticipants.RegisterForEventSessionAM)>
-						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventSessionPM", Session.getRegisteredparticipants.RegisterForEventSessionPM)>
+						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate", Session.getRegisteredparticipants.RegisterForEventDate1)>
+						<cfif Session.getRegisteredParticipants.AttendedEventDate1 EQ 1><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "")></cfif>
+
 					</cfloop>
 
 					<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
@@ -75,7 +71,7 @@ Line 42: Change to the Plugin Name for the cfimport line
 					<cfset ReportExportLoc = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/")# & #URL.EventID# & "EventSignInSheet.pdf" >
 					<cfswitch expression="#rc.$.siteConfig('siteID')#">
 						<cfcase value="NIESCEvents">
-							<jr:jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
+							<jr:jasperreport jrxml="#ReportDirectory#/NIESCEventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
 						</cfcase>
 						<cfcase value="NWIESCEvents">
 							<jr:jasperreport jrxml="#ReportDirectory#/NWIESCEventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
@@ -103,6 +99,9 @@ Line 42: Change to the Plugin Name for the cfimport line
 									<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", DateFormat(ListGetAt(Session.SignInSheet.EventDates, 1), 'ddd, mmmm dd, yyyy'))>
 									<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
 									<cfif Session.getRegisteredParticipants.IVCParticipant EQ 1><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "No")></cfif>
+									<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate1", Session.getRegisteredparticipants.RegisterForEventDate1)>
+									<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate", Session.getRegisteredparticipants.RegisterForEventDate1)>
+									<cfif Session.getRegisteredParticipants.AttendedEventDate1 EQ 1><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "")></cfif>
 								</cfif>
 							</cfloop>
 						</cfcase>
@@ -125,6 +124,9 @@ Line 42: Change to the Plugin Name for the cfimport line
 									<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", DateFormat(ListGetAt(Session.SignInSheet.EventDates, 2), 'ddd, mmmm dd, yyyy'))>
 									<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
 									<cfif Session.getRegisteredParticipants.IVCParticipant EQ 1><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "No")></cfif>
+									<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate2", Session.getRegisteredparticipants.RegisterForEventDate1)>
+									<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate", Session.getRegisteredparticipants.RegisterForEventDate2)>
+									<cfif Session.getRegisteredParticipants.AttendedEventDate2 EQ 1><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "")></cfif>
 								</cfif>
 							</cfloop>
 						</cfcase>
@@ -147,6 +149,9 @@ Line 42: Change to the Plugin Name for the cfimport line
 									<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", DateFormat(ListGetAt(Session.SignInSheet.EventDates, 3), 'ddd, mmmm dd, yyyy'))>
 									<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
 									<cfif Session.getRegisteredParticipants.IVCParticipant EQ 1><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "No")></cfif>
+									<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate3", Session.getRegisteredparticipants.RegisterForEventDate3)>
+									<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate", Session.getRegisteredparticipants.RegisterForEventDate3)>
+									<cfif Session.getRegisteredParticipants.AttendedEventDate3 EQ 1><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "")></cfif>
 								</cfif>
 							</cfloop>
 						</cfcase>
@@ -169,6 +174,9 @@ Line 42: Change to the Plugin Name for the cfimport line
 									<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", DateFormat(ListGetAt(Session.SignInSheet.EventDates, 4), 'ddd, mmmm dd, yyyy'))>
 									<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
 									<cfif Session.getRegisteredParticipants.IVCParticipant EQ 1><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "No")></cfif>
+									<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate4", Session.getRegisteredparticipants.RegisterForEventDate4)>
+									<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate", Session.getRegisteredparticipants.RegisterForEventDate4)>
+									<cfif Session.getRegisteredParticipants.AttendedEventDate4 EQ 1><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "")></cfif>
 								</cfif>
 							</cfloop>
 						</cfcase>
@@ -191,6 +199,9 @@ Line 42: Change to the Plugin Name for the cfimport line
 									<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", DateFormat(ListGetAt(Session.SignInSheet.EventDates, 5), 'ddd, mmmm dd, yyyy'))>
 									<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
 									<cfif Session.getRegisteredParticipants.IVCParticipant EQ 1><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "No")></cfif>
+									<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate5", Session.getRegisteredparticipants.RegisterForEventDate5)>
+									<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate", Session.getRegisteredparticipants.RegisterForEventDate5)>
+									<cfif Session.getRegisteredParticipants.AttendedEventDate5 EQ 1><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "AttendedEventDate", "")></cfif>
 								</cfif>
 							</cfloop>
 						</cfcase>
@@ -212,7 +223,7 @@ Line 42: Change to the Plugin Name for the cfimport line
 					<cfset ReportExportLoc = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/")# & #URL.EventID# & "EventSignInSheet.pdf" >
 					<cfswitch expression="#rc.$.siteConfig('siteID')#">
 						<cfcase value="NIESCEvents">
-							<jr:jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
+							<jr:jasperreport jrxml="#ReportDirectory#/NIESCEventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
 						</cfcase>
 						<cfcase value="NWIESCEvents">
 							<jr:jasperreport jrxml="#ReportDirectory#/NWIESCEventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />

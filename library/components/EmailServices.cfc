@@ -470,6 +470,16 @@
 		<cfinclude template="EmailTemplates/SendEmailInvoiceToAccountsPayable.cfm">
 	</cffunction>
 
+	<cffunction name="SendStatementofAttendanceToFacilitator" returntype="Any" Output="False">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="ReportLocFilename" required="true" type="String">
+		<cfargument name="ShortTitle" required="true" type="String">
+		<cfargument name="ActPayableContactName" required="true" type="String">
+		<cfargument name="ActPayableContactEmail" required="true" type="String">
+		<cfargument name="OrganizationName" required="true" type="String">
+		<cfinclude template="EmailTemplates/SendEmailStatementOfCorporationAttendance.cfm">
+	</cffunction>
+
 	<cffunction name="SendForgotPasswordRequest" returntype="Any" Output="False">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 		<cfargument name="AccountQuery" required="true" type="query">

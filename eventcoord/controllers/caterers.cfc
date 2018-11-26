@@ -23,17 +23,7 @@
 
 		<cfset var arrCaterers = ArrayNew(1)>
 		<cfif isDefined("URL._search")>
-			<cfif URL._search EQ "false">
-				<cfquery name="getCaterers" dbtype="Query">
-					Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryVoiceNumber, Active
-					From Session.getCaterers
-					<cfif Arguments.sidx NEQ "">
-						Order By #Arguments.sidx# #Arguments.sord#
-					<cfelse>
-						Order by OrganizationName ASC
-					</cfif>
-				</cfquery>
-			<cfelse>
+			<cfif URL._search EQ "true">
 				<cfquery name="getCaterers" dbtype="Query">
 					Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryVoiceNumber, Active
 					From Session.getCaterers
@@ -95,6 +85,12 @@
 						</cfswitch>
 						Order By #Arguments.sidx# #Arguments.sord#
 					</cfif>
+				</cfquery>
+			<cfelse>
+				<cfquery name="getCaterers" dbtype="Query">
+					Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryVoiceNumber, Active
+					From Session.getCaterers
+					Order By #Arguments.sidx# #Arguments.sord#
 				</cfquery>
 			</cfif>
 		<cfelse>
@@ -223,7 +219,7 @@
 								PhysicalCity = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].city_name)#">,
 								PhysicalState = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].state_abbreviation)#">,
 								PhysicalZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].zipcode)#">,
-								PhysicalZipPlus4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
+								PhysicalZip4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
 								GeoCode_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
 								GeoCode_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
 								USPS_CarrierRoute = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].carrier_route)#">,
