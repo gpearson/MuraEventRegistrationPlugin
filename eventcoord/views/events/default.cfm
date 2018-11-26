@@ -166,7 +166,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 								</cfif>
 							</cfif>
 						</cfcase>
-						<cfcase value="EmailParticipants">
+						<cfcase value="EmailRegistered">
 							<cfif isDefined("URL.Successful")>
 								<cfif URL.Successful EQ "true">
 									<div id="modelWindowDialog" class="modal fade">
@@ -177,7 +177,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 													<h3>Email to Participants Being Sent</h3>
 												</div>
 												<div class="modal-body">
-													<p class="alert alert-success">You have successfully send registered participants an email message regarding the event. The system in in process of delivering these messages and depending on how many registered participants will depend on how much time will pass</p>
+													<p class="alert alert-success">You have successfully sent registered participants an email message regarding the event. The system in in process of delivering these messages and depending on how many registered participants will depend on how much time will pass</p>
 												</div>
 												<div class="modal-footer">
 													<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -254,7 +254,85 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfcase value="EmailAttended">
 							<cfif isDefined("URL.Successful")>
 								<cfif URL.Successful EQ "true">
-									<div class="alert alert-success"><p>You have successfully send attended participants an email message regarding the event. The system in in process of delivering these messages and depending on how many attended participants will depend on how much time will pass</p></div>
+									<div id="modelWindowDialog" class="modal fade">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+													<h3>Email to Attended Participants Being Sent</h3>
+												</div>
+												<div class="modal-body">
+													<p class="alert alert-success">You have successfully sent attended participants an email message regarding the event. The system in in process of delivering these messages and depending on how many attended participants will depend on how much time will pass</p>
+												</div>
+												<div class="modal-footer">
+													<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<script type='text/javascript'>
+										(function() {
+											'use strict';
+											function remoteModal(idModal){
+												var vm = this;
+												vm.modal = $(idModal);
+												if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+												if( window.location.hash == idModal ){ openModal(); }
+												var services = { open: openModal, close: closeModal };
+												return services;
+												function openModal(){
+													vm.modal.modal('show');
+												}
+												function closeModal(){
+													vm.modal.modal('hide');
+												}
+											}
+											Window.prototype.remoteModal = remoteModal;
+										})();
+										$(function(){
+											window.remoteModal('##modelWindowDialog');
+										});
+									</script>
+								<cfelseif URL.Successful EQ "NotSent">
+									<div id="modelWindowDialog" class="modal fade">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+													<h3>Email Attended Participants Not Sent</h3>
+												</div>
+												<div class="modal-body">
+													<p class="alert alert-success">You have not sent the email to those participants who attended the event due to selecting 'No' on the Send Email Question</p>
+												</div>
+												<div class="modal-footer">
+													<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<script type='text/javascript'>
+										(function() {
+											'use strict';
+											function remoteModal(idModal){
+												var vm = this;
+												vm.modal = $(idModal);
+												if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+												if( window.location.hash == idModal ){ openModal(); }
+												var services = { open: openModal, close: closeModal };
+												return services;
+												function openModal(){
+													vm.modal.modal('show');
+												}
+												function closeModal(){
+													vm.modal.modal('hide');
+												}
+											}
+											Window.prototype.remoteModal = remoteModal;
+										})();
+										$(function(){
+											window.remoteModal('##modelWindowDialog');
+										});
+									</script>
 								</cfif>
 							</cfif>
 						</cfcase>
@@ -703,8 +781,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 									<a href="#buildURL('eventcoord:events.registeruserforevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Register</small></a>
 									<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoord:events.deregisteruserforevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>De-Register</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>De-Register</small></button></cfif>
 									<a href="#buildURL('eventcoord:events.publishtofb')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small small"><small>Post Facebook</small></a><br>
-									<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoord:events.emailregistered')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Email Registered</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Email Registered</small></button></cfif>
-									<cfif getAttendedParticipantsForEvent.RecordCount><a href="#buildURL('eventcoord:events.emailattended')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Email Attended</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Email Attended</small></button></cfif>
+									<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoord:events.emailparticipants')#&EventID=#Session.getAvailableEvents.TContent_ID#&EmailType=EmailRegistered" class="btn btn-primary btn-small"><small>Email Registered</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Email Registered</small></button></cfif>
+									<cfif getAttendedParticipantsForEvent.RecordCount><a href="#buildURL('eventcoord:events.emailparticipants')#&EventID=#Session.getAvailableEvents.TContent_ID#&EmailType=EmailAttended" class="btn btn-primary btn-small"><small>Email Attended</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Email Attended</small></button></cfif>
 									<cfif getAttendedParticipantsForEvent.RecordCount><cfif Session.getAvailableEvents.PGPAvailable EQ 1><a href="#buildURL('eventcoord:events.sendpgpcertificates')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Send Certificates</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Send Certificates</small></button></cfif><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Send Certificates</small></button></CFIF><br>
 									<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoord:events.eventsigninsheet')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Sheet</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Sign-In Sheet</small></button></cfif>
 									<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoord:events.namebadges')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Name Badges</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Name Badges</small></button></cfif>
@@ -712,6 +790,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 									<a href="#buildURL('eventcoord:events.updateevent_review')#&EventID=#Session.getAvailableEvents.TContent_ID#" role="button" class="btn btn-primary btn-small"><small>Update Event</small></a>
 									<a href="#buildURL('eventcoord:events.cancelevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Cancel Event</small></a>
 									<a href="#buildURL('eventcoord:events.copyevent')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Copy Event</small></a><br>
+									<a href="#buildURL('eventcoord:events.eventdocs')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Event Documents</small></a>
+									<a href="#buildURL('eventcoord:events.eventweblinks')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Event Web Links</small></a><br>
 									<cfif getAttendedParticipantsForEvent.RecordCount and Session.getAvailableEvents.EventInvoicesGenerated EQ 0><a href="#buildURL('eventcoord:events.enterexpenses')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Expenses</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Expenses</small></button></cfif>
 									<cfif getAttendedParticipantsForEvent.RecordCount and Session.getAvailableEvents.EventInvoicesGenerated EQ 0><a href="#buildURL('eventcoord:events.enterrevenue')#&EventID=#Session.getAvailableEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Revenue</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Revenue</small></button></cfif>
 									<cfset IncomeCompleted = 0>
