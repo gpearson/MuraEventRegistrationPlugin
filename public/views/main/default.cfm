@@ -609,18 +609,91 @@
 			</cfcase>
 		</cfswitch>
 	</cfif>
-
-
 	<div class="panel panel-default">
 		<div class="panel-body">
-			<fieldset>
-				<legend><h2>Calendar of Events</h2></legend>
-			</fieldset>
 			<cfif Session.getFeaturedEvents.RecordCount>
-				<cfdump var="#Session.getFeaturedEvents#">
+				<fieldset>
+					<legend><h2>Featured Events or Workshops</h2></legend>
+				</fieldset>
+				<table class="table table-striped table-bordered">
+					<thead class="thead-default">
+						<tr>
+							<th width="50%">Event Title</th>
+							<th width="15%">Event Date</th>
+							<th width="20%">Event Actions</th>
+							<th width="15%">Event Attributes</th>
+						</tr>
+					</thead>
+					<tbody>
+						<cfloop query="#Session.getFeaturedEvents#">
+							<cfquery name="getCurrentRegistrationsbyEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Select Count(TContent_ID) as CurrentNumberofRegistrations
+								From p_EventRegistration_UserRegistrations
+								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
+									EventID = <cfqueryparam value="#Session.getFeaturedEvents.TContent_ID#" cfsqltype="cf_sql_integer">
+							</cfquery>
+							<cfset EventSeatsLeft = #Session.getFeaturedEvents.MaxParticipants# - #getCurrentRegistrationsbyEvent.CurrentNumberofRegistrations#>
+							<tr>
+								<td>#Session.getFeaturedEvents.ShortTitle#<cfif LEN(Session.getFeaturedEvents.Presenters)><cfquery name="getPresenter" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">Select FName, LName From tusers where UserID = <cfqueryparam value="#Session.getFeaturedEvents.Presenters#" cfsqltype="cf_sql_varchar"></cfquery><br><em>Presenter: #getPresenter.FName# #getPresenter.Lname#</em></cfif></td>
+								<td>
+									<cfif LEN(Session.getFeaturedEvents.EventDate) and LEN(Session.getFeaturedEvents.EventDate1) or LEN(Session.getFeaturedEvents.EventDate2) or LEN(Session.getFeaturedEvents.EventDate3) or LEN(Session.getFeaturedEvents.EventDate4)>
+										<cfif DateDiff("d", Now(), Session.getFeaturedEvents.EventDate) LT 0>
+											<div style="Color: ##CCCCCC;">#DateFormat(Session.getFeaturedEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.getFeaturedEvents.EventDate, "ddd")#)</div>
+										<cfelse>
+											#DateFormat(Session.getFeaturedEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.getFeaturedEvents.EventDate, "ddd")#)<br>
+										</cfif>
+										<cfif LEN(Session.getFeaturedEvents.EventDate1)>
+											<cfif DateDiff("d", Now(), Session.getFeaturedEvents.EventDate1) LT 0>
+												<div style="Color: ##AAAAAA;">#DateFormat(Session.getFeaturedEvents.EventDate1, "mm/dd/yyyy")# (#DateFormat(Session.getFeaturedEvents.EventDate1, "ddd")#)</div>
+											<cfelse>
+												#DateFormat(Session.getFeaturedEvents.EventDate1, "mm/dd/yyyy")# (#DateFormat(Session.getFeaturedEvents.EventDate1, "ddd")#)<br>
+											</cfif>
+										</cfif>
+										<cfif LEN(Session.getFeaturedEvents.EventDate2)>
+											<cfif DateDiff("d", Now(), Session.getFeaturedEvents.EventDate2) LT 0>
+												<div class="text-danger">#DateFormat(Session.getFeaturedEvents.EventDate2, "mm/dd/yyyy")# (#DateFormat(Session.getFeaturedEvents.EventDate2, "ddd")#)</div>
+											<cfelse>
+												#DateFormat(Session.getFeaturedEvents.EventDate2, "mm/dd/yyyy")# (#DateFormat(Session.getFeaturedEvents.EventDate2, "ddd")#)<br>
+											</cfif>
+										</cfif>
+										<cfif LEN(Session.getFeaturedEvents.EventDate3)>
+											<cfif DateDiff("d", Now(), Session.getFeaturedEvents.EventDate3) LT 0>
+												<div class="text-danger">#DateFormat(Session.getFeaturedEvents.EventDate3, "mm/dd/yyyy")# (#DateFormat(Session.getFeaturedEvents.EventDate3, "ddd")#)</div>
+											<cfelse>
+												#DateFormat(Session.getFeaturedEvents.EventDate3, "mm/dd/yyyy")# (#DateFormat(Session.getFeaturedEvents.EventDate3, "ddd")#)<br>
+											</cfif>
+										</cfif>
+										<cfif LEN(Session.getFeaturedEvents.EventDate4)>
+											<cfif DateDiff("d", Now(), Session.getFeaturedEvents.EventDate4) LT 0>
+												<div class="text-danger">#DateFormat(Session.getFeaturedEvents.EventDate4, "mm/dd/yyyy")# (#DateFormat(Session.getFeaturedEvents.EventDate4, "ddd")#)</div>
+											<cfelse>
+												#DateFormat(Session.getFeaturedEvents.EventDate4, "mm/dd/yyyy")# (#DateFormat(Session.getFeaturedEvents.EventDate4, "ddd")#)
+											</cfif>
+										</cfif>
+									<cfelse>
+										#DateFormat(Session.getFeaturedEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.getFeaturedEvents.EventDate, "ddd")#)
+									</cfif>
+								</td>
+								<td>
+									<cfif Session.getFeaturedEvents.AcceptRegistrations EQ 1>
+										<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.getFeaturedEvents.TContent_ID#" class="btn btn-primary btn-small" alt="Event Information">More Info</a>
+										<cfif Variables.EventSeatsLeft GTE 1 and DateDiff("d", Now(), Session.getFeaturedEvents.Registration_Deadline) GTE 0>
+											| <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&EventID=#Session.getFeaturedEvents.TContent_ID#" class="btn btn-primary btn-small" alt="Register Event">Register</a>
+										</cfif>
+									<CFELSE>
+										<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.getFeaturedEvents.TContent_ID#" class="btn btn-primary btn-small" alt="Event Information">More Info</a>
+									</cfif>
+								</td>
+								<td><cfif Session.getFeaturedEvents.PGPAvailable EQ 1><a href="##eventPGPCertificate" data-toggle="modal"><img src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/images/award.png" alt="PGP Certificate" border="0"></cfif><cfif Session.getFeaturedEvents.AllowVideoConference EQ 1 or Session.getFeaturedEvents.WebinarAvailable EQ 1><img src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/images/wifi.png" "Online Learning" border="0"></a></cfif></td>
+							</tr>
+						</cfloop>
+					</tbody>
+				</table>
 			</cfif>
-
 			<cfif Session.getNonFeaturedEvents.RecordCount>
+				<fieldset>
+					<legend><h2>Calendar of Events</h2></legend>
+				</fieldset>
 				<table class="table table-striped table-bordered">
 					<thead class="thead-default">
 						<tr>
@@ -694,12 +767,6 @@
 							</tr>
 						</cfloop>
 					</tbody>
-					<tfoot>
-						<tr>
-							<td></td>
-							<td></td>
-						</tr>
-					</tfoot>
 				</table>
 			</cfif>
 		</div>

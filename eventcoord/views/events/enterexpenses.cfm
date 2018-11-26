@@ -26,7 +26,45 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="panel-body">
 					<cfif isDefined("URL.Successful")>
 						<cfif URL.Successful EQ "true">
-							<div class="alert alert-success"><p>You have successfully added an expense to this event.</p></div>
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Expense Added to this Event</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully added an expense to this event.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
 						</cfif>
 					</cfif>
 					</div>
@@ -35,7 +73,45 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="panel-body">
 					<cfif isDefined("URL.Successful")>
 						<cfif URL.Successful EQ "true">
-							<div class="alert alert-success"><p>You have successfully deleted an existing expense for this event.</p></div>
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Expense Deleted from this Event</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully deleted an existing expense for this event.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
 						</cfif>
 					</cfif>
 					</div>
@@ -43,25 +119,67 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</cfswitch>
 		</cfif>
 		<cfif isDefined("URL.FormRetry")>
-			<div class="panel-body">
-				<cfif ArrayLen(Session.FormErrors) GTE 1>
-					<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
-				</cfif>
+			<div id="modelWindowDialog" class="modal fade">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+							<h3>Missing Information to Enter Expenses</h3>
+						</div>
+						<div class="modal-body">
+							<p class="alert alert-danger">#Session.FormErrors[1].Message#</p>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+						</div>
+					</div>
+				</div>
 			</div>
+			<script type='text/javascript'>
+				(function() {
+					'use strict';
+					function remoteModal(idModal){
+						var vm = this;
+						vm.modal = $(idModal);
+						if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+						if( window.location.hash == idModal ){ openModal(); }
+						var services = { open: openModal, close: closeModal };
+						return services;
+						function openModal(){
+							vm.modal.modal('show');
+						}
+						function closeModal(){
+							vm.modal.modal('hide');
+						}
+					}
+					Window.prototype.remoteModal = remoteModal;
+				})();
+				$(function(){
+					window.remoteModal('##modelWindowDialog');
+				});
+			</script>
 		</cfif>
-		<cfif isDefined("URL.UserAction")>
-			<cfif URL.UserAction EQ "UpdateExpense">
-				<div class="panel-heading"><h2>Update Expense for: #Session.getSelectedEvent.ShortTitle#</h2></div>
-			</cfif>
-		<cfelse>
-			<div class="panel-heading"><h2>Enter Expenses: #Session.getSelectedEvent.ShortTitle#</h2></div>
-		</cfif>
-
 		<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 			<cfinput type="hidden" name="EventID" value="#URL.EventID#">
 			<cfinput type="hidden" name="formSubmit" value="true">
 			<div class="panel-body">
+				<cfif isDefined("URL.UserAction")>
+					<cfif URL.UserAction EQ "UpdateExpense">
+						<fieldset>
+							<legend><h2>Update Expense for: #Session.getSelectedEvent.ShortTitle#</h2></legend>
+						</fieldset>
+					<cfelse>
+						<fieldset>
+						<legend><h2>Event Expenses - #Session.getSelectedEvent.ShortTitle#</h2></legend>
+					</fieldset>
+					</cfif>
+				<cfelse>
+					<fieldset>
+						<legend><h2>Event Expenses - #Session.getSelectedEvent.ShortTitle#</h2></legend>
+					</fieldset>
+				</cfif>
+
 				<cfif not isDefined("URL.UserAction")>
 					<cfif Session.getAvailableEventExpenses.RecordCount><table class="table table-striped" width="100%" cellspacing="0" cellpadding="0"><cfelse><table class="table" width="100%" cellspacing="0" cellpadding="0"></cfif>
 					<thead>
@@ -230,19 +348,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</table>
 		</div>
 		<div class="panel-footer">
-			<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+			<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Event Listing">
 			<cfif isDefined("URL.UserAction")>
 				<cfif URL.UserAction EQ "UpdateExpense">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Event Expenses"><br /><br />
 				<cfelse>
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Enter Event Expenses">
+					<span class="pull-right">&nbsp;&nbsp;</span>
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Generate Profit/Loss Report">
 					<br /><br />
 				</cfif>
 			<cfelse>
 				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Enter Event Expenses">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Generate Profit/Loss Report">
-					<br /><br />
+				<span class="pull-right">&nbsp;&nbsp;</span>
+				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Generate Profit/Loss Report">
+				<br /><br />
 			</cfif>
 		</div>
 		</cfform>

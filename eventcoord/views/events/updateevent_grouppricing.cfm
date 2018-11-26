@@ -29,21 +29,25 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AllowVideoConference" class="control-label col-sm-3">Video Conference Available:&nbsp;</label>
+						<label for="ViewGroupPricing" class="control-label col-sm-3">Allow Group Pricing:&nbsp;</label>
 						<div class="col-sm-8">
-							<cfselect name="AllowVideoConference" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.AllowVideoConference#" Display="OptionName"  queryposition="below">
-								<option value="----">Allow Video Conference</option>
+							<cfselect name="ViewGroupPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.ViewGroupPricing#" Display="OptionName"  queryposition="below">
+								<option value="----">Does Event have Group Pricing</option>
 							</cfselect>
 						</div>
 					</div>
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
-						<label for="VideoConferenceInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control">#Session.getSelectedEvent.VideoConferenceInfo#</textarea></div>
+						<label for="GroupMemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupMemberCost" name="GroupMemberCost" value="#Session.getSelectedEvent.GroupMemberCost#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="VideoConferenceCost" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="VideoConferenceCost" name="VideoConferenceCost" value="#Session.getSelectedEvent.VideoConferenceCost#" required="no"></p></div>
+						<label for="GroupNonMemberCost" class="control-label col-sm-3">NonMember Cost:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupNonMemberCost" name="GroupNonMemberCost" value="#Session.getSelectedEvent.GroupNonMemberCost#" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="GroupPriceRequirements" class="control-label col-sm-3">Requirements to Acquire Pricing:&nbsp;</label>
+						<div class="col-sm-8"><textarea name="GroupPriceRequirements" id="GroupPriceRequirements" class="form-control">#Session.getSelectedEvent.GroupPriceRequirements#</textarea></div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -63,21 +67,25 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AllowVideoConference" class="control-label col-sm-3">Video Conference Available:&nbsp;</label>
+						<label for="ViewGroupPricing" class="control-label col-sm-3">Allow Group Pricing:&nbsp;</label>
 						<div class="col-sm-8">
-							<cfselect name="AllowVideoConference" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.AllowVideoConference#" Display="OptionName"  queryposition="below">
-								<option value="----">Allow Video Conference</option>
+							<cfselect name="ViewGroupPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.getSelectedEvent.ViewGroupPricing#" Display="OptionName"  queryposition="below">
+								<option value="----">Does Event have Group Pricing</option>
 							</cfselect>
 						</div>
 					</div>
 					<div class="alert alert-info">Complete the following if you selected the Yes Option above.</div>
 					<div class="form-group">
-						<label for="VideoConferenceInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control">#Session.getSelectedEvent.VideoConferenceInfo#</textarea></p></div>
+						<label for="GroupMemberCost" class="control-label col-sm-3">Member Cost:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupMemberCost" name="GroupMemberCost" value="#Session.getSelectedEvent.GroupMemberCost#" required="no"></div>
 					</div>
 					<div class="form-group">
-						<label for="VideoConferenceCost" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><cfinput type="text" class="form-control" id="VideoConferenceCost" name="VideoConferenceCost" value="#Session.getSelectedEvent.VideoConferenceCost#" required="no"></p></div>
+						<label for="GroupNonMemberCost" class="control-label col-sm-3">NonMember Cost:&nbsp;</label>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupNonMemberCost" name="GroupNonMemberCost" value="#Session.getSelectedEvent.GroupNonMemberCost#" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="GroupPriceRequirements" class="control-label col-sm-3">Requirements to Acquire Pricing:&nbsp;</label>
+						<div class="col-sm-8"><textarea name="GroupPriceRequirements" id="GroupPriceRequirements" class="form-control">#Session.getSelectedEvent.GroupPriceRequirements#</textarea></div>
 					</div>
 				</div>
 				<div class="panel-footer">

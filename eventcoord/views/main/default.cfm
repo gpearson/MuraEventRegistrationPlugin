@@ -11,8 +11,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 </cfsilent>
 <cfoutput>
 	<div class="panel panel-default">
-		<div class="panel-heading"><h1>Welcome Event Facilitator</h1></div>
 		<div class="panel-body">
+			<fieldset>
+				<legend><h2>Welcome #Session.Mura.FName# #Session.Mura.LName# (Event Facilitator)</h2></legend>
+			</fieldset>
+			<div>Please use the navigation toolbar above to complete the task you logged in to do.</div>
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
 					<cfcase value="EventAdded">

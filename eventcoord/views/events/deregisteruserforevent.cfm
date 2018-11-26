@@ -17,12 +17,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Remove Participant from: #Session.getSelectedEvent.ShortTitle#</h1></div>
 			<cfform action="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.deregisteruserforevent&EventID=#URL.EventID#" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<cfinput type="hidden" name="EventID" value="#URL.EventID#">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Remove Participant from: #Session.getSelectedEvent.ShortTitle#</h2></legend>
+					</fieldset>
 					<div class="alert alert-info"><p>Complete this form to remove participant registeration from this workshop or event.</p></div>
 					<cfif LEN(Session.getSelectedEvent.EventDate1) or LEN(Session.getSelectedEvent.EventDate2) or LEN(Session.getSelectedEvent.EventDate3) or LEN(Session.getSelectedEvent.EventDate4) or LEN(Session.getSelectedEvent.EventDate5)>
 						<div class="panel-body">
@@ -265,26 +267,62 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</table>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Event Listing">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Remove Participants"><br /><br />
 				</div>
 			</cfform>
 		</div>
 	 <cfelseif isDefined("URL.FormRetry")>
 	 	<div class="panel panel-default">
-			<div class="panel-heading"><h1>Remove Participant from: #Session.getSelectedEvent.ShortTitle#</h1></div>
 			<cfform action="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.deregisteruserforevent&EventID=#URL.EventID#" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<cfinput type="hidden" name="EventID" value="#URL.EventID#">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Remove Participant from: #Session.getSelectedEvent.ShortTitle#</h2></legend>
+					</fieldset>
 					<div class="alert alert-info"><p>Complete this form to remove participant registeration from this workshop or event.</p></div>
 					<cfif isDefined("Session.FormErrors")>
-						<div class="panel-body">
-							<cfif ArrayLen(Session.FormErrors) GTE 1>
-								<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
-							</cfif>
+						<div id="modelWindowDialog" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+									<h3>Missing Information</h3>
+								</div>
+								<div class="modal-body">
+									<p class="alert alert-danger">#Session.FormErrors[1].Message#</p>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+								</div>
+							</div>
 						</div>
+					</div>
+					<script type='text/javascript'>
+						(function() {
+							'use strict';
+							function remoteModal(idModal){
+								var vm = this;
+								vm.modal = $(idModal);
+								if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+								if( window.location.hash == idModal ){ openModal(); }
+								var services = { open: openModal, close: closeModal };
+								return services;
+								function openModal(){
+									vm.modal.modal('show');
+								}
+								function closeModal(){
+									vm.modal.modal('hide');
+								}
+							}
+							Window.prototype.remoteModal = remoteModal;
+						})();
+						$(function(){
+							window.remoteModal('##modelWindowDialog');
+						});
+					</script>
 					</cfif>
 					<cfif LEN(Session.getSelectedEvent.EventDate1) or LEN(Session.getSelectedEvent.EventDate2) or LEN(Session.getSelectedEvent.EventDate3) or LEN(Session.getSelectedEvent.EventDate4) or LEN(Session.getSelectedEvent.EventDate5)>
 						<div class="panel-body">
@@ -528,7 +566,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</table>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Event Listing">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Remove Participants"><br /><br />
 				</div>
 			</cfform>

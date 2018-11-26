@@ -13,15 +13,50 @@
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Edit Facility Information</h1></div>
 			<cfif isDefined("URL.UserAction")>
 				<div class="panel-body">
 					<cfswitch expression="#URL.UserAction#">
 						<cfcase value="RoomCreated">
 							<cfif URL.Successful EQ "true">
-								<div class="alert alert-success">
-									You have successfully created a new room within Facility for upcoming meetings or events.
+								<div id="modelWindowDialog" class="modal fade">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+												<h3>New Meeting Room Created within Facility</h3>
+											</div>
+											<div class="modal-body">
+												<p class="alert alert-success">You have successfully created a new room within Facility for upcoming meetings or events.</p>
+											</div>
+											<div class="modal-footer">
+												<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+											</div>
+										</div>
+									</div>
 								</div>
+								<script type='text/javascript'>
+									(function() {
+										'use strict';
+										function remoteModal(idModal){
+											var vm = this;
+											vm.modal = $(idModal);
+											if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+											if( window.location.hash == idModal ){ openModal(); }
+											var services = { open: openModal, close: closeModal };
+											return services;
+											function openModal(){
+												vm.modal.modal('show');
+											}
+											function closeModal(){
+												vm.modal.modal('hide');
+											}
+										}
+										Window.prototype.remoteModal = remoteModal;
+									})();
+									$(function(){
+										window.remoteModal('##modelWindowDialog');
+									});
+								</script>
 							<cfelse>
 								<div class="alert alert-danger">
 								</div>
@@ -29,9 +64,45 @@
 						</cfcase>
 						<cfcase value="RoomUpdated">
 							<cfif URL.Successful EQ "true">
-								<div class="alert alert-success">
-									You have successfully updated a room within Facility for upcoming meetings or events.
+								<div id="modelWindowDialog" class="modal fade">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+												<h3>Meeting Room Updated within Facility</h3>
+											</div>
+											<div class="modal-body">
+												<p class="alert alert-success">You have successfully updated a room within Facility for upcoming meetings or events.</p>
+											</div>
+											<div class="modal-footer">
+												<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+											</div>
+										</div>
+									</div>
 								</div>
+								<script type='text/javascript'>
+									(function() {
+										'use strict';
+										function remoteModal(idModal){
+											var vm = this;
+											vm.modal = $(idModal);
+											if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+											if( window.location.hash == idModal ){ openModal(); }
+											var services = { open: openModal, close: closeModal };
+											return services;
+											function openModal(){
+												vm.modal.modal('show');
+											}
+											function closeModal(){
+												vm.modal.modal('hide');
+											}
+										}
+										Window.prototype.remoteModal = remoteModal;
+									})();
+									$(function(){
+										window.remoteModal('##modelWindowDialog');
+									});
+								</script>
 							<cfelse>
 								<div class="alert alert-danger">
 								</div>
@@ -44,12 +115,17 @@
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Edit Facility Information</h2></legend>
+					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Facility</div>
 					<div class="form-group">
 						<label for="FacilityName" class="control-label col-sm-3">Facility Name:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FacilityName" name="FacilityName" value="#Session.getSelectedFacility.FacilityName#" required="yes"></div>
 					</div>
-					<div class="panel-heading"><h1>Physical Location Information</h1></div>
+					<fieldset>
+						<legend><h2>Physical Location Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="PhysicalAddress" class="control-label col-sm-3">Address:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" value="#Session.getSelectedFacility.PhysicalAddress#" required="yes"></div>
@@ -74,7 +150,9 @@
 						<label for="BusinessWebsite" class="control-label col-sm-3">Website:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="BusinessWebsite" name="BusinessWebsite" value="#Session.getSelectedFacility.BusinessWebsite#" required="NO"></div>
 					</div>
-					<div class="panel-heading"><h1>Contact Information</h1></div>
+					<fieldset>
+						<legend><h2>Contact Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="ContactName" class="control-label col-sm-3">Name:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ContactName" name="ContactName" value="#Session.getSelectedFacility.ContactName#" required="NO"></div>
@@ -93,7 +171,9 @@
 							<option value="----">Is facility Active?</option>
 						</cfselect></div>
 					</div>
-					<div class="panel-heading"><h1>Meeting Room Information</h1></div>
+					<fieldset>
+						<legend><h2>Meeting Room Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<table class="table table-striped table-bordered">
 							<cfif Session.getSelectedFacilityRooms.RecordCount>
@@ -140,24 +220,62 @@
 		</div>
 	<cfelseif isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Edit Caterer Information</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<cfif isDefined("Session.FormErrors")>
-					<div class="panel-body">
-						<cfif ArrayLen(Session.FormErrors) GTE 1>
-							<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
-						</cfif>
+					<div id="modelWindowDialog" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+									<h3>Missing Information</h3>
+								</div>
+								<div class="modal-body">
+									<p class="alert alert-danger">#Session.FormErrors[1].Message#</p>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+								</div>
+							</div>
+						</div>
 					</div>
+					<script type='text/javascript'>
+						(function() {
+							'use strict';
+							function remoteModal(idModal){
+								var vm = this;
+								vm.modal = $(idModal);
+								if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+								if( window.location.hash == idModal ){ openModal(); }
+								var services = { open: openModal, close: closeModal };
+								return services;
+								function openModal(){
+									vm.modal.modal('show');
+								}
+								function closeModal(){
+									vm.modal.modal('hide');
+								}
+							}
+							Window.prototype.remoteModal = remoteModal;
+						})();
+						$(function(){
+							window.remoteModal('##modelWindowDialog');
+						});
+					</script>
 				</cfif>
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Edit Facility Information</h2></legend>
+					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Caterering Facility</div>
 					<div class="form-group">
 						<label for="FacilityName" class="control-label col-sm-3">Business Name:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FacilityName" name="FacilityName" value="#Session.FormInput.FacilityName#" required="yes"></div>
 					</div>
-					<div class="panel-heading"><h1>Physical Location Information</h1></div>
+					<fieldset>
+						<legend><h2>Physical Location Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="PhysicalAddress" class="control-label col-sm-3">Address:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" value="#Session.FormInput.PhysicalAddress#" required="yes"></div>
@@ -182,7 +300,9 @@
 						<label for="BusinessWebsite" class="control-label col-sm-3">Website:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="BusinessWebsite" name="BusinessWebsite" value="#Session.FormInput.BusinessWebsite#" required="NO"></div>
 					</div>
-					<div class="panel-heading"><h1>Contact Information</h1></div>
+					<fieldset>
+						<legend><h2>Contact Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="ContactName" class="control-label col-sm-3">Name:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ContactName" name="ContactName" value="#Session.FormInput.ContactName#" required="NO"></div>
@@ -195,7 +315,9 @@
 						<label for="ContactEmail" class="control-label col-sm-3">Email Address:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ContactEmail" name="ContactEmail" value="#Session.FormInput.ContactEmail#" required="NO"></div>
 					</div>
-					<div class="panel-heading"><h1>Optional Information</h1></div>
+					<fieldset>
+						<legend><h2>Optional Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="PaymentTerms" class="control-label col-sm-3">Payment Terms:&nbsp;</label>
 						<div class="col-sm-8"><textarea name="PaymentTerms" id="PaymentTerms" class="form-control" >#Session.FormInput.PaymentTerms#</textarea></div>
@@ -218,10 +340,50 @@
 							<option value="----">Is Caterer Active?</option>
 						</cfselect></div>
 					</div>
+					<fieldset>
+						<legend><h2>Meeting Room Information</h2></legend>
+					</fieldset>
+					<div class="form-group">
+						<table class="table table-striped table-bordered">
+							<cfif Session.getSelectedFacilityRooms.RecordCount>
+								<thead class="thead-default">
+									<tr>
+										<th width="40%">Room Name</th>
+										<th  width="15%">Room Capacity</th>
+										<th  width="15%">Room Fees</th>
+										<th width="15%">Room Active</th>
+										<th width="15%">Actions</th>
+									</tr>
+								</thead>
+								<tfoot>
+									<tr>
+										<td colspan="5">Add a new meeting room to this Facility by clicking <a href="#buildURL('eventcoord:facility.addfacilityroom')#&FacilityID=#URL.FacilityID#" class="btn btn-primary btn-small">here</a></td>
+									</tr>
+								</tfoot>
+								<tbody>
+									<cfloop query="Session.getSelectedFacilityRooms">
+										<tr>
+											<td>#Session.getSelectedFacilityRooms.RoomName#</td>
+											<td>#Session.getSelectedFacilityRooms.Capacity#</td>
+											<td>#Session.getSelectedFacilityRooms.RoomFees#</td>
+											<td><cfswitch expression="#Session.getSelectedFacilityRooms.Active#"><cfcase value="1">Yes</cfcase><cfdefaultcase>No</cfdefaultcase></cfswitch></td>
+											<td><a href="#buildURL('eventcoord:facility.editfacilityroom')#&FacilityID=#URL.FacilityID#&FacilityRoomID=#Session.getSelectedFacilityRooms.TContent_ID#" class="btn btn-primary btn-small">Update</a></td>
+										</tr>
+									</cfloop>
+								</tbody>
+							<cfelse>
+								<tfoot>
+									<tr>
+										<td colspan="5">Add a new meeting room to this Facility by clicking <a href="#buildURL('eventcoord:facility.addfacilityroom')#&FacilityID=#URL.FacilityID#" class="btn btn-primary btn-small">here</a></td>
+									</tr>
+								</tfoot>
+							</cfif>
+						</table>
+					</div>
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Edit Catering Facility"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Edit Facility Information"><br /><br />
 				</div>
 			</cfform>
 		</div>

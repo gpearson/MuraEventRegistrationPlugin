@@ -15,15 +15,53 @@ http://www.apache.org/licenses/LICENSE-2.0
 		$.jgrid.defaults.styleUI = 'Bootstrap';
 	</script>
 	<div class="panel panel-default">
-		<div class="panel-heading"><h1>Available Users</h1></div>
 		<div class="panel-body">
+			<fieldset>
+				<legend><h2>Available Users</h2></legend>
+			</fieldset>
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
 					<cfcase value="ActivatedAccount">
 						<cfif URL.Successful EQ "true">
-							<div class="alert alert-success">
-								You have successfully activated a users account to be able to login to this system.
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>User Account Activated</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully activated a users account and they are able to login to this system.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
 							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
 						<cfelse>
 							<div class="alert alert-danger">
 							</div>
@@ -31,9 +69,45 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</cfcase>
 					<cfcase value="AccountUpdated">
 						<cfif URL.Successful EQ "true">
-							<div class="alert alert-success">
-								You have successfully updated the users account in the database.
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>User Account Updated</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully updated a users account in the database.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
 							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
 						<cfelse>
 							<div class="alert alert-danger">
 							</div>
@@ -41,9 +115,45 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</cfcase>
 					<cfcase value="AccountCreated">
 						<cfif URL.Successful EQ "true">
-							<div class="alert alert-success">
-								You have successfully created a new account for a user in the database. They can login with the Email Address and the password which you entered.
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>User Account Created</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully created a new user account in the database.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
 							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
 						<cfelse>
 							<div class="alert alert-danger">
 							</div>
@@ -54,9 +164,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<table id="jqGrid"></table>
 			<div id="jqGridPager"></div>
 			<div id="dialog" title="Feature not supported" style="display:none"><p>That feature is not supported.</p></div>
-		</div>
-		<div class="panel-footer">
-
 		</div>
 	</div>
 	<script type="text/javascript">

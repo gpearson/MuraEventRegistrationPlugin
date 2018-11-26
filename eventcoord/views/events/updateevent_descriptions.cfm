@@ -20,12 +20,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="EventID" value="#URL.EventID#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="ShortTitle" class="control-label col-sm-3">Event Title:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ShortTitle" name="ShortTitle" value="#Session.getSelectedEvent.ShortTitle#" required="yes"></div>
@@ -52,19 +54,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Event Review">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Event Section"><br /><br />
 				</div>
 			</cfform>
 		</div>
 	<cfelseif isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="EventID" value="#Session.FormData.EventID#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="ShortTitle" class="control-label col-sm-3">Event Title:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ShortTitle" name="ShortTitle" value="#Session.getSelectedEvent.ShortTitle#" required="yes"></div>
@@ -91,7 +95,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Event Review">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Event Section"><br /><br />
 				</div>
 			</cfform>

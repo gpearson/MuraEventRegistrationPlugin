@@ -9,11 +9,13 @@
 <cfoutput>
 	<div class="panel panel-default">
 		<cfif not isDefined("URL.FormRetry")>
-			<div class="panel-heading"><h1>New Event Expense</h1></div>
 			<cfform action="" method="post" id="RegisterNewLocation" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Add Event Expense</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="GroupName" class="control-label col-sm-3">Expense Name:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ExpenseName" name="ExpenseName" required="no"></div>
@@ -33,7 +35,6 @@
 				</div>
 			</cfform>
 		<cfelseif isDefined("URL.FormRetry")>
-			<div class="panel-heading"><h1>New Group for Organization</h1></div>
 			<cfform action="" method="post" id="RegisterNewLocation" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="OrganizationID" value="#Session.Mura.GrpMessageOrganizationID#">
@@ -43,6 +44,9 @@
 					<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
 				</cfif>
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Add Event Expense</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="GroupName" class="control-label col-sm-3">Group Name:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" value="#Session.FormData.GroupName#" id="GroupName" name="GroupName" required="yes"></div>

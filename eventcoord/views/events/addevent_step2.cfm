@@ -39,14 +39,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 	</script>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Add New Event or Workshop - Step 2</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Add New Event or Workshop - Step 2</h2></legend>
+					</fieldset>
 					<div class="alert alert-info">This is Step 2 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
 					<cfif Session.UserSuppliedInfo.FirstStep.EventSpanDates EQ 1>
-						<div class="panel-heading"><h1>Additional Dates for Event or Workshop</h1></div>
+						<fieldset>
+							<legend><h2>Additional Dates for Event or Workshop</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="EventDate1" class="control-label col-sm-3">2nd Event Date:&nbsp;</label>
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate1" name="EventDate1" required="yes"></div>
@@ -64,7 +68,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate4" name="EventDate4" required="no"></div>
 						</div>
 					</cfif>
-					<div class="panel-heading"><h1>Additional Detail Information for Event or Workshop</h1></div>
+					<fieldset>
+						<legend><h2>Additional Detail Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="EventAgenda" class="control-label col-sm-3">Event Agenda:&nbsp;</label>
 						<div class="col-sm-8"><textarea name="EventAgenda" id="EventAgenda" class="form-control"></textarea></div>
@@ -82,7 +88,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8"><textarea name="EventSpecialInstructions" id="EventSpecialInstructions" class="form-control"></textarea></div>
 					</div>
 					<cfif Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
-						<div class="panel-heading"><h1>Event Pricing</h1></div>
+						<fieldset>
+							<legend><h2>Event Pricing Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="MemberCost" class="control-label col-sm-3">Member Pricing:&nbsp;</label>
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="MemberCost" name="MemberCost" required="yes"></div>
@@ -93,7 +101,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.EventFeatured EQ 1>
-						<div class="panel-heading"><h1>Event Featured Information</h1></div>
+						<fieldset>
+							<legend><h2>Event Featured Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="Featured_StartDate" class="control-label col-sm-3">Start Date to be Featured:&nbsp;</label>
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_StartDate" name="Featured_StartDate" required="yes"></div>
@@ -108,9 +118,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.EarlyBird_RegistrationAvailable EQ 1>
-						<div class="panel-heading"><h1>Event Early Bird Registration Information</h1></div>
+						<fieldset>
+							<legend><h2>Early Bird Registration Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
-							<label for="EarlyBird_RegistrationDeadline" class="control-label col-sm-3">Featured Sort order:&nbsp;</label>
+							<label for="EarlyBird_RegistrationDeadline" class="control-label col-sm-3">Early Bird Registration Deadline:&nbsp;</label>
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_RegistrationDeadline" name="EarlyBird_RegistrationDeadline" required="yes"></div>
 						</div>
 						<div class="form-group">
@@ -123,7 +135,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.ViewGroupPricing EQ 1 and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
-						<div class="panel-heading"><h1>Event Group Pricing Information</h1></div>
+						<fieldset>
+							<legend><h2>Group Pricing Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="GroupPriceRequirements" class="control-label col-sm-3">Requirements to Meet Group Pricing:&nbsp;</label>
 							<div class="col-sm-8"><textarea name="GroupPriceRequirements" id="GroupPriceRequirements" class="form-control"></textarea></div>
@@ -138,14 +152,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.PGPAvailable EQ 1>
-						<div class="panel-heading"><h1>Professional Growth Point Certificate Available</h1></div>
+						<fieldset>
+							<legend><h2>Professional Growth Point Certification Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="PGPPoints" class="control-label col-sm-3">Number of PGP Points Per Day:&nbsp;</label>
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="PGPPoints" name="PGPPoints" required="yes"></div>
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.MealProvided EQ 1 and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
-						<div class="panel-heading"><h1>Caterer Information</h1></div>
+						<fieldset>
+							<legend><h2>Caterer Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="MealProvidedBy" class="control-label col-sm-3">Provided By:&nbsp;</label>
 							<div class="col-sm-8">
@@ -160,7 +178,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.AllowVideoConference EQ 1 and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
-						<div class="panel-heading"><h1>Video Conference Information</h1></div>
+						<fieldset>
+							<legend><h2>Video Conference Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="VideoConferenceInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
 							<div class="col-sm-8"><textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control"></textarea></div>
@@ -171,7 +191,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 1>
-						<div class="panel-heading"><h1>Webinar Information</h1></div>
+						<fieldset>
+							<legend><h2>Webinar Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="WebinarConnectWebInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
 							<div class="col-sm-8"><textarea name="WebinarConnectWebInfo" id="WebinarConnectWebInfo" class="form-control"></textarea></div>
@@ -186,7 +208,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
-						<div class="panel-heading"><h1>Event Held At</h1></div>
+						<fieldset>
+							<legend><h2>Event Facility Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="LocationID" class="control-label col-sm-3">Location of Event:&nbsp;</label>
 							<div class="col-sm-8">
@@ -205,7 +229,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 		</div>
 	<cfelseif isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Add New Event or Workshop - Step 2</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
@@ -217,9 +240,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 				</cfif>
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Add New Event or Workshop - Step 2</h2></legend>
+					</fieldset>
 					<div class="alert alert-info">This is Step 2 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
 					<cfif Session.UserSuppliedInfo.FirstStep.EventSpanDates EQ 1>
-						<div class="panel-heading"><h1>Additional Dates for Event or Workshop</h1></div>
+						<fieldset>
+							<legend><h2>Additional Dates for Event or Workshop</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="EventDate1" class="control-label col-sm-3">2nd Event Date:&nbsp;</label>
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate1" value="#Session.UserSuppliedInfo.SecondStep.EventDate1#" name="EventDate1" required="yes"></div>
@@ -237,7 +265,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EventDate4" name="EventDate4" value="#Session.UserSuppliedInfo.SecondStep.EventDate4#" required="no"></div>
 						</div>
 					</cfif>
-					<div class="panel-heading"><h1>Additional Detail Information for Event or Workshop</h1></div>
+					<fieldset>
+						<legend><h2>Additional Detail Information for Event or Workshop</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="EventAgenda" class="control-label col-sm-3">Event Agenda:&nbsp;</label>
 						<div class="col-sm-8">
@@ -279,7 +309,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</div>
 					<cfif Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
-						<div class="panel-heading"><h1>Event Pricing</h1></div>
+						<fieldset>
+							<legend><h2>Event Pricing Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="MemberCost" class="control-label col-sm-3">Member Pricing:&nbsp;</label>
 							<div class="col-sm-8">
@@ -302,7 +334,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.EventFeatured EQ 1>
-						<div class="panel-heading"><h1>Event Featured Information</h1></div>
+						<fieldset>
+							<legend><h2>Event Featured Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="Featured_StartDate" class="control-label col-sm-3">Start Date to be Featured:&nbsp;</label>
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="Featured_StartDate" name="Featured_StartDate" value="#Session.UserSuppliedInfo.SecondStep.Featured_StartDate#" required="yes"></div>
@@ -317,7 +351,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.EarlyBird_RegistrationAvailable EQ 1>
-						<div class="panel-heading"><h1>Event Early Bird Registration Information</h1></div>
+						<fieldset>
+							<legend><h2>Early Bird Registration Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="EarlyBird_RegistrationDeadline" class="control-label col-sm-3">Featured Sort order:&nbsp;</label>
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_RegistrationDeadline" name="EarlyBird_RegistrationDeadline" value="#Session.UserSuppliedInfo.SecondStep.EarlyBird_RegistrationDeadline#" required="yes"></div>
@@ -331,30 +367,36 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_NonMemberCost" name="EarlyBird_NonMemberCost" value="#Session.UserSuppliedInfo.SecondStep.EarlyBird_NonMemberCost#" required="yes"></div>
 						</div>
 					</cfif>
-					<cfif Session.UserSuppliedInfo.FirstStep.ViewSpecialPricing EQ 1 and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
-						<div class="panel-heading"><h1>Event Special Pricing Information</h1></div>
+					<cfif Session.UserSuppliedInfo.FirstStep.ViewGroupPricing EQ 1 and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
+						<fieldset>
+							<legend><h2>Group Pricing Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
-							<label for="SpecialPriceRequirements" class="control-label col-sm-3">Requirements to Meet Special Pricing:&nbsp;</label>
-							<div class="col-sm-8"><textarea name="SpecialPriceRequirements" id="SpecialPriceRequirements" class="form-control">#Session.UserSuppliedInfo.SecondStep.SpecialPriceRequirements#</textarea></div>
+							<label for="GroupPriceRequirements" class="control-label col-sm-3">Requirements to Meet Group Pricing:&nbsp;</label>
+							<div class="col-sm-8"><textarea name="GroupPriceRequirements" id="GroupPriceRequirements" class="form-control">#Session.UserSuppliedInfo.SecondStep.GroupPriceRequirements#</textarea></div>
 						</div>
 						<div class="form-group">
-							<label for="SpecialMemberCost" class="control-label col-sm-3">Special Member Pricing:&nbsp;</label>
-							<div class="col-sm-8"><cfinput type="text" class="form-control" id="SpecialMemberCost" name="SpecialMemberCost" value="#Session.UserSuppliedInfo.SecondStep.SpecialMemberCost#" required="yes"></div>
+							<label for="GroupMemberCost" class="control-label col-sm-3">Group Member Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupMemberCost" name="GroupMemberCost" value="#Session.UserSuppliedInfo.SecondStep.GroupMemberCost#" required="yes"></div>
 						</div>
 						<div class="form-group">
-							<label for="SpecialNonMemberCost" class="control-label col-sm-3">Special NonMember Pricing:&nbsp;</label>
-							<div class="col-sm-8"><cfinput type="text" class="form-control" id="SpecialNonMemberCost" name="SpecialNonMemberCost" value="#Session.UserSuppliedInfo.SecondStep.SpecialNonMemberCost#" required="yes"></div>
+							<label for="GroupNonMemberCost" class="control-label col-sm-3">Group NonMember Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupNonMemberCost" name="GroupNonMemberCost" value="#Session.UserSuppliedInfo.SecondStep.GroupNonMemberCost#" required="yes"></div>
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.PGPAvailable EQ 1>
-						<div class="panel-heading"><h1>Professional Growth Point Certificate Available</h1></div>
+						<fieldset>
+							<legend><h2>Professional Growth Point Certificate Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="PGPPoints" class="control-label col-sm-3">Number of PGP Points:&nbsp;</label>
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="PGPPoints" name="PGPPoints" value="#Session.UserSuppliedInfo.SecondStep.PGPPoints#" required="yes"></div>
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.MealProvided EQ 1 and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
-						<div class="panel-heading"><h1>Caterer Information</h1></div>
+						<fieldset>
+							<legend><h2>Caterer Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="MealProvidedBy" class="control-label col-sm-3">Provided By:&nbsp;</label>
 							<div class="col-sm-8">
@@ -369,7 +411,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.AllowVideoConference EQ 1 and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
-						<div class="panel-heading"><h1>Video Conference Information</h1></div>
+						<fieldset>
+							<legend><h2>Video Conference Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="VideoConferenceInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
 							<div class="col-sm-8"><textarea name="VideoConferenceInfo" id="VideoConferenceInfo" class="form-control">#Session.UserSuppliedInfo.SecondStep.VideoConferenceInfo#</textarea></div>
@@ -380,7 +424,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 1>
-						<div class="panel-heading"><h1>Webinar Information</h1></div>
+						<fieldset>
+							<legend><h2>Webinar Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="WebinarConnectWebInfo" class="control-label col-sm-3">Connection Information:&nbsp;</label>
 							<div class="col-sm-8"><textarea name="WebinarConnectWebInfo" id="WebinarConnectWebInfo" class="form-control">#Session.UserSuppliedInfo.SecondStep.WebinarConnectWebInfo#</textarea></div>
@@ -395,7 +441,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
-						<div class="panel-heading"><h1>Event Held At</h1></div>
+						<fieldset>
+							<legend><h2>Event Facility Information</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="LocationID" class="control-label col-sm-3">Location of Event:&nbsp;</label>
 							<div class="col-sm-8">
@@ -408,7 +456,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 										<option value="----">Select Location of Event</option>
 									</cfselect>
 								</cfif>
-
 							</div>
 						</div>
 					</cfif>

@@ -1,13 +1,17 @@
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Update Existing Event or Workshop - #Session.getSelectedEvent.ShortTitle#</h2></legend>
+					</fieldset>
 					<div class="alert alert-info">Please review the information listed below and make any corrections which are needed complete the following information to add a new workshop or event so that individuals will be allowed to register for.</div>
-					<h2 class="panel-title">Event Date(s) Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_eventdates&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<fieldset>
+						<legend><h3>Event Date(s) Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_eventdates&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#</p></div>
@@ -42,8 +46,10 @@
 						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate5, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
-					<hr>
-					<h2 class="panel-title">Registration Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_eventtimes&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Registration Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_eventtimes&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="RegistrationDeadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "mm/dd/yyyy")#</p></div>
@@ -60,8 +66,10 @@
 						<label for="Event_EndTime" class="control-label col-sm-3">Event Ending Time:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "hh:mm tt")#</p></div>
 					</div>
-					<hr>
-					<h2 class="panel-title">Event Description Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_descriptions&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Event Description Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_descriptions&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="ShortTitle" class="control-label col-sm-3">Event Title:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.ShortTitle#</p></div>
@@ -86,8 +94,10 @@
 						<label for="EventSpecialInstructions" class="control-label col-sm-3">Event Special Instructions:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.EventSpecialInstructions#</p></div>
 					</div>
-					<hr>
-					<h2 class="panel-title">Event Featured Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_featured&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Event Featured Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_featured&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="EventFeatured" class="control-label col-sm-3">Event Featured:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.EventFeatured#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
@@ -106,8 +116,10 @@
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.Featured_SortOrder#</p></div>
 						</div>
 					</cfif>
-					<hr>
-					<h2 class="panel-title">Event Standard Pricing Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_pricing&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Event Standard Pricing Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_pricing&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="MemberCost" class="control-label col-sm-3">Member Price:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.MemberCost)#</p></div>
@@ -116,8 +128,10 @@
 						<label for="NonMemberCost" class="control-label col-sm-3">NonMember Price:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.NonMemberCost)#</p></div>
 					</div>
-					<hr>
-					<h2 class="panel-title">Event Early Bird Registration Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_earlybird&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Event Early Bird Registration Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_earlybird&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="EarlyBird_RegistrationAvailable" class="control-label col-sm-3">Early Bird Available:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.EarlyBird_RegistrationAvailable#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
@@ -136,8 +150,10 @@
 						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.EarlyBird_NonMemberCost)#</p></div>
 						</div>
 					</cfif>
-					<hr>
-					<h2 class="panel-title">Event Special Pricing Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_specialpricing&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Event Group Pricing Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_grouppricing&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="ViewSpecialPricing" class="control-label col-sm-3">Group Price Available:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.ViewGroupPricing#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
@@ -156,8 +172,10 @@
 						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.GroupNonMemberCost)#</p></div>
 						</div>
 					</cfif>
-					<hr>
-					<h2 class="panel-title">PGP Certificate Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_pgps&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>PGP Certificate Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_pgps&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="PGPAvailable" class="control-label col-sm-3">PGP Certificate:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.PGPAvailable#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
@@ -168,8 +186,10 @@
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.PGPPoints#</p></div>
 						</div>
 					</cfif>
-					<hr>
-					<h2 class="panel-title">Meal Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_mealinfo&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Meal Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_mealinfo&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.MealProvided#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
@@ -184,8 +204,10 @@
 						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.MealCost_Estimated)#</p></div>
 						</div>
 					</cfif>
-					<hr>
-					<h2 class="panel-title">Video Conference Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_videoconference&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Video Conference Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_videoconference&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="AllowVideoConference" class="control-label col-sm-3">Video Conference Available:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.AllowVideoConference#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
@@ -200,8 +222,10 @@
 						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.VideoConferenceCost)#</p></div>
 						</div>
 					</cfif>
-					<hr>
-					<h2 class="panel-title">Webinar Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_webinar&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Webinar Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_webinar&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="WebinarAvailable" class="control-label col-sm-3">Webinar Available:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.WebinarAvailable#"><cfdefaultcase>No</cfdefaultcase><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
@@ -220,8 +244,10 @@
 						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.WebinarNonMemberCost)#</p></div>
 						</div>
 					</cfif>
-					<hr>
-					<h2 class="panel-title">Location Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_locationinfo&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Location Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_locationinfo&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="LocationID" class="control-label col-sm-3">Location:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedLocation.FacilityName# (#Session.getSelectedLocation.PhysicalAddress# #Session.getSelectedLocation.PhysicalCity# #Session.getSelectedLocation.PhysicalState# #Session.getSelectedLocation.PhysicalZipCode#)</p></div>
@@ -234,22 +260,26 @@
 						<label for="MaxParticipants" class="control-label col-sm-3">Max Participants:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.MaxParticipants#</p></div>
 					</div>
-					<hr>
-					<h2 class="panel-title">Presenter <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_presenter&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Presenter <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_presenter&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="Presenter" class="control-label col-sm-3">Presenter:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedPresenter.FName# #Session.getSelectedPresenter.Lname#</p></div>
 					</div>
-					<hr>
-					<h2 class="panel-title">Registrations <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_acceptregistrations&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
+					<br>
+					<fieldset>
+						<legend><h3>Registrations <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_acceptregistrations&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.AcceptRegistrations#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Submit Changes"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Event Listing">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Submit Event Changes"><br /><br />
 				</div>
 			</cfform>
 		</div>

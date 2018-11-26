@@ -13,12 +13,14 @@
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Edit Membership Information</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<cfinput type="hidden" name="MembershipID" value="#URL.MembershipID#">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Edit Membership Organization</h2></legend>
+					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Organization's Membership</div>
 					<div class="form-group">
 						<label for="OrganizationName" class="control-label col-sm-3">Organization Name:&nbsp;</label>
@@ -42,8 +44,9 @@
 						<label for="StateDOEState" class="control-label col-sm-3">State DOE State:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEState" name="StateDOEState" value="#Session.getSelectedMembership.StateDOE_State#" required="yes"></div>
 					</div>
-
-					<div class="panel-heading"><h1>Mailing Address Information</h1></div>
+					<fieldset>
+						<legend><h2>Mailing Address Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="MailingAddress" class="control-label col-sm-3">Address:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingAddress" name="MailingAddress" value="#Session.getSelectedMembership.Mailing_Address#" required="yes"></div>
@@ -60,7 +63,9 @@
 						<label for="MailingZipCode" class="control-label col-sm-3">ZipCode:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingZipCode" name="MailingZipCode" value="#Session.getSelectedMembership.Mailing_ZipCode#" required="yes"></div>
 					</div>
-					<div class="panel-heading"><h1>Physical Address Information</h1></div>
+					<fieldset>
+						<legend><h2>Physical Address Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="PhysicalAddress" class="control-label col-sm-3">Address:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" value="#Session.getSelectedMembership.Physical_Address#" required="no"></div>
@@ -77,7 +82,9 @@
 						<label for="PhysicalZipCode" class="control-label col-sm-3">ZipCode:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" value="#Session.getSelectedMembership.Physical_ZipCode#" required="no"></div>
 					</div>
-					<div class="panel-heading"><h1>Phone Information</h1></div>
+					<fieldset>
+						<legend><h2>Phone Organization</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="PrimaryPhoneNumber" class="control-label col-sm-3">Voice Number:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PrimaryPhoneNumber" name="PrimaryPhoneNumber" value="#Session.getSelectedMembership.Primary_PhoneNumber#" required="no"></div>
@@ -86,7 +93,9 @@
 						<label for="PrimaryFaxNumber" class="control-label col-sm-3">Fax Number:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PrimaryFaxNumber" name="PrimaryFaxNumber" value="#Session.getSelectedMembership.Primary_FaxNumber#" required="no"></div>
 					</div>
-					<div class="panel-heading"><h1>Accounts Payable Contact Information</h1></div>
+					<fieldset>
+						<legend><h2>Accounts Payable Contact Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="AccountsPayableContactName" class="control-label col-sm-3">Name:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="AccountsPayableContactName" name="AccountsPayableContactName" value="#Session.getSelectedMembership.AccountsPayable_ContactName#" required="NO"></div>
@@ -111,19 +120,55 @@
 		</div>
 	<cfelseif isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Edit Membership Information</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<cfinput type="hidden" name="MembershipID" value="#Session.FormInput.MembershipID#">
 				<cfif isDefined("Session.FormErrors")>
-					<div class="panel-body">
-						<cfif ArrayLen(Session.FormErrors) GTE 1>
-							<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
-						</cfif>
+					<div id="modelWindowDialog" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+									<h3>Missing Information</h3>
+								</div>
+								<div class="modal-body">
+									<p class="alert alert-danger">#Session.FormErrors[1].Message#</p>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+								</div>
+							</div>
+						</div>
 					</div>
+					<script type='text/javascript'>
+						(function() {
+							'use strict';
+							function remoteModal(idModal){
+								var vm = this;
+								vm.modal = $(idModal);
+								if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+								if( window.location.hash == idModal ){ openModal(); }
+								var services = { open: openModal, close: closeModal };
+								return services;
+								function openModal(){
+									vm.modal.modal('show');
+								}
+								function closeModal(){
+									vm.modal.modal('hide');
+								}
+							}
+							Window.prototype.remoteModal = remoteModal;
+						})();
+						$(function(){
+							window.remoteModal('##modelWindowDialog');
+						});
+					</script>
 				</cfif>
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Edit Membership Organization</h2></legend>
+					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Organization's Membership</div>
 					<div class="form-group">
 						<label for="OrganizationName" class="control-label col-sm-3">Organization Name:&nbsp;</label>
@@ -147,8 +192,9 @@
 						<label for="StateDOEState" class="control-label col-sm-3">State DOE State:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="StateDOEState" name="StateDOEState" value="#Session.FormInput.StateDOEState#" required="yes"></div>
 					</div>
-
-					<div class="panel-heading"><h1>Mailing Address Information</h1></div>
+					<fieldset>
+						<legend><h2>Mailing Address Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="MailingAddress" class="control-label col-sm-3">Address:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingAddress" name="MailingAddress" value="#Session.FormInput.MailingAddress#" required="yes"></div>
@@ -165,7 +211,9 @@
 						<label for="MailingZipCode" class="control-label col-sm-3">ZipCode:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="MailingZipCode" name="MailingZipCode" value="#Session.FormInput.MailingZipCode#" required="yes"></div>
 					</div>
-					<div class="panel-heading"><h1>Physical Address Information</h1></div>
+					<fieldset>
+						<legend><h2>Physical Address Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="PhysicalAddress" class="control-label col-sm-3">Address:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" value="#Session.FormInput.PhysicalAddress#" required="no"></div>
@@ -182,7 +230,9 @@
 						<label for="PhysicalZipCode" class="control-label col-sm-3">ZipCode:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" value="#Session.FormInput.PhysicalZipCode#" required="no"></div>
 					</div>
-					<div class="panel-heading"><h1>Phone Information</h1></div>
+					<fieldset>
+						<legend><h2>Phone Information</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="PrimaryPhoneNumber" class="control-label col-sm-3">Voice Number:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PrimaryPhoneNumber" name="PrimaryPhoneNumber" value="#Session.FormInput.PrimaryPhoneNumber#" required="no"></div>
@@ -191,7 +241,9 @@
 						<label for="PrimaryFaxNumber" class="control-label col-sm-3">Fax Number:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="PrimaryFaxNumber" name="PrimaryFaxNumber" value="#Session.FormInput.PrimaryFaxNumber#" required="no"></div>
 					</div>
-					<div class="panel-heading"><h1>Accounts Payable Contact Information</h1></div>
+					<fieldset>
+						<legend><h2>Accounts Payable Contact Information/h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="AccountsPayableContactName" class="control-label col-sm-3">Name:&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="AccountsPayableContactName" name="AccountsPayableContactName" value="#Session.FormInput.AccountsPayableContactName#" required="NO"></div>
@@ -206,7 +258,6 @@
 							<option value="----">Send Invoices Electronically?</option>
 						</cfselect></div>
 					</div>
-
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">

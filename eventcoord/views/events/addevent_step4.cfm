@@ -19,13 +19,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Add New Event or Workshop - Step 4</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Add New Event or Workshop - Step 4</h2></legend>
+					</fieldset>
 					<div class="alert alert-info">This is Step 4 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
-					<div class="panel-heading"><h1>What is Maximum Registrations</h1></div>
+					<fieldset>
+						<legend><h2>Maximum Participants for Event or Workshop</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="RoomMaxParticipants" class="control-label col-sm-3">Maximum Registrations:&nbsp;</label>
 						<div class="col-sm-8">
@@ -36,7 +40,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</cfif>
 						</div>
 					</div>
-					<div class="panel-heading"><h1>Allow individuals to register</h1></div>
+					<fieldset>
+						<legend><h2>Allow Online Registrations</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
 						<div class="col-sm-8">
@@ -53,7 +59,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 		</div>
 	<cfelseif isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Add New Event or Workshop - Step 4</h1></div>
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
@@ -65,8 +70,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 				</cfif>
 				<div class="panel-body">
+					<fieldset>
+						<legend><h2>Add New Event or Workshop - Step 4</h2></legend>
+					</fieldset>
 					<div class="alert alert-info">This is Step 4 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
-					<div class="panel-heading"><h1>What is Maximum Registrations</h1></div>
+					<fieldset>
+						<legend><h2>Maximum Participants for Event or Workshop</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="RoomMaxParticipants" class="control-label col-sm-3">Maximum Registrations:&nbsp;</label>
 						<div class="col-sm-8">
@@ -77,7 +87,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</cfif>
 						</div>
 					</div>
-					<div class="panel-heading"><h1>Allow individuals to register</h1></div>
+					<fieldset>
+						<legend><h2>Allow Online Registrations</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
 						<div class="col-sm-8">

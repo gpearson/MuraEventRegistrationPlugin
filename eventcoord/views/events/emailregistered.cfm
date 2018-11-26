@@ -17,14 +17,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfoutput>
 	<script type="text/javascript" src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/js/field-wordcounter.js"></script>
 	<div class="panel panel-default">
-		<div class="panel-heading"><h2>Send Registered Participants Email: #Session.getSelectedEvent.ShortTitle#</h2><br><p>Number of Registered Participants: #Session.EventNumberRegistrations#</p></div>
 		<cfform action="" method="post" id="AddEvent" class="form-horizontal" enctype="multipart/form-data">
 			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 			<cfinput type="hidden" name="EventID" value="#URL.EventID#">
 			<cfinput type="hidden" name="formSubmit" value="true">
 			<cfif not isDefined("URL.FormRetry")>
 				<div class="panel-body">
-					<div class="panel-heading"><h1>Message to Participants</h1></div>
+					<fieldset>
+						<legend><h2>Send Registered Participants Email: #Session.getSelectedEvent.ShortTitle#</h2><br><p>Number of Registered Participants: #Session.EventNumberRegistrations#</p></h2></legend>
+					</fieldset>
+					<br>
+					<fieldset>
+						<legend><h2>Message to Participants</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="MsgToparticipants" class="control-label col-sm-3">Message to Registered Participants:&nbsp;</label>
 						<div class="col-sm-8">
@@ -34,7 +39,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</script>
 						</div>
 					</div>
-					<div class="panel-heading"><h1>Event Website Resource Links</h1></div>
+					<fieldset>
+						<legend><h2>Event Website Resource Links</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="FirstWebLink" class="control-label col-sm-3">First Website Link (if Any):&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="FirstWebLink" name="FirstWebLink" required="no"></div>
@@ -48,7 +55,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ThirdWebLink" name="ThirdWebLink" required="no"></div>
 					</div>
 					<cfif Session.EventDocuments.RecordCount>
-						<div class="panel-heading"><h1>Previous Event Document Resources</h1></div>
+						<fieldset>
+							<legend><h2>Previous Event Document Resources</h2></legend>
+						</fieldset>
 						<div class="form-group">
 							<label for="FirstDocument" class="control-label col-sm-3">Previous Documents (if Any):&nbsp;</label>
 							<div class="col-sm-8">
@@ -81,7 +90,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</div>
 					</cfif>
-					<div class="panel-heading"><h1>New Event Document Resources</h1></div>
+					<fieldset>
+						<legend><h2>New Event Document Resources</h2></legend>
+					</fieldset>
 					<div class="form-group">
 						<label for="FirstDocument" class="control-label col-sm-3">First Document (if Any):&nbsp;</label>
 						<div class="col-sm-8"><cfinput type="file" class="form-control" id="FirstDocument" name="FirstDocument" required="no"></div>
@@ -209,7 +220,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</div>
 			</cfif>
 			<div class="panel-footer">
-				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Event Listing">
 				<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Send Email Message"><br /><br />
 				</div>
 		</cfform>

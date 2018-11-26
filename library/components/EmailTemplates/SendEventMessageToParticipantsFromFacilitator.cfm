@@ -36,9 +36,9 @@ Note: Replies to this automated email address are not monitored by staff. If you
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">
 				<cfif Arguments.ParticipantInfo.WebLinksInEmail EQ 1>
-					<cfif LEN(Arguments.ParticipantInfo.WebLink1)><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.WebLink1#">#Arguments.ParticipantInfo.WebLink1#</a><br></cfif>
-					<cfif LEN(Arguments.ParticipantInfo.WebLink2)><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.WebLink2#">#Arguments.ParticipantInfo.WebLink2#</a><br></cfif>
-					<cfif LEN(Arguments.ParticipantInfo.WebLink3)><a href="http://#cgi.server_name#/plugins/#Arguments.ParticipantInfo.WebLink3#">#Arguments.ParticipantInfo.WebLink3#<a/><br></cfif>
+					<cfif LEN(Arguments.ParticipantInfo.WebLink1)><a href="#Arguments.ParticipantInfo.WebLink1#">#Arguments.ParticipantInfo.WebLink1#</a><br></cfif>
+					<cfif LEN(Arguments.ParticipantInfo.WebLink2)><a href="#Arguments.ParticipantInfo.WebLink2#">#Arguments.ParticipantInfo.WebLink2#</a><br></cfif>
+					<cfif LEN(Arguments.ParticipantInfo.WebLink3)><a href="#Arguments.ParticipantInfo.WebLink3#">#Arguments.ParticipantInfo.WebLink3#<a/><br></cfif>
 				</cfif>
 			</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
