@@ -75,7 +75,8 @@
 		CREATE TABLE `p_EventRegistration_SiteConfig` (
 			`TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` tinytext NOT NULL, `DateCreated` datetime NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, `lastUpdated` datetime NOT NULL,
 			`ProcessPayments_Stripe` bit(1) NOT NULL DEFAULT b'0', `Stripe_TestMode` bit(1) NOT NULL DEFAULT b'1', `Stripe_TestAPIKey` tinytext, `Stripe_LiveAPIKey` tinytext, `Facbook_AppID` tinytext,
-			`Facebook_AppSecretKey` tinytext, `Facebook_PageID` tinytext, `Facebook_AppScope` tinytext, PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+			`Facebook_AppSecretKey` tinytext, `Facebook_PageID` tinytext, `Facebook_AppScope` tinytext, `Google_ReCaptchaSiteKey` tinytext, `Google_ReCaptchaSecretKey` tinytext,
+			PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 	</cfquery>
 </cfif>
 
@@ -256,18 +257,50 @@
 		</cfquery>
 	</cfif>
 	<cfquery name="ChangeTableSpecialPriceAvailableToGroupPriceAvailable" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_Events CHANGE ViewSpecialPricing 'ViewGroupPricing' Bit(1) NOT NULL DEFAULT B'0'
+		ALTER TABLE p_EventRegistration_Events CHANGE `ViewSpecialPricing` `ViewGroupPricing` Bit(1) NOT NULL DEFAULT B'0'
 	</cfquery>
 	<cfquery name="ChangeTableSpecialPriceMemberCostToGroupPriceMemberCost" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_Events CHANGE SpecialMemberCost 'GroupMemberCost' decimal(6,2) DEFAULT NULL
+		ALTER TABLE p_EventRegistration_Events CHANGE `SpecialMemberCost` `GroupMemberCost` decimal(6,2) DEFAULT NULL
 	</cfquery>
 	<cfquery name="ChangeTableSpecialPriceNonMemberCostToGroupPriceNonMemberCost" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_Events CHANGE SpecialNonMemberCost 'GroupNonMemberCost' decimal(6,2) DEFAULT NULL
+		ALTER TABLE p_EventRegistration_Events CHANGE `SpecialNonMemberCost` `GroupNonMemberCost` decimal(6,2) DEFAULT NULL
 	</cfquery>
 	<cfquery name="ChangeTableSpecialPriceRequirementsToGroupPriceRequirements" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_Events CHANGE SpecialPriceRequirements 'GroupPriceRequirements' longtext DEFAULT NULL
+		ALTER TABLE p_EventRegistration_Events CHANGE `SpecialPriceRequirements` `GroupPriceRequirements` longtext DEFAULT NULL
 	</cfquery>
-
+<cfelse>
+	<cfquery name="CheckTableField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+		SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'ViewSpecialPricing'
+	</cfquery>
+	<cfif CheckTableField.RecordCount>
+		<cfquery name="DropTableLocationType" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+			ALTER TABLE p_EventRegistration_Events CHANGE `ViewSpecialPricing` `ViewGroupPricing` Bit(1) NOT NULL DEFAULT B'0'
+		</cfquery>
+	</cfif>
+	<cfquery name="CheckTableField1" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+		SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'SpecialMemberCost'
+	</cfquery>
+	<cfif CheckTableField1.RecordCount>
+		<cfquery name="DropTableLocationType" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+			ALTER TABLE p_EventRegistration_Events CHANGE `SpecialMemberCost` `GroupMemberCost` decimal(6,2) DEFAULT NULL
+		</cfquery>
+	</cfif>
+	<cfquery name="CheckTableField2" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+		SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'SpecialNonMemberCost'
+	</cfquery>
+	<cfif CheckTableField2.RecordCount>
+		<cfquery name="DropTableLocationType" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+			ALTER TABLE p_EventRegistration_Events CHANGE `SpecialNonMemberCost` `GroupNonMemberCost` decimal(6,2) DEFAULT NULL
+		</cfquery>
+	</cfif>
+	<cfquery name="CheckTableField3" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+		SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'SpecialPriceRequirements'
+	</cfquery>
+	<cfif CheckTableField3.RecordCount>
+		<cfquery name="DropTableLocationType" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+			ALTER TABLE p_EventRegistration_Events CHANGE `SpecialPriceRequirements` `GroupPriceRequirements` longtext DEFAULT NULL
+		</cfquery>
+	</cfif>
 </cfif>
 
 <cfquery name="ShowOldTableeRegistrations" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
@@ -278,23 +311,48 @@
 		ALTER TABLE eRegistrations RENAME p_EventRegistration_UserRegistrations
 	</cfquery>
 	<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_UserRegistrations CHANGE AttendedEvent 'AttendedEventDate1' Bit(1) NOT NULL DEFAULT B'0'
+		ALTER TABLE p_EventRegistration_UserRegistrations CHANGE `AttendedEvent` `AttendedEventDate1` Bit(1) NOT NULL DEFAULT B'0'
 	</cfquery>
-	<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate2 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate1
+	<cfquery name="CheckTableField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+		SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'AttendedEventDate2'
 	</cfquery>
-	<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate3 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate2
+	<cfif CheckTableField.RecordCount>
+		<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+			ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate2 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate1
+		</cfquery>
+	</cfif>
+	<cfquery name="CheckTableField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+		SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'AttendedEventDate3'
 	</cfquery>
-	<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate4 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate3
+	<cfif CheckTableField.RecordCount>
+		<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+			ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate3 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate2
+		</cfquery>
+	</cfif>
+	<cfquery name="CheckTableField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+		SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'AttendedEventDate4'
 	</cfquery>
-	<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate5 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate4
+	<cfif CheckTableField.RecordCount>
+		<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+			ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate4 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate3
+		</cfquery>
+	</cfif>
+	<cfquery name="CheckTableField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+		SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'AttendedEventDate5'
 	</cfquery>
-	<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate6 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate5
+	<cfif CheckTableField.RecordCount>
+		<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+			ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate5 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate4
+		</cfquery>
+	</cfif>
+	<cfquery name="CheckTableField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+		SHOW COLUMNS FROM p_EventRegistration_Events LIKE 'AttendedEventDate6'
 	</cfquery>
+	<cfif CheckTableField.RecordCount>
+		<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+			ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate6 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate5
+		</cfquery>
+	</cfif>
 	<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
 		ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventSessionAM Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate6
 	</cfquery>

@@ -25,8 +25,39 @@
 				$('##NonMemberCost').blur(function() {
 					$('##NonMemberCost').formatCurrency();
 				});
-			});
 
+				$('##MealCost').blur(function() {
+					$('##MealCost').formatCurrency();
+				});
+
+				$('##EarlyBird_NonMemberCost').blur(function() {
+					$('##EarlyBird_NonMemberCost').formatCurrency();
+				});
+
+				$('##EarlyBird_Member').blur(function() {
+					$('##EarlyBird_Member').formatCurrency();
+				});
+
+				$('##GroupMemberCost').blur(function() {
+					$('##GroupMemberCost').formatCurrency();
+				});
+
+				$('##GroupNonMemberCost').blur(function() {
+					$('##GroupNonMemberCost').formatCurrency();
+				});
+
+				$('##VideoConferenceCost').blur(function() {
+					$('##VideoConferenceCost').formatCurrency();
+				});
+
+				$('##WebinarMemberCost').blur(function() {
+					$('##WebinarMemberCost').formatCurrency();
+				});
+
+				$('##WebinarNonMemberCost').blur(function() {
+					$('##WebinarNonMemberCost').formatCurrency();
+				});
+			});
 	</script>
 	<script>
 		$(function() {
@@ -362,17 +393,17 @@
 					</cfif>
 					<br />
 					<fieldset>
-						<legend><h2>Caterer Information</h2></legend>
+						<legend><h2>Meal Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<label for="MealAvailable" class="control-label col-sm-3">Meal Available:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
-							<cfselect name="MealProvided" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.UserSuppliedInfo.FirstStep.MealProvided#" value="ID" Display="OptionName"  queryposition="below">
+							<cfselect name="MealAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.UserSuppliedInfo.FirstStep.MealAvailable#" value="ID" Display="OptionName"  queryposition="below">
 								<option value="----">Will Meal be provided to Participants</option>
 							</cfselect>
 						</div>
 					</div>
-					<cfif Session.UserSuppliedInfo.FirstStep.MealProvided EQ 1  and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
+					<cfif Session.UserSuppliedInfo.FirstStep.MealAvailable EQ 1  and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
 						<div class="form-group">
 							<label for="MealProvidedBy" class="control-label col-sm-3">Provided By:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8">
@@ -380,6 +411,22 @@
 									<option value="----">Select Who Provides Meal</option>
 								</cfselect>
 							</div>
+						</div>
+						<div class="form-group">
+							<label for="MealIncluded" class="control-label col-sm-3">Meal Included in Registration:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+							<div class="col-sm-8">
+								<cfselect name="MealIncluded" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.UserSuppliedInfo.SecondStep.MealIncluded#"  queryposition="below">
+									<option value="----">Is Meal Price included in Registration Fee</option>
+								</cfselect>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="MealCost" class="control-label col-sm-3">Meal Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="MealCost" name="MealCost" value="#Session.UserSuppliedInfo.SecondStep.MealCost#" required="yes"></div>
+						</div>
+						<div class="form-group">
+							<label for="MealInformation" class="control-label col-sm-3">Meal Information:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+							<div class="col-sm-8"><textarea name="MealInformation" id="MealInformation" class="form-control">#Session.UserSuppliedInfo.SecondStep.MealInformation#</textarea></div>
 						</div>
 					</cfif>
 					<br />
@@ -799,14 +846,14 @@
 						<legend><h2>Caterer Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<label for="MealAvailable" class="control-label col-sm-3">Meal Provided:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8">
-							<cfselect name="MealProvided" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.UserSuppliedInfo.FinalStep.MealProvided#" value="ID" Display="OptionName"  queryposition="below">
+							<cfselect name="MealAvailable" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.UserSuppliedInfo.FinalStep.MealAvailable#" value="ID" Display="OptionName"  queryposition="below">
 								<option value="----">Will Meal be provided to Participants</option>
 							</cfselect>
 						</div>
 					</div>
-					<cfif Session.UserSuppliedInfo.FinalStep.MealProvided EQ 1  and Session.UserSuppliedInfo.FinalStep.WebinarEvent EQ 0>
+					<cfif Session.UserSuppliedInfo.FinalStep.MealAvailable EQ 1  and Session.UserSuppliedInfo.FinalStep.WebinarEvent EQ 0>
 						<div class="form-group">
 							<label for="MealProvidedBy" class="control-label col-sm-3">Provided By:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="col-sm-8">

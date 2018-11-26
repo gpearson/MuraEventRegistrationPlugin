@@ -30,7 +30,7 @@
 </cfquery>
 <cfif CheckColumnNameReceiveMarketingFlyers.RecordCount EQ 0>
 	<cfquery name="AlterUserMatrixAddColumn" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_UserMatrix Add COLUMN `ReceiveMarketingFlyers` bit(1) NOT NULL DEFAULT b'0'' AFTER TeachingSubject
+		ALTER TABLE p_EventRegistration_UserMatrix Add COLUMN `ReceiveMarketingFlyers` bit(1) NOT NULL DEFAULT b'0' AFTER TeachingSubject
 	</cfquery>
 </cfif>
 
@@ -51,6 +51,19 @@
 	<cfquery name="Create-p_EventRegistration_SiteConfig" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
 		CREATE TABLE `p_EventRegistration_GradeSubjects` (
 			`TContent_ID` int(11) NOT NULL, `Site_ID` tinytext NOT NULL, `GradeLevel` int(11) NOT NULL, `GradeSubject` tinytext NOT NULL, PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+	</cfquery>
+</cfif>
+
+<cfquery name="ShowESCOrganizationsTable" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+	Show Tables LIKE 'p_EventRegistration_StateESCOrganizations'
+</cfquery>
+<cfif ShowESCOrganizationsTable.RecordCount EQ 0>
+	<cfquery name="Create-p_EventRegistration_StateESCOrganizations" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+		CREATE TABLE `p_EventRegistration_StateESCOrganizations` (
+			`TContent_ID` int(11) NOT NULL AUTO_INCREMENT, `Site_ID` tinytext NOT NULL, `OrganizationName` varchar(50) NOT NULL, `OrganizationDomainName` varchar(50) NOT NULL,
+			`StateDOE_IDNumber` varchar(10) DEFAULT NULL, `StateDOE_State` tinytext,
+			`dateCreated` date NOT NULL, `lastUpdateBy` varchar(35) NOT NULL, `lastUpdated` datetime NOT NULL, `Mailing_Address` tinytext, `Mailing_City` tinytext, `Mailing_State` tinytext, `Mailing_ZipCode` tinytext, `Primary_PhoneNumber` tinytext, `Primary_FaxNumber` tinytext,
+			`Physical_Address` tinytext, `Physical_City` tinytext, `Physical_State` tinytext, `Physical_ZipCode` tinytext, PRIMARY KEY (`TContent_ID`) ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 	</cfquery>
 </cfif>
 
@@ -77,7 +90,7 @@
 </cfquery>
 <cfif CheckColumnNameSession1EndTime.RecordCount EQ 0>
 	<cfquery name="Alter-p_EventRegistration_Events" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_Events Add COLUMN `Session1EndTime` time DEFAULT NULL AFTER Sesson1BeginTime
+		ALTER TABLE p_EventRegistration_Events Add COLUMN `Session1EndTime` time DEFAULT NULL AFTER Session1BeginTime
 	</cfquery>
 </cfif>
 
@@ -86,7 +99,7 @@
 </cfquery>
 <cfif CheckColumnNameSession2BeginTime.RecordCount EQ 0>
 	<cfquery name="Alter-p_EventRegistration_Events" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_Events Add COLUMN `Session2BeginTime` time DEFAULT NULL AFTER Sesson1EndTime
+		ALTER TABLE p_EventRegistration_Events Add COLUMN `Session2BeginTime` time DEFAULT NULL AFTER Session1EndTime
 	</cfquery>
 </cfif>
 
@@ -95,7 +108,7 @@
 </cfquery>
 <cfif CheckColumnNameSession2EndTime.RecordCount EQ 0>
 	<cfquery name="Alter-p_EventRegistration_Events" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_Events Add COLUMN `Session2EndTime` time DEFAULT NULL AFTER Sesson2BeginTime
+		ALTER TABLE p_EventRegistration_Events Add COLUMN `Session2EndTime` time DEFAULT NULL AFTER Session2BeginTime
 	</cfquery>
 </cfif>
 
@@ -120,4 +133,11 @@
 	</cfquery>
 </cfif>
 
-
+<cfquery name="CheckColumnNameStateDOEESCMembership" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+	Show Columns From p_EventRegistration_Membership Like 'StateDOE_ESCESAMembership'
+</cfquery>
+<cfif CheckColumnNameStateDOEESCMembership.RecordCount EQ 0>
+	<cfquery name="Alter-p_EventRegistration_Events" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
+		ALTER TABLE p_EventRegistration_Membership Add COLUMN `StateDOE_ESCESAMembership` int(11) DEFAULT NULL AFTER StateDOE_IDNumber
+	</cfquery>
+</cfif>
