@@ -59,6 +59,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
 				Order by OrganizationName
 			</cfquery>
+			<cfquery name="Session.getGradeLevels" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select TContent_ID, GradeLevel
+				From p_EventRegistration_GradeLevels
+				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+				Order by GradeLevel
+			</cfquery>
+			<cfquery name="Session.getGradeSubjects" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select TContent_ID, GradeSubject
+				From p_EventRegistration_GradeSubjects
+				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+				Order by GradeSubject
+			</cfquery>
+
 			<cfset Session.Captcha = #makeRandomString()#>
 		<cfelseif isDefined("FORM.formSubmit")>
 			<cfset Session.FormErrors = #ArrayNew()#>
@@ -124,11 +137,27 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 				<cfif GetOrganizationName.RecordCount>
 					<cfquery name="insertUserMatrixInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Insert into p_EventRegistration_UserMatrix(User_ID,Site_ID,School_District,LastUpdateBy,LastUpdated) Values('#Variables.NewUserID#','#rc.$.siteConfig("siteID")#',#GetOrganizationName.StateDOE_IDNumber#,'System',#Now()#)
+						Insert into p_EventRegistration_UserMatrix(User_ID,Site_ID,School_District,created,LastUpdateBy,LastUpdated) Values('#Variables.NewUserID#','#rc.$.siteConfig("siteID")#',#GetOrganizationName.StateDOE_IDNumber#,#Now()#,'System',#Now()#)
 					</cfquery>
 				<cfelse>
 					<cfquery name="insertUserMatrixInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-						Insert into p_EventRegistration_UserMatrix(User_ID,Site_ID,LastUpdateBy,LastUpdated) Values('#Variables.NewUserID#','#rc.$.siteConfig("siteID")#','System',#Now()#)
+						Insert into p_EventRegistration_UserMatrix(User_ID,Site_ID,created,LastUpdateBy,LastUpdated) Values('#Variables.NewUserID#','#rc.$.siteConfig("siteID")#',#Now()#,'System',#Now()#)
+					</cfquery>
+				</cfif>
+
+				<cfif FORM.GradeLevel NEQ "----">
+					<cfquery name="updateUserMatrixGradeLevel" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Update p_EventRegistration_UserMatrix
+						Set TeachingGrade = <cfqueryparam value="#FORM.GradeLevel#" cfsqltype="cf_sql_integer">
+						Where User_ID = <cfqueryparam value="#Variables.NewUserID#" cfsqltype="cf_sql_varchar">
+					</cfquery>
+				</cfif>
+
+				<cfif FORM.GradeSubjects NEQ "----">
+					<cfquery name="updateUserMatrixGradeLevel" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Update p_EventRegistration_UserMatrix
+						Set TeachingSubjects = <cfqueryparam value="#FORM.GradeSubjects#" cfsqltype="cf_sql_integer">
+						Where User_ID = <cfqueryparam value="#Variables.NewUserID#" cfsqltype="cf_sql_varchar">
 					</cfquery>
 				</cfif>
 

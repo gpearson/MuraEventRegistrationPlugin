@@ -283,11 +283,24 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 		<cfif not isDefined("FORM.formSubmit")>
 			<cfquery name="getUserProfile" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select UserName, FName, Lname, Email, Company, JobTitle, mobilePhone, Website, LastLogin, LastUpdate, LastUpdateBy, LastUpdateByID, InActive, created
-				From tusers
-				Where UserID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
-					SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
+				Select tusers.UserName, tusers.FName, tusers.Lname, tusers.Email, tusers.Company, tusers.JobTitle, tusers.mobilePhone, tusers.Website, tusers.LastLogin, tusers.LastUpdate, tusers.LastUpdateBy, tusers.LastUpdateByID, tusers.InActive, tusers.created, p_EventRegistration_UserMatrix.School_District, p_EventRegistration_UserMatrix.TeachingGrade, p_EventRegistration_UserMatrix.TeachingSubject
+				From tusers INNER JOIN p_EventRegistration_UserMatrix ON p_EventRegistration_UserMatrix.User_ID = tusers.UserID
+				Where tusers.UserID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
+					tusers.SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
 			</cfquery>
+			<cfquery name="Session.getGradeLevels" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select TContent_ID, GradeLevel
+				From p_EventRegistration_GradeLevels
+				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+				Order by GradeLevel
+			</cfquery>
+			<cfquery name="Session.getGradeSubjects" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select TContent_ID, GradeSubject
+				From p_EventRegistration_GradeSubjects
+				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+				Order by GradeSubject
+			</cfquery>
+
 			<cfset Session.getUserProfile = #StructCopy(getUserProfile)#>
 		<cfelseif isDefined("FORM.formSubmit")>
 			<cfset Session.FormErrors = #ArrayNew()#>
@@ -314,226 +327,129 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.upcomingevents" addtoken="false">
 			</cfif>
 
-
-		</cfif>
-
-		<cfif isDefined("FORM.formSubmit") and not isDefined("URL.FormRetry")>
-			<cfset Session.FormErrors = #ArrayNew()#>
-			<cfset Session.FormData = #StructCopy(FORM)#>
-
-			<cfif not isDefined("Session.FormData.PluginInfo")>
-				<cfset Session.FormData.PluginInfo = StructNew()>
-				<cfset Session.FormData.PluginInfo.Datasource = #rc.$.globalConfig('datasource')#>
-				<cfset Session.FormData.PluginInfo.DBUserName = #rc.$.globalConfig('dbusername')#>
-				<cfset Session.FormData.PluginInfo.DBPassword = #rc.$.globalConfig('dbpassword')#>
-				<cfset Session.FormData.PluginInfo.PackageName = #HTMLEditFormat(rc.pc.getPackage())#>
-				<cfset Session.FormData.PluginInfo.SiteID = #rc.$.siteConfig('siteID')#>
+			<cfif LEN(FORM.Password) OR LEN(FORM.VerifyPassword)>
+				<cfif FORM.Password NEQ FORM.VerifyPassword>
+					<cflock timeout="60" scope="SESSION" type="Exclusive">
+						<cfscript>
+							errormsg = {property="HumanChecker",message="The Password and Verify Password Fields did not match. Please correct."};
+							arrayAppend(Session.FormErrors, errormsg);
+						</cfscript>
+					</cflock>
+					<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.editprofile&FormRetry=True">
+				<cfelse>
+					<cfset NewUser = #Application.userManager.readByUsername(form.UserID, rc.$.siteConfig('siteID'))#>
+					<cfset NewUser.setPassword(FORM.Password)>
+					<cfset NewUser.setSiteID(rc.$.siteConfig('siteID'))>
+					<cfset AddNewAccount = #Application.userManager.save(NewUser)#>
+				</cfif>
 			</cfif>
-
-			<cfif #HASH(FORM.HumanChecker)# NEQ FORM.HumanCheckerhash>
-				<cflock timeout="60" scope="SESSION" type="Exclusive">
-					<cfscript>
-						errormsg = {property="HumanChecker",message="The Characters entered did not match what was displayed"};
-						arrayAppend(Session.FormErrors, errormsg);
-					</cfscript>
-				</cflock>
-				<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.editprofile&FormRetry=True">
-			</cfif>
-
-			<cfif not isValid("email", FORM.Email)>
-				<cfscript>
-					UsernameNotValid = {property="Email",message="The Email Address is not a valid email address. We use this to lookup your account so that the correct information can be sent to you."};
-					arrayAppend(Session.FormErrors, UsernameNotValid);
-				</cfscript>
-				<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.editprofile&FormRetry=True">
-			</cfif>
-
-			<cfquery name="getSelectedSchoolDistrict" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select OrganizationName, StateDOE_IDNumber
-				From eMembership
-				Where StateDOE_IDNumber = <cfqueryparam value="#FORM.Company#" cfsqltype="cf_sql_varchar"> and Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-			</cfquery>
 
 			<cfquery name="getOrigionalUserValues" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select fName, LName, Email, Company, JobTitle, mobilePhone
+				Select fName, LName, Email, Company, JobTitle, mobilePhone, website
 				From tusers
 				Where UserID = <cfqueryparam value="#FORM.UserID#" cfsqltype="cf_sql_varchar"> and SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+			</cfquery>
+
+			<cfquery name="getOrigionalUserMatrixValues" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select TeachingGrade, TeachingSubject
+				From p_EventRegistration_UserMatrix
+				Where User_ID = <cfqueryparam value="#FORM.UserID#" cfsqltype="cf_sql_varchar"> and Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
 			</cfquery>
 
 			<cfparam name="UserEditProfile" type="boolean" default="0">
 
 			<cfif Session.FormData.fName NEQ getOrigionalUserValues.FName>
 				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+				<cfquery name="setNewAccountPassword" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Update tusers
-					Set fName = <cfqueryparam value="#Session.FormData.FName#" cfsqltype="cf_sql_varchar">
+					Set fName = <cfqueryparam value="#Session.FormData.FName#" cfsqltype="cf_sql_varchar">,
+						lastUpdate = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
+						lastUpdateByID = <cfqueryparam value="#Session.FormData.UserID#" cfsqltype="cf_sql_varchar">
 					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
 				</cfquery>
 			</cfif>
 
 			<cfif Session.FormData.lName NEQ getOrigionalUserValues.FName>
 				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+				<cfquery name="setNewAccountPassword" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Update tusers
-					Set lName = <cfqueryparam value="#Session.FormData.LName#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.Email NEQ getOrigionalUserValues.EMail>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-					Update tusers
-					Set EMail = <cfqueryparam value="#Session.FormData.Email#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.Company NEQ getOrigionalUserValues.Company>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-					Update tusers
-					Set Company = <cfqueryparam value="#getSelectedSchoolDistrict.OrganizationName#" cfsqltype="cf_sql_varchar">
+					Set lName = <cfqueryparam value="#Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
+						lastUpdate = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
+						lastUpdateByID = <cfqueryparam value="#Session.FormData.UserID#" cfsqltype="cf_sql_varchar">
 					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
 				</cfquery>
 			</cfif>
 
 			<cfif Session.FormData.JobTitle NEQ getOrigionalUserValues.JobTitle>
 				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+				<cfquery name="setNewAccountPassword" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Update tusers
-					Set JobTitle = <cfqueryparam value="#Session.FormData.JobTitle#" cfsqltype="cf_sql_varchar">
+					Set JobTitle = <cfqueryparam value="#Session.FormData.JobTitle#" cfsqltype="cf_sql_varchar">,
+						lastUpdate = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
+						lastUpdateByID = <cfqueryparam value="#Session.FormData.UserID#" cfsqltype="cf_sql_varchar">
 					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
 				</cfquery>
 			</cfif>
 
 			<cfif Session.FormData.mobilePhone NEQ getOrigionalUserValues.mobilePhone>
 				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
+				<cfquery name="setNewAccountPassword" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Update tusers
-					Set mobilePhone = <cfqueryparam value="#Session.FormData.mobilePhone#" cfsqltype="cf_sql_varchar">
+					Set mobilePhone = <cfqueryparam value="#Session.FormData.mobilePhone#" cfsqltype="cf_sql_varchar">,
+						lastUpdate = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
+						lastUpdateByID = <cfqueryparam value="#Session.FormData.UserID#" cfsqltype="cf_sql_varchar">
+					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
+				</cfquery>
+			</cfif>
+
+			<cfif Session.FormData.website NEQ getOrigionalUserValues.website>
+				<cfset UserEditProfile = 1>
+				<cfquery name="setNewAccountPassword" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Update tusers
+					Set website = <cfqueryparam value="#Session.FormData.website#" cfsqltype="cf_sql_varchar">,
+						lastUpdate = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">,
+						lastUpdateByID = <cfqueryparam value="#Session.FormData.UserID#" cfsqltype="cf_sql_varchar">
+					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
+				</cfquery>
+			</cfif>
+
+			<cfif Session.FormData.GradeLevel NEQ "----" and  Session.FormData.GradeLevel NEQ getOrigionalUserMatrixValues.TeachingGrade>
+				<cfset UserEditProfile = 1>
+				<cfquery name="updateTeachingGrade" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Update p_EventRegistration_UserMatrix
+					Set TeachingGrade = <cfqueryparam value="#Session.FormData.GradeLevel#" cfsqltype="cf_sql_integer">,
+						lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">
+					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
+				</cfquery>
+			</cfif>
+
+			<cfif Session.FormData.GradeSubjects NEQ "----" and  Session.FormData.GradeSubjects NEQ getOrigionalUserMatrixValues.TeachingSubject>
+				<cfset UserEditProfile = 1>
+				<cfquery name="updateTeachingSubject" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Update p_EventRegistration_UserMatrix
+					Set TeachingSubject = <cfqueryparam value="#Session.FormData.GradeSubjects#" cfsqltype="cf_sql_integer">,
+						lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+						lastUpdateBy = <cfqueryparam value="#Session.FormData.FName# #Session.FormData.LName#" cfsqltype="cf_sql_varchar">
 					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
 				</cfquery>
 			</cfif>
 
 			<cfif Variables.UserEditProfile EQ 1>
-				<cfset Session.Mura.Company = #getSelectedSchoolDistrict.OrganizationName#>
 				<cfset Session.Mura.fName = #Session.FormData.fName#>
 				<cfset Session.Mura.lName = #Session.FormData.lName#>
-				<cfset Session.Mura.Email = #Session.FormData.Email#>
-				<cflocation addtoken="true" url="/?UserProfileUpdateSuccessfull=True">
+				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=UserProfileUpdated">
 			<cfelse>
-				<cflocation addtoken="true" url="/?">
+				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default">
 			</cfif>
 
-		<cfelseif isDefined("FORM.formSubmit") and isDefined("URL.FormRetry")>
-			<cfset Session.FormErrors = #ArrayNew()#>
-			<cfset Session.FormData = #StructCopy(FORM)#>
 
-			<cfif not isDefined("Session.FormData.PluginInfo")>
-				<cfset Session.FormData.PluginInfo = StructNew()>
-				<cfset Session.FormData.PluginInfo.Datasource = #rc.$.globalConfig('datasource')#>
-				<cfset Session.FormData.PluginInfo.DBUserName = #rc.$.globalConfig('dbusername')#>
-				<cfset Session.FormData.PluginInfo.DBPassword = #rc.$.globalConfig('dbpassword')#>
-				<cfset Session.FormData.PluginInfo.PackageName = #HTMLEditFormat(rc.pc.getPackage())#>
-				<cfset Session.FormData.PluginInfo.SiteID = #rc.$.siteConfig('siteID')#>
-			</cfif>
 
-			<cfif #HASH(FORM.HumanChecker)# NEQ FORM.HumanCheckerhash>
-				<cflock timeout="60" scope="SESSION" type="Exclusive">
-					<cfscript>
-						errormsg = {property="HumanChecker",message="The Characters entered did not match what was displayed"};
-						arrayAppend(Session.FormErrors, errormsg);
-					</cfscript>
-				</cflock>
-				<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.editprofile&FormRetry=True">
-			</cfif>
-
-			<cfif not isValid("email", FORM.Email)>
-				<cfscript>
-					UsernameNotValid = {property="Email",message="The Email Address is not a valid email address. We use this to lookup your account so that the correct information can be sent to you."};
-					arrayAppend(Session.FormErrors, UsernameNotValid);
-				</cfscript>
-				<cflocation addtoken="true" url="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/index.cfm?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.editprofile&FormRetry=True">
-			</cfif>
-
-			<cfquery name="getSelectedSchoolDistrict" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select OrganizationName, StateDOE_IDNumber
-				From eMembership
-				Where StateDOE_IDNumber = <cfqueryparam value="#FORM.Company#" cfsqltype="cf_sql_varchar"> and Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-			</cfquery>
-
-			<cfquery name="getOrigionalUserValues" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select fName, LName, Email, Company, JobTitle, mobilePhone
-				From tusers
-				Where UserID = <cfqueryparam value="#FORM.UserID#" cfsqltype="cf_sql_varchar"> and SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-			</cfquery>
-
-			<cfparam name="UserEditProfile" type="boolean" default="0">
-
-			<cfif Session.FormData.fName NEQ getOrigionalUserValues.FName>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-					Update tusers
-					Set fName = <cfqueryparam value="#Session.FormData.FName#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.lName NEQ getOrigionalUserValues.FName>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-					Update tusers
-					Set lName = <cfqueryparam value="#Session.FormData.LName#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.Email NEQ getOrigionalUserValues.EMail>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-					Update tusers
-					Set EMail = <cfqueryparam value="#Session.FormData.Email#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.Company NEQ getOrigionalUserValues.Company>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-					Update tusers
-					Set Company = <cfqueryparam value="#getSelectedSchoolDistrict.OrganizationName#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.JobTitle NEQ getOrigionalUserValues.JobTitle>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-					Update tusers
-					Set JobTitle = <cfqueryparam value="#Session.FormData.JobTitle#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Session.FormData.mobilePhone NEQ getOrigionalUserValues.mobilePhone>
-				<cfset UserEditProfile = 1>
-				<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-					Update tusers
-					Set mobilePhone = <cfqueryparam value="#Session.FormData.mobilePhone#" cfsqltype="cf_sql_varchar">
-					Where UserID = <cfqueryparam value="#Form.UserID#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-			</cfif>
-
-			<cfif Variables.UserEditProfile EQ 1>
-				<cfset Session.Mura.Company = #getSelectedSchoolDistrict.OrganizationName#>
-				<cfset Session.Mura.fName = #Session.FormData.fName#>
-				<cfset Session.Mura.lName = #Session.FormData.lName#>
-				<cfset Session.Mura.Email = #Session.FormData.Email#>
-				<cflocation addtoken="true" url="/?UserProfileUpdateSuccessfull=True">
-			<cfelse>
-				<cflocation addtoken="true" url="/?">
-			</cfif>
 		</cfif>
 	</cffunction>
 

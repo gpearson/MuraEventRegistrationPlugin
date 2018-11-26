@@ -41,6 +41,14 @@
 						<label for="ContactNumber" class="control-label col-sm-3">Phone Number:&nbsp;</label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" required="no"><div class="alert alert-warning small" role="alert"><em>This phone number will be used if an event needs to be cancelled or postponed</em></div></div>
 					</div>
+					<div class="form-group">
+						<label for="GradeLevel" class="control-label col-sm-3">Teaching Grade Level:&nbsp;</label>
+						<div class="col-sm-6"><cfselect name="GradeLevel" class="form-control" Required="No" Multiple="No" query="Session.getGradeLevels" value="TContent_ID" Display="GradeLevel"  queryposition="below"><option value="----">Select Grade Level you Teach</option></cfselect></div>
+					</div>
+					<div class="form-group">
+						<label for="GradeSubjects" class="control-label col-sm-3">Teaching Subject:&nbsp;</label>
+						<div class="col-sm-6"><cfselect name="GradeSubjects" class="form-control" Required="No" Multiple="No" query="Session.getGradeSubjects" value="TContent_ID" Display="GradeSubject"  queryposition="below"><option value="----">Select Subject you Teach</option></cfselect></div>
+					</div>
 					<fieldset>
 						<legend>Account Security</legend>
 					</fieldset>
@@ -106,6 +114,14 @@
 					<div class="form-group">
 						<label for="ContactNumber" class="control-label col-sm-3">Phone Number:&nbsp;</label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" id="mobilePhone" value="#Session.FormData.mobilePhone#" name="mobilePhone" required="no"><div class="alert alert-warning small" role="alert"><em>This phone number will be used if an event needs to be cancelled or postponed</em></div></div>
+					</div>
+					<div class="form-group">
+						<label for="GradeLevel" class="control-label col-sm-3">Teaching Grade Level:&nbsp;</label>
+						<div class="col-sm-6"><cfselect name="GradeLevel" class="form-control" Required="No" selected="#Session.FormData.GradeLevel#" Multiple="No" query="Session.getGradeLevels" value="TContent_ID" Display="GradeLevel"  queryposition="below"><option value="----">Select Grade Level you Teach</option></cfselect></div>
+					</div>
+					<div class="form-group">
+						<label for="GradeSubjects" class="control-label col-sm-3">Teaching Subject:&nbsp;</label>
+						<div class="col-sm-6"><cfselect name="GradeSubjects" class="form-control" Required="No" selected="#Session.FormData.GradeSubjects#" Multiple="No" query="Session.getGradeSubjects" value="TContent_ID" Display="GradeSubject"  queryposition="below"><option value="----">Select Subject you Teach</option></cfselect></div>
 					</div>
 					<fieldset>
 						<legend>Account Security</legend>
