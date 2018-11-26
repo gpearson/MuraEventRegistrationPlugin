@@ -44,6 +44,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<div class="alert alert-warning"><p><strong>General Pricing Information:</strong><br><strong>Member Cost:</strong> #DollarFormat(Session.getSelectedEvent.MemberCost)# -or- <strong>Non Member Cost:</strong> #DollarFormat(Session.getSelectedEvent.NonMemberCost)#</p></div>
 				<cfset CurrentCorporation = "">
 				<cfset TotalIncome = 0>
+				<cfset GrandTotalDays = 0>
 				<cfloop query="Session.GetSelectedEventRegistrations">
 					<cfif CurrentCorporation IS NOT Session.GetSelectedEventRegistrations.Domain>
 						<cfquery name="GetCorpName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
@@ -96,12 +97,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 							#Variables.NumberDaysAttended#
 						</p></div>
 					</div>
+					<cfset GrandTotalDays = #Variables.GrandTotalDays# + 1>
 					<cfset TotalIncome = #Variables.TotalIncome# + (#Session.GetSelectedEventRegistrations.AttendeePrice# * #Variables.NumberDaysAttended#)>
+					<cfset GrandTotalIncome = #Variables.GrandTotalDays# * #Session.GetSelectedEventRegistrations.AttendeePrice#>
 				</cfloop>
 				<div class="form-group">
 					<div class="col-sm-8"></div>
-					<div class="col-sm-2"><strong>Total Revenue</strong></div>
+					<div class="col-sm-2"><strong>Total Revenue Attended</strong></div>
 					<div class="col-sm-2">#DollarFormat(Variables.TotalIncome)#</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-8"></div>
+					<div class="col-sm-2"><strong>Grand Total Revenue</strong></div>
+					<div class="col-sm-2">#DollarFormat(Variables.GrandTotalIncome)#</div>
 				</div>
 			</div>
 			<div class="panel-footer">

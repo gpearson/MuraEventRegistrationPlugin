@@ -89,6 +89,8 @@
 				<cfset Variables.ReportYearlyEvents[GetYearlyEvents.CurrentRow][4] = #GetYearlyEvents.CurrentRow# + 3>
 				<cfset Variables.ReportYearlyEvents[GetYearlyEvents.CurrentRow][5] = #GetYearlyEvents.PGPAvailable#>
 				<cfset Variables.ReportYearlyEvents[GetYearlyEvents.CurrentRow][6] = #GetYearlyEvents.PGPPoints#>
+				<cfset Variables.ReportYearlyEvents[GetYearlyEvents.CurrentRow][7] = #GetYearlyEvents.MemberCost#>
+				<cfset Variables.ReportYearlyEvents[GetYearlyEvents.CurrentRow][8] = #GetYearlyEvents.NonMemberCost#>
 			</cfloop>
 
 			<cfset eRecord = 1>
@@ -129,22 +131,34 @@
 			</cfloop>
 
 			<cfset YearEndReportExportDir = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/")#>
-			<cfset YearBegin = #DateFormat(CreateDate(ListLast(FORM.BegYearDate, "/"), ListFirst(FORM.BegYearDate, "/"), ListGetAt(FORM.BegYearDate, 2, "/")), "mm-yy")#>
-			<cfset YearEnd = #DateFormat(CreateDate(ListLast(FORM.EndYearDate, "/"), ListFirst(FORM.EndYearDate, "/"), ListGetAt(FORM.EndYearDate, 2, "/")), "mm-yy")#>
-			<cfset CompletdYearEndReportFile = #Variables.YearEndReportExportDir# & #Variables.YearBegin# & "_" & #Variables.YearEnd# & "-" & #FORM.MembershipID# & "YearlyEventReport.csv">
+			<cfset YearBegin = #DateFormat(CreateDate(ListLast(FORM.BegYearDate, "/"), ListFirst(FORM.BegYearDate, "/"), ListGetAt(FORM.BegYearDate, 2, "/")), "yy")#>
+			<cfset YearEnd = #DateFormat(CreateDate(ListLast(FORM.EndYearDate, "/"), ListFirst(FORM.EndYearDate, "/"), ListGetAt(FORM.EndYearDate, 2, "/")), "yy")#>
+			<cfset CompletedYearEndReportFile = #Variables.YearEndReportExportDir# & #Variables.YearBegin# & "_" & #Variables.YearEnd# & "-" & #FORM.MembershipID# & "SDDetails.csv">
+			<cfset CompletedYearEndReportHeader = #Variables.YearEndReportExportDir# & #Variables.YearBegin# & "_" & #Variables.YearEnd# & "-" & "SDFactors.csv">
 
-			<cffile action="Write" file="#Variables.CompletdYearEndReportFile#" output="Corporation,Domain,PGP Total" addnewline="no">
+			<cffile action="Write" file="#Variables.CompletedYearEndReportHeader#" output="EventTitle,EventDate,MemberCost,NonMemberCost,PGPPerDay" addnewline="yes">
+			<cffile action="Write" file="#Variables.CompletedYearEndReportFile#" output="Corporation,Domain,PGP Total" addnewline="no">
 			<cfloop array="#Variables.ReportYearlyEvents#" index="e" from="1" to="#ArrayLen(Variables.ReportYearlyEvents)#">
-				<cffile action="Append" file="#Variables.CompletdYearEndReportFile#" output=",#chr(34)##e[2]##CHR(34)#" addnewline="no">
+				<cffile action="Append" file="#Variables.CompletedYearEndReportFile#" output=",#chr(34)##e[2]##CHR(34)#" addnewline="no">
+				<cfset EventDate = #DateFormat(e[3], "mm-dd-yy")#>
+				<cfset EventMemberPrice = #DollarFormat(e[7])#>
+				<cfset EventNonMemberPrice = #DollarFormat(e[8])#>
+				<cffile action="Append" file="#Variables.CompletedYearEndReportHeader#" output="#chr(34)##e[2]##CHR(34)#,#Variables.EventDate#,#Variables.EventMemberPrice#,#Variables.EventNonMemberPrice#,#e[6]#" addnewline="yes">
 			</cfloop>
-			<cffile action="Append" file="#Variables.CompletdYearEndReportFile#" output="" addnewline="yes">
+			<cffile action="Append" file="#Variables.CompletedYearEndReportFile#" output="" addnewline="yes">
 			<cfloop array="#Variables.ReportQuery#" index="s" from="1" to="#ArrayLen(Variables.ReportQuery)#">
-				<cffile action="Append" addnewline="true" file="#Variables.CompletdYearEndReportFile#" output="#ArrayToList(s,',')#">
+				<cfset TempLine = #ArrayToList(s,',')#>
+				<cfset NewTempLine = #Replace(Variables.TempLine, ",0", ", ", "ALL")#>
+				<!--- 
+				<cffile action="Append" addnewline="true" file="#Variables.CompletedYearEndReportFile#" output="#ArrayToList(s,',')#">
+			--->
+					<cffile action="Append" addnewline="true" file="#Variables.CompletedYearEndReportFile#" output="#Variables.NewTempLine#">
 			</cfloop>
 			<cfset Session.ReportQuery = #StructNew()#>
 			<cfset Session.ReportQuery.YearlyEvents = #Variables.ReportYearlyEvents#>
 			<cfset Session.ReportQuery.Corporations = #Variables.ReportQuery#>
-			<cfset Session.ReportQuery.ReportFileName = #Variables.YearBegin# & "_" & #Variables.YearEnd# & "-" & #FORM.MembershipID# & "YearlyEventReport.csv">
+			<cfset Session.ReportQuery.ReportFileName = #Variables.YearBegin# & "_" & #Variables.YearEnd# & "-" & #FORM.MembershipID# & "SDDetails.csv">
+			<cfset Session.ReportQuery.ReportHeaderFileName = #Variables.YearBegin# & "_" & #Variables.YearEnd# & "-" & "SDFactors.csv">
 			<cfset Session.ReportQuery.ReportURLLocation = "/plugins/" & #HTMLEditFormat(rc.pc.getPackage())# & "/library/ReportExports/">
 			<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:reports.yearendreport&DisplayReport=True">
 		</cfif>

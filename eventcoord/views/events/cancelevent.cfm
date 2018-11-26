@@ -66,7 +66,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="CancelEvent" class="control-label col-sm-3">Really Cancel Event?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfselect name="CancelEvent" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Cancel Event and Notify Participants</option></cfselect>
+						<div class="col-sm-8"><cfselect name="CancelEvent" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Select Yes to Cancel Event</option></cfselect>
 						</div>
 					</div>
 				</div>
@@ -168,7 +168,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="CancelEvent" class="control-label col-sm-3">Really Cancel Event?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfselect name="CancelEvent" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Cancel Event and Notify Participants</option></cfselect>
+						<div class="col-sm-8"><cfselect name="CancelEvent" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Select Yes to Cancel Event</option></cfselect>
 						</div>
 					</div>
 				</div>

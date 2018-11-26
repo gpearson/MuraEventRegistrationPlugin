@@ -16,6 +16,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 			$("##EndYearDate").datepicker();
 		});
 	</script>
+	<cfset CurrentYear = #Year(Now())#>
+	<cfset PreviousYear = #Year(Now())# - 1>
+	<cfset ReportStartDate = #CreateDate(Variables.PreviousYear, 7, 1)#>
+	<cfset ReportEndDate = #CreateDate(Variables.CurrentYear, 6, 30)#>
 	<cfif not isDefined("URL.FormRetry") and not isDefined("URL.DisplayReport")>
 		<div class="panel panel-default">
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
@@ -28,16 +32,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="alert alert-info">Please complete the following information to display this report for the selected year period. This will create a CSV (Comma Seperated Value) file that can be read by Microsoft Excell or compatible program to view the information.</div>
 					<div class="form-group">
 						<label for="BeginYearDate" class="control-label col-sm-3">Year Start Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="BegYearDate" name="BegYearDate" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="BegYearDate" name="BegYearDate" value="#DateFormat(Variables.ReportStartDate, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="EndYearDate" class="control-label col-sm-3">Year End Date:&nbsp;</label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EndYearDate" name="EndYearDate" required="no"></div>
+						<div class="col-sm-8"><cfinput type="text" class="form-control" id="EndYearDate" name="EndYearDate" value="#DateFormat(Variables.ReportEndDate, 'mm/dd/yyyy')#" required="no"></div>
 					</div>
 					<div class="form-group">
 						<label for="Membership" class="control-label col-sm-3">Membership Agency:&nbsp;</label>
 						<div class="col-sm-8"><cfselect name="MembershipID" class="form-control" Required="Yes" Multiple="No" query="Session.QueryForReport.GetMembershipAgencies" value="TContent_ID" Display="OrganizationName"  queryposition="below">
-							<option value="----">Select Which Membership Agnecy you want to base report on</option>
+							<option value="----">Select Which Membership Agency you want to base report on</option>
 							<option value="0">Not a Member of ESC/ESA</option></cfselect>
 						</div>
 					</div>
@@ -121,6 +125,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<legend><h2>Year End Report</h2></legend>
 				</fieldset>
 				<p>Your report has been generated and ready to be downloaded. Please click <a href="#Session.ReportQuery.ReportURLLocation##Session.ReportQuery.ReportFileName#" target="_blank">#Session.ReportQuery.ReportFileName#</a> to download your report</p>
+				<p>Your report header file has been generated and ready to be downloaded. Please click <a href="#Session.ReportQuery.ReportURLLocation##Session.ReportQuery.ReportHeaderFileName#" target="_blank">#Session.ReportQuery.ReportHeaderFileName#</a> to download your report</p>
 			</div>
 		</div>
 		<div class="panel-footer">

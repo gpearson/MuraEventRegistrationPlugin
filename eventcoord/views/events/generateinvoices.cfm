@@ -60,7 +60,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
 				<cfset ReportDirectory = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/reports/")# >
 				<cfset ReportExportLoc = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/")# & #URL.EventID# & "InvoicesForEvent.pdf" >
-				<jr:jasperreport jrxml="#ReportDirectory#/EventInvoice.jrxml" query="#Session.GetSelectedEventRegistrations#" exportfile="#ReportExportLoc#" exportType="pdf" />
+				<cfswitch expression="#rc.$.siteConfig('siteID')#">
+					<cfcase value="NIESCEvents">
+						<jr:jasperreport jrxml="#ReportDirectory#/NIESCEventInvoice.jrxml" query="#Session.GetSelectedEventRegistrations#" exportfile="#ReportExportLoc#" exportType="pdf" />
+					</cfcase>
+					<cfcase value="NWIESCEvents">
+						<jr:jasperreport jrxml="#ReportDirectory#/NWIESCEventInvoice.jrxml" query="#Session.GetSelectedEventRegistrations#" exportfile="#ReportExportLoc#" exportType="pdf" />
+					</cfcase>
+				</cfswitch>
 				<embed src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/ReportExports/#URL.EventID#InvoicesForEvent.pdf" width="100%" height="650">
 			</div>
 			<div class="panel-footer">

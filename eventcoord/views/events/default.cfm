@@ -780,7 +780,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 								Group by AttendeePriceVerified
 							</cfquery>
 							<tr <cfif Session.getAvailableEvents.Active EQ 0></cfif>>
-								<td width="50%">(<a href="http://#cgi.server_name#/?Info=#Session.getAvailableEvents.TContent_ID#">#Session.getAvailableEvents.TContent_ID#</a>) / #Session.getAvailableEvents.ShortTitle#<cfif LEN(Session.getAvailableEvents.Presenters)><cfquery name="getPresenter" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">Select FName, LName From tusers where UserID = <cfqueryparam value="#Session.getAvailableEvents.Presenters#" cfsqltype="cf_sql_varchar"></cfquery><br><em>Presenter: #getPresenter.FName# #getPresenter.Lname#</em></cfif></td>
+								<td width="50%">(<a href="http://#cgi.server_name#/?Info=#Session.getAvailableEvents.TContent_ID#">#Session.getAvailableEvents.TContent_ID#</a>) / #Session.getAvailableEvents.ShortTitle#<cfif LEN(Session.getAvailableEvents.Presenters)><cfquery name="getPresenter" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">Select FName, LName From tusers where UserID = <cfqueryparam value="#Session.getAvailableEvents.Presenters#" cfsqltype="cf_sql_varchar"></cfquery><br><em>Presenter: #getPresenter.FName# #getPresenter.Lname#</em></cfif>
+									<cfif Session.getAvailableEvents.PGPCertificatesGenerated EQ 1><br><font color="Green">PGP Certificates Sent</font></cfif>
+									<cfif Session.getAvailableEvents.EventInvoicesGenerated EQ 1><br><font color="Blue">Invoices Sent</font></cfif>
+								</td>
 								<td width="15%">
 									<cfset ValidDate = 0>
 									<cfif LEN(Session.getAvailableEvents.EventDate) and LEN(Session.getAvailableEvents.EventDate1) or LEN(Session.getAvailableEvents.EventDate2) or LEN(Session.getAvailableEvents.EventDate3) or LEN(Session.getAvailableEvents.EventDate4)>
