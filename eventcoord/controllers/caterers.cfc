@@ -25,7 +25,7 @@
 		<cfif isDefined("URL._search")>
 			<cfif URL._search EQ "false">
 				<cfquery name="getCaterers" dbtype="Query">
-					Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryPhoneNumber, Active
+					Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryVoiceNumber, Active
 					From Session.getCaterers
 					<cfif Arguments.sidx NEQ "">
 						Order By #Arguments.sidx# #Arguments.sord#
@@ -35,36 +35,42 @@
 				</cfquery>
 			<cfelse>
 				<cfquery name="getCaterers" dbtype="Query">
-					Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryPhoneNumber, Active
+					Select TContent_ID, FacilityName, PhysicalCity, PhysicalState, PrimaryVoiceNumber, Active
 					From Session.getCaterers
 					<cfif Arguments.sidx NEQ "">
 						<cfswitch expression="#URL.searchOper#">
 							<cfcase value="eq">
 								Where #URL.searchField# = '#URL.searchString#'
 							</cfcase>
+							<cfcase value="cn">
+								<!--- Contains --->
+								Where #URL.searchField# LIKE '%#URL.searchString#%'
+							</cfcase>
 							<cfcase value="ne">
 								<!--- Not Equal --->
-								Where #URL.searchField# = '#URL.searchString#'
+								Where #URL.searchField# <> '#URL.searchString#'
 							</cfcase>
 							<cfcase value="bw">
 								<!--- Begin With --->
-								Where #URL.searchField# = '#URL.searchString#'
-							</cfcase>
-							<cfcase value="bn">
-								<!--- Does Not Begin With  --->
-								Where #URL.searchField# = '#URL.searchString#'
+								Where #URL.searchField# LIKE '#URL.searchString#%'
 							</cfcase>
 							<cfcase value="ew">
 								<!--- Ends With --->
+								Where #URL.searchField# LIKE '%#URL.searchString#'
+							</cfcase>
+							<cfcase value="cn">
+								<!--- Contains --->
+								Where #URL.searchField# LIKE '%#URL.searchString#%'
+							</cfcase>
+
+
+							<cfcase value="bn">
+								<!--- Does Not Begin With  --->
 								Where #URL.searchField# = '#URL.searchString#'
 							</cfcase>
 							<cfcase value="en">
 								<!--- Does Not End With --->
 								Where #URL.searchField# = '#URL.searchString#'
-							</cfcase>
-							<cfcase value="cn">
-								<!--- Contains --->
-								Where #URL.searchField# LIKE '%#URL.searchString#%'
 							</cfcase>
 							<cfcase value="nc">
 								<!--- Does Not Contain --->
@@ -312,7 +318,7 @@
 					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 					<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
-					<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
+					<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">
 				)
 			</cfquery>
 

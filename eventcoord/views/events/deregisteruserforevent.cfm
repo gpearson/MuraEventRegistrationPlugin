@@ -64,104 +64,68 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<br /><br />
 					<table class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
 						<cfloop query="Session.getRegisteredParticipants">
-							<cfquery name="CheckUserAlreadyRegisteredDay1" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								Select tusers.Fname, tusers.Lname, tusers.UserName, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM
-								From p_EventRegistration_UserRegistrations INNER JOIN tusers on tusers.UserID = p_EventRegistration_UserRegistrations.User_ID
-								Where p_EventRegistration_UserRegistrations.User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar"> and
-									p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-									p_EventRegistration_UserRegistrations.RegisterForEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-							</cfquery>
 							<cfset CurrentModRow = #Session.getRegisteredParticipants.CurrentRow# MOD 4>
+							<cfquery name="GetOrgName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Select OrganizationName
+								From p_EventRegistration_Membership
+								Where OrganizationDomainName = <cfqueryparam value="#Session.getRegisteredparticipants.Domain#" cfsqltype="cf_sql_varchar">
+							</cfquery>
+							
 							<cfswitch expression="#Variables.NumberOfEventDates#">
 								<cfcase value="1">
 									<cfswitch expression="#Variables.CurrentModRow#">
 										<cfcase value="1">
-											<tr><td width="25%"><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#CheckUserAlreadyRegisteredDay1.LName#, #CheckUserAlreadyRegisteredDay1.FName#<cfelse></cfif></td>
+											<tr><td width="25%"><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td>
 										</cfcase>
 										<cfcase value="0">
-											<td width="25%"><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#CheckUserAlreadyRegisteredDay1.LName#, #CheckUserAlreadyRegisteredDay1.FName#<cfelse></cfif></td></tr>
+											<td width="25%"><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td></tr>
 										</cfcase>
 										<cfdefaultcase>
-											<td width="25%"><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#CheckUserAlreadyRegisteredDay1.LName#, #CheckUserAlreadyRegisteredDay1.FName#<cfelse></cfif></td>
+											<td width="25%"><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td>
 										</cfdefaultcase>
 									</cfswitch>
 								</cfcase>
 								<cfdefaultcase>
-									<cfquery name="CheckUserAlreadyRegisteredDay2" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Select tusers.Fname, tusers.Lname, tusers.UserName, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM
-										From p_EventRegistration_UserRegistrations INNER JOIN tusers on tusers.UserID = p_EventRegistration_UserRegistrations.User_ID
-										Where p_EventRegistration_UserRegistrations.User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar"> and
-											p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-											p_EventRegistration_UserRegistrations.RegisterForEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									</cfquery>
-									<cfquery name="CheckUserAlreadyRegisteredDay3" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Select User_ID, EventID, RegisterForEventDate1, RegisterForEventDate2, RegisterForEventDate3, RegisterForEventDate4, RegisterForEventDate5, RegisterForEventDate6, RegisterForEventSessionAM, RegisterForEventSessionPM
-										From p_EventRegistration_UserRegistrations
-										Where User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar">
-											and EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-												RegisterForEventDate3 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									</cfquery>
-									<cfquery name="CheckUserAlreadyRegisteredDay4" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Select User_ID, EventID, RegisterForEventDate1, RegisterForEventDate2, RegisterForEventDate3, RegisterForEventDate4, RegisterForEventDate5, RegisterForEventDate6, RegisterForEventSessionAM, RegisterForEventSessionPM
-										From p_EventRegistration_UserRegistrations
-										Where User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar">
-											and EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-												RegisterForEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									</cfquery>
-									<cfquery name="CheckUserAlreadyRegisteredDay5" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Select User_ID, EventID, RegisterForEventDate1, RegisterForEventDate2, RegisterForEventDate3, RegisterForEventDate4, RegisterForEventDate5, RegisterForEventDate6, RegisterForEventSessionAM, RegisterForEventSessionPM
-										From p_EventRegistration_UserRegistrations
-										Where User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar">
-											and EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-												RegisterForEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									</cfquery>
-									<cfquery name="CheckUserAlreadyRegisteredDay6" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Select User_ID, EventID, RegisterForEventDate1, RegisterForEventDate2, RegisterForEventDate3, RegisterForEventDate4, RegisterForEventDate5, RegisterForEventDate6, RegisterForEventSessionAM, RegisterForEventSessionPM
-										From p_EventRegistration_UserRegistrations
-										Where User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar">
-											and EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-												RegisterForEventDate6 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									</cfquery>
 									<cfswitch expression="#Variables.CurrentModRow#">
 										<cfcase value="1">
 											<tr>
 											<td width="25%">
 											<table class="table" width="25%" cellspacing="0" cellpadding="0">
-											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#</td></th>
+											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td></th>
 											<tr>
 											<cfswitch expression="#Variables.NumberOfEventDates#">
 												<cfcase value="1">
-												<td width="#Variables.ColWidth#" colspan="6">Day 1<br>#CheckUserAlreadyRegisteredDay1.RecordCount#/<cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#" colspan="6">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
 												</cfcase>
 												<cfcase value="2">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td colspan="5">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td colspan="5">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
 												</cfcase>
 												<cfcase value="3">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td colspan="4">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td colspan="4">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
 												</cfcase>
 												<cfcase value="4">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td colspan="3">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td colspan="3">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
 												</cfcase>
 												<cfcase value="5">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td colspan="2">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td colspan="2">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
 												</cfcase>
 												<cfcase value="6">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 6<br><cfif CheckUserAlreadyRegisteredDay6.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 6<br><cfif Session.getRegisteredParticipants.RegisterForEventDate6 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"></cfif></td>
 												</cfcase>
 											</cfswitch>
 											</tr>
@@ -171,41 +135,41 @@ http://www.apache.org/licenses/LICENSE-2.0
 										<cfcase value="0">
 											<td width="25%">
 											<table class="table" width="25%" cellspacing="0" cellpadding="0">
-											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#</td></th>
+											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td></th>
 											<tr>
 											<cfswitch expression="#Variables.NumberOfEventDates#">
 												<cfcase value="1">
-												<td width="#Variables.ColWidth#" colspan="6">Day 1<br>#CheckUserAlreadyRegisteredDay1.RecordCount#/<cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#" colspan="6">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
 												</cfcase>
 												<cfcase value="2">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td colspan="5">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td colspan="5">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
 												</cfcase>
 												<cfcase value="3">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td colspan="4">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td colspan="4">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
 												</cfcase>
 												<cfcase value="4">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td colspan="3">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td colspan="3">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
 												</cfcase>
 												<cfcase value="5">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td colspan="2">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td colspan="2">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
 												</cfcase>
 												<cfcase value="6">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 6<br><cfif CheckUserAlreadyRegisteredDay6.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 6<br><cfif Session.getRegisteredParticipants.RegisterForEventDate6 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"></cfif></td>
 												</cfcase>
 											</cfswitch>
 											</tr>
@@ -215,41 +179,41 @@ http://www.apache.org/licenses/LICENSE-2.0
 										<cfdefaultcase>
 											<td width="25%">
 											<table class="table" width="25%" cellspacing="0" cellpadding="0">
-											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#</td></th>
+											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td></th>
 											<tr>
 											<cfswitch expression="#Variables.NumberOfEventDates#">
 												<cfcase value="1">
-												<td width="#Variables.ColWidth#" colspan="6">Day 1<br>#CheckUserAlreadyRegisteredDay1.RecordCount#/<cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#" colspan="6">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
 												</cfcase>
 												<cfcase value="2">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td colspan="5">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td colspan="5">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
 												</cfcase>
 												<cfcase value="3">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td colspan="4">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td colspan="4">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
 												</cfcase>
 												<cfcase value="4">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td colspan="3">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td colspan="3">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
 												</cfcase>
 												<cfcase value="5">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td colspan="2">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td colspan="2">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
 												</cfcase>
 												<cfcase value="6">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 6<br><cfif CheckUserAlreadyRegisteredDay6.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 6<br><cfif Session.getRegisteredParticipants.RegisterForEventDate6 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"></cfif></td>
 												</cfcase>
 											</cfswitch>
 											</tr>
@@ -360,107 +324,71 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="col-sm-8"><cfselect name="SendConfirmation" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Participant receive email confirmation regarding this</option></cfselect>
 					</div>
 					<br /><br />
+					<br /><br />
 					<table class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
 						<cfloop query="Session.getRegisteredParticipants">
-							<cfquery name="CheckUserAlreadyRegisteredDay1" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								Select tusers.Fname, tusers.Lname, tusers.UserName, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM
-								From p_EventRegistration_UserRegistrations INNER JOIN tusers on tusers.UserID = p_EventRegistration_UserRegistrations.User_ID
-								Where p_EventRegistration_UserRegistrations.User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar"> and
-									p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-									p_EventRegistration_UserRegistrations.RegisterForEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-								Order By tusers.Lname ASC, tusers.Fname ASC
-							</cfquery>
 							<cfset CurrentModRow = #Session.getRegisteredParticipants.CurrentRow# MOD 4>
+							<cfquery name="GetOrgName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								Select OrganizationName
+								From p_EventRegistration_Membership
+								Where OrganizationDomainName = <cfqueryparam value="#Session.getRegisteredparticipants.Domain#" cfsqltype="cf_sql_varchar">
+							</cfquery>
+							
 							<cfswitch expression="#Variables.NumberOfEventDates#">
 								<cfcase value="1">
 									<cfswitch expression="#Variables.CurrentModRow#">
 										<cfcase value="1">
-											<tr><td width="25%"><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#CheckUserAlreadyRegisteredDay1.LName#, #CheckUserAlreadyRegisteredDay1.FName#<cfelse></cfif></td>
+											<tr><td width="25%"><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td>
 										</cfcase>
 										<cfcase value="0">
-											<td width="25%"><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#CheckUserAlreadyRegisteredDay1.LName#, #CheckUserAlreadyRegisteredDay1.FName#<cfelse></cfif></td></tr>
+											<td width="25%"><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td></tr>
 										</cfcase>
 										<cfdefaultcase>
-											<td width="25%"><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#CheckUserAlreadyRegisteredDay1.LName#, #CheckUserAlreadyRegisteredDay1.FName#<cfelse></cfif></td>
+											<td width="25%"><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td>
 										</cfdefaultcase>
 									</cfswitch>
 								</cfcase>
 								<cfdefaultcase>
-									<cfquery name="CheckUserAlreadyRegisteredDay2" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Select tusers.Fname, tusers.Lname, tusers.UserName, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM
-										From p_EventRegistration_UserRegistrations INNER JOIN tusers on tusers.UserID = p_EventRegistration_UserRegistrations.User_ID
-										Where p_EventRegistration_UserRegistrations.User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar"> and
-											p_EventRegistration_UserRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-											p_EventRegistration_UserRegistrations.RegisterForEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									</cfquery>
-									<cfquery name="CheckUserAlreadyRegisteredDay3" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Select User_ID, EventID, RegisterForEventDate1, RegisterForEventDate2, RegisterForEventDate3, RegisterForEventDate4, RegisterForEventDate5, RegisterForEventDate6, RegisterForEventSessionAM, RegisterForEventSessionPM
-										From p_EventRegistration_UserRegistrations
-										Where User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar">
-											and EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-												RegisterForEventDate3 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									</cfquery>
-									<cfquery name="CheckUserAlreadyRegisteredDay4" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Select User_ID, EventID, RegisterForEventDate1, RegisterForEventDate2, RegisterForEventDate3, RegisterForEventDate4, RegisterForEventDate5, RegisterForEventDate6, RegisterForEventSessionAM, RegisterForEventSessionPM
-										From p_EventRegistration_UserRegistrations
-										Where User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar">
-											and EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-												RegisterForEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									</cfquery>
-									<cfquery name="CheckUserAlreadyRegisteredDay5" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Select User_ID, EventID, RegisterForEventDate1, RegisterForEventDate2, RegisterForEventDate3, RegisterForEventDate4, RegisterForEventDate5, RegisterForEventDate6, RegisterForEventSessionAM, RegisterForEventSessionPM
-										From p_EventRegistration_UserRegistrations
-										Where User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar">
-											and EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-												RegisterForEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									</cfquery>
-									<cfquery name="CheckUserAlreadyRegisteredDay6" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-										Select User_ID, EventID, RegisterForEventDate1, RegisterForEventDate2, RegisterForEventDate3, RegisterForEventDate4, RegisterForEventDate5, RegisterForEventDate6, RegisterForEventSessionAM, RegisterForEventSessionPM
-										From p_EventRegistration_UserRegistrations
-										Where User_ID = <cfqueryparam value="#Session.getRegisteredParticipants.User_ID#" cfsqltype="cf_sql_varchar">
-											and EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-												RegisterForEventDate6 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-									</cfquery>
 									<cfswitch expression="#Variables.CurrentModRow#">
 										<cfcase value="1">
 											<tr>
 											<td width="25%">
 											<table class="table" width="25%" cellspacing="0" cellpadding="0">
-											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#</td></th>
+											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td></th>
 											<tr>
 											<cfswitch expression="#Variables.NumberOfEventDates#">
 												<cfcase value="1">
-												<td width="#Variables.ColWidth#" colspan="6">Day 1<br>#CheckUserAlreadyRegisteredDay1.RecordCount#/<cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#" colspan="6">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
 												</cfcase>
 												<cfcase value="2">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td colspan="5">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td colspan="5">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
 												</cfcase>
 												<cfcase value="3">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td colspan="4">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td colspan="4">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
 												</cfcase>
 												<cfcase value="4">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td colspan="3">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td colspan="3">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
 												</cfcase>
 												<cfcase value="5">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td colspan="2">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td colspan="2">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
 												</cfcase>
 												<cfcase value="6">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 6<br><cfif CheckUserAlreadyRegisteredDay6.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 6<br><cfif Session.getRegisteredParticipants.RegisterForEventDate6 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"></cfif></td>
 												</cfcase>
 											</cfswitch>
 											</tr>
@@ -470,41 +398,41 @@ http://www.apache.org/licenses/LICENSE-2.0
 										<cfcase value="0">
 											<td width="25%">
 											<table class="table" width="25%" cellspacing="0" cellpadding="0">
-											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#</td></th>
+											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td></th>
 											<tr>
 											<cfswitch expression="#Variables.NumberOfEventDates#">
 												<cfcase value="1">
-												<td width="#Variables.ColWidth#" colspan="6">Day 1<br>#CheckUserAlreadyRegisteredDay1.RecordCount#/<cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#" colspan="6">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
 												</cfcase>
 												<cfcase value="2">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td colspan="5">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td colspan="5">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
 												</cfcase>
 												<cfcase value="3">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td colspan="4">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td colspan="4">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
 												</cfcase>
 												<cfcase value="4">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td colspan="3">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td colspan="3">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
 												</cfcase>
 												<cfcase value="5">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td colspan="2">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td colspan="2">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
 												</cfcase>
 												<cfcase value="6">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 6<br><cfif CheckUserAlreadyRegisteredDay6.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 6<br><cfif Session.getRegisteredParticipants.RegisterForEventDate6 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"></cfif></td>
 												</cfcase>
 											</cfswitch>
 											</tr>
@@ -514,41 +442,41 @@ http://www.apache.org/licenses/LICENSE-2.0
 										<cfdefaultcase>
 											<td width="25%">
 											<table class="table" width="25%" cellspacing="0" cellpadding="0">
-											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#</td></th>
+											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td></th>
 											<tr>
 											<cfswitch expression="#Variables.NumberOfEventDates#">
 												<cfcase value="1">
-												<td width="#Variables.ColWidth#" colspan="6">Day 1<br>#CheckUserAlreadyRegisteredDay1.RecordCount#/<cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#" colspan="6">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
 												</cfcase>
 												<cfcase value="2">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td colspan="5">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td colspan="5">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
 												</cfcase>
 												<cfcase value="3">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td colspan="4">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td colspan="4">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
 												</cfcase>
 												<cfcase value="4">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td colspan="3">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td colspan="3">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
 												</cfcase>
 												<cfcase value="5">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td colspan="2">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td colspan="2">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
 												</cfcase>
 												<cfcase value="6">
-												<td width="#Variables.ColWidth#">Day 1<br><cfif CheckUserAlreadyRegisteredDay1.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 2<br><cfif CheckUserAlreadyRegisteredDay2.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 3<br><cfif CheckUserAlreadyRegisteredDay3.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 4<br><cfif CheckUserAlreadyRegisteredDay4.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 5<br><cfif CheckUserAlreadyRegisteredDay5.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"><cfelse></cfif></td>
-												<td width="#Variables.ColWidth#">Day 6<br><cfif CheckUserAlreadyRegisteredDay6.RecordCount><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"><cfelse></cfif></td>
+												<td width="#Variables.ColWidth#">Day 1<br><cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 2<br><cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_2"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 3<br><cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_3"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 4<br><cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_4"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 5<br><cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_5"></cfif></td>
+												<td width="#Variables.ColWidth#">Day 6<br><cfif Session.getRegisteredParticipants.RegisterForEventDate6 EQ 1><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_6"></cfif></td>
 												</cfcase>
 											</cfswitch>
 											</tr>

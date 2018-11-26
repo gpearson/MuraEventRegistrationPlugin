@@ -50,29 +50,35 @@
 							<cfcase value="eq">
 								Where #URL.searchField# = '#URL.searchString#'
 							</cfcase>
+							<cfcase value="cn">
+								<!--- Contains --->
+								Where #URL.searchField# LIKE '%#URL.searchString#%'
+							</cfcase>
 							<cfcase value="ne">
 								<!--- Not Equal --->
-								Where #URL.searchField# = '#URL.searchString#'
+								Where #URL.searchField# <> '#URL.searchString#'
 							</cfcase>
 							<cfcase value="bw">
 								<!--- Begin With --->
-								Where #URL.searchField# = '#URL.searchString#'
-							</cfcase>
-							<cfcase value="bn">
-								<!--- Does Not Begin With  --->
-								Where #URL.searchField# = '#URL.searchString#'
+								Where #URL.searchField# LIKE '#URL.searchString#%'
 							</cfcase>
 							<cfcase value="ew">
 								<!--- Ends With --->
+								Where #URL.searchField# LIKE '%#URL.searchString#'
+							</cfcase>
+							<cfcase value="cn">
+								<!--- Contains --->
+								Where #URL.searchField# LIKE '%#URL.searchString#%'
+							</cfcase>
+
+
+							<cfcase value="bn">
+								<!--- Does Not Begin With  --->
 								Where #URL.searchField# = '#URL.searchString#'
 							</cfcase>
 							<cfcase value="en">
 								<!--- Does Not End With --->
 								Where #URL.searchField# = '#URL.searchString#'
-							</cfcase>
-							<cfcase value="cn">
-								<!--- Contains --->
-								Where #URL.searchField# LIKE '%#URL.searchString#%'
 							</cfcase>
 							<cfcase value="nc">
 								<!--- Does Not Contain --->
@@ -221,7 +227,7 @@
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.edituser&FormRetry=True&UserID=#FORM.UserID#" addtoken="false">
 			</cfif>
 
-			<cfif not isValid("email", FORM.UserName)>
+			<cfif not isValid("email", FORM.EMail)>
 				<cfscript>
 					errormsg = {property="EmailMsg",message="Please enter a valid email address for this user account."};
 					arrayAppend(Session.FormErrors, errormsg);

@@ -33,11 +33,17 @@ Line 42: Change to the Plugin Name for the cfimport line
 					<cfset getParticipants = #StructCopy(Session.getRegisteredParticipants)#>
 					<cfset StructClear(getParticipants)>
 					<cfloop query="Session.getRegisteredParticipants">
+						<cfquery name="GetOrgName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+							Select OrganizationName
+							From p_EventRegistration_Membership
+							Where OrganizationDomainName = <cfqueryparam value="#Session.getRegisteredparticipants.Domain#" cfsqltype="cf_sql_varchar">
+						</cfquery>
+
 						<cfset temp = QueryAddRow(getParticipants)>
 						<cfset temp = QuerySetCell(getParticipants, "Fname", Session.getRegisteredparticipants.Fname)>
 						<cfset temp = QuerySetCell(getParticipants, "Lname", Session.getRegisteredparticipants.Lname)>
 						<cfset temp = QuerySetCell(getParticipants, "Email", Session.getRegisteredparticipants.Email)>
-						<cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)>
+						<cfif GetOrgName.RecordCount><cfset temp = QuerySetCell(getParticipants, "Domain", GetOrgName.OrganizationName)><cfelse><cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)></cfif>
 						<cfset temp = QuerySetCell(getParticipants, "ShortTitle", Session.getRegisteredparticipants.ShortTitle)>
 						<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", Session.getRegisteredparticipants.EventDateFormat)>
 						<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
@@ -83,11 +89,16 @@ Line 42: Change to the Plugin Name for the cfimport line
 							<cfset StructClear(getParticipants)>
 							<cfloop query="Session.getRegisteredParticipants">
 								<cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1>
+									<cfquery name="GetOrgName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Select OrganizationName
+									From p_EventRegistration_Membership
+									Where OrganizationDomainName = <cfqueryparam value="#Session.getRegisteredparticipants.Domain#" cfsqltype="cf_sql_varchar">
+									</cfquery>
 									<cfset temp = QueryAddRow(getParticipants)>
 									<cfset temp = QuerySetCell(getParticipants, "Fname", Session.getRegisteredparticipants.Fname)>
 									<cfset temp = QuerySetCell(getParticipants, "Lname", Session.getRegisteredparticipants.Lname)>
 									<cfset temp = QuerySetCell(getParticipants, "Email", Session.getRegisteredparticipants.Email)>
-									<cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)>
+									<cfif GetOrgName.RecordCount GT 0><cfset temp = QuerySetCell(getParticipants, "Domain", GetOrgName.OrganizationName)><cfelse><cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)></cfif>
 									<cfset temp = QuerySetCell(getParticipants, "ShortTitle", Session.getRegisteredparticipants.ShortTitle)>
 									<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", DateFormat(ListGetAt(Session.SignInSheet.EventDates, 1), 'ddd, mmmm dd, yyyy'))>
 									<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
@@ -100,11 +111,16 @@ Line 42: Change to the Plugin Name for the cfimport line
 							<cfset StructClear(getParticipants)>
 							<cfloop query="Session.getRegisteredParticipants">
 								<cfif Session.getRegisteredParticipants.RegisterForEventDate2 EQ 1>
+									<cfquery name="GetOrgName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Select OrganizationName
+									From p_EventRegistration_Membership
+									Where OrganizationDomainName = <cfqueryparam value="#Session.getRegisteredparticipants.Domain#" cfsqltype="cf_sql_varchar">
+									</cfquery>
 									<cfset temp = QueryAddRow(getParticipants)>
 									<cfset temp = QuerySetCell(getParticipants, "Fname", Session.getRegisteredparticipants.Fname)>
 									<cfset temp = QuerySetCell(getParticipants, "Lname", Session.getRegisteredparticipants.Lname)>
 									<cfset temp = QuerySetCell(getParticipants, "Email", Session.getRegisteredparticipants.Email)>
-									<cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)>
+									<cfif GetOrgName.RecordCount GT 0><cfset temp = QuerySetCell(getParticipants, "Domain", GetOrgName.OrganizationName)><cfelse><cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)></cfif>
 									<cfset temp = QuerySetCell(getParticipants, "ShortTitle", Session.getRegisteredparticipants.ShortTitle)>
 									<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", DateFormat(ListGetAt(Session.SignInSheet.EventDates, 2), 'ddd, mmmm dd, yyyy'))>
 									<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
@@ -117,11 +133,16 @@ Line 42: Change to the Plugin Name for the cfimport line
 							<cfset StructClear(getParticipants)>
 							<cfloop query="Session.getRegisteredParticipants">
 								<cfif Session.getRegisteredParticipants.RegisterForEventDate3 EQ 1>
+									<cfquery name="GetOrgName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Select OrganizationName
+									From p_EventRegistration_Membership
+									Where OrganizationDomainName = <cfqueryparam value="#Session.getRegisteredparticipants.Domain#" cfsqltype="cf_sql_varchar">
+									</cfquery>
 									<cfset temp = QueryAddRow(getParticipants)>
 									<cfset temp = QuerySetCell(getParticipants, "Fname", Session.getRegisteredparticipants.Fname)>
 									<cfset temp = QuerySetCell(getParticipants, "Lname", Session.getRegisteredparticipants.Lname)>
 									<cfset temp = QuerySetCell(getParticipants, "Email", Session.getRegisteredparticipants.Email)>
-									<cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)>
+									<cfif GetOrgName.RecordCount GT 0><cfset temp = QuerySetCell(getParticipants, "Domain", GetOrgName.OrganizationName)><cfelse><cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)></cfif>
 									<cfset temp = QuerySetCell(getParticipants, "ShortTitle", Session.getRegisteredparticipants.ShortTitle)>
 									<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", DateFormat(ListGetAt(Session.SignInSheet.EventDates, 3), 'ddd, mmmm dd, yyyy'))>
 									<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
@@ -134,11 +155,16 @@ Line 42: Change to the Plugin Name for the cfimport line
 							<cfset StructClear(getParticipants)>
 							<cfloop query="Session.getRegisteredParticipants">
 								<cfif Session.getRegisteredParticipants.RegisterForEventDate4 EQ 1>
+									<cfquery name="GetOrgName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Select OrganizationName
+									From p_EventRegistration_Membership
+									Where OrganizationDomainName = <cfqueryparam value="#Session.getRegisteredparticipants.Domain#" cfsqltype="cf_sql_varchar">
+									</cfquery>
 									<cfset temp = QueryAddRow(getParticipants)>
 									<cfset temp = QuerySetCell(getParticipants, "Fname", Session.getRegisteredparticipants.Fname)>
 									<cfset temp = QuerySetCell(getParticipants, "Lname", Session.getRegisteredparticipants.Lname)>
 									<cfset temp = QuerySetCell(getParticipants, "Email", Session.getRegisteredparticipants.Email)>
-									<cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)>
+									<cfif GetOrgName.RecordCount GT 0><cfset temp = QuerySetCell(getParticipants, "Domain", GetOrgName.OrganizationName)><cfelse><cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)></cfif>
 									<cfset temp = QuerySetCell(getParticipants, "ShortTitle", Session.getRegisteredparticipants.ShortTitle)>
 									<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", DateFormat(ListGetAt(Session.SignInSheet.EventDates, 4), 'ddd, mmmm dd, yyyy'))>
 									<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
@@ -151,11 +177,16 @@ Line 42: Change to the Plugin Name for the cfimport line
 							<cfset StructClear(getParticipants)>
 							<cfloop query="Session.getRegisteredParticipants">
 								<cfif Session.getRegisteredParticipants.RegisterForEventDate5 EQ 1>
+									<cfquery name="GetOrgName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+									Select OrganizationName
+									From p_EventRegistration_Membership
+									Where OrganizationDomainName = <cfqueryparam value="#Session.getRegisteredparticipants.Domain#" cfsqltype="cf_sql_varchar">
+									</cfquery>
 									<cfset temp = QueryAddRow(getParticipants)>
 									<cfset temp = QuerySetCell(getParticipants, "Fname", Session.getRegisteredparticipants.Fname)>
 									<cfset temp = QuerySetCell(getParticipants, "Lname", Session.getRegisteredparticipants.Lname)>
 									<cfset temp = QuerySetCell(getParticipants, "Email", Session.getRegisteredparticipants.Email)>
-									<cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)>
+									<cfif GetOrgName.RecordCount GT 0><cfset temp = QuerySetCell(getParticipants, "Domain", GetOrgName.OrganizationName)><cfelse><cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)></cfif>
 									<cfset temp = QuerySetCell(getParticipants, "ShortTitle", Session.getRegisteredparticipants.ShortTitle)>
 									<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", DateFormat(ListGetAt(Session.SignInSheet.EventDates, 5), 'ddd, mmmm dd, yyyy'))>
 									<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
@@ -203,87 +234,3 @@ Line 42: Change to the Plugin Name for the cfimport line
 		</cfif>
 	</div>
 </cfoutput>
-<!---
-
-<cflock timeout="60" scope="SESSION" type="Exclusive">
-	<cfset Session.FormData = #StructNew()#>
-	<cfif not isDefined("Session.FormErrors")><cfset Session.FormErrors = #ArrayNew()#></cfif>
-</cflock>
-
-<cfquery name="getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-	Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4
-	From p_EventRegistration_Events
-	Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
-		TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
-</cfquery>
-
-
-
-<cfoutput>
-	<div class="art-blockheader">
-		<h3 class="t">Event Signin Document</h3>
-	</div>
-	<div class="alert-box notice">Below is the sign in sheet for the selected report. Click <A href="/plugins/EventRegistration/index.cfm?EventRegistrationaction=eventcoord:events.default" class="art-button">here</a> to return to the listing of available events.</div>
-	<hr>
-	<cfif ListLen(Variables.EventDates) GTE 2 and not isDefined("URL.EventDatePOS")>
-		<Table style="border-width: 3px; border-spacing: 1px; border-style: outset; border-color: gray; border-collapse: separate; background-color: ##EDEDED;" Align="Center" Width="100%">
-			<tr>
-				<cfif ListLen(Variables.EventDates) GTE 1><td Style="border-width: 0px; padding: 1px; border-style: inset; border-color: gray; background-color: ##EDEDED; -moz-border-radius: ; Font-Family: Arial; Font-Size: 14px; Font-Weight: Normal;"><A Href="#buildURL('eventcoord:events.eventsigninsheet')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td></cfif>
-				<cfif ListLen(Variables.EventDates) GTE 2><td Style="border-width: 0px; padding: 1px; border-style: inset; border-color: gray; background-color: ##EDEDED; -moz-border-radius: ; Font-Family: Arial; Font-Size: 14px; Font-Weight: Normal;"><A Href="#buildURL('eventcoord:events.eventsigninsheet')#&EventID=#URL.EventID#&EventDatePos=2">SignIn Sheet Day 2</a></td></cfif>
-				<cfif ListLen(Variables.EventDates) GTE 3><td Style="border-width: 0px; padding: 1px; border-style: inset; border-color: gray; background-color: ##EDEDED; -moz-border-radius: ; Font-Family: Arial; Font-Size: 14px; Font-Weight: Normal;"><A Href="#buildURL('eventcoord:events.eventsigninsheet')#&EventID=#URL.EventID#&EventDatePos=3">SignIn Sheet Day 3</a></td></cfif>
-				<cfif ListLen(Variables.EventDates) GTE 4><td Style="border-width: 0px; padding: 1px; border-style: inset; border-color: gray; background-color: ##EDEDED; -moz-border-radius: ; Font-Family: Arial; Font-Size: 14px; Font-Weight: Normal;"><A Href="#buildURL('eventcoord:events.eventsigninsheet')#&EventID=#URL.EventID#&EventDatePos=4">SignIn Sheet Day 4</a></td></cfif>
-				<cfif ListLen(Variables.EventDates) GTE 5><td Style="border-width: 0px; padding: 1px; border-style: inset; border-color: gray; background-color: ##EDEDED; -moz-border-radius: ; Font-Family: Arial; Font-Size: 14px; Font-Weight: Normal;"><A Href="#buildURL('eventcoord:events.eventsigninsheet')#&EventID=#URL.EventID#&EventDatePos=5">SignIn Sheet Day 5</a></td></cfif>
-			</tr>
-			<tr>
-				<td Style="border-width: thin; padding: 0px; border-style: inset; border-color: gray; background-color: ##EDEDED; -moz-border-radius: ; Font-Family: Arial; Font-Size: 14px; Font-Weight: Bold;" colspan="5"></td>
-			</tr>
-		</Table>
-	<cfelse>
-		<cfquery name="getRegisteredParticipants" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			SELECT eRegistrations.RequestsMeal, eRegistrations.IVCParticipant, tusers.Fname, tusers.Lname, tusers.Company, tusers.Email, SUBSTRING_INDEX(tusers.Email,"@",-1) AS Domain, p_EventRegistration_Events.ShortTitle, Date_FORMAT(p_EventRegistration_Events.EventDate, "%a, %M %d, %Y") as EventDateFormat
-			FROM eRegistrations INNER JOIN tusers ON tusers.UserID = eRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = eRegistrations.EventID
-			WHERE eRegistrations.EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-				eRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-			ORDER BY Domain ASC, tusers.Lname ASC, tusers.Fname ASC
-		</cfquery>
-		<cfset getParticipants = #StructCopy(getRegisteredParticipants)#>
-		<cfset StructClear(getParticipants)>
-		<cfloop query="getRegisteredParticipants">
-			<cfset temp = QueryAddRow(getParticipants)>
-			<cfset temp = QuerySetCell(getParticipants, "Fname", getRegisteredparticipants.Fname)>
-			<cfset temp = QuerySetCell(getParticipants, "Lname", getRegisteredparticipants.Lname)>
-			<cfset temp = QuerySetCell(getParticipants, "Email", getRegisteredparticipants.Email)>
-			<cfset temp = QuerySetCell(getParticipants, "Domain", getRegisteredparticipants.Domain)>
-			<cfset temp = QuerySetCell(getParticipants, "ShortTitle", getRegisteredparticipants.ShortTitle)>
-			<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", getRegisteredparticipants.EventDateFormat)>
-			<cfif getRegisteredParticipants.RequestsMeal EQ 1>
-				<cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")>
-			<cfelse>
-				<cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")>
-			</cfif>
-
-			<cfif getRegisteredParticipants.IVCParticipant EQ 1>
-				<cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "Yes")>
-			<cfelse>
-				<cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "No")>
-			</cfif>
-		</cfloop>
-
-<!--- 877-395-5535 --->
-		<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
-		<cfset LogoPath = ArrayNew(1)>
-		<cfloop from="1" to="#getRegisteredParticipants.RecordCount#" step="1" index="i">
-			<cfset LogoPath[i] = #ExpandPath("/plugins/EventRegistration/library/images/NIESC_Logo.png")#>
-		</cfloop>
-		<cfset temp = QueryAddColumn(getParticipants, "NIESCLogoPath", "VarChar", Variables.LogoPath)>
-		<cfset ReportDirectory = #ExpandPath("/plugins/EventRegistration/library/reports/")# >
-		<cfset ReportExportLoc = #ExpandPath("/plugins/EventRegistration/library/ReportExports/")# & #URL.EventID# & "EventSignInSheet.pdf" >
-		<jr:jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" query="#getParticipants#" exportfile="#ReportExportLoc#" exportType="pdf" />
-		<!---
-			<cf_jasperreport jrxml="#ReportDirectory#/EventSignInSheet.jrxml" filename="#ReportExportLoc#" exporttype="pdf" query="#getRegisteredParticipants#" />
-		--->
-		<embed src="/plugins/EventRegistration/library/ReportExports/#URL.EventID#EventSignInSheet.pdf" width="850" height="650">
-	</cfif>
-</cfoutput>
-
---->

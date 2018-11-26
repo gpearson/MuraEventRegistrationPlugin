@@ -78,7 +78,7 @@ Line 42: Change to the Plugin Name for the cfimport line
 					<cfloop from="1" to="#getParticipants.RecordCount#" step="1" index="i">
 						<cfswitch expression="#rc.$.siteConfig('siteID')#">
 							<cfcase value="NIESCEvents">
-								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo.png")#>
+								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo_Transparent.png")#>
 							</cfcase>
 							<cfcase value="NWIESCEvents">
 								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NWIESC_TransparentLogo.png")#>
@@ -183,7 +183,7 @@ Line 42: Change to the Plugin Name for the cfimport line
 					<cfloop from="1" to="#getParticipants.RecordCount#" step="1" index="i">
 						<cfswitch expression="#rc.$.siteConfig('siteID')#">
 							<cfcase value="NIESCEvents">
-								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo.png")#>
+								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NIESC_Logo_Transparent.png")#>
 							</cfcase>
 							<cfcase value="NWIESCEvents">
 								<cfset LogoPath[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/NWIESC_TransparentLogo.png")#>
