@@ -17,10 +17,56 @@ http://www.apache.org/licenses/LICENSE-2.0
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<fieldset>
-				<legend><h2>Available Membership Organizations</h2></legend>
+				<legend><h2>Available State Educational Service Center/Agencies</h2></legend>
 			</fieldset>
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
+					<cfcase value="InformationAdded">
+						<cfif URL.Successful EQ "true">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>ESC/ESA Organization Added</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully added a new Educational Service Center/Agency to the database.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						<cfelse>
+							<div class="alert alert-danger">
+							</div>
+						</cfif>
+					</cfcase>
 					<cfcase value="InformationUpdated">
 						<cfif URL.Successful EQ "true">
 							<div id="modelWindowDialog" class="modal fade">
@@ -78,21 +124,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 		$(document).ready(function () {
 			var selectedRow = 0;
 			$("##jqGrid").jqGrid({
-				url: "/plugins/#rc.pc.getPackage()#/eventcoord/controllers/membership.cfc?method=getAllMembership",
+				url: "/plugins/#rc.pc.getPackage()#/eventcoord/controllers/membership.cfc?method=getAllESCESA",
 				// we set the changes to be made at client side using predefined word clientArray
 				datatype: "json",
-				colNames: ["Rec No","Organization Name","State","Phone Number","Active Membership"],
+				colNames: ["Rec No","Organization Name","State","Phone Number"],
 				colModel: [
 					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, editable: false },
 					{ label: 'Organization Name', name: 'OrganizationName', editable: true },
-					{ label: 'State', name: 'Mailing_State', width: 75, editable: true },
-					{ label: 'Phone Number', name: 'Primary_PhoneNumber', width: 75, editable: true },
-					{ label: 'Active', name: 'Active', width: 75, editable: true }
+					{ label: 'State', name: 'Physical_State', width: 75, editable: true },
+					{ label: 'Phone Number', name: 'Primary_PhoneNumber', width: 75, editable: true }
 				],
 				sortname: 'TContent_ID',
 				sortorder : 'asc',
 				viewrecords: true,
-				height: 700,
+				height: 500,
 				autowidth: true,
 				rowNum: 60,
 				pgText: " of ",
@@ -121,7 +166,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					caption: "",
 					buttonicon: "glyphicon-plus",
 					onClickButton: function(id) {
-						var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:membership.addmembership";
+						var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=eventcoord:membership.addstateesc";
 						window.open(urlToGo,"_self");
 					},
 					position: "last"

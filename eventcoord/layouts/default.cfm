@@ -2,7 +2,7 @@
 	<div class="container">
 		<!--- PRIMARY NAV --->
 		<div class="row-fluid">
-			<nav class="navbar">
+			<nav class="navbar navbar-inverse navigation-clean">
 				<div class="navbar-inner">
 					<div class="navbar-header">
 						<a class="navbar-brand"><!--- #HTMLEditFormat(rc.pc.getPackage())# ---></a>
@@ -78,6 +78,9 @@
 							<ul class="dropdown-menu">
 								<li class="<cfif rc.action eq 'eventcoord:membership.default'>active</cfif>">
 									<a href="#buildURL('eventcoord:membership.default')#">List Membership</a>
+								</li>
+								<li class="<cfif rc.action eq 'eventcoord:membership.default'>active</cfif>">
+									<a href="#buildURL('eventcoord:membership.listescesa')#">List State ESC/ESA</a>
 								</li>
 								<li class="<cfif rc.action eq 'eventcoord:membership.addevent'>active</cfif>">
 									<a href="#buildURL('eventcoord:membership.addmembership')#">Add New Membership</a>

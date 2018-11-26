@@ -22,7 +22,7 @@
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<cfinput type="hidden" name="EventID" value="#Session.UserRegistrationInfo.EventID#">
 				<div class="panel-body">
-					<cfif Session.getSelectedEvent.MealProvided EQ 1>
+					<cfif Session.getSelectedEvent.MealAvailable EQ 1>
 						<div class="form-group">
 						<label for="StayForMeal" class="control-label col-sm-4">Will All New Participants be Staying for Meal?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="StayForMeal" class="form-control" Selected="#Session.FormInput.StayForMeal#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Everyone Registering be staying for Meal</option></cfselect></div>
@@ -297,7 +297,7 @@
 					</div>
 				</cfif>
 				<div class="panel-body">
-					<cfif Session.getSelectedEvent.MealProvided EQ 1>
+					<cfif Session.getSelectedEvent.MealAvailable EQ 1>
 						<div class="form-group">
 						<label for="StayForMeal" class="control-label col-sm-4">Will All New Participants be Staying for Meal?:&nbsp;</label>
 						<div class="col-sm-8"><cfselect name="StayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Everyone Registering be staying for Meal</option></cfselect></div>

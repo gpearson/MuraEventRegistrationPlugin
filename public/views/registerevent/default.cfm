@@ -8,7 +8,11 @@
 	<cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 
 	<cfif Session.getActiveMembership.RecordCount EQ 1>
-		<cfset UserActiveMembership = "Yes">
+		<cfif Session.getActiveMembership.Active EQ 1>
+			<cfset UserActiveMembership = "Yes">
+		<cfelse>
+			<cfset UserActiveMembership = "No">
+		</cfif>
 	<cfelse>
 		<cfset UserActiveMembership = "No">
 	</cfif>
@@ -87,11 +91,20 @@
 						<div class="col-sm-8"><cfselect name="AttendSession2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 2</option></cfselect></div>
 						</div>
 					</cfif>
-					<cfif Session.getSelectedEvent.MealProvided EQ 1>
+					<cfif Session.getSelectedEvent.MealAvailable EQ 1>
 						<div class="form-group">
 						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="StayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="1" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect></div>
 						</div>
+						<cfif Session.getSelectedEvent.MealIncluded EQ 0>
+							<div class="form-group">
+								<label for="RegisterAllDates" class="control-label col-sm-3">Participants wanting lunch<br>will pay the caterer directly:</label>
+								<div class="col-sm-8">
+									<strong>Caterer:</strong> #Session.getEventCaterer.FacilityName# <cfif LEN(Session.getEventCaterer.ContactName) or LEN(Session.getEventCaterer.ContactPhoneNumber)>(<cfif LEN(Session.getEventCaterer.ContactName)>#Session.getEventCaterer.ContactName# - </cfif>#Session.getEventCaterer.ContactPhoneNumber#)<br></cfif>
+									<strong>Meal Information:</strong> #DollarFormat(Session.getSelectedEvent.MealCost)# (#Session.getSelectedEvent.Meal_Notes#)
+								</div>
+							</div>
+						</cfif>
 					</cfif>
 					<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
 						<div class="form-group">
@@ -354,17 +367,26 @@
 						<div class="col-sm-8"><cfselect name="AttendSession2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.FormInput.AttendSession2#" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 2</option></cfselect></div>
 						</div>
 					</cfif>
-
-					<cfif Session.getSelectedEvent.MealProvided EQ 1>
+					<cfif Session.getSelectedEvent.MealAvailable EQ 1>
 						<div class="form-group">
-						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8">
-							<cfif isDefined("Session.FormInput.StayForMeal")>
-								<cfselect name="StayForMeal" class="form-control" selected="#Session.FormInput.StayForMeal#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect>
-							<cfelse>
-								<cfselect name="StayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect>
-							</cfif></div>
+							<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+							<div class="col-sm-8">
+								<cfif isDefined("Session.FormInput.StayForMeal")>
+									<cfselect name="StayForMeal" class="form-control" selected="#Session.FormInput.StayForMeal#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect>
+								<cfelse>
+									<cfselect name="StayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect>
+								</cfif>
+							</div>
 						</div>
+						<cfif Session.getSelectedEvent.MealIncluded EQ 0>
+							<div class="form-group">
+								<label for="RegisterAllDates" class="control-label col-sm-3">Participants wanting lunch<br>will pay the caterer directly:</label>
+								<div class="col-sm-8">
+									<strong>Caterer:</strong> #Session.getEventCaterer.FacilityName# <cfif LEN(Session.getEventCaterer.ContactName) or LEN(Session.getEventCaterer.ContactPhoneNumber)>(<cfif LEN(Session.getEventCaterer.ContactName)>#Session.getEventCaterer.ContactName# - </cfif>#Session.getEventCaterer.ContactPhoneNumber#)<br></cfif>
+									<strong>Meal Information:</strong> #DollarFormat(Session.getSelectedEvent.MealCost)# (#Session.getSelectedEvent.Meal_Notes#)
+								</div>
+							</div>
+						</cfif>
 					</cfif>
 					<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
 						<div class="form-group">

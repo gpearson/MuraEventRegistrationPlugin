@@ -124,8 +124,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="PGPAvailable" id="PGPAvailable" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
-						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
-						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="MealProvided" id="MealProvided" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
+						<label for="MealAvailable" class="control-label col-sm-3">Meal Available:&nbsp;</label>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="MealAvailable" id="MealAvailable" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to enable this event feature)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="AllowVideoConference" class="control-label col-sm-3">Is Distance Education Available:&nbsp;</label>
@@ -245,8 +245,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="PGPAvailable" id="PGPAvailable" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
-						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
-						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="MealProvided" id="MealProvided" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
+						<label for="MealAvailable" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="MealAvailable" id="MealAvailable" value="Yes"> <div style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
 					</div>
 					<div class="form-group">
 						<label for="AllowVideoConference" class="control-label col-sm-3">Is Distance Education Available:&nbsp;</label>

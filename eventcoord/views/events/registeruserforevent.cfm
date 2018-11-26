@@ -293,7 +293,7 @@
 							</div>
 						</cfif>
 						<div class="panel-body">
-							<cfif Session.getSelectedEvent.MealProvided EQ 1>
+							<cfif Session.getSelectedEvent.MealAvailable EQ 1>
 								<div class="form-group">
 									<label for="EventDate" class="control-label col-sm-3">Each Participant Staying for Meal?:&nbsp;</label>
 									<div class="col-sm-2"><cfinput type="checkbox" name="RegisterParticipantStayForMeal" class="form-control" checked="yes"></div>
@@ -670,7 +670,7 @@
 							</div>
 						</cfif>
 						<div class="panel-body">
-							<cfif Session.getSelectedEvent.MealProvided EQ 1>
+							<cfif Session.getSelectedEvent.MealAvailable EQ 1>
 								<div class="form-group">
 									<label for="EventDate" class="control-label col-sm-3">Each Participant Staying for Meal?:&nbsp;</label>
 									<div class="col-sm-8"><cfselect name="RegisterParticipantStayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Everyone Staying for Meal Being Registered</option></cfselect></div>
@@ -928,48 +928,50 @@
 					</cfform>
 				</div>
 				<script type="text/javascript">
-					function AddRow() {
-						var msg;
+		function AddRow() {
+			var msg;
 
-						structvar = {
-							Datasource: "#rc.$.globalConfig('datasource')#",
-							DBUsername: "#rc.$.globalConfig('dbusername')#",
-							DBPassword: "#rc.$.globalConfig('dbpassword')#",
-							PackageName: "#rc.pc.getPackage()#",
-							CGIScriptName: "#CGI.Script_name#",
-							CGIPathInfo: "#CGI.path_info#",
-							SiteID: "#rc.$.siteConfig('siteID')#",
-							SiteName: "#rc.$.siteConfig('site')#",
-							ContactName: "#rc.$.siteConfig('ContactName')#",
-							ContactEmail: "#rc.$.siteConfig('ContactEmail')#",
-							ContactPhone: "#rc.$.siteConfig('ContactPhone')#",
-							EventID: "#URL.EventID#"
-						};
+			structvar = {
+				Datasource: "#rc.$.globalConfig('datasource')#",
+				DBUsername: "#rc.$.globalConfig('dbusername')#",
+				DBPassword: "#rc.$.globalConfig('dbpassword')#",
+				PackageName: "#rc.pc.getPackage()#",
+				CGIScriptName: "#CGI.Script_name#",
+				CGIPathInfo: "#CGI.path_info#",
+				SiteID: "#rc.$.siteConfig('siteID')#",
+				SiteName: "#rc.$.siteConfig('site')#",
+				ContactName: "#rc.$.siteConfig('ContactName')#",
+				ContactEmail: "#rc.$.siteConfig('ContactEmail')#",
+				ContactPhone: "#rc.$.siteConfig('ContactPhone')#",
+				EventID: "#Session.FormInput.EventID#"
+			};
 
-						newuser = {
-							Email: document.getElementById("ParticipantEmail").value,
-							Fname: document.getElementById("ParticipantFirstName").value,
-							Lname: document.getElementById("ParticipantLastName").value
-						};
+			newuser = {
+				Email: document.getElementById("ParticipantEmail").value,
+				Fname: document.getElementById("ParticipantFirstName").value,
+				Lname: document.getElementById("ParticipantLastName").value
+			};
 
-						$.ajax({
-							url: "/plugins/#rc.pc.getPackage()#/library/components/EventServices.cfc?method=AddParticipantToDatabase",
-							type: "POST",
-							dataType: "json",
-							data: {
-								returnFormat: "json",
-								jrStruct: JSON.stringify({"DBInfo": structvar, "UserInfo": newuser})
-							},
-							success: function(data){
-								setTimeout(function(){
-									window.location.reload();
-								},100);
-							},
-							error: function(){
-							}
-						});
-					};
-				</script>
+			$.ajax({
+				url: "/plugins/#rc.pc.getPackage()#/library/components/EventServices.cfc?method=AddParticipantToDatabase",
+				type: "POST",
+				dataType: "json",
+				data: {
+					returnFormat: "json",
+					jrStruct: JSON.stringify({"DBInfo": structvar, "UserInfo": newuser})
+				},
+				success: function(data){
+					setTimeout(function(){
+						window.location.reload();
+					},100);
+				},
+
+				error: function(msg){
+					alert('Error Message: ' +msg);
+				}
+			});
+		};
+	</script>
 			</cfcase>
 		</cfswitch>
 	</cfif>
