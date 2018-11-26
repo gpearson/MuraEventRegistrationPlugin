@@ -173,16 +173,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 				url: "/plugins/#rc.pc.getPackage()#/eventcoord/controllers/users.cfc?method=getAllUsers",
 				// we set the changes to be made at client side using predefined word clientArray
 				datatype: "json",
-				colNames: ["Rec No","Last Name","First Name","UserName","Company","Last Login","Created","InActive"],
+				colNames: ["Rec No", "Last Name","First Name","UserName","Company","Last Login","Created","InActive"],
 				colModel: [
-					{ label: 'Rec ##', name: 'UserID', width: 75, key: true, editable: false },
-					{ label: 'Last Name', name: 'LName', width: 75, editable: true },
-					{ label: 'First Name', name: 'FName', width: 75, editable: true },
-					{ label: 'UserName', name: 'UserName', width: 75, editable: true },
-					{ label: 'Company', name: 'Company', width: 75, editable: true },
-					{ label: 'Last Login', name: 'lastLogin', width: 75, editable: true },
-					{ label: 'Created', name: 'Created', width: 75, editable: true },
-					{ label: 'InActive', name: 'InActive', width: 75, editable: true }
+					{ label: 'Rec ##', name: 'UserID', width: 75, key: true, hidden: true, editable: false },
+					{ label: 'Last Name', name: 'LName', width: 75, editable: false },
+					{ label: 'First Name', name: 'FName', width: 75, editable: false },
+					{ label: 'UserName', name: 'UserName', width: 75, editable: false },
+					{ label: 'Company', name: 'Company', width: 75, editable: false },
+					{ label: 'Last Login', name: 'lastLogin', width: 75, editable: false },
+					{ label: 'Created', name: 'Created', width: 75, editable: false },
+					{ label: 'InActive', name: 'InActive', width: 75, editable: false }
 				],
 				sortname: 'LName',
 				sortorder : 'asc',
@@ -190,6 +190,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 				height: 500,
 				autowidth: true,
 				rowNum: 60,
+				rowList : [20,30,50],
+				rowTotal: 2000,
 				pgText: " of ",
 				pager: "##jqGridPager",
 				jsonReader: {
@@ -209,7 +211,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					}
 				}
 			});
-			$('##jqGrid').navGrid('##jqGridPager', {edit: false, add: false, del:false, search:false});
+			$('##jqGrid').navGrid('##jqGridPager', {edit: false, add: false, del:false, search:true});
 
 			$('##jqGrid').navButtonAdd('##jqGridPager',
 				{
@@ -229,7 +231,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					buttonicon: "glyphicon-pencil",
 					onClickButton: function(id) {
 						if (selectedRow == 0) {
-							alert("Please Select a Row to edit a Member Organizaation in the database");
+							alert("Please Select a Row first then the Edit Icon to make changes to a Users Account");
 						} else {
 							var grid = $('##jqGrid');
 							var RowIDValue = grid.getCell(selectedRow, 'UserID');

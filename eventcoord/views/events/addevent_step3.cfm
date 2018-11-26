@@ -18,9 +18,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<fieldset>
-						<legend><h2>Add New Event or Workshop - Step 3</h2></legend>
+						<legend><h2>Step 3 of 5 - Add New Event</h2></legend>
 					</fieldset>
-					<div class="alert alert-info">This is Step 3 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
+					<div class="alert alert-info">Please complete any additional information and click the Proceed Button Below to continue.</div>
 					<div class="form-group">
 						<label for="LocationRoomID" class="control-label col-sm-3">Which Room at Facility:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="LocationRoomID" class="form-control" Required="Yes" Multiple="No" query="Session.getFacilityRoomInfo" value="RoomID" Display="RoomName"  queryposition="below">
@@ -30,7 +30,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-left" value="Back to Step 2">
-					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Add Event - Step 4"><br /><br />
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Proceed to Step 4"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -48,9 +48,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</cfif>
 				<div class="panel-body">
 					<fieldset>
-						<legend><h2>Add New Event or Workshop - Step 3</h2></legend>
+						<legend><h2>Step 3 of 5 - Add New Event</h2></legend>
 					</fieldset>
-					<div class="alert alert-info">This is Step 3 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
+					<div class="alert alert-info">Please complete any additional information and click the Proceed Button Below to continue.</div>
 					<div class="form-group">
 						<label for="LocationRoomID" class="control-label col-sm-3">Which Room at Facility:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="LocationRoomID" class="form-control" Required="Yes" Multiple="No" query="Session.getFacilityRoomInfo" value="RoomID" Display="RoomName"  queryposition="below">
@@ -60,7 +60,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-left" value="Back to Step 2">
-					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Add Event - Step 4"><br /><br />
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Proceed to Step 4"><br /><br />
 				</div>
 			</cfform>
 		</div>

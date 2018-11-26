@@ -7,7 +7,7 @@
 				<cfquery name="Session.getUsers" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Select UserID, FName, LName, UserName, Company, LastLogin, LastUpdate, InActive, Created
 					From tusers
-					Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and GroupName is null and Username <> "admin"
+					Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and GroupName is null and Username is not null
 					Order by LName ASC, FName ASC
 				</cfquery>
 			</cfcase>
@@ -29,15 +29,39 @@
 		<cfargument name="sord" required="no" default="ASC" hint="Sort Order">
 
 		<cfset var arrUsers = ArrayNew(1)>
-		<cfquery name="getUsers" dbtype="Query">
-			Select UserID, LName, FName, UserName, Company, LastLogin, Created, InActive
-			From Session.getUsers
-			<cfif Arguments.sidx NEQ "">
-				Order By #Arguments.sidx# #Arguments.sord#
+
+		<cfif isDefined("URL._search")>
+			<cfif URL._search EQ "false">
+				<cfquery name="getUsers" dbtype="Query">
+					Select UserID, LName, FName, UserName, Company, LastLogin, Created, InActive
+					From Session.getUsers
+					<cfif Arguments.sidx NEQ "">
+						Order By #Arguments.sidx# #Arguments.sord#
+					<cfelse>
+						Order by LName ASC, FName ASC
+					</cfif>
+				</cfquery>
 			<cfelse>
-				Order by LName ASC, FName ASC
+				<cfquery name="getUsers" dbtype="Query">
+					Select UserID, LName, FName, UserName, Company, LastLogin, Created, InActive
+					From Session.getUsers
+					<cfif Arguments.sidx NEQ "">
+						Where #URL.searchField# LIKE '%#URL.searchString#'
+						Order By #Arguments.sidx# #Arguments.sord#
+					</cfif>
+				</cfquery>
 			</cfif>
-		</cfquery>
+		<cfelse>
+			<cfquery name="getUsers" dbtype="Query">
+				Select UserID, LName, FName, UserName, Company, LastLogin, Created, InActive
+				From Session.getUsers
+				<cfif Arguments.sidx NEQ "">
+					Order By #Arguments.sidx# #Arguments.sord#
+				<cfelse>
+					Order by LName ASC, FName ASC
+				</cfif>
+			</cfquery>
+		</cfif>
 
 		<!--- Calculate the Start Position for the loop query. So, if you are on 1st page and want to display 4 rows per page, for first page you start at: (1-1)*4+1 = 1.
 				If you go to page 2, you start at (2-)1*4+1 = 5 --->
@@ -115,10 +139,45 @@
 				</cfquery>
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.default&UserAction=ActivatedAccount&Successful=True" addtoken="false">
 			</cfif>
+			<cfif FORM.UserAction EQ "Login As User">
+				<cflock timeout="60" scope="Session" type="Exclusive">
+					<cfset Session.MuraPreviousUser = #StructNew()#>
+					<cfset Session.MuraPreviousUser = #StructCopy(Session.Mura)#>
+					<cfset userLogin = application.serviceFactory.getBean("userUtility").loginByUserID("#URL.UserID#", "#rc.$.siteConfig('siteID')#")>
+
+					<cfif userLogin EQ true>
+						<cflocation addtoken="true" url="/index.cfm">
+					</cfif>
+				</cflock>
+			</cfif>
 
 			<cfif FORM.InActive EQ "----">
 				<cfscript>
 					errormsg = {property="EmailMsg",message="Please Select if this Account Holder's Account is InActive or Not."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.edituser&FormRetry=True&UserID=#FORM.UserID#" addtoken="false">
+			</cfif>
+
+			<cfif LEN(FORM.FName) EQ 0>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter the First Name of this new user account."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.edituser&FormRetry=True&UserID=#FORM.UserID#" addtoken="false">
+			</cfif>
+
+			<cfif LEN(FORM.LName) EQ 0>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter the Last Name of this new user account."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.edituser&FormRetry=True&UserID=#FORM.UserID#" addtoken="false">
+			</cfif>
+
+			<cfif not isValid("email", FORM.UserName)>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter a valid email address for this user account."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.edituser&FormRetry=True&UserID=#FORM.UserID#" addtoken="false">
@@ -261,7 +320,7 @@
 				<cfset temp = StructDelete(Session, "getSelectedCaterer")>
 				<cfset temp = StructDelete(Session, "FormErrors")>
 				<cfif isDefined("Session.FormInput")><cfset temp = StructDelete(Session, "FormInput")></cfif>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:membership.default" addtoken="false">
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.default" addtoken="false">
 			</cfif>
 
 			<cfif FORM.InActive EQ "----">
@@ -288,6 +347,27 @@
 			<cfif FORM.Password NEQ FORM.VerifyPassword>
 				<cfscript>
 					errormsg = {property="EmailMsg",message="The Password Field and the Verify Password Field did not match. Please check these fields and try to submit this request again."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.adduser&FormRetry=True" addtoken="false">
+			</cfif>
+			<cfif not isValid("email", FORM.UserName)>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter a valid email address for this user account."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.adduser&FormRetry=True" addtoken="false">
+			</cfif>
+			<cfif LEN(FORM.FName) LT 3>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter the users first name for their account. This will be used on all emails, certificates, signin sheets."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.adduser&FormRetry=True" addtoken="false">
+			</cfif>
+			<cfif LEN(FORM.LName) LT 2>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter the users last name for their account. This will be used on all emails, certificates, signin sheets."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:users.adduser&FormRetry=True" addtoken="false">

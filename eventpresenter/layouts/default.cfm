@@ -16,7 +16,7 @@
 										<a href="#CGI.Script_name##CGI.path_info#?doaction=logout">Account Logout</a>
 									</li>
 									<li class="<cfif rc.action eq 'public:main.login'>active</cfif>">
-										<a href="#buildURL('eventcoord:usermenu.editprofile')#"><i class="icon-home"></i> Manage Profile</a>
+										<a href="#buildURL('eventpresenter:usermenu.editprofile')#"><i class="icon-home"></i> Manage Profile</a>
 									</li>
 								<cfelse>
 									<li class="<cfif rc.action eq 'public:main.login'>active</cfif>">
@@ -33,6 +33,7 @@
 							</ul>
 						</li>
 					</ul>
+					<!---
 					<ul class="nav navbar-nav">
 						<li class="<cfif rc.action contains 'eventcoord:events'>active</cfif>">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('eventcoord:events.default')#">Event Menu <span class="caret"></span></a>
@@ -107,33 +108,10 @@
 							</ul>
 						</li>
 					</ul>
-					<!---
-					<ul class="nav navbar-nav navbar-right">
-						<li class="<cfif rc.action eq 'selleradmin:main'>active</cfif> dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('selleradmin:settings.default')#">Settings <span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li class="<cfif rc.action eq 'selleradmin:settings.locations'>active</cfif>">
-									<a href="#buildURL('selleradmin:settings.locations')#"> Locations</a>
-								</li>
-								<li class="<cfif rc.action eq 'selleradmin:settings.updateorganization'>active</cfif>">
-									<a href="#buildURL('selleradmin:settings.updateorganization')#">Update Organization</a>
-								</li>
-								<li class="<cfif rc.action eq 'selleradmin:settings.users'>active</cfif>">
-									<a href="#buildURL('selleradmin:settings.users')#">Users</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
 					--->
+
 				</div>
 			</nav>
-			<cfif StructKeyExists(session, "MuraPreviousUser")>
-				<div class="text-left">
-					<div class="alert alert-info">
-						<span>Logged In As:</span> #Session.Mura.FName# #Session.Mura.LName#.<br />To return back to your user account, click <a href="/plugins/#variables.Framework.package##buildURL('public:main.default')#&PerformAction=LogoutUser" class="art-button">here</a>
-					</div>
-				</div>
-			</cfif>
 			<cfif Session.Mura.IsLoggedIn EQ "True">
 				<div class="text-right">
 					Current User: #Session.Mura.FName# #Session.Mura.LName# (#Session.Mura.Company#) <a href="#CGI.Script_name##CGI.path_info#?doaction=logout" class="btn btn-sm btn-primary">Logout</a><br>

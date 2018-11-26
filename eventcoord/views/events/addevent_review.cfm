@@ -107,9 +107,9 @@
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<fieldset>
-						<legend><h2>Add New Event or Workshop - Review</h2></legend>
+						<legend><h2>Step 5 of 5 - Add New Event</h2></legend>
 					</fieldset>
-					<div class="alert alert-info">Please review the information listed below and make any corrections which are needed complete the following information to add a new workshop or event so that individuals will be allowed to register for.</div>
+					<div class="alert alert-info">Please complete any additional information and click the Proceed Button Below to continue.</div>
 					<fieldset>
 						<legend><h2>Event Date and Time Information</h2></legend>
 					</fieldset>
@@ -557,9 +557,9 @@
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<fieldset>
-						<legend><h2>Add New Event or Workshop - Review</h2></legend>
+						<legend><h2>Step 5 of 5 - Add New Event</h2></legend>
 					</fieldset>
-					<div class="alert alert-info">Please review the information listed below and make any corrections which are needed complete the following information to add a new workshop or event so that individuals will be allowed to register for.</div>
+					<div class="alert alert-info">Please complete any additional information and click the Proceed Button Below to continue.</div>
 					<fieldset>
 						<legend><h2>Event Date and Time Information</h2></legend>
 					</fieldset>

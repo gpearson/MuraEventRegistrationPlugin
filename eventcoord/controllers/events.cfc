@@ -218,20 +218,16 @@
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_step3&FormRetry=True" addtoken="false">
 			</cfif>
 			<cfset Session.FormErrors = #ArrayNew()#>
-			<cfset Session.UserSuppliedInfo.FourthStep = #StructCopy(FORM)#>
 
+			<cfif not isDefined("FORM.AcceptRegistrations")>
+				<cfset FORM.AcceptRegistrations = 0>
+			</cfif>
+
+			<cfset Session.UserSuppliedInfo.FourthStep = #StructCopy(FORM)#>
 
 			<cfif LEN(FORM.RoomMaxParticipants) EQ 0>
 				<cfscript>
 					errormsg = {property="MealProvidedBy",message="Please Enter the maximum number of participants for this event or workshop"};
-					arrayAppend(Session.FormErrors, errormsg);
-				</cfscript>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_step4&SiteID=#rc.$.siteConfig('siteID')#&FormRetry=True" addtoken="false">
-			</cfif>
-
-			<cfif FORM.AcceptRegistrations EQ "----">
-				<cfscript>
-					errormsg = {property="MealProvidedBy",message="Please select whether to accept individuals to register for this event or not at this time."};
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.addevent_step4&SiteID=#rc.$.siteConfig('siteID')#&FormRetry=True" addtoken="false">
@@ -3969,15 +3965,39 @@
 		<cfargument name="sord" required="no" default="ASC" hint="Sort Order">
 
 		<cfset var arrExpenses = ArrayNew(1)>
-		<cfquery name="getExpenses" dbtype="Query">
-			Select TContent_ID, Expense_Name, Active, dateCreated, lastUpdated
-			From Session.getEventExpenses
-			<cfif Arguments.sidx NEQ "">
-				Order By #Arguments.sidx# #Arguments.sord#
+		<cfif isDefined("URL._search")>
+			<cfif URL._search EQ "false">
+				<cfquery name="getExpenses" dbtype="Query">
+					Select TContent_ID, Expense_Name, Active, dateCreated, lastUpdated
+					From Session.getEventExpenses
+					<cfif Arguments.sidx NEQ "">
+						Order By #Arguments.sidx# #Arguments.sord#
+					<cfelse>
+						Order by Group_Name #Arguments.sord#
+					</cfif>
+				</cfquery>
 			<cfelse>
-				Order by Group_Name #Arguments.sord#
+				<cfquery name="getFacilities" dbtype="Query">
+					Select TContent_ID, Expense_Name, Active, dateCreated, lastUpdated
+					From Session.getEventExpenses
+					<cfif Arguments.sidx NEQ "">
+						Where #URL.searchField# LIKE '%#URL.searchString#'
+						Order By #Arguments.sidx# #Arguments.sord#
+					</cfif>
+				</cfquery>
 			</cfif>
-		</cfquery>
+		<cfelse>
+			<cfquery name="getExpenses" dbtype="Query">
+				Select TContent_ID, Expense_Name, Active, dateCreated, lastUpdated
+				From Session.getEventExpenses
+				<cfif Arguments.sidx NEQ "">
+					Order By #Arguments.sidx# #Arguments.sord#
+				<cfelse>
+					Order by Group_Name #Arguments.sord#
+				</cfif>
+			</cfquery>
+		</cfif>
+
 
 		<!--- Calculate the Start Position for the loop query. So, if you are on 1st page and want to display 4 rows per page, for first page you start at: (1-1)*4+1 = 1.
 				If you go to page 2, you start at (2-)1*4+1 = 5 --->

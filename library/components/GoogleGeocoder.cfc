@@ -65,43 +65,82 @@
 							GeoCodeResultStreetName = GeoCodeResultAddressComponent[2].XmlChildren;
 							GeoCodeResultCityName = GeoCodeResultAddressComponent[3].XmlChildren;
 							GeoCodeResultTownshipName = GeoCodeResultAddressComponent[4].XmlChildren;
-							GeoCodeResultCountyName = GeoCodeResultAddressComponent[5].XmlChildren;
-							GeoCodeResultStateName = GeoCodeResultAddressComponent[6].XmlChildren;
-							GeoCodeResultCountryName = GeoCodeResultAddressComponent[7].XmlChildren;
-							GeoCodeResultZipCode = GeoCodeResultAddressComponent[8].XmlChildren;
+							GeoCodeResultCountyName = GeoCodeResultAddressComponent[4].XmlChildren;
+							GeoCodeResultStateName = GeoCodeResultAddressComponent[5].XmlChildren;
+							GeoCodeResultCountryName = GeoCodeResultAddressComponent[6].XmlChildren;
+							GeoCodeResultZipCode = GeoCodeResultAddressComponent[7].XmlChildren;
+							GeoCodeResultZipCodeSuffix = GeoCodeResultAddressComponent[8].XmlChildren;
 							GeoCodeAddressLocation = GeoCodeResultGeometryComponent[1].XmlChildren;
 							GeoCodeFormattedAddress = GeoCodeResultFormattedAddress[1].XmlText;
 						</cfscript>
 
-						<cfset Temp.RawInformation = StructNew()>
-						<cfset Temp.RawInformation.XMLDocument = #Variables.XMLDocument#>
-						<cfset Temp.RawInformation.ResponseStatus = #Variables.GeoCodeResponseStatus#>
-						<cfset Temp.RawInformation.GeoCodeResultFormattedAddressType = #Variables.GeoCodeResultFormattedAddressType#>
-						<cfset Temp.RawInformation.GeoCodeResultFormattedAddress = #Variables.GeoCodeResultFormattedAddress#>
-						<cfset Temp.RawInformation.GeoCodeResultAddressComponent = #Variables.GeoCodeResultAddressComponent#>
-						<cfset Temp.RawInformation.GeoCodeResultGeometryComponent = #Variables.GeoCodeResultGeometryComponent#>
-						<cfset Temp.ErrorMessage = #GeoCodeResponseStatus[1].XMLText#>
-						<cfset Temp.AddressStreetNumber = #GeoCodeResultStreetNumber[1].XMLText#>
-						<cfset Temp.AddressStreetNameLong = #GeoCodeResultStreetName[1].XMLText#>
-						<cfset Temp.AddressStreetNameShort = #GeoCodeResultStreetName[2].XMLText#>
-						<cfset Temp.AddressStreetNameType = #GeoCodeResultStreetName[3].XMLText#>
-						<cfset Temp.AddressCityName = #GeoCodeResultCityName[1].XMLText#>
-						<cfset Temp.AddressTownshipNameLong = #GeoCodeResultTownshipName[1].XMLText#>
-						<cfset Temp.AddressTownshipNameShort = #GeoCodeResultTownshipName[1].XMLText#>
-						<cfset Temp.AddressCountryNameLong = #GeoCodeResultCountryName[1].XMLText#>
-						<cfset Temp.AddressCountryNameShort = #GeoCodeResultCountryName[2].XMLText#>
-						<cfset Temp.AddressZipCode = #GeoCodeResultZipCode[1].XMLText#>
-						<cfset Temp.AddressLocation = #GeoCodeAddressLocation[1].XMLChildren#>
-						<cfset Temp.AddressLatitude = #Temp.AddressLocation[1].XMLText#>
-						<cfset Temp.AddressLongitude = #Temp.AddressLocation[2].XMLText#>
-						<cfset Temp.AddressCountyNameLong = #GeoCodeResultCountyName[1].XMLText#>
-						<cfset Temp.AddressCountyNameShort = #GeoCodeResultCountyName[2].XMLText#>
-						<cfset Temp.AddressStateNameLong = #GeoCodeResultStateName[1].XMLText#>
-						<cfset Temp.AddressStateNameShort = #GeoCodeResultStateName[2].XMLText#>
-						<cfset Temp.NeighborhoodNameLong = "">
-						<cfset Temp.NeighborhoodNameShort = "">
-						<cfset #arrayAppend(GeoCodeAddress, Temp)#>
-						<cfreturn GeoCodeAddress>
+						<cfswitch expression="#ArrayLen(GeoCodeResultAddressComponent)#">
+							<cfcase value="8">
+								<cfset Temp.RawInformation = StructNew()>
+								<cfset Temp.RawInformation.XMLDocument = #Variables.XMLDocument#>
+								<cfset Temp.RawInformation.ResponseStatus = #Variables.GeoCodeResponseStatus#>
+								<cfset Temp.RawInformation.GeoCodeResultFormattedAddressType = #Variables.GeoCodeResultFormattedAddressType#>
+								<cfset Temp.RawInformation.GeoCodeResultFormattedAddress = #Variables.GeoCodeResultFormattedAddress#>
+								<cfset Temp.RawInformation.GeoCodeResultAddressComponent = #Variables.GeoCodeResultAddressComponent#>
+								<cfset Temp.RawInformation.GeoCodeResultGeometryComponent = #Variables.GeoCodeResultGeometryComponent#>
+								<cfset Temp.ErrorMessage = #GeoCodeResponseStatus[1].XMLText#>
+								<cfset Temp.AddressStreetNumber = #GeoCodeResultStreetNumber[1].XMLText#>
+								<cfset Temp.AddressStreetNameLong = #GeoCodeResultStreetName[1].XMLText#>
+								<cfset Temp.AddressStreetNameShort = #GeoCodeResultStreetName[2].XMLText#>
+								<cfset Temp.AddressStreetNameType = #GeoCodeResultStreetName[3].XMLText#>
+								<cfset Temp.AddressCityName = #GeoCodeResultCityName[1].XMLText#>
+								<cfset Temp.AddressTownshipNameLong = #GeoCodeResultTownshipName[1].XMLText#>
+								<cfset Temp.AddressTownshipNameShort = #GeoCodeResultTownshipName[1].XMLText#>
+								<cfset Temp.AddressCountryNameLong = #GeoCodeResultCountryName[1].XMLText#>
+								<cfset Temp.AddressCountryNameShort = #GeoCodeResultCountryName[2].XMLText#>
+								<cfset Temp.AddressZipCode = #GeoCodeResultZipCode[1].XMLText#>
+								<cfset Temp.AddressZipCodeFour = #GeoCodeResultZipCodeSuffix[1].XMLText#>
+								<cfset Temp.AddressLocation = #GeoCodeAddressLocation[1].XMLChildren#>
+								<cfset Temp.AddressLatitude = #Temp.AddressLocation[1].XMLText#>
+								<cfset Temp.AddressLongitude = #Temp.AddressLocation[2].XMLText#>
+								<cfset Temp.AddressCountyNameLong = #GeoCodeResultCountyName[1].XMLText#>
+								<cfset Temp.AddressCountyNameShort = #GeoCodeResultCountyName[2].XMLText#>
+								<cfset Temp.AddressStateNameLong = #GeoCodeResultStateName[1].XMLText#>
+								<cfset Temp.AddressStateNameShort = #GeoCodeResultStateName[2].XMLText#>
+								<cfset Temp.NeighborhoodNameLong = "">
+								<cfset Temp.NeighborhoodNameShort = "">
+								<cfset #arrayAppend(GeoCodeAddress, Temp)#>
+								<cfreturn GeoCodeAddress>
+							</cfcase>
+							<cfdefaultcase>
+								<cfset Temp.RawInformation = StructNew()>
+								<cfset Temp.RawInformation.XMLDocument = #Variables.XMLDocument#>
+								<cfset Temp.RawInformation.ResponseStatus = #Variables.GeoCodeResponseStatus#>
+								<cfset Temp.RawInformation.GeoCodeResultFormattedAddressType = #Variables.GeoCodeResultFormattedAddressType#>
+								<cfset Temp.RawInformation.GeoCodeResultFormattedAddress = #Variables.GeoCodeResultFormattedAddress#>
+								<cfset Temp.RawInformation.GeoCodeResultAddressComponent = #Variables.GeoCodeResultAddressComponent#>
+								<cfset Temp.RawInformation.GeoCodeResultGeometryComponent = #Variables.GeoCodeResultGeometryComponent#>
+								<cfset Temp.ErrorMessage = #GeoCodeResponseStatus[1].XMLText#>
+								<cfset Temp.AddressStreetNumber = #GeoCodeResultStreetNumber[1].XMLText#>
+								<cfset Temp.AddressStreetNameLong = #GeoCodeResultStreetName[1].XMLText#>
+								<cfset Temp.AddressStreetNameShort = #GeoCodeResultStreetName[2].XMLText#>
+								<cfset Temp.AddressStreetNameType = #GeoCodeResultStreetName[3].XMLText#>
+								<cfset Temp.AddressCityName = #GeoCodeResultCityName[1].XMLText#>
+								<cfset Temp.AddressTownshipNameLong = #GeoCodeResultTownshipName[1].XMLText#>
+								<cfset Temp.AddressTownshipNameShort = #GeoCodeResultTownshipName[1].XMLText#>
+								<cfset Temp.AddressCountryNameLong = #GeoCodeResultCountryName[1].XMLText#>
+								<cfset Temp.AddressCountryNameShort = #GeoCodeResultCountryName[2].XMLText#>
+								<cfset Temp.AddressZipCode = #GeoCodeResultZipCode[1].XMLText#>
+								<cfset Temp.AddressLocation = #GeoCodeAddressLocation[1].XMLChildren#>
+								<cfset Temp.AddressLatitude = #Temp.AddressLocation[1].XMLText#>
+								<cfset Temp.AddressLongitude = #Temp.AddressLocation[2].XMLText#>
+								<cfset Temp.AddressCountyNameLong = #GeoCodeResultCountyName[1].XMLText#>
+								<cfset Temp.AddressCountyNameShort = #GeoCodeResultCountyName[2].XMLText#>
+								<cfset Temp.AddressStateNameLong = #GeoCodeResultStateName[1].XMLText#>
+								<cfset Temp.AddressStateNameShort = #GeoCodeResultStateName[2].XMLText#>
+								<cfset Temp.NeighborhoodNameLong = "">
+								<cfset Temp.NeighborhoodNameShort = "">
+								<cfset #arrayAppend(GeoCodeAddress, Temp)#>
+								<cfreturn GeoCodeAddress>
+							</cfdefaultcase>
+						</cfswitch>
+
+
 					</cfcase>
 					<cfcase value="street_address">
 						<cfswitch expression="#ArrayLen(GeoCodeResultAddressComponent)#">
@@ -203,10 +242,11 @@
 									GeoCodeResultStreetName = GeoCodeResultAddressComponent[2].XmlChildren;
 									GeoCodeResultCityName = GeoCodeResultAddressComponent[3].XmlChildren;
 									GeoCodeResultTownshipName = GeoCodeResultAddressComponent[4].XmlChildren;
-									GeoCodeResultCountyName = GeoCodeResultAddressComponent[5].XmlChildren;
-									GeoCodeResultStateName = GeoCodeResultAddressComponent[6].XmlChildren;
-									GeoCodeResultCountryName = GeoCodeResultAddressComponent[7].XmlChildren;
-									GeoCodeResultZipCode = GeoCodeResultAddressComponent[8].XmlChildren;
+									GeoCodeResultCountyName = GeoCodeResultAddressComponent[4].XmlChildren;
+									GeoCodeResultStateName = GeoCodeResultAddressComponent[5].XmlChildren;
+									GeoCodeResultCountryName = GeoCodeResultAddressComponent[6].XmlChildren;
+									GeoCodeResultZipCode = GeoCodeResultAddressComponent[7].XmlChildren;
+									GeoCodeResultZipCodeSuffix = GeoCodeResultAddressComponent[8].XmlChildren;
 									GeoCodeAddressLocation = GeoCodeResultGeometryComponent[1].XmlChildren;
 									GeoCodeFormattedAddress = GeoCodeResultFormattedAddress[1].XmlText;
 								</cfscript>
@@ -232,7 +272,7 @@
 								<cfset Temp.AddressCountryNameLong = #GeoCodeResultCountryName[1].XMLText#>
 								<cfset Temp.AddressCountryNameShort = #GeoCodeResultCountryName[2].XMLText#>
 								<cfset Temp.AddressZipCode = #GeoCodeResultZipCode[1].XMLText#>
-								<cfset Temp.AddressZipCodeFour = "">
+								<cfset Temp.AddressZipCodeFour = #GeoCodeResultZipCodeSuffix[1].XMLText#>
 								<cfset Temp.AddressLocation = #GeoCodeAddressLocation[1].XMLChildren#>
 								<cfset Temp.AddressLatitude = #Temp.AddressLocation[1].XMLText#>
 								<cfset Temp.AddressLongitude = #Temp.AddressLocation[2].XMLText#>

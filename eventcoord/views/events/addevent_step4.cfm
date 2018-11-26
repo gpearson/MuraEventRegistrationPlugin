@@ -24,9 +24,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<fieldset>
-						<legend><h2>Add New Event or Workshop - Step 4</h2></legend>
+						<legend><h2>Step 4 of 5 - Add New Event</h2></legend>
 					</fieldset>
-					<div class="alert alert-info">This is Step 4 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
+					<div class="alert alert-info">Please complete any additional information and click the Proceed Button Below to continue.</div>
 					<fieldset>
 						<legend><h2>Maximum Participants for Event or Workshop</h2></legend>
 					</fieldset>
@@ -44,16 +44,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Allow Online Registrations</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8">
-							<cfselect name="AcceptRegistrations" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-							<option value="----">Allow Individuals To Register</option></cfselect>
-						</div>
+						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
+						<div class="checkbox col-sm-6"><cfinput type="checkbox" name="AcceptRegistrations" id="AcceptRegistrations" value="1"> <div style="Color: ##CCCCCC;">(Check Box to allow participants to register)</div></div>
 					</div>
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-left" value="Back to Step 3">
-					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Add Event - Review Information"><br /><br />
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Proceed to Review Step"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -71,9 +68,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</cfif>
 				<div class="panel-body">
 					<fieldset>
-						<legend><h2>Add New Event or Workshop - Step 4</h2></legend>
+						<legend><h2>Step 4 of 5 - Add New Event</h2></legend>
 					</fieldset>
-					<div class="alert alert-info">This is Step 4 of the New Workshop or Event Creation Process. Please complete this information and click the button below to move to the next screen.</div>
+					<div class="alert alert-info">Please complete any additional information and click the Proceed Button Below to continue.</div>
 					<fieldset>
 						<legend><h2>Maximum Participants for Event or Workshop</h2></legend>
 					</fieldset>
@@ -91,16 +88,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Allow Online Registrations</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8">
-							<cfselect name="AcceptRegistrations" class="form-control" Required="Yes" Selected="#Session.UserSuppliedInfo.FourthStep.AcceptRegistrations#" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-							<option value="----">Allow Individuals To Register</option></cfselect>
-						</div>
+						<label for="AcceptRegistrations" class="control-label col-sm-3">Accept Registrations:&nbsp;</label>
+						<div class="checkbox col-sm-6">
+							<cfif Session.UserSuppliedInfo.FourthStep.AcceptRegistrations EQ 1>
+								<cfinput type="checkbox" name="AcceptRegistrations" id="AcceptRegistrations" value="1" checked>
+							<cfelse>
+								<cfinput type="checkbox" name="AcceptRegistrations" id="AcceptRegistrations" value="1">
+							</cfif>
+						 <div style="Color: ##CCCCCC;">(Check Box to allow participants to register)</div></div>
 					</div>
 				</div>
 				<div class="panel-footer">
 					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-left" value="Back to Step 3">
-					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Add Event - Review Information"><br /><br />
+					<cfinput type="Submit" name="AddNewEventStep" class="btn btn-primary pull-right" value="Proceed to Review Step"><br /><br />
 				</div>
 			</cfform>
 		</div>

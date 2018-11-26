@@ -18,6 +18,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 
 <cfoutput>
+	<script src="/requirements/ckeditor/ckeditor.js"></script>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
@@ -47,7 +48,24 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="GroupPriceRequirements" class="control-label col-sm-3">Requirements to Acquire Pricing:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="GroupPriceRequirements" id="GroupPriceRequirements" class="form-control">#Session.getSelectedEvent.GroupPriceRequirements#</textarea></div>
+						<div class="col-sm-8">
+							<textarea name="GroupPriceRequirements" id="GroupPriceRequirements" class="form-control" cols="80" rows="10">#Session.getSelectedEvent.GroupPriceRequirements#</textarea>
+							<script>CKEDITOR.replace('GroupPriceRequirements', {
+								// Define the toolbar groups as it is a more accessible solution.
+								toolbarGroups: [
+									{"name":"basicstyles","groups":["basicstyles"]},
+									{"name":"links","groups":["links"]},
+									{"name":"paragraph","groups":["list","blocks"]},
+									{"name":"document","groups":["mode"]},
+									{"name":"insert","groups":["insert"]},
+									{"name":"styles","groups":["styles"]},
+									{"name":"about","groups":["about"]}
+								],
+								// Remove the redundant buttons from toolbar groups defined above.
+								removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+							} );
+							</script>
+						</div>
 					</div>
 				</div>
 				<div class="panel-footer">
@@ -85,7 +103,24 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="GroupPriceRequirements" class="control-label col-sm-3">Requirements to Acquire Pricing:&nbsp;</label>
-						<div class="col-sm-8"><textarea name="GroupPriceRequirements" id="GroupPriceRequirements" class="form-control">#Session.getSelectedEvent.GroupPriceRequirements#</textarea></div>
+						<div class="col-sm-8">
+							<textarea name="GroupPriceRequirements" id="GroupPriceRequirements" class="form-control" cols="80" rows="10">#Session.getSelectedEvent.GroupPriceRequirements#</textarea>
+							<script>CKEDITOR.replace('GroupPriceRequirements', {
+								// Define the toolbar groups as it is a more accessible solution.
+								toolbarGroups: [
+									{"name":"basicstyles","groups":["basicstyles"]},
+									{"name":"links","groups":["links"]},
+									{"name":"paragraph","groups":["list","blocks"]},
+									{"name":"document","groups":["mode"]},
+									{"name":"insert","groups":["insert"]},
+									{"name":"styles","groups":["styles"]},
+									{"name":"about","groups":["about"]}
+								],
+								// Remove the redundant buttons from toolbar groups defined above.
+								removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+							} );
+							</script>
+						</div>
 					</div>
 				</div>
 				<div class="panel-footer">
