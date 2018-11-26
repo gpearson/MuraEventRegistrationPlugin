@@ -80,24 +80,54 @@
 						</td>
 						</tr>
 					</cfif>
-					<cfif Session.EventInfo.SelectedEvent.PGPAvailable GT 0 and Session.EventInfo.SelectedEvent.MealProvided EQ 1>
+					<cfif Session.EventInfo.SelectedEvent.PGPAvailable GT 0 and Session.EventInfo.SelectedEvent.MealAvailable EQ 1>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">PGP Points:</span></td>
 						<td style="width: 390px;">#NumberFormat(Session.EventInfo.SelectedEvent.PGPPoints, "999.99")#</td>
-						<td style="width: 175px;"><span style="font-weight: bold;">Meal Provided:</span></td>
-						<td style="width: 175px;"><cfif Session.EventInfo.SelectedEvent.MealProvided EQ 1>Yes<cfelse>No</cfif></td>
+						<td style="width: 175px;"><span style="font-weight: bold;">Meal Available:</span></td>
+						<td style="width: 175px;"><cfif Session.EventInfo.SelectedEvent.MealAvailable EQ 1>Yes<cfelse>No</cfif></td>
 						</tr>
-					<cfelseif Session.EventInfo.SelectedEvent.PGPAvailable GT 0 and Session.EventInfo.SelectedEvent.MealProvided EQ 0>
+						<cfif Session.EventInfo.SelectedEvent.MealIncluded EQ 0>
+						<tr>
+						<td style="width: 545px;" colspan="2" rowspan="3"><div class="alert alert-warning" role="alert">Participants who are wanting lunch at the event will pay the caterer directly. Please contact the caterer to check which payment methods they will accept.</div></td>
+						<td style="width: 175px;"><span style="font-weight: bold;">Meal Payable To:</span></td>
+						<td style="width: 175px;">#Session.EventInfo.EventCaterer.FacilityName#</td>
+						</tr>
+						<tr>
+						<td style="width: 175px;"><span style="font-weight: bold;">Meal Price:</span></td>
+						<td style="width: 175px;">#DollarFormat(Session.EventInfo.SelectedEvent.MealCost)#</td>
+						</tr>
+						<tr>
+						<td style="width: 175px;"><span style="font-weight: bold;">Meal Information:</span></td>
+						<td style="width: 175px;">#Session.EventInfo.SelectedEvent.Meal_Notes#</td>
+						</tr>
+						</cfif>
+					<cfelseif Session.EventInfo.SelectedEvent.PGPAvailable GT 0 and Session.EventInfo.SelectedEvent.MealAvailable EQ 0>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">PGP Points:</span></td>
 						<td colspan="3">&nbsp;&nbsp;#NumberFormat(Session.EventInfo.SelectedEvent.PGPPoints, "999.99")#</td>
 						</tr>
-					<cfelseif Session.EventInfo.SelectedEvent.PGPAvailable EQ 0 and Session.EventInfo.SelectedEvent.MealProvided EQ 1>
+					<cfelseif Session.EventInfo.SelectedEvent.PGPAvailable EQ 0 and Session.EventInfo.SelectedEvent.MealAvailable EQ 1>
 						<tr>
 						<td colspan="2">&nbsp;</td>
-						<td style="width: 175px;"><span style="font-weight: bold;">Meal Provided:</span></td>
-						<td style="width: 175px;"><cfif Session.EventInfo.SelectedEvent.MealProvided EQ 1>Yes<cfelse>No</cfif></td>
+						<td style="width: 175px;"><span style="font-weight: bold;">Meal Available:</span></td>
+						<td style="width: 175px;"><cfif Session.EventInfo.SelectedEvent.MealAvailable EQ 1>Yes<cfelse>No</cfif></td>
 						</tr>
+						<cfif Session.EventInfo.SelectedEvent.MealIncluded EQ 0>
+						<tr>
+						<td style="width: 545px;" colspan="2" rowspan="3"><div class="alert alert-warning" role="alert">Participants who are wanting lunch at the event will pay the caterer directly. Please contact the caterer to check which payment methods they will accept.</div></td>
+						<td style="width: 175px;"><span style="font-weight: bold;">Meal Payable To:</span></td>
+						<td style="width: 175px;">#Session.EventInfo.EventCaterer.FacilityName#</td>
+						</tr>
+						<tr>
+						<td style="width: 175px;"><span style="font-weight: bold;">Meal Price:</span></td>
+						<td style="width: 175px;">#DollarFormat(Session.EventInfo.SelectedEvent.MealCost)#</td>
+						</tr>
+						<tr>
+						<td style="width: 175px;"><span style="font-weight: bold;">Meal Information:</span></td>
+						<td style="width: 175px;">#Session.EventInfo.SelectedEvent.Meal_Notes#</td>
+						</tr>
+						</cfif>
 					</cfif>
 					<cfif Session.EventInfo.SelectedEvent.WebinarAvailable EQ 1>
 						<tr>

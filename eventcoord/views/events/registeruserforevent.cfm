@@ -293,7 +293,7 @@
 							</div>
 						</cfif>
 						<div class="panel-body">
-							<cfif Session.getSelectedEvent.MealProvided EQ 1>
+							<cfif Session.getSelectedEvent.MealAvailable EQ 1>
 								<div class="form-group">
 									<label for="EventDate" class="control-label col-sm-3">Each Participant Staying for Meal?:&nbsp;</label>
 									<div class="col-sm-2"><cfinput type="checkbox" name="RegisterParticipantStayForMeal" class="form-control" checked="yes"></div>
@@ -670,7 +670,7 @@
 							</div>
 						</cfif>
 						<div class="panel-body">
-							<cfif Session.getSelectedEvent.MealProvided EQ 1>
+							<cfif Session.getSelectedEvent.MealAvailable EQ 1>
 								<div class="form-group">
 									<label for="EventDate" class="control-label col-sm-3">Each Participant Staying for Meal?:&nbsp;</label>
 									<div class="col-sm-8"><cfselect name="RegisterParticipantStayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Everyone Staying for Meal Being Registered</option></cfselect></div>

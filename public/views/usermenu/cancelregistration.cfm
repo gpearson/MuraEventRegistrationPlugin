@@ -53,23 +53,23 @@
 						<td colspan="3">#Session.GetSelectedEvent.EventSpecialInstructions#</td>
 						</tr>
 					</cfif>
-					<cfif Session.GetSelectedEvent.PGPAvailable GT 0 and Session.GetSelectedEvent.MealProvided EQ 1>
+					<cfif Session.GetSelectedEvent.PGPAvailable GT 0 and Session.GetSelectedEvent.MealAvailable EQ 1>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">PGP Points:</span></td>
 						<td style="width: 390px;">#NumberFormat(Session.GetSelectedEvent.PGPPoints, "999.99")#</td>
 						<td style="width: 175px;"><span style="font-weight: bold;">Meal Provided:</span></td>
-						<td style="width: 175px;"><cfif Session.GetSelectedEvent.MealProvided EQ 1>Yes<cfelse>No</cfif></td>
+						<td style="width: 175px;"><cfif Session.GetSelectedEvent.MealAvailable EQ 1>Yes<cfelse>No</cfif></td>
 						</tr>
-					<cfelseif Session.GetSelectedEvent.PGPAvailable GT 0 and Session.GetSelectedEvent.MealProvided EQ 0>
+					<cfelseif Session.GetSelectedEvent.PGPAvailable GT 0 and Session.GetSelectedEvent.MealAvailable EQ 0>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">PGP Points:</span></td>
 						<td colspan="3">&nbsp;&nbsp;#NumberFormat(Session.GetSelectedEvent.PGPPoints, "999.99")#</td>
 						</tr>
-					<cfelseif Session.GetSelectedEvent.PGPAvailable EQ 0 and Session.GetSelectedEvent.MealProvided EQ 1>
+					<cfelseif Session.GetSelectedEvent.PGPAvailable EQ 0 and Session.GetSelectedEvent.MealAvailable EQ 1>
 						<tr>
 						<td colspan="2">&nbsp;</td>
 						<td style="width: 175px;"><span style="font-weight: bold;">Meal Provided:</span></td>
-						<td style="width: 175px;"><cfif Session.GetSelectedEvent.MealProvided EQ 1>Yes<cfelse>No</cfif></td>
+						<td style="width: 175px;"><cfif Session.GetSelectedEvent.MealAvailable EQ 1>Yes<cfelse>No</cfif></td>
 						</tr>
 					</cfif>
 					<cfif Session.GetSelectedEvent.WebinarAvailable EQ 1>
@@ -251,23 +251,23 @@
 						<td colspan="3">#Session.GetSelectedEvent.EventSpecialInstructions#</td>
 						</tr>
 					</cfif>
-					<cfif Session.GetSelectedEvent.PGPAvailable GT 0 and Session.GetSelectedEvent.MealProvided EQ 1>
+					<cfif Session.GetSelectedEvent.PGPAvailable GT 0 and Session.GetSelectedEvent.MealAvailable EQ 1>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">PGP Points:</span></td>
 						<td style="width: 390px;">#NumberFormat(Session.GetSelectedEvent.PGPPoints, "999.99")#</td>
 						<td style="width: 175px;"><span style="font-weight: bold;">Meal Provided:</span></td>
-						<td style="width: 175px;"><cfif Session.GetSelectedEvent.MealProvided EQ 1>Yes<cfelse>No</cfif></td>
+						<td style="width: 175px;"><cfif Session.GetSelectedEvent.MealAvailable EQ 1>Yes<cfelse>No</cfif></td>
 						</tr>
-					<cfelseif Session.GetSelectedEvent.PGPAvailable GT 0 and Session.GetSelectedEvent.MealProvided EQ 0>
+					<cfelseif Session.GetSelectedEvent.PGPAvailable GT 0 and Session.GetSelectedEvent.MealAvailable EQ 0>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">PGP Points:</span></td>
 						<td colspan="3">&nbsp;&nbsp;#NumberFormat(Session.GetSelectedEvent.PGPPoints, "999.99")#</td>
 						</tr>
-					<cfelseif Session.GetSelectedEvent.PGPAvailable EQ 0 and Session.GetSelectedEvent.MealProvided EQ 1>
+					<cfelseif Session.GetSelectedEvent.PGPAvailable EQ 0 and Session.GetSelectedEvent.MealAvailable EQ 1>
 						<tr>
 						<td colspan="2">&nbsp;</td>
 						<td style="width: 175px;"><span style="font-weight: bold;">Meal Provided:</span></td>
-						<td style="width: 175px;"><cfif Session.GetSelectedEvent.MealProvided EQ 1>Yes<cfelse>No</cfif></td>
+						<td style="width: 175px;"><cfif Session.GetSelectedEvent.MealAvailable EQ 1>Yes<cfelse>No</cfif></td>
 						</tr>
 					</cfif>
 					<cfif Session.GetSelectedEvent.WebinarAvailable EQ 1>

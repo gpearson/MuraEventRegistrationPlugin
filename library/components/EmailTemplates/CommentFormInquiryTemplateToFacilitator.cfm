@@ -16,7 +16,7 @@ Question:
 #Arguments.EmailInfo.InquiryMessage#
 
 
-Please contact this indivudal with the Best Contact Method Listed above.
+Please contact this individual with the Best Contact Method Listed above.
 
 Note: Replies to this automated email address are not monitored by staff. If you have questions or issues contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')#
 </cfmailpart>

@@ -217,17 +217,25 @@
 						<legend><h3>Meal Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_mealinfo&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h3></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="MealProvided" class="control-label col-sm-3">Meal Provided:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.MealProvided#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
+						<label for="MealAvailable" class="control-label col-sm-3">Meal Avaialble:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.MealAvailable#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
 					</div>
-					<cfif Session.getSelectedEvent.MealProvided EQ 1>
+					<cfif Session.getSelectedEvent.MealAvailable EQ 1>
+						<div class="form-group">
+						<label for="MealIncluded" class="control-label col-sm-3">Meal Included in Registration Fee:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getSelectedEvent.MealIncluded#"><cfcase value="0">No</cfcase><cfcase value="1">Yes</cfcase></cfswitch></p></div>
+						</div>
 						<div class="form-group">
 						<label for="MealProvidedBy" class="control-label col-sm-3">Meal Provided By:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedMealProvider.FacilityName# (#Session.getSelectedMealProvider.PhysicalAddress# #Session.getSelectedMealProvider.PhysicalCity# #Session.getSelectedMealProvider.PhysicalState# #Session.getSelectedMealProvider.PhysicalZipCode#)</p></div>
 						</div>
 						<div class="form-group">
-						<label for="MealCost_Estimated" class="control-label col-sm-3">Meal Estimated Cost:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.MealCost_Estimated)#</p></div>
+						<label for="MealCost" class="control-label col-sm-3">Meal Cost:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.getSelectedEvent.MealCost)#</p></div>
+						</div>
+						<div class="form-group">
+						<label for="MealCost" class="control-label col-sm-3">Meal Information:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.Meal_Notes#</p></div>
 						</div>
 					</cfif>
 					<br>

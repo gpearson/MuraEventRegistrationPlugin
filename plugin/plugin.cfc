@@ -49,6 +49,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 			case "mysql":
 				include "db/update/mysql-update-3.0.4.cfm";
 				include "db/update/mysql-update-3.0.6.0.cfm";
+				include "db/update/mysql-update-3.0.8.0.cfm";
 				break;
 		}
 	}
