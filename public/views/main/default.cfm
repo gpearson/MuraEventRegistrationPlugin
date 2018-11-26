@@ -35,6 +35,256 @@
 <cfoutput>
 	<cfif isDefined("URL.UserAction")>
 		<cfswitch expression="#URL.UserAction#">
+			<cfcase value="PasswordChanged">
+				<div id="modelWindowDialog" class="modal fade">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+								<h3>Password Changed Successfully</h3>
+							</div>
+							<div class="modal-body">
+								<p class="alert alert-success">The password on the selected account has been changed sucessfully. You can now login with the username and new password to register for upcoming events/workshops.</p>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script type='text/javascript'>
+					(function() {
+						'use strict';
+						function remoteModal(idModal){
+							var vm = this;
+							vm.modal = $(idModal);
+
+							if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+
+							if( window.location.hash == idModal ){ openModal(); }
+
+							var services = { open: openModal, close: closeModal };
+							return services;
+							///////////////
+
+							// method to open modal
+							function openModal(){
+								vm.modal.modal('show');
+							}
+
+							// method to close modal
+							function closeModal(){
+								vm.modal.modal('hide');
+							}
+						}
+						Window.prototype.remoteModal = remoteModal;
+					})();
+
+					$(function(){
+						window.remoteModal('##modelWindowDialog');
+					});
+				</script>
+			</cfcase>
+			<cfcase value="PasswordNotChanged">
+				<div id="modelWindowDialog" class="modal fade">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+								<h3>Password Not Changed</h3>
+							</div>
+							<div class="modal-body">
+								<p class="alert alert-success">The password on the selected account has not been changed due to an error.</p>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script type='text/javascript'>
+					(function() {
+						'use strict';
+						function remoteModal(idModal){
+							var vm = this;
+							vm.modal = $(idModal);
+
+							if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+
+							if( window.location.hash == idModal ){ openModal(); }
+
+							var services = { open: openModal, close: closeModal };
+							return services;
+							///////////////
+
+							// method to open modal
+							function openModal(){
+								vm.modal.modal('show');
+							}
+
+							// method to close modal
+							function closeModal(){
+								vm.modal.modal('hide');
+							}
+						}
+						Window.prototype.remoteModal = remoteModal;
+					})();
+
+					$(function(){
+						window.remoteModal('##modelWindowDialog');
+					});
+				</script>
+			</cfcase>
+			<cfcase value="PasswordTimeExpired">
+				<div id="modelWindowDialog" class="modal fade">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+								<h3>Password Reset Request Expired</h3>
+							</div>
+							<div class="modal-body">
+								<p class="alert alert-success">Time has expired on the password reset request and no changes to the account has been done.</p>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script type='text/javascript'>
+					(function() {
+						'use strict';
+						function remoteModal(idModal){
+							var vm = this;
+							vm.modal = $(idModal);
+
+							if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+
+							if( window.location.hash == idModal ){ openModal(); }
+
+							var services = { open: openModal, close: closeModal };
+							return services;
+							///////////////
+
+							// method to open modal
+							function openModal(){
+								vm.modal.modal('show');
+							}
+
+							// method to close modal
+							function closeModal(){
+								vm.modal.modal('hide');
+							}
+						}
+						Window.prototype.remoteModal = remoteModal;
+					})();
+
+					$(function(){
+						window.remoteModal('##modelWindowDialog');
+					});
+				</script>
+			</cfcase>
+			<cfcase value="WrongInformationRequest">
+				<div id="modelWindowDialog" class="modal fade">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+								<h3>Invalid Information Passed</h3>
+							</div>
+							<div class="modal-body">
+								<p class="alert alert-success">Something went wrong with the Link which was clicked on. Please visit the link again</p>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script type='text/javascript'>
+					(function() {
+						'use strict';
+						function remoteModal(idModal){
+							var vm = this;
+							vm.modal = $(idModal);
+
+							if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+
+							if( window.location.hash == idModal ){ openModal(); }
+
+							var services = { open: openModal, close: closeModal };
+							return services;
+							///////////////
+
+							// method to open modal
+							function openModal(){
+								vm.modal.modal('show');
+							}
+
+							// method to close modal
+							function closeModal(){
+								vm.modal.modal('hide');
+							}
+						}
+						Window.prototype.remoteModal = remoteModal;
+					})();
+
+					$(function(){
+						window.remoteModal('##modelWindowDialog');
+					});
+				</script>
+			</cfcase>
+			<cfcase value="PasswordRequestSent">
+				<div id="modelWindowDialog" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+									<h3>Password Request Sent</h3>
+								</div>
+								<div class="modal-body">
+									<p class="alert alert-success">The special link to request password request has been sent to the email address we have on file for the account you entered.</p>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<script type='text/javascript'>
+						(function() {
+							'use strict';
+							function remoteModal(idModal){
+								var vm = this;
+								vm.modal = $(idModal);
+
+								if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+
+								if( window.location.hash == idModal ){ openModal(); }
+
+								var services = { open: openModal, close: closeModal };
+								return services;
+								///////////////
+
+								// method to open modal
+								function openModal(){
+									vm.modal.modal('show');
+								}
+
+								// method to close modal
+								function closeModal(){
+									vm.modal.modal('hide');
+								}
+							}
+							Window.prototype.remoteModal = remoteModal;
+						})();
+
+						$(function(){
+							window.remoteModal('##modelWindowDialog');
+						});
+					</script>
+			</cfcase>
 			<cfcase value="UserRegistration">
 				<cfif URL.Successfull EQ "true">
 					<div id="modelWindowDialog" class="modal fade">
@@ -45,7 +295,7 @@
 									<h3>Account Successfully Created</h3>
 								</div>
 								<div class="modal-body">
-									<p class="alert alert-success">You have successfully registered for an account on this event registration system. Within the next few minutes you will be receiving an email with a special link to click on that will activate your account. You will not be able to login to this system until your account has been activated.</p>
+									<p class="alert alert-success">You have successfully registered an account on this system. Within a few minutes, you will receive an email with a link to activate your account. You will not be able to login to this system or register for events until your account has been activated.</p>
 								</div>
 								<div class="modal-footer">
 									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -146,7 +396,7 @@
 									<h3>Account Activated</h3>
 								</div>
 								<div class="modal-body">
-									<p class="alert alert-success">You have successfully activated your account on the event registration system. You are now able to login and register for any upcoming events or workshops that are offered through this system.</p>
+									<p class="alert alert-success">You have successfully activated your account on this system. You may now login and register for any upcoming events or workshops.</p>
 								</div>
 								<div class="modal-footer">
 									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -248,7 +498,7 @@
 										<h3>Account Registered Successfully</h3>
 									</div>
 									<div class="modal-body">
-										<p class="alert alert-success">You have successfully registered a single individual for the event titled '#Session.getSelectedEvent.ShortTitle#'. Within the next few minutes, the registered individual will be recieving an electronic copy of the confirmation registration information for this event.</p>
+										<p class="alert alert-success">You have successfully registered for '#Session.getSelectedEvent.ShortTitle#' (#dateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#) . You will receive a registration confirmation email shortly.</p>
 									</div>
 									<div class="modal-footer">
 										<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -268,7 +518,7 @@
 										<h3>Selected Individual(s) Registered Successfully</h3>
 									</div>
 									<div class="modal-body">
-										<p class="alert alert-success">You have successfully registered the selected individual(s) for the event titled '#Session.getSelectedEvent.ShortTitle#'. Within the next few minutes, the registered individual(s) will be recieving an electronic copy of the confirmation registration information for this event.</p>
+										<p class="alert alert-success">You have successfully registered the selected individual(s) for '#Session.getSelectedEvent.ShortTitle#' (#dateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#). Each individual will receive a registration confirmation email shortly.</p>
 									</div>
 									<div class="modal-footer">
 										<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -312,8 +562,10 @@
 
 
 	<div class="panel panel-default">
-		<div class="panel-heading"><h1>Current Events and/or Workshops</h1></div>
 		<div class="panel-body">
+			<fieldset>
+				<legend><h2>Calendar of Events</h2></legend>
+			</fieldset>
 			<cfif Session.getFeaturedEvents.RecordCount>
 				<cfdump var="#Session.getFeaturedEvents#">
 			</cfif>
@@ -338,7 +590,7 @@
 							</cfquery>
 							<cfset EventSeatsLeft = #Session.getNonFeaturedEvents.MaxParticipants# - #getCurrentRegistrationsbyEvent.CurrentNumberofRegistrations#>
 							<tr>
-								<td>#Session.getNonFeaturedEvents.ShortTitle#<cfif LEN(Session.getNonFeaturedEvents.Presenters)><cfquery name="getPresenter" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">Select FName, LName From tusers where UserID = <cfqueryparam value="#Session.getNonFeaturedEvents.Presenters#" cfsqltype="cf_sql_varchar"></cfquery><br>Presenter: #getPresenter.FName# #getPresenter.Lname#</cfif></td>
+								<td>#Session.getNonFeaturedEvents.ShortTitle#<cfif LEN(Session.getNonFeaturedEvents.Presenters)><cfquery name="getPresenter" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">Select FName, LName From tusers where UserID = <cfqueryparam value="#Session.getNonFeaturedEvents.Presenters#" cfsqltype="cf_sql_varchar"></cfquery><br><em>Presenter: #getPresenter.FName# #getPresenter.Lname#</em></cfif></td>
 								<td>
 									<cfif LEN(Session.getNonFeaturedEvents.EventDate) and LEN(Session.getNonFeaturedEvents.EventDate1) or LEN(Session.getNonFeaturedEvents.EventDate2) or LEN(Session.getNonFeaturedEvents.EventDate3) or LEN(Session.getNonFeaturedEvents.EventDate4)>
 										<cfif DateDiff("d", Now(), Session.getNonFeaturedEvents.EventDate) LT 0>
@@ -380,10 +632,13 @@
 								</td>
 								<td>
 									<cfif Session.getNonFeaturedEvents.AcceptRegistrations EQ 1>
+										<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.getNonFeaturedEvents.TContent_ID#" class="btn btn-primary btn-small" alt="Event Information">More Info</a>
 										<cfif Variables.EventSeatsLeft GTE 1 and DateDiff("d", Now(), Session.getNonFeaturedEvents.Registration_Deadline) GTE 0>
-											<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&EventID=#Session.getNonFeaturedEvents.TContent_ID#" class="btn btn-primary btn-small" alt="Register Event">Register</a>
+											| <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&EventID=#Session.getNonFeaturedEvents.TContent_ID#" class="btn btn-primary btn-small" alt="Register Event">Register</a>
 										</cfif>
-									</cfif><a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.getNonFeaturedEvents.TContent_ID#" class="btn btn-primary btn-small" alt="Event Information">More Info</a>
+									<CFELSE>
+										<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.getNonFeaturedEvents.TContent_ID#" class="btn btn-primary btn-small" alt="Event Information">More Info</a>
+									</cfif>
 								</td>
 								<td><cfif Session.getNonFeaturedEvents.PGPAvailable EQ 1><a href="##eventPGPCertificate" data-toggle="modal"><img src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/images/award.png" alt="PGP Certificate" border="0"></cfif><cfif Session.getNonFeaturedEvents.AllowVideoConference EQ 1 or Session.getNonFeaturedEvents.WebinarAvailable EQ 1><img src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/images/wifi.png" "Online Learning" border="0"></a></cfif></td>
 							</tr>
@@ -398,8 +653,16 @@
 				</table>
 			</cfif>
 		</div>
-		<div class="panel-footer">Legend:<hr><a href="##eventPGPCertificate" data-toggle="modal"><img src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/images/award.png" alt="PGP Certificate" border="0"></a> = PGP Certificate</div>
+		<div class="panel-footer">
+			<table class="table">
+				<tr>
+					<td style="vertical-align:top; font-family: Arial; font-size:24px; font-weight:bold;">Legend:</td>
+					<td>Greyed out Event Dates have already passed. If event does not display a Register button, the online registration deadline has passed.<br><br>Please contact #rc.$.siteConfig('site')# at #rc.$.siteConfig('ContactEmail')# or #rc.$.siteConfig('ContactPhone')# to check availablity for the event.<hr><a href="##eventPGPCertificate" data-toggle="modal"><img src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/images/award.png" alt="PGP Certificate" border="0"></a> = PGP Certificate Available</td>
+				</tr>
+			</table>
+		</div>
 	</div>
+
 	<div id="eventPGPCertificate" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">

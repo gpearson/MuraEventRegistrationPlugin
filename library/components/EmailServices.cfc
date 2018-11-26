@@ -457,6 +457,13 @@
 		<cfinclude template="EmailTemplates/SendEmailInvoiceToAccountsPayable.cfm">
 	</cffunction>
 
+	<cffunction name="SendForgotPasswordRequest" returntype="Any" Output="False">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="AccountQuery" required="true" type="query">
+		<cfargument name="PasswordLink" required="true" type="String">
+		<cfinclude template="EmailTemplates/SendLostPasswordVerifyFormToUser.cfm">
+	</cffunction>
+
 
 
 

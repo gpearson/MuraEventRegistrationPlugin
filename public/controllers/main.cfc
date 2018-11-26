@@ -152,7 +152,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 							Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
 					Order By Featured_SortOrder ASC, EventDate ASC
 				</cfquery>
-
 			</cfcase>
 		</cfswitch>
 
@@ -264,6 +263,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 				From tusers
 				Where UserID = <cfqueryparam value="#getSelectedEvent.Presenters#" cfsqltype="cf_sql_varchar">
 			</cfquery>
+
+			<cfif Session.Mura.isLoggedIn EQ true>
+				<cfquery name="checkRegisteredForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					Select TContent_ID, RegistrationID, RegistrationDate
+					From p_EventRegistration_UserRegistrations
+					Where EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
+						User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
+						Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+				</cfquery>
+				<cfif checkRegisteredForEvent.RecordCount>
+					<cfset Session.EventInfo.ParticipantRegistered = true>
+				</cfif>
+			<cfelse>
+				<cfset Session.EventInfo.ParticipantRegistered = false>
+			</cfif>
 
 			<cfset Session.EventInfo.SelectedEvent = #StructCopy(getSelectedEvent)#>
 			<cfset Session.EventInfo.EventRegistrations = #StructCopy(getCurrentRegistrationsbyEvent)#>

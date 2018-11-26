@@ -1,21 +1,21 @@
-<cfmail To="#GetAccountUsername.fName# #GetAccountUsername.lName# <#GetAccountUsername.Email#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Event Registration - Account Lost Password Verify" server="127.0.0.1">
+<cfmail To="#Arguments.AccountQuery.fName# #Arguments.AccountQuery.lName# <#Arguments.AccountQuery.Email#>" from="Event Registration System <registrationsystem@#CGI.Server_Name#>" subject="Event Registration - Account Lost Password" server="127.0.0.1">
 <cfmailpart type="text/plain">
-#GetAccountUsername.fName# #GetAccountUsername.lName#,
+#Arguments.AccountQuery.fName# #Arguments.AccountQuery.lName#,
 
-The Event Registration System received a request to retrieve a lost password for your account and we wanted to make sure you wanted to do this. If you intended for this to happen, please click the link below so we can send you a new password for you to login with otherwise simple delete this message so nothing will change with your account.
+Someone, hopefully you, requested a lost password from the #rc.$.siteConfig('site')# event registration system. If this was you, simply click the link below to enter a new password. If not, simply disregard this message and your password will not be updated.
 
-#Variables.AccountActiveLink#
+#Arguments.PasswordLink#
 
 Note: Replies to this automated email address are not monitored by staff. If you have questions or issues contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')#
 </cfmailpart>
 <cfmailpart type="text/html">
 	<html><body>
 		<table border="0" align="center" width="100%" cellspacing="0" cellpadding="0">
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#GetAccountUsername.fName# #GetAccountUsername.lName#,</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#Arguments.AccountQuery.fName# #Arguments.AccountQuery.lName#,</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">The Event Registration System received a request to retrieve a lost password for your account and we wanted to make sure you wanted to do this. If you intended for this to happen, please click the link below so we can send you a new password for you to login with otherwise simple delete this message so nothing will change with your account.</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Someone, hopefully you, requested a lost password from the #rc.$.siteConfig('site')# event registration system. If this was you, simply click the link below to enter a new password. If not, simply disregard this message and your password will not be updated.</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#Variables.AccountActiveLink#</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#Arguments.PasswordLink#</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Note: Replies to this automated email address are not monitored by staff. If you have questions or issues contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')#</td></tr>
 		</table>

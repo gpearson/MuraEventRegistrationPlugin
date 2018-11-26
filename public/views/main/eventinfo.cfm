@@ -1,7 +1,11 @@
 <cfoutput>
 	<div class="panel panel-default">
-		<div class="panel-heading"><h3 align="center">#Session.EventInfo.SelectedEvent.ShortTitle# <cfif Len(Session.EventInfo.SelectedEvent.Presenters)><br>(#Session.EventInfo.EventPresenter.FName# #Session.EventInfo.EventPresenter.Lname#)</cfif></h3></div>
 		<div class="panel-body">
+			<fieldset>
+				<legend>
+					<h3 align="center">#Session.EventInfo.SelectedEvent.ShortTitle# <cfif Len(Session.EventInfo.SelectedEvent.Presenters)><br>(#Session.EventInfo.EventPresenter.FName# #Session.EventInfo.EventPresenter.Lname#)</cfif></h3>
+				</legend>
+			</fieldset>
 			<cfif isDefined("URL.SentInquiry")>
 				<div id="contactFormSuccessfull" class="modal fade">
 					<div class="modal-dialog">
@@ -295,10 +299,25 @@
 		</div>
 		<div class="panel-footer">
 			<cfif Session.EventInfo.SelectedEvent.AcceptRegistrations EQ 1>
-				<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary">Return to Event Listing</a>
+				<cfswitch expression="#ListLast(CGI.HTTP_REFERER, '=')#">
+					<cfcase value="public:usermenu.eventhistory">
+						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.eventhistory" class="btn btn-primary">My Past Events</a>
+					</cfcase>
+					<cfcase value="public:usermenu.upcomingevents">
+						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.upcomingevents" class="btn btn-primary">My Upcoming Events</a>
+					</cfcase>
+					<cfdefaultcase>
+						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary">Return to Event Listing</a>
+					</cfdefaultcase>
+				</cfswitch>
 				<cfif DateDiff("d", Now(), Session.EventInfo.SelectedEvent.Registration_Deadline) GTE 0>
 					<cfif Variables.SeatsLeft GT 0>
-						| <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&EventID=#URL.EventID#" class="btn btn-primary">Register</a>
+						<cfif Session.EventInfo.ParticipantRegistered EQ false>
+							| <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&EventID=#URL.EventID#" class="btn btn-primary">Register</a>
+						<cfelse>
+							| <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&EventID=#URL.EventID#" class="btn btn-primary">Register Additional Participants</a>
+						</cfif>
+
 					<cfelse>
 					</cfif>
 				<cfelse>

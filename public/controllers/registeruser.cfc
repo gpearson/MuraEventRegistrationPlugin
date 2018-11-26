@@ -80,6 +80,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#rc.pc.getPackage()#action=public:registeruser.default&FormRetry=True" addtoken="false">
 			</cfif>
 
+			<cfif #HASH(FORM.ValidateCaptcha)# NEQ FORM.CaptchaEncrypted>
+				<cflock timeout="60" scope="SESSION" type="Exclusive">
+					<cfscript>
+						errormsg = {property="HumanChecker",message="The Characters entered did not match what was displayed"};
+						arrayAppend(Session.FormErrors, errormsg);
+					</cfscript>
+				</cflock>
+				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registeruser.default&FormRetry=True">
+			</cfif>
+
 			<cfquery name="GetOrganizationName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select StateDOE_IDNumber, OrganizationName
 				From p_EventRegistration_Membership

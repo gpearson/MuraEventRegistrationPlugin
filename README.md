@@ -15,6 +15,8 @@ Note: Upon Installation create an account through the Register Account Section t
 
 Note: After installing plugin the itext*.jar files within the library/jars of the plugin directory will need to be manually copied to your WEB-INF/{railo},{lucee}/lib directory and then restart the service for these jar files to be included.
 
+Note: A new dsp_login.cfm page located in includes/display_objects will need to be placed within the current template folder display_objects of your Mura Installation. This template has buttons for Forgot Password and Create Account that walks a user through these processes if they are having issues getting logged in.
+
 
 Description
 ====================
