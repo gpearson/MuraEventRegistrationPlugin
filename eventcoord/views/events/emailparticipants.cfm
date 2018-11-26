@@ -23,11 +23,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfinput type="hidden" name="EmailType" value="#URL.EmailType#">
 			<cfinput type="hidden" name="formSubmit" value="true">
 			<cfif not isDefined("URL.FormRetry")>
+				<div class="panel-heading">
+					<h2>Send <cfif URL.EmailType EQ "EmailRegistered">Registered<cfelseif URL.EmailType EQ "EmailAttended">Attended</cfif> Participants Email: #Session.getSelectedEvent.ShortTitle#</h2><br><p>Number of Registered Participants: #Session.EventNumberRegistrations#</p></h2>
+				</div>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Send <cfif URL.EmailType EQ "EmailRegistered">Registered<cfelseif URL.EmailType EQ "EmailAttended">Attended</cfif> Participants Email: #Session.getSelectedEvent.ShortTitle#</h2><br><p>Number of Registered Participants: #Session.EventNumberRegistrations#</p></h2></legend>
-					</fieldset>
-					<br>
 					<fieldset>
 						<legend><h2>Message to Participants</h2></legend>
 					</fieldset>

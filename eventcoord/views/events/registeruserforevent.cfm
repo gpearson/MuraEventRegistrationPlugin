@@ -85,6 +85,13 @@
 						<div class="col-sm-2"><cfinput type="checkbox" name="EmailConfirmations" class="form-control" checked="yes"></div>
 						<div class="col-sm-7">&nbsp;</div>
 					</div>
+					<cfif Session.CheckExistingSentEmailsForEvent.RecordCount>
+						<div class="form-group">
+							<label for="EventDate" class="control-label col-sm-3">ReSend Previous Sent Emails to new Participants:&nbsp;</label>
+							<div class="col-sm-2"><cfinput type="checkbox" name="EmailConfirmations" class="form-control" checked="yes"></div>
+							<div class="col-sm-7">&nbsp;</div>
+						</div>
+					</cfif>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">School District:&nbsp;</label>
 						<div class="col-sm-8"><cfselect name="DistrictName" class="form-control" Required="Yes" Multiple="No" query="Session.GetMembershipOrganizations" value="TContent_ID" Display="OrganizationName"  queryposition="below"><option value="----">Select School District Participant Is From</option><option value="0">Participant is from a Business</option></cfselect></div>
