@@ -18,12 +18,12 @@
 						<legend><h2>Update Event Expense</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="GroupName" class="control-label col-sm-3">Expense Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ExpenseName" name="ExpenseName" value="#Session.getSelectedExpense.Expense_name#" required="yes"></div>
+						<label for="GroupName" class="col-lg-3 col-md-3">Expense Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="ExpenseName" name="ExpenseName" value="#Session.getSelectedExpense.Expense_name#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="GroupActive" class="control-label col-sm-3">Expense Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8">
+						<label for="GroupActive" class="col-lg-3 col-md-3">Expense Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9">
 							<cfselect name="ExpenseActive" class="form-control" Required="Yes" Multiple="No" selected="#Session.getSelectedExpense.Active#" query="ExpenseActiveQuery" value="ID" Display="OptionName"  queryposition="below">
 								<option value="----">Select Active</option>
 							</cfselect>
@@ -49,12 +49,12 @@
 						<legend><h2>Update Event Expense</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="GroupName" class="control-label col-sm-3">Expense Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ExpenseName" name="ExpenseName" value="#Session.getSelectedExpense.Expense_name#" required="yes"></div>
+						<label for="GroupName" class="col-lg-3 col-md-3">Expense Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="ExpenseName" name="ExpenseName" value="#Session.getSelectedExpense.Expense_name#" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="GroupActive" class="control-label col-sm-3">Expense Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8">
+						<label for="GroupActive" class="col-lg-3 col-md-3">Expense Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9">
 							<cfselect name="ExpenseActive" class="form-control" Required="Yes" Multiple="No" selected="#Session.getSelectedExpense.Active#" query="ExpenseActiveQuery" value="ID" Display="OptionName"  queryposition="below">
 								<option value="----">Select Active</option>
 							</cfselect>

@@ -30,15 +30,15 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfif Session.EmailMarketing.QueryResults.RecordCount>
 						<div class="alert alert-info">Please complete the following information to market upcoming events to indivduals and/or mailing lists.<br>Currently #Session.EmailMarketing.QueryResults.RecordCount# event(s) are eligible for participants to register for.</div>
 						<div class="form-group">
-							<label for="WhoToSendTo" class="control-label col-sm-3">Send Event Marketing To:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-							<div class="col-sm-8">
+							<label for="WhoToSendTo" class="col-lg-3 col-md-3">Send Event Marketing To:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+							<div class="col-lg-9 col-md-9">
 								<cfselect name="WhoToSendTo" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
 									<option value="----">Who To Send To?</option>
 								</cfselect>
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="col-sm-12">
+							<div class="col-lg-12 col-md-12">
 								<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
 								<jr:jasperreport jrxml="#Session.EmailMarketing.MasterTemplate#" query="#Session.EmailMarketing.QueryResults#" exportfile="#Session.EmailMarketing.CompletedFile#" exportType="pdf" />
 								<embed src="#Session.EmailMarketing.WebExportCompletedFile#" width="100%" height="650">
@@ -69,15 +69,15 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to market upcoming events to indivduals and/or mailing lists.<br>Currently #Session.EmailMarketing.QueryResults.RecordCount# event(s) are eligible for participants to register for.</div>
 					<div class="form-group">
-						<label for="WhoToSendTo" class="control-label col-sm-3">Send Event Marketing To:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8">
+						<label for="WhoToSendTo" class="col-lg-3 col-md-3">Send Event Marketing To:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9">
 							<cfselect name="WhoToSendTo" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
 								<option value="----">Who To Send To?</option>
 							</cfselect>
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="col-sm-12">
+						<div class="col-lg-12 col-md-12">
 							<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
 							<cfset LogoPath = ArrayNew(1)>
 							<cfloop from="1" to="#Session.EmailMarketing.QueryResults.RecordCount#" step="1" index="i">

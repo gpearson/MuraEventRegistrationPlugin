@@ -128,19 +128,19 @@
 					</fieldset>
 					<div class="form-group">
 						<label for="PhysicalAddress" class="col-lg-3 col-md-3">Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" required="no"></div>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalAddress" name="PhysicalAddress" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="PhysicalCity" class="col-lg-3 col-md-3">City:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalCity" name="PhysicalCity" required="no"></div>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalCity" name="PhysicalCity" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="PhysicalState" class="col-lg-3 col-md-3">State:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalState" name="PhysicalState" required="no"></div>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalState" name="PhysicalState" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="PhysicalZipCode" class="col-lg-3 col-md-3">ZipCode:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" required="no"></div>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" required="yes"></div>
 					</div>
 					<div class="form-group">
 						<label for="PrimaryVoiceNumber" class="col-lg-3 col-md-3">Voice Number:&nbsp;</label>
@@ -149,6 +149,25 @@
 					<div class="form-group">
 						<label for="BusinessWebsite" class="col-lg-3 col-md-3">Website:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="BusinessWebsite" name="BusinessWebsite" required="NO"></div>
+					</div>
+					<fieldset>
+						<legend><h2>Mailing Address Information</h2></legend>
+					</fieldset>
+					<div class="form-group">
+						<label for="MailingAddress" class="col-lg-3 col-md-3">Address:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingAddress" name="MailingAddress" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="MailingCity" class="col-lg-3 col-md-3">City:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingCity" name="MailingCity" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="MailingState" class="col-lg-3 col-md-3">State:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingState" name="MailingState" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="MailingZipCode" class="col-lg-3 col-md-3">ZipCode:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="MailingZipCode" name="MailingZipCode" required="no"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Contact Information</h2></legend>

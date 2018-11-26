@@ -17,12 +17,12 @@
 						<legend><h2>Add Event Expense</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="GroupName" class="control-label col-sm-3">Expense Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" id="ExpenseName" name="ExpenseName" required="yes"></div>
+						<label for="GroupName" class="col-lg-3 col-md-3">Expense Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="ExpenseName" name="ExpenseName" required="No"></div>
 					</div>
 					<div class="form-group">
-						<label for="GroupActive" class="control-label col-sm-3">Expense Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8">
+						<label for="GroupActive" class="col-lg-3 col-md-3">Expense Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9">
 							<cfselect name="ExpenseActive" class="form-control" Required="Yes" Multiple="No" query="ExpenseActiveQuery" value="ID" Display="OptionName"  queryposition="below">
 								<option value="----">Select Active</option>
 							</cfselect>
@@ -48,21 +48,21 @@
 						<legend><h2>Add Event Expense</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="GroupName" class="control-label col-sm-3">Expense Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8"><cfinput type="text" class="form-control" value="#Session.FormData.GroupName#" id="GroupName" name="GroupName" required="yes"></div>
+						<label for="ExpenseName" class="col-lg-3 col-md-3">Expense Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" value="#Session.FormData.ExpenseName#" id="ExpenseName" name="ExpenseName" required="No"></div>
 					</div>
 					<div class="form-group">
-						<label for="GroupActive" class="control-label col-sm-3">Expense Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8">
-							<cfselect name="GroupActive" class="form-control" Required="Yes" Multiple="No" query="GroupActiveQuery" value="ID" Display="OptionName"  queryposition="below">
+						<label for="GroupActive" class="col-lg-3 col-md-3">Expense Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-lg-9 col-md-9">
+							<cfselect name="ExpenseActive" class="form-control" Required="Yes" Multiple="No" query="ExpenseActiveQuery" value="ID" Display="OptionName" selected="#Session.FormData.ExpenseActive#"  queryposition="below">
 								<option value="----">Select Active</option>
 							</cfselect>
 						</div>
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="CreateCategory" class="btn btn-primary pull-left" value="Back" onclick="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=organizationadmin:groups.default">
-					<cfinput type="Submit" name="RegisterAccount" class="btn btn-primary pull-right" value="Add Event Expense"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add Event Expense"><br /><br />
 				</div>
 			</cfform>
 		</cfif>
