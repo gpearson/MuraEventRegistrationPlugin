@@ -238,21 +238,39 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfset FORM.StayForMeal = 0>
 					</cfif>
 					<cftry>
-						<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-							insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RequestsMeal)
-							Values(
-								<cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar">,
-								<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
-								<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-								<cfqueryparam value="#FORM.RegisterDate#" cfsqltype="cf_sql_bit">,
-								<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
-								<cfqueryparam value="#FORM.EventID#" cfsqltype="cf_sql_integer">,
-								<cfqueryparam value="#Session.UserRegistrationInfo.UserEventPrice#" cfsqltype="cf_sql_money">,
-								<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
-								<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
-								<cfqueryparam value="#FORM.StayForMeal#" cfsqltype="cf_sql_bit">
-							)
-						</cfquery>
+						<cfif isDefined("FORM.RegisterDate")>
+							<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RequestsMeal)
+								Values(
+									<cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									<cfqueryparam value="#FORM.RegisterDate#" cfsqltype="cf_sql_bit">,
+									<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#FORM.EventID#" cfsqltype="cf_sql_integer">,
+									<cfqueryparam value="#Session.UserRegistrationInfo.UserEventPrice#" cfsqltype="cf_sql_money">,
+									<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#FORM.StayForMeal#" cfsqltype="cf_sql_bit">
+								)
+							</cfquery>
+						<cfelse>
+							<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RequestsMeal)
+								Values(
+									<cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+									<cfqueryparam value="1" cfsqltype="cf_sql_bit">,
+									<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#FORM.EventID#" cfsqltype="cf_sql_integer">,
+									<cfqueryparam value="#Session.UserRegistrationInfo.UserEventPrice#" cfsqltype="cf_sql_money">,
+									<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
+									<cfqueryparam value="#FORM.StayForMeal#" cfsqltype="cf_sql_bit">
+								)
+							</cfquery>
+						</cfif>
 
 						<cfif isDefined("FORM.RegisterDate1")>
 							<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
@@ -315,7 +333,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<cfset temp = StructDelete(Session, "FormErrors")>
 						<cfset temp = StructDelete(Session, "FormInput")>
 						<cfset temp = StructDelete(Session, "UserRegistrationInfo")>
-						<cfset temp = StructDelete(Session, "getSelectedEvent")>
 						<cfset temp = StructDelete(Session, "getActiveMembership")>
 						<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" addtoken="false">
 						<cfcatch type="Database">
@@ -612,9 +629,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfset temp = StructDelete(Session, "FormErrors")>
 				<cfset temp = StructDelete(Session, "FormInput")>
 				<cfset temp = StructDelete(Session, "UserRegistrationInfo")>
-				<cfset temp = StructDelete(Session, "getSelectedEvent")>
 				<cfset temp = StructDelete(Session, "getActiveMembership")>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" addtoken="false">
+				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=UserRegistered&Successfull=True&MultipleRegistration=True" addtoken="false">
 			</cfif>
 		</cfif>
 	</cffunction>

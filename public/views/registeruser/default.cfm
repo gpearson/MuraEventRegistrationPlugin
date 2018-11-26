@@ -22,7 +22,7 @@
 						<div class="col-sm-6"><cfinput type="text" class="form-control" id="lName" name="lName" required="yes"></div>
 					</div>
 					<div class="form-group">
-						<label for="YourEmail" class="control-label col-sm-3">Email Address:&nbsp;</label>
+						<label for="YourEmail" class="control-label col-sm-3">School/Business Email:&nbsp;</label>
 						<div class="col-sm-6"><cfinput type="text" class="form-control" id="UserName" name="UserName" required="yes"></div>
 					</div>
 					<div class="form-group">
@@ -33,26 +33,15 @@
 						<label for="VerifyDesiredPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
 						<div class="col-sm-6"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" required="yes"></div>
 					</div>
-					<div class="panel-heading"><h2>Optional Information</h2></div>
 					<div class="form-group">
-						<label for="SchoolDistrict" class="control-label col-sm-3">School District:&nbsp;</label>
-						<div class="col-sm-6">
-							<cfselect name="Company" class="form-control" Required="Yes" Multiple="No" query="Session.getSchoolDistricts" value="StateDOE_IDNumber" Display="OrganizationName"  queryposition="below">
-								<option value="0000">Corporate Business</option>
-								<option value="0001">School District Not Listed</option>
-							</cfselect>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="alert alert-warning" role="alert">Enter a phone number that you will answer in the event that an event or workshop will be registered for that you will be able to receive emergency information about the event or workshop like it is cancelled due to mother nature.</div>
 						<label for="ContactNumber" class="control-label col-sm-3">Phone Number:&nbsp;</label>
-						<div class="col-sm-6"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" required="no"></div>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" required="no"><div class="alert alert-warning small" role="alert"><em>This phone number will be used if an event needs to be cancelled or postponed</em></div></div>
 					</div>
-					<div class="panel-heading"><h2>Human Checker</h2></div>
+					<div class="panel-heading"><h2>Account Security</h2></div>
 					<div class="form-group">
-						<label for="HumanChecker" class="control-label col-sm-3">Enter Text:&nbsp;</label>
+						<label for="HumanChecker" class="control-label col-sm-3">In order to prevent abuse from automatic systems, please type the letters or numbers in the box below:&nbsp;</label>
 						<div class="col-sm-6">
-							<cfimage action="captcha" difficulty="medium" text="#captcha#" fonts="arial,times roman, tahoma" height="150" width="500" /><br>
+							<cfimage action="captcha" difficulty="medium" text="#captcha#" fonts="arial,times roman, tahoma" height="150" width="500" /><br><br />
 							<cfinput name="ValidateCaptcha" type="text" required="yes" message="Input Captcha Text" />
 						</div>
 					</div>
@@ -104,24 +93,13 @@
 						<label for="VerifyDesiredPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
 						<div class="col-sm-6"><cfinput type="password" class="form-control" value="#Session.FormData.VerifyPassword#" id="VerifyPassword" name="VerifyPassword" required="yes"></div>
 					</div>
-					<div class="panel-heading"><h2>Optional Information</h2></div>
 					<div class="form-group">
-						<label for="SchoolDistrict" class="control-label col-sm-3">School District:&nbsp;</label>
-						<div class="col-sm-6">
-							<cfselect name="Company" class="form-control" Required="Yes" Multiple="No" selected="#Session.FormData.Company#" query="Session.getSchoolDistricts" value="StateDOE_IDNumber" Display="OrganizationName"  queryposition="below">
-								<option value="0000">Corporate Business</option>
-								<option value="0001">School District Not Listed</option>
-							</cfselect>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="alert alert-warning" role="alert">Enter a phone number that you will answer in the event that an event or workshop will be registered for that you will be able to receive emergency information about the event or workshop like it is cancelled due to mother nature.</div>
 						<label for="ContactNumber" class="control-label col-sm-3">Phone Number:&nbsp;</label>
-						<div class="col-sm-6"><cfinput type="text" class="form-control" value="#Session.FormData.mobilePhone#" id="mobilePhone" name="mobilePhone" required="no"></div>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="mobilePhone" value="#Session.FormData.mobilePhone#" name="mobilePhone" required="no"><div class="alert alert-warning small" role="alert"><em>This phone number will be used if an event needs to be cancelled or postponed</em></div></div>
 					</div>
-					<div class="panel-heading"><h2>Human Checker</h2></div>
+					<div class="panel-heading"><h2>Account Security</h2></div>
 					<div class="form-group">
-						<label for="HumanChecker" class="control-label col-sm-3">Enter Text:&nbsp;</label>
+						<label for="HumanChecker" class="control-label col-sm-3">In order to prevent abuse from automatic systems, please type the letters or numbers in the box below:&nbsp;</label>
 						<div class="col-sm-6">
 							<cfimage action="captcha" difficulty="medium" text="#Session.FormData.HumanValidation#" fonts="arial,times roman, tahoma" height="150" width="500" /><br>
 							<cfinput name="ValidateCaptcha" type="text" required="yes" message="Input Captcha Text" />

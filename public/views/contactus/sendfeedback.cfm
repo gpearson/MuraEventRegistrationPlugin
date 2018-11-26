@@ -65,6 +65,27 @@
 							</cfselect>
 						</div>
 					</div>
+					<cfif isDefined("URL.EventID") or isDefined("URL.SendTo")>
+						<cfif isDefined("URL.EventID")>
+							<div class="form-group">
+								<label for="EventTitle" class="control-label col-sm-2">Event Title:&nbsp;</label>
+								<div class="col-sm-9">
+									<input type="Hidden" Name="EventTitle" Value="#Session.EventInfo.SelectedEvent.ShortTitle#">
+									<input type="hidden" name="EventID" Value="#URL.EventID#">
+									<cfinput type="text" class="form-control" id="EventTitle" name="EventTitle" disabled="yes" value="#Session.EventInfo.SelectedEvent.ShortTitle#">
+								</div>
+							</div>
+						</cfif>
+						<cfif isDefined("URL.SendTo")>
+							<div class="form-group">
+								<label for="SendMessageTo" class="control-label col-sm-2">Send Inquiry To:&nbsp;</label>
+								<div class="col-sm-9">
+									<input type="Hidden" Name="SendTo" Value="#URL.SendTo#">
+									<cfinput type="text" class="form-control" id="SendTo" name="SendTo" disabled="yes" value="#URL.SendTo#">
+								</div>
+							</div>
+						</cfif>
+					</cfif>
 					<br /><br />
 					<div class="panel-heading"><h2>Your Inquiry</h2></div>
 					<div class="form-group">
@@ -73,9 +94,9 @@
 							<textarea class="form-control" name="InquiryMessage" id="InquiryMessage" height="45" required="true"></textarea>
 						</div>
 					</div>
-					<div class="panel-heading"><h2>Human Checker</h2></div>
+					<div class="panel-heading"><h2>Account Security</h2></div>
 					<div class="form-group">
-						<label for="HumanChecker" class="control-label col-sm-2">Enter Text:&nbsp;</label>
+						<label for="HumanChecker" class="control-label col-sm-2">In order to prevent abuse from automatic systems, please type the letters or numbers in the box below:&nbsp;</label>
 						<div class="col-sm-9">
 							<cfimage action="captcha" difficulty="medium" text="#captcha#" fonts="arial,times roman, tahoma" height="150" width="500" /><br>
 							<cfinput name="ValidateCaptcha" type="text" required="yes" message="Input Captcha Text" />

@@ -16,7 +16,7 @@
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Registering for Event: #Session.getSelectedEvent.ShortTitle#</h1></div>
+			<div class="panel-heading"><h2>Registering for Event: #Session.getSelectedEvent.ShortTitle#</h2></div>
 			<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
@@ -117,15 +117,15 @@
 							<label for="RegistrationEmail" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
 							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.UserEventEarlyBirdPrice)# <cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)> Per Event Date</cfif></p></div>
 							</div>
-						<cfelseif Session.UserRegistrationInfo.SpecialPricingAvailable EQ "True">
+						<cfelseif Session.UserRegistrationInfo.GroupPricingAvailable EQ "True">
 							<div class="form-group">
 								<p class="alert alert-info">This Pricing will be updated by the Facilitator once the Special Pricing Requirements have been met. If Special Requirements have not been met, then Event Pricing will be #DollarFormat(Session.UserRegistrationInfo.UserEventPrice)# to attend  <cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)> each date of this event<cfelse> this event</cfif></p></div></p>
 								<label for="RegistrationEmail" class="control-label col-sm-3">Special Requirements:&nbsp;</label>
-								<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.SpecialPriceRequirements#</p></div>
+								<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.GroupPriceRequirements#</p></div>
 							</div>
 							<div class="form-group">
 							<label for="RegistrationEmail" class="control-label col-sm-3">Special Pricing:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.SpecialEventPrice)#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.GroupEventPrice)#</p></div>
 							</div>
 						<cfelse>
 							<div class="form-group">
@@ -149,26 +149,116 @@
 		</div>
 	<cfelseif isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Registering for Event: #Session.getSelectedEvent.ShortTitle#</h1></div>
+			<div class="panel-heading"><h2>Registering for Event: #Session.getSelectedEvent.ShortTitle#</h2></div>
 			<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<cfinput type="hidden" name="EventID" value="#Session.FormInput.EventID#">
 				<cfif isDefined("Session.FormErrors")>
-					<div class="panel-body">
-						<cfif ArrayLen(Session.FormErrors) GTE 1>
-							<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
-						</cfif>
+					<cfif ArrayLen(Session.FormErrors)>
+					<div id="modelWindowDialog" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+									<h3>Account Registration Error</h3>
+								</div>
+								<div class="modal-body">
+									<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+								</div>
+							</div>
+						</div>
 					</div>
+					<script type='text/javascript'>
+						(function() {
+							'use strict';
+							function remoteModal(idModal){
+								var vm = this;
+								vm.modal = $(idModal);
+
+								if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+
+								if( window.location.hash == idModal ){ openModal(); }
+
+								var services = { open: openModal, close: closeModal };
+								return services;
+								///////////////
+
+								// method to open modal
+								function openModal(){
+									vm.modal.modal('show');
+								}
+
+								// method to close modal
+								function closeModal(){
+									vm.modal.modal('hide');
+								}
+							}
+							Window.prototype.remoteModal = remoteModal;
+						})();
+
+						$(function(){
+							window.remoteModal('##modelWindowDialog');
+						});
+					</script>
+					</cfif>
 				</cfif>
 				<cfif isDefined("URL.UserAction")>
-					<div class="panel-body">
-						<cfswitch expression="#URL.UserAction#">
-							<cfcase value="UserAlreadyRegistered">
-								<div class="alert alert-danger"><p>You are currently registered for this event. If you would like to register additional individuals, simply select the option to Register Additional Indivduals. If you would like to cancel your registration you can do that from the User Menu and select Manage Registrations.</p></div>
-							</cfcase>
-						</cfswitch>
-					</div>
+					<cfswitch expression="#URL.UserAction#">
+						<cfcase value="UserAlreadyRegistered">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Account Already Registered for Event</h3>
+										</div>
+										<div class="modal-body">
+											<div class="alert alert-danger">You are already registered for this event. If you would like to register additional individuals, simply select the option to Register Additional Indivduals. If you would like to cancel your registration you can do that from the User Menu and select Manage Registrations.</div>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+
+										if( window.location.hash == idModal ){ openModal(); }
+
+										var services = { open: openModal, close: closeModal };
+										return services;
+										///////////////
+
+										// method to open modal
+										function openModal(){
+											vm.modal.modal('show');
+										}
+
+										// method to close modal
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						</cfcase>
+					</cfswitch>
 				</cfif>
 				<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
 					<div class="panel-body">
@@ -315,15 +405,15 @@
 							<label for="RegistrationEmail" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
 							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.UserEventEarlyBirdPrice)# <cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)> Per Event Date</cfif></p></div>
 							</div>
-						<cfelseif Session.UserRegistrationInfo.SpecialPricingAvailable EQ "True">
+						<cfelseif Session.UserRegistrationInfo.GroupPricingAvailable EQ "True">
 							<div class="form-group">
 								<p class="alert alert-info">This Pricing will be updated by the Facilitator once the Special Pricing Requirements have been met. If Special Requirements have not been met, then Event Pricing will be #DollarFormat(Session.UserRegistrationInfo.UserEventPrice)# to attend  <cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)> each date of this event<cfelse> this event</cfif></p></div></p>
 								<label for="RegistrationEmail" class="control-label col-sm-3">Special Requirements:&nbsp;</label>
-								<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.SpecialPriceRequirements#</p></div>
+								<div class="col-sm-8"><p class="form-control-static">#Session.getSelectedEvent.GroupPriceRequirements#</p></div>
 							</div>
 							<div class="form-group">
 							<label for="RegistrationEmail" class="control-label col-sm-3">Special Pricing:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.SpecialEventPrice)#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#DollarFormat(Session.UserRegistrationInfo.GroupEventPrice)#</p></div>
 							</div>
 						<cfelse>
 							<div class="form-group">

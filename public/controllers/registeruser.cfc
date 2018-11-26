@@ -81,9 +81,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</cfif>
 
 			<cfquery name="GetOrganizationName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select OrganizationName
+				Select StateDOE_IDNumber, OrganizationName
 				From p_EventRegistration_Membership
-				Where StateDOE_IDNumber = #FORM.Company#
+				Where OrganizationDomainName = <cfqueryparam value="#Right(FORM.UserName, Len(FORM.UserName) - Find("@", FORM.UserName))#" cfsqltype="cf_sql_varchar">
 			</cfquery>
 
 			<!--- Initiates the User Bean --->
@@ -92,7 +92,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfset NewUser.setSiteID(rc.$.siteConfig('siteID'))>
 			<cfset NewUser.setFname(FORM.fName)>
 			<cfset NewUser.setLname(FORM.lName)>
-			<cfset NewUser.setCompany(GetOrganizationName.OrganizationName)>
+			<cfif GetOrganizationName.RecordCount><cfset NewUser.setCompany(GetOrganizationName.OrganizationName)></cfif>
 			<cfset NewUser.setUsername(FORM.UserName)>
 			<cfset NewUser.setMobilePhone(FORM.mobilePhone)>
 			<cfset NewUser.setPassword(FORM.Password)>
@@ -112,9 +112,15 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<cfif LEN(AddNewAccount.getErrors()) EQ 0>
 				<cfset NewUserID = #AddNewAccount.getUserID()#>
 
-				<cfquery name="insertUserMatrixInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Insert into p_EventRegistration_UserMatrix(User_ID,Site_ID,School_District,LastUpdateBy,LastUpdated) Values('#Variables.NewUserID#','#rc.$.siteConfig("siteID")#',#FORM.Company#,'System',#Now()#)
-				</cfquery>
+				<cfif GetOrganizationName.RecordCount>
+					<cfquery name="insertUserMatrixInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Insert into p_EventRegistration_UserMatrix(User_ID,Site_ID,School_District,LastUpdateBy,LastUpdated) Values('#Variables.NewUserID#','#rc.$.siteConfig("siteID")#',#GetOrganizationName.StateDOE_IDNumber#,'System',#Now()#)
+					</cfquery>
+				<cfelse>
+					<cfquery name="insertUserMatrixInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Insert into p_EventRegistration_UserMatrix(User_ID,Site_ID,LastUpdateBy,LastUpdated) Values('#Variables.NewUserID#','#rc.$.siteConfig("siteID")#','System',#Now()#)
+					</cfquery>
+				</cfif>
 
 				<cfset SendActivationEmail = #SendEmailCFC.SendAccountActivationEmail(rc, Variables.NewUserID)#>
 				<cflocation url="#CGI.Script_name##CGI.path_info#/?UserAction=UserRegistration&Successfull=true" addtoken="false">

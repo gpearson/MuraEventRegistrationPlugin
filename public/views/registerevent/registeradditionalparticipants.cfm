@@ -16,7 +16,7 @@
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Registering Additional Participants for Event: #Session.getSelectedEvent.ShortTitle#</h1></div>
+			<div class="panel-heading"><h2>Registering Additional Participants for Event: #Session.getSelectedEvent.ShortTitle#</h2></div>
 			<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
