@@ -122,19 +122,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<div class="col-sm-8"><cfinput type="text" class="form-control" id="EarlyBird_NonMemberCost" name="EarlyBird_NonMemberCost" required="yes"></div>
 						</div>
 					</cfif>
-					<cfif Session.UserSuppliedInfo.FirstStep.ViewSpecialPricing EQ 1 and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
-						<div class="panel-heading"><h1>Event Special Pricing Information</h1></div>
+					<cfif Session.UserSuppliedInfo.FirstStep.ViewGroupPricing EQ 1 and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
+						<div class="panel-heading"><h1>Event Group Pricing Information</h1></div>
 						<div class="form-group">
-							<label for="SpecialPriceRequirements" class="control-label col-sm-3">Requirements to Meet Special Pricing:&nbsp;</label>
-							<div class="col-sm-8"><textarea name="SpecialPriceRequirements" id="SpecialPriceRequirements" class="form-control"></textarea></div>
+							<label for="GroupPriceRequirements" class="control-label col-sm-3">Requirements to Meet Group Pricing:&nbsp;</label>
+							<div class="col-sm-8"><textarea name="GroupPriceRequirements" id="GroupPriceRequirements" class="form-control"></textarea></div>
 						</div>
 						<div class="form-group">
-							<label for="SpecialMemberCost" class="control-label col-sm-3">Special Member Pricing:&nbsp;</label>
-							<div class="col-sm-8"><cfinput type="text" class="form-control" id="SpecialMemberCost" name="SpecialMemberCost" required="yes"></div>
+							<label for="GroupMemberCost" class="control-label col-sm-3">Group Member Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupMemberCost" name="GroupMemberCost" required="yes"></div>
 						</div>
 						<div class="form-group">
-							<label for="SpecialNonMemberCost" class="control-label col-sm-3">Special NonMember Pricing:&nbsp;</label>
-							<div class="col-sm-8"><cfinput type="text" class="form-control" id="SpecialNonMemberCost" name="SpecialNonMemberCost" required="yes"></div>
+							<label for="GroupNonMemberCost" class="control-label col-sm-3">Group NonMember Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupNonMemberCost" name="GroupNonMemberCost" required="yes"></div>
 						</div>
 					</cfif>
 					<cfif Session.UserSuppliedInfo.FirstStep.PGPAvailable EQ 1>
