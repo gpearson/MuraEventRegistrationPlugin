@@ -106,6 +106,14 @@
 								</li>
 							</ul>
 						</li>
+						<li class="<cfif rc.action contains 'eventcoord:reports'>active</cfif>">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('eventcoord:reports.default')#">Report Menu <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li class="<cfif rc.action eq 'eventcoord:reports.default'>active</cfif>">
+									<a href="#buildURL('eventcoord:reports.yearendreport')#">Year End Report</a>
+								</li>
+							</ul>
+						</li>
 					</ul>
 					<!---
 					<ul class="nav navbar-nav navbar-right">

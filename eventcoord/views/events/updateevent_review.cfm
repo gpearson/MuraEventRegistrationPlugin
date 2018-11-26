@@ -10,55 +10,55 @@
 					<h2 class="panel-title">Event Date(s) Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_eventdates&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#</p></div>
 					</div>
 					<cfif isDate(Session.getSelectedEvent.EventDate1)>
 						<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Second Event Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate1, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate1, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif isDate(Session.getSelectedEvent.EventDate2)>
 						<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Third Event Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate2, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate2, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif isDate(Session.getSelectedEvent.EventDate3)>
 						<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Fourth Event Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate3, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate3, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif isDate(Session.getSelectedEvent.EventDate4)>
 						<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Fifth Event Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate4, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate4, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif isDate(Session.getSelectedEvent.EventDate5)>
 						<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Sixth Event Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate5, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate5, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<hr>
 					<h2 class="panel-title">Registration Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_eventtimes&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>
 					<div class="form-group">
 						<label for="RegistrationDeadline" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "mm/dd/yyyy")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="Registration_BeginTime" class="control-label col-sm-3">Registration Start Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#timeFormat(Session.getSelectedEvent.Registration_BeginTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#timeFormat(Session.getSelectedEvent.Registration_BeginTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="Event_StartTime" class="control-label col-sm-3">Event Begin Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#timeFormat(Session.getSelectedEvent.Event_StartTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#timeFormat(Session.getSelectedEvent.Event_StartTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="Event_EndTime" class="control-label col-sm-3">Event Ending Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "hh:mm tt")#</p></div>
 					</div>
 					<hr>
 					<h2 class="panel-title">Event Description Information <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:events.updateevent_descriptions&EventID=#URL.EventID#"><span class="glyphicon glyphicon-pencil pull-right" aria-hidden="true"></span></a></h2>

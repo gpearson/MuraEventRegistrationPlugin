@@ -26,36 +26,36 @@
 					<div class="alert alert-info"><p>Complete this form to register users for the selected event</p></div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#</p></div>
 					</div>
 					<cfif Len(Session.getSelectedEvent.EventDate1)>
 						<div class="form-group">
 							<label for="EventDate" class="control-label col-sm-3">Second Event Date:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate1, "full")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate1, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif Len(Session.getSelectedEvent.EventDate2)>
 						<div class="form-group">
 							<label for="EventDate" class="control-label col-sm-3">Third Event Date:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate2, "full")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate2, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif Len(Session.getSelectedEvent.EventDate3)>
 						<div class="form-group">
 							<label for="EventDate" class="control-label col-sm-3">Fourth Event Date:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate3, "full")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate3, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif Len(Session.getSelectedEvent.EventDate4)>
 						<div class="form-group">
 							<label for="EventDate" class="control-label col-sm-3">Fifth Event Date:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate4, "full")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate4, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif Len(Session.getSelectedEvent.EventDate5)>
 						<div class="form-group">
 							<label for="EventDate" class="control-label col-sm-3">Sixth Event Date:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate5, "full")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate5, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<div class="form-group">
@@ -64,19 +64,19 @@
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "mm/dd/yyyy")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Registration Begin Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_StartTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_StartTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event End Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event Agenda:&nbsp;</label>
@@ -139,36 +139,36 @@
 					<div class="alert alert-info"><p>Complete this form to register users for the selected event</p></div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#</p></div>
 					</div>
 					<cfif Len(Session.getSelectedEvent.EventDate1)>
 						<div class="form-group">
 							<label for="EventDate" class="control-label col-sm-3">Second Event Date:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate1, "full")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate1, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif Len(Session.getSelectedEvent.EventDate2)>
 						<div class="form-group">
 							<label for="EventDate" class="control-label col-sm-3">Third Event Date:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate2, "full")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate2, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif Len(Session.getSelectedEvent.EventDate3)>
 						<div class="form-group">
 							<label for="EventDate" class="control-label col-sm-3">Fourth Event Date:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate3, "full")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate3, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif Len(Session.getSelectedEvent.EventDate4)>
 						<div class="form-group">
 							<label for="EventDate" class="control-label col-sm-3">Fifth Event Date:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate4, "full")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate4, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<cfif Len(Session.getSelectedEvent.EventDate5)>
 						<div class="form-group">
 							<label for="EventDate" class="control-label col-sm-3">Sixth Event Date:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate5, "full")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate5, "mm/dd/yyyy")#</p></div>
 						</div>
 					</cfif>
 					<div class="form-group">
@@ -177,19 +177,19 @@
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "mm/dd/yyyy")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Registration Begin Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_StartTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_StartTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event End Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event Agenda:&nbsp;</label>
@@ -256,20 +256,20 @@
 							<div class="panel-body">
 								<div class="alert alert-warning">
 									<cfif LEN(Session.getSelectedEvent.EventDate1)>
-										<p>Day 1: #DateFormat(Session.getSelectedEvent.EventDate, "full")#</p>
-										<p>Day 2: #DateFormat(Session.getSelectedEvent.EventDate1, "full")#</p>
+										<p>Day 1: #DateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#</p>
+										<p>Day 2: #DateFormat(Session.getSelectedEvent.EventDate1, "mm/dd/yyyy")#</p>
 									</cfif>
 									<cfif LEN(Session.getSelectedEvent.EventDate2)>
-										<p>Day 3: #DateFormat(Session.getSelectedEvent.EventDate2, "full")#</p>
+										<p>Day 3: #DateFormat(Session.getSelectedEvent.EventDate2, "mm/dd/yyyy")#</p>
 									</cfif>
 									<cfif LEN(Session.getSelectedEvent.EventDate3)>
-										<p>Day 4: #DateFormat(Session.getSelectedEvent.EventDate3, "full")#</p>
+										<p>Day 4: #DateFormat(Session.getSelectedEvent.EventDate3, "mm/dd/yyyy")#</p>
 									</cfif>
 									<cfif LEN(Session.getSelectedEvent.EventDate4)>
-										<p>Day 5: #DateFormat(Session.getSelectedEvent.EventDate4, "full")#</p>
+										<p>Day 5: #DateFormat(Session.getSelectedEvent.EventDate4, "mm/dd/yyyy")#</p>
 									</cfif>
 									<cfif LEN(Session.getSelectedEvent.EventDate5)>
-										<p>Day 6: #DateFormat(Session.getSelectedEvent.EventDate5, "full")#</p>
+										<p>Day 6: #DateFormat(Session.getSelectedEvent.EventDate5, "mm/dd/yyyy")#</p>
 									</cfif>
 								</div>
 							</div>

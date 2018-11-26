@@ -73,7 +73,7 @@
 							<th width="50%">Event Title</th>
 							<th width="10%">Event Date</th>
 							<th width="20%"></th>
-							<th width="20%">Icons</th>
+							<th width="20%">Event Attributes</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -87,7 +87,45 @@
 							<cfset EventSeatsLeft = #Session.getNonFeaturedEvents.MaxParticipants# - #getCurrentRegistrationsbyEvent.CurrentNumberofRegistrations#>
 							<tr>
 								<td>#Session.getNonFeaturedEvents.ShortTitle#</td>
-								<td>#DateFormat(Session.getNonFeaturedEvents.EventDate, "mmm dd, yy")#</td>
+								<td>
+									<cfif LEN(Session.getNonFeaturedEvents.EventDate) and LEN(Session.getNonFeaturedEvents.EventDate1) or LEN(Session.getNonFeaturedEvents.EventDate2) or LEN(Session.getNonFeaturedEvents.EventDate3) or LEN(Session.getNonFeaturedEvents.EventDate4)>
+										<cfif DateDiff("d", Now(), Session.getNonFeaturedEvents.EventDate) LT 0>
+											<div class="text-danger">#DateFormat(Session.getNonFeaturedEvents.EventDate, "mm/dd/yyyy")#</div>
+										<cfelse>
+											<div class="text-success">#DateFormat(Session.getNonFeaturedEvents.EventDate, "mm/dd/yyyy")#</div>
+										</cfif>
+										<cfif LEN(Session.getNonFeaturedEvents.EventDate1)>
+											<cfif DateDiff("d", Now(), Session.getNonFeaturedEvents.EventDate1) LT 0>
+												<div class="text-danger">#DateFormat(Session.getNonFeaturedEvents.EventDate1, "mm/dd/yyyy")#</div>
+											<cfelse>
+												<div class="text-success">#DateFormat(Session.getNonFeaturedEvents.EventDate1, "mm/dd/yyyy")#</div>
+											</cfif>
+										</cfif>
+										<cfif LEN(Session.getNonFeaturedEvents.EventDate2)>
+											<cfif DateDiff("d", Now(), Session.getNonFeaturedEvents.EventDate2) LT 0>
+												<div class="text-danger">#DateFormat(Session.getNonFeaturedEvents.EventDate2, "mm/dd/yyyy")#</div>
+											<cfelse>
+												<div class="text-success">#DateFormat(Session.getNonFeaturedEvents.EventDate2, "mm/dd/yyyy")#</div>
+											</cfif>
+										</cfif>
+										<cfif LEN(Session.getNonFeaturedEvents.EventDate3)>
+											<cfif DateDiff("d", Now(), Session.getNonFeaturedEvents.EventDate3) LT 0>
+												<div class="text-danger">#DateFormat(Session.getNonFeaturedEvents.EventDate3, "mm/dd/yyyy")#</div>
+											<cfelse>
+												<div class="text-success">#DateFormat(Session.getNonFeaturedEvents.EventDate3, "mm/dd/yyyy")#</div>
+											</cfif>
+										</cfif>
+										<cfif LEN(Session.getNonFeaturedEvents.EventDate4)>
+											<cfif DateDiff("d", Now(), Session.getNonFeaturedEvents.EventDate4) LT 0>
+												<div class="text-danger">#DateFormat(Session.getNonFeaturedEvents.EventDate4, "mm/dd/yyyy")#</div>
+											<cfelse>
+												<div class="text-success">#DateFormat(Session.getNonFeaturedEvents.EventDate4, "mm/dd/yyyy")#</div>
+											</cfif>
+										</cfif>
+									<cfelse>
+										<div class="text-success">#DateFormat(Session.getNonFeaturedEvents.EventDate, "mm/dd/yyyy")#</div>
+									</cfif>
+								</td>
 								<td>
 									<cfif Session.getNonFeaturedEvents.AcceptRegistrations EQ 1>
 										<cfif Variables.EventSeatsLeft GTE 1 and DateDiff("d", Now(), Session.getNonFeaturedEvents.Registration_Deadline) GTE 0>

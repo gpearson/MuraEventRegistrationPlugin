@@ -146,7 +146,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							
 							<tr>
 							<td>#getEvents.ShortTitle#</td>
-							<td>#DateFormat(getEvents.EventDate, "mm-dd-yyyy")#</td>
+							<td>#DateFormat(getEvents.EventDate, "mm/dd/yyyy")#</td>
 							<td>#NumberFormat(getRegistrations.AttendeeRegistered, "99,999")#</td>
 							<td>#NumberFormat(getAttendeeAtEvent.AttendeeOnSite, "99,999")#</td>
 							<td><a href="#buildURL('admin:signin.addattendee')#&EventID=#getEvents.TContent_ID#" class="btn btn-success btn-sm">Sign In</a>

@@ -4285,7 +4285,7 @@
 					<cfquery name="GetUpComingEvents" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 						Select TContent_ID, ShortTitle, EventDate, LongDescription
 						From p_EventRegistration_Events
-						Where DateDiff("d", Now(), Registration_Deadline) >= 1
+						Where DateDiff(Registration_Deadline, Now()) >= 1
 						Order by EventDate ASC
 					</cfquery>
 				</cfcase>
@@ -4298,6 +4298,15 @@
 					</cfquery>
 				</cfcase>
 			</cfswitch>
+
+			<cfset MoreInfoImage = ArrayNew(1)>
+			<cfset MoreInfoURL = ArrayNew(1)>
+			<cfloop from="1" to="#GetUpComingEvents.RecordCount#" step="1" index="i">
+				<cfset MoreInfoImage[i] = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/images/MoreInfoButton_SM.png")#>
+				<cfset MoreInfoURL[i] = "http://" & #CGI.Server_Name# & #CGI.Script_name# & #CGI.path_info# & "?" & #HTMLEditFormat(rc.pc.getPackage())# & "action=public:main.eventinfo&EventID=" & #GetUpComingEvents.TContent_ID#>
+			</cfloop>
+			<cfset temp = QueryAddColumn(GetUpComingEvents, "MoreInfoImage", "VarChar", Variables.MoreInfoImage)>
+			<cfset temp = QueryAddColumn(GetUpComingEvents, "LinkURL", "VarChar", Variables.MoreInfoURL)>
 
 			<cfset Session.EmailMarketing = #StructNew()#>
 			<cfset Session.EmailMarketing.MasterTemplate = #ExpandPath("/plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/reports/EventUpcomingList.jrxml")#>

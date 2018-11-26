@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-09-06T11:40:09 -->
+<!-- 2016-09-08T10:58:02 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="getRegisteredParticipants" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="10601a87-fe87-435b-bb5c-dcfb6a66fa53">
 	<style name="Title" fontName="Serif" fontSize="50" isBold="true"/>
 	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
@@ -28,30 +28,33 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="137" splitType="Stretch">
+		<band splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="137" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<image evaluationTime="Report">
+				<reportElement x="5" y="3" width="167" height="130" uuid="87255935-393b-4ff7-a783-d540b1d405f7"/>
+				<imageExpression><![CDATA[$F{NIESCLogoPath}]]></imageExpression>
+			</image>
 			<staticText>
-				<reportElement style="Title" x="120" y="40" width="435" height="30" uuid="2e920793-6a25-4289-97e3-7b92a44314c6"/>
+				<reportElement style="Title" x="122" y="43" width="435" height="30" uuid="2e920793-6a25-4289-97e3-7b92a44314c6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Serif" size="20" pdfFontName="Times-Roman"/>
 				</textElement>
 				<text><![CDATA[Northern Indiana Educational Services Center]]></text>
 			</staticText>
-			<image evaluationTime="Report">
-				<reportElement x="3" y="0" width="167" height="130" uuid="87255935-393b-4ff7-a783-d540b1d405f7"/>
-				<imageExpression><![CDATA[$F{NIESCLogoPath}]]></imageExpression>
-			</image>
 			<staticText>
-				<reportElement x="118" y="70" width="434" height="26" uuid="dc1f72dd-d1e6-4947-8e3f-93f605a52659"/>
+				<reportElement x="120" y="73" width="434" height="26" uuid="dc1f72dd-d1e6-4947-8e3f-93f605a52659"/>
 				<textElement textAlignment="Center">
 					<font fontName="Serif" size="20"/>
 				</textElement>
 				<text><![CDATA[Upcoming Events]]></text>
 			</staticText>
 		</band>
-	</title>
-	<pageHeader>
-		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
 		<band height="8" splitType="Stretch"/>

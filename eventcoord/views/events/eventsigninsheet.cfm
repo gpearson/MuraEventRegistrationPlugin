@@ -31,18 +31,25 @@ Line 42: Change to the Plugin Name for the cfimport line
 					<cfset getParticipants = #StructCopy(Session.getRegisteredParticipants)#>
 					<cfset StructClear(getParticipants)>
 					<cfloop query="Session.getRegisteredParticipants">
-						<cfif Session.getRegisteredParticipants.RegisterForEventDate1 EQ 1>
-							<cfset temp = QueryAddRow(getParticipants)>
-							<cfset temp = QuerySetCell(getParticipants, "Fname", Session.getRegisteredparticipants.Fname)>
-							<cfset temp = QuerySetCell(getParticipants, "Lname", Session.getRegisteredparticipants.Lname)>
-							<cfset temp = QuerySetCell(getParticipants, "Email", Session.getRegisteredparticipants.Email)>
+						<cfset temp = QueryAddRow(getParticipants)>
+						<cfset temp = QuerySetCell(getParticipants, "Fname", Session.getRegisteredparticipants.Fname)>
+						<cfset temp = QuerySetCell(getParticipants, "Lname", Session.getRegisteredparticipants.Lname)>
+						<cfset temp = QuerySetCell(getParticipants, "Email", Session.getRegisteredparticipants.Email)>
 							<cfset temp = QuerySetCell(getParticipants, "Domain", Session.getRegisteredparticipants.Domain)>
-							<cfset temp = QuerySetCell(getParticipants, "ShortTitle", Session.getRegisteredparticipants.ShortTitle)>
-							<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", Session.getRegisteredparticipants.EventDateFormat)>
-							<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
-							<cfif Session.getRegisteredParticipants.IVCParticipant EQ 1><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "No")></cfif>
-						</cfif>
+						<cfset temp = QuerySetCell(getParticipants, "ShortTitle", Session.getRegisteredparticipants.ShortTitle)>
+						<cfset temp = QuerySetCell(getParticipants, "EventDateFormat", Session.getRegisteredparticipants.EventDateFormat)>
+						<cfif Session.getRegisteredParticipants.RequestsMeal EQ 1><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "RequestsMeal", "No")></cfif>
+						<cfif Session.getRegisteredParticipants.IVCParticipant EQ 1><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "Yes")><cfelse><cfset temp = QuerySetCell(getParticipants, "IVCParticipant", "No")></cfif>
+						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate1", Session.getRegisteredparticipants.RegisterForEventDate1)>
+						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate2", Session.getRegisteredparticipants.RegisterForEventDate2)>
+						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate3", Session.getRegisteredparticipants.RegisterForEventDate3)>
+						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate4", Session.getRegisteredparticipants.RegisterForEventDate4)>
+						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate5", Session.getRegisteredparticipants.RegisterForEventDate5)>
+						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventDate6", Session.getRegisteredparticipants.RegisterForEventDate6)>
+						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventSessionAM", Session.getRegisteredparticipants.RegisterForEventSessionAM)>
+						<cfset temp = QuerySetCell(getParticipants, "RegisterForEventSessionPM", Session.getRegisteredparticipants.RegisterForEventSessionPM)>
 					</cfloop>
+
 					<cfimport taglib="/plugins/EventRegistration/library/cfjasperreports/tag/cfjasperreport" prefix="jr">
 					<cfset LogoPath = ArrayNew(1)>
 					<cfloop from="1" to="#getParticipants.RecordCount#" step="1" index="i">
@@ -159,8 +166,11 @@ Line 42: Change to the Plugin Name for the cfimport line
 				<a href="#buildurl('eventcoord:events.default')#" class="btn btn-primary pull-left">Back to Main Screen</a>
 				<a href="#buildurl('eventcoord:events.eventsigninsheet&EventID=#URL.EventID#')#" class="btn btn-primary pull-right">View Another Day's SignIn Sheet</a><br /><br />
 			</div>
+		<cfelse>
+			<div class="panel-footer">
+				<a href="#buildurl('eventcoord:events.default')#" class="btn btn-primary pull-left">Back to Main Screen</a><br /><br />
+			</div>
 		</cfif>
-
 	</div>
 </cfoutput>
 <!---

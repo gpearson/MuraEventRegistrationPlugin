@@ -278,7 +278,7 @@
 		ALTER TABLE eRegistrations RENAME p_EventRegistration_UserRegistrations
 	</cfquery>
 	<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
-		ALTER TABLE p_EventRegistration_UserRegistrations CHANGE COLUMN AttendedEvent AttendedEventDate1 Bit(1) NOT NULL DEFAULT B'0'
+		ALTER TABLE p_EventRegistration_UserRegistrations CHANGE AttendedEvent 'AttendedEventDate1' Bit(1) NOT NULL DEFAULT B'0'
 	</cfquery>
 	<cfquery name="AlterTableeRegistrationsAddField" datasource="#application.configBean.getDatasource()#" username="#application.configBean.getDBUsername()#" password="#application.configBean.getDBPassword()#">
 		ALTER TABLE p_EventRegistration_UserRegistrations Add COLUMN AttendedEventDate2 Bit(1) NOT NULL DEFAULT B'0' AFTER AttendedEventDate1
