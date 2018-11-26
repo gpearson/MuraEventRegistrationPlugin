@@ -1,118 +1,239 @@
-<cfimport taglib="/plugins/EventRegistration/library/uniForm/tags/" prefix="uForm">
-<cfif not isDefined("Session.FormData")>
-	<cflock scope="Session" timeout="60" type="Exclusive">
-		<cfset Session.FormData = #StructNew()#>
-	</cflock>
+<cfif not isDefined("URL.formRetry")>
+	<cfoutput>
+		<div class="panel panel-default">
+			<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="UserID" value="#Session.Mura.UserID#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<div class="panel-body">
+					<fieldset>
+						<legend>Update Account Profile</legend>
+					</fieldset>
+					<div class="alert alert-info">If your username/email or organization need to be updated, please contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')# for assistance.</div>
+					<div class="form-group">
+						<label for="Username" class="control-label col-sm-3">Username:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.getUserProfile.Username#</p></div>
+					</div>
+					<div class="form-group">
+						<label for="FName" class="control-label col-sm-3">First Name:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.getUserProfile.Fname#" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="LName" class="control-label col-sm-3">Last Name:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.getUserProfile.LName#" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="Email" class="control-label col-sm-3">Email:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getUserProfile.Email#" disabled="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="Password" class="control-label col-sm-3">Desired Password:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="password" class="form-control" id="Password" name="Password" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="VerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="mobilePhone" class="control-label col-sm-3">Mobile Phone:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.getUserProfile.mobilePhone#" validate="telephone" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="Company" class="control-label col-sm-3">Organization:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="Company" name="Company" value="#Session.getUserProfile.Company#" disabled="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="jobTitle" class="control-label col-sm-3">Job Title:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="jobTitle" name="jobTitle" value="#Session.getUserProfile.jobTitle#" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="website" class="control-label col-sm-3">Website:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="website" name="website" value="#Session.getUserProfile.website#" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="GradeLevel" class="control-label col-sm-3">Teaching Grade Level:&nbsp;</label>
+						<div class="col-sm-6"><cfselect name="GradeLevel" class="form-control" Required="No" selected="#Session.getUserProfile.TeachingGrade#" Multiple="No" query="Session.getGradeLevels" value="TContent_ID" Display="GradeLevel"  queryposition="below"><option value="----">Select Grade Level you Teach</option></cfselect></div>
+					</div>
+					<div class="form-group">
+						<label for="GradeSubjects" class="control-label col-sm-3">Teaching Subject:&nbsp;</label>
+						<div class="col-sm-6"><cfselect name="GradeSubjects" class="form-control" Required="No" selected="#Session.getUserProfile.TeachingSubject#" Multiple="No" query="Session.getGradeSubjects" value="TContent_ID" Display="GradeSubject"  queryposition="below"><option value="----">Select Subject you Teach</option></cfselect></div>
+					</div>
+					<fieldset>
+						<legend>System Account Information</legend>
+					</fieldset>
+					<div class="form-group">
+						<label for="inActive" class="control-label col-sm-3">Account InActive:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getUserProfile.InActive#"><cfcase value="1">Yes</cfcase><cfdefaultcase>No</cfdefaultcase></cfswitch></p></div>
+					</div>
+					<div class="form-group">
+						<label for="Created" class="control-label col-sm-3">Date Created:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#DateFormat(Session.getUserProfile.created, "dddd, mmm dd, yyyy")# at #TimeFormat(Session.getUserProfile.created, "hh:mm tt")#</p></div>
+					</div>
+					<div class="form-group">
+						<label for="LastLogin" class="control-label col-sm-3">Last Login:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfif LEN(Session.getUserProfile.LastLogin)>#DateFormat(Session.getUserProfile.LastLogin, "dddd, mmm dd, yyyy")# at #TimeFormat(Session.getUserProfile.LastLogin, "hh:mm tt")#<cfelse></cfif></p></div>
+					</div>
+					<div class="form-group">
+						<label for="LastUpdate" class="control-label col-sm-3">Last Update:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfif LEN(Session.getUserProfile.LastUpdate)>#DateFormat(Session.getUserProfile.LastUpdate, "dddd, mmm dd, yyyy")# at #TimeFormat(Session.getUserProfile.LastUpdate, "hh:mm tt")#<cfelse></cfif></p></div>
+					</div>
+					<div class="form-group">
+						<label for="LastUpdate" class="control-label col-sm-3">Last Update By:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.getUserProfile.LastUpdateBy#</p></div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Back to Event Listing"> |
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Event History"> |
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Upcoming Events">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Account Profile"><br /><br />
+				</div>
+			</cfform>
+		</div>
+	</cfoutput>
+<cfelseif isDefined("URL.FormRetry")>
+	<cfoutput>
+		<div class="panel panel-default">
+			<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
+				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="UserID" value="#Session.Mura.UserID#">
+				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfif isDefined("Session.FormErrors")>
+					<cfif ArrayLen(Session.FormErrors)>
+					<div id="modelWindowDialog" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+									<h3>Missing Information to Update Profile</h3>
+								</div>
+								<div class="modal-body">
+									<div class="alert alert-danger"><p>#Session.FormErrors[1].Message#</p></div>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<script type='text/javascript'>
+						(function() {
+							'use strict';
+							function remoteModal(idModal){
+								var vm = this;
+								vm.modal = $(idModal);
+
+								if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+
+								if( window.location.hash == idModal ){ openModal(); }
+
+								var services = { open: openModal, close: closeModal };
+								return services;
+								///////////////
+
+								// method to open modal
+								function openModal(){
+									vm.modal.modal('show');
+								}
+
+								// method to close modal
+								function closeModal(){
+									vm.modal.modal('hide');
+								}
+							}
+							Window.prototype.remoteModal = remoteModal;
+						})();
+
+						$(function(){
+							window.remoteModal('##modelWindowDialog');
+						});
+					</script>
+					</cfif>
+				</cfif>
+				<div class="panel-body">
+					<fieldset>
+						<legend>Update Account Profile</legend>
+					</fieldset>
+					<div class="alert alert-info">If your username/email or organization need to be updated, please contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')# for assistance.</div>
+					<div class="form-group">
+						<label for="Username" class="control-label col-sm-3">Username:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.getUserProfile.Username#</p></div>
+					</div>
+					<div class="form-group">
+						<label for="FName" class="control-label col-sm-3">First Name:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="FName" name="FName" value="#Session.FormData.Fname#" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="LName" class="control-label col-sm-3">Last Name:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="LName" name="LName" value="#Session.FormData.LName#" required="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="Email" class="control-label col-sm-3">Email:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="Email" name="Email" value="#Session.getUserProfile.Email#" disabled="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="Password" class="control-label col-sm-3">Desired Password:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="password" class="form-control" id="Password" value="#Session.FormData.Password#" name="Password" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="VerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="password" class="form-control" id="VerifyPassword" name="VerifyPassword" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="mobilePhone" class="control-label col-sm-3">Mobile Phone:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="mobilePhone" name="mobilePhone" value="#Session.FormData.mobilePhone#" validate="telephone" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="Company" class="control-label col-sm-3">Organization:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="Company" name="Company" value="#Session.getUserProfile.Company#" disabled="yes"></div>
+					</div>
+					<div class="form-group">
+						<label for="jobTitle" class="control-label col-sm-3">Job Title:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="jobTitle" name="jobTitle" value="#Session.FormData.jobTitle#" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="website" class="control-label col-sm-3">Website:&nbsp;</label>
+						<div class="col-sm-6"><cfinput type="text" class="form-control" id="website" name="website" value="#Session.FormData.website#" required="no"></div>
+					</div>
+					<div class="form-group">
+						<label for="GradeLevel" class="control-label col-sm-3">Teaching Grade Level:&nbsp;</label>
+						<div class="col-sm-6"><cfselect name="GradeLevel" class="form-control" Required="No" selected="#Session.FormData.GradeLevel#" Multiple="No" query="Session.getGradeLevels" value="TContent_ID" Display="GradeLevel"  queryposition="below"><option value="----">Select Grade Level you Teach</option></cfselect></div>
+					</div>
+					<div class="form-group">
+						<label for="GradeSubjects" class="control-label col-sm-3">Teaching Subject:&nbsp;</label>
+						<div class="col-sm-6"><cfselect name="GradeSubjects" class="form-control" Required="No" selected="#Session.FormData.GradeSubjects#" Multiple="No" query="Session.getGradeSubjects" value="TContent_ID" Display="GradeSubject"  queryposition="below"><option value="----">Select Subject you Teach</option></cfselect></div>
+					</div>
+					<fieldset>
+						<legend>System Account Information</legend>
+					</fieldset>
+					<div class="form-group">
+						<label for="inActive" class="control-label col-sm-3">Account InActive:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfswitch expression="#Session.getUserProfile.InActive#"><cfcase value="1">Yes</cfcase><cfdefaultcase>No</cfdefaultcase></cfswitch></p></div>
+					</div>
+					<div class="form-group">
+						<label for="Created" class="control-label col-sm-3">Date Created:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#DateFormat(Session.getUserProfile.created, "dddd, mmm dd, yyyy")# at #TimeFormat(Session.getUserProfile.created, "hh:mm tt")#</p></div>
+					</div>
+					<div class="form-group">
+						<label for="LastLogin" class="control-label col-sm-3">Last Login:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfif LEN(Session.getUserProfile.LastLogin)>#DateFormat(Session.getUserProfile.LastLogin, "dddd, mmm dd, yyyy")# at #TimeFormat(Session.getUserProfile.LastLogin, "hh:mm tt")#<cfelse></cfif></p></div>
+					</div>
+					<div class="form-group">
+						<label for="LastUpdate" class="control-label col-sm-3">Last Update:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static"><cfif LEN(Session.getUserProfile.LastUpdate)>#DateFormat(Session.getUserProfile.LastUpdate, "dddd, mmm dd, yyyy")# at #TimeFormat(Session.getUserProfile.LastUpdate, "hh:mm tt")#<cfelse></cfif></p></div>
+					</div>
+					<div class="form-group">
+						<label for="LastUpdate" class="control-label col-sm-3">Last Update By:&nbsp;</label>
+						<div class="col-sm-8"><p class="form-control-static">#Session.getUserProfile.LastUpdateBy#</p></div>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Back to Event Listing"> |
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Event History"> |
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="My Upcoming Events">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Account Profile"><br /><br />
+				</div>
+			</cfform>
+		</div>
+	</cfoutput>
 </cfif>
-<cfoutput>
-	<cfif not isDefined("URL.FormRetry")>
-		<cfset Session.FormErrors = #ArrayNew()#>
-		<cfquery name="getSchoolDistricts" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select OrganizationName, StateDOE_IDNumber
-			From eMembership
-			Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-			Order by OrganizationName
-		</cfquery>
-		<cfquery name="getAccountDetails" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select JobTitle, mobilePhone
-			From tusers
-			Where UserID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-		<div class="art-blockheader">
-			<h3 class="t">Update Account Profile</h3>
-		</div>
-		<p class="alert-box notice">Please complete the following information to update your account profile.</p>
-		<hr>
-		<uForm:form action="" method="Post" id="EditProfile" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
-			showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm"
-			submitValue="Update Profile" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
-			<input type="hidden" name="formSubmit" value="true">
-			<input type="hidden" name="UserID" value="#Session.Mura.UserID#">
-			<uForm:fieldset legend="Required Fields">
-				<uForm:field label="Account First Name" name="Fname" value="#Session.Mura.Fname#" isRequired="True" isDisabled="False" maxFieldLength="50" type="text" hint="The First Name of the Account Holder" />
-				<uForm:field label="Account Last Name" name="Lname" value="#Session.Mura.Lname#" isRequired="True" isDisabled="False" maxFieldLength="50" type="text" hint="The Last Name of the Account Holder" />
-				<uForm:field label="Account Email" name="Email" value="#Session.Mura.Email#" isRequired="True" isDisabled="False" maxFieldLength="50" type="text" hint="The Email Address of the Account Holder" />
-				<uForm:field label="Account Username" name="Username" value="#Session.Mura.Username#" isRequired="False" isDisabled="True" maxFieldLength="50" type="text" hint="The Username of the Account Holder" />
-			</uForm:fieldset>
-			<uForm:fieldset legend="Optional Fields">
-				<uform:field label="School District" name="Company" type="select" hint="School District employeed at?">
-					<cfif Session.Mura.Company EQ "Corporate Business">
-						<uform:option display="Corporate Business" value="0000" isSelected="true" />
-					<cfelse>
-						<uform:option display="Corporate Business" value="0000" />
-					</cfif>
-					<cfif Session.Mura.Company EQ "School District Not Listed">
-						<uform:option display="School District Not Listed" value="0001" isSelected="true"  />
-					<cfelse>
-						<uform:option display="School District Not Listed" value="0001"  />
-					</cfif>
-
-					<cfloop query="getSchoolDistricts">
-						<cfif Session.Mura.Company EQ getSchoolDistricts.OrganizationName>
-							<uform:option display="#getSchoolDistricts.OrganizationName#" value="#getSchoolDistricts.StateDOE_IDNumber#" isSelected="true" />
-						<cfelse>
-							<uform:option display="#getSchoolDistricts.OrganizationName#" value="#getSchoolDistricts.StateDOE_IDNumber#" />
-						</cfif>
-					</cfloop>
-				</uform:field>
-				<uForm:field label="Job Title" name="JobTitle" type="text" value="#getAccountDetails.JobTitle#" isRequired="False" isDisabled="False" maxFieldLength="50" hint="Your current Job Title" />
-				<uForm:field label="Phone Number" name="mobilePhone" type="text" value="#getAccountDetails.mobilePhone#" maxFieldLength="14" isRequired="False" isDisabled="False" mask="(999) 999-9999" hint="Your contact number in case of cancellation of event during extreme sitations" />
-				<uform:field name="HumanChecker" isRequired="true" label="Please enter the characters you see below" type="captcha" captchaWidth="800" captchaMinChars="5" captchaMaxChars="8" />
-			</uForm:fieldset>
-		</uForm:form>
-	<cfelseif isDefined("URL.FormRetry")>
-		<cfquery name="getSchoolDistricts" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select OrganizationName, StateDOE_IDNumber
-			From eMembership
-			Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-			Order by OrganizationName
-		</cfquery>
-		<cfquery name="getAccountDetails" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select JobTitle, mobilePhone
-			From tusers
-			Where UserID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-		<div class="art-blockheader">
-			<h3 class="t">Update Account Password</h3>
-		</div>
-		<p class="alert-box notice">Please complete the following information to update your account profile.</p>
-		<hr>
-		<uForm:form action="" method="Post" id="EditProfile" errors="#Session.FormErrors#" errorMessagePlacement="both" commonassetsPath="/plugins/EventRegistration/library/uniForm/"
-			showCancel="yes" cancelValue="<--- Return to Main Page" cancelName="cancelButton" cancelAction="/index.cfm"
-			submitValue="Update Profile" loadValidation="true" loadMaskUI="true" loadDateUI="false" loadTimeUI="false">
-			<input type="hidden" name="formSubmit" value="true">
-			<input type="hidden" name="UserID" value="#Session.Mura.UserID#">
-			<uForm:fieldset legend="Required Fields">
-				<uForm:field label="Account First Name" name="Fname" value="#Session.FormData.Fname#" isRequired="True" isDisabled="False" maxFieldLength="50" type="text" hint="The First Name of the Account Holder" />
-				<uForm:field label="Account Last Name" name="Lname" value="#Session.FormData.Lname#" isRequired="True" isDisabled="False" maxFieldLength="50" type="text" hint="The Last Name of the Account Holder" />
-				<uForm:field label="Account Email" name="Email" value="#Session.FormData.Email#" isRequired="True" isDisabled="False" maxFieldLength="50" type="text" hint="The Email Address of the Account Holder" />
-				<uForm:field label="Account Username" name="Username" value="#Session.Mura.Username#" isRequired="False" isDisabled="True" maxFieldLength="50" type="text" hint="The Username of the Account Holder" />
-			</uForm:fieldset>
-			<uForm:fieldset legend="Optional Fields">
-				<uform:field label="School District" name="Company" type="select" hint="School District employeed at?">
-					<cfif Session.FormData.Company EQ "Corporate Business">
-						<uform:option display="Corporate Business" value="0000" isSelected="true" />
-					<cfelse>
-						<uform:option display="Corporate Business" value="0000" />
-					</cfif>
-					<cfif Session.FormData.Company EQ "School District Not Listed">
-						<uform:option display="School District Not Listed" value="0001" isSelected="true"  />
-					<cfelse>
-						<uform:option display="School District Not Listed" value="0001"  />
-					</cfif>
-
-					<cfloop query="getSchoolDistricts">
-						<cfif Session.FormData.Company EQ getSchoolDistricts.OrganizationName>
-							<uform:option display="#getSchoolDistricts.OrganizationName#" value="#getSchoolDistricts.StateDOE_IDNumber#" isSelected="true" />
-						<cfelse>
-							<uform:option display="#getSchoolDistricts.OrganizationName#" value="#getSchoolDistricts.StateDOE_IDNumber#" />
-						</cfif>
-					</cfloop>
-				</uform:field>
-				<uForm:field label="Job Title" name="JobTitle" type="text" value="#Session.FormData.JobTitle#" isRequired="False" isDisabled="False" maxFieldLength="50" hint="Your current Job Title" />
-				<uForm:field label="Phone Number" name="mobilePhone" type="text" value="#Session.FormData.mobilePhone#" maxFieldLength="14" isRequired="False" isDisabled="False" mask="(999) 999-9999" hint="Your contact number in case of cancellation of event during extreme sitations" />
-				<uform:field name="HumanChecker" isRequired="true" label="Please enter the characters you see below" type="captcha" captchaWidth="800" captchaMinChars="5" captchaMaxChars="8" />
-			</uForm:fieldset>
-		</uForm:form>
-	</cfif>
-</cfoutput>

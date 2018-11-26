@@ -48,6 +48,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		switch(application.configbean.getDBType()) {
 			case "mysql":
 				include "db/update/mysql-update-3.0.4.cfm";
+				include "db/update/mysql-update-3.0.6.0.cfm";
 				break;
 		}
 	}

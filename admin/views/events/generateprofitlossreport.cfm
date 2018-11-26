@@ -47,7 +47,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							Member Cost: #DollarFormat(Session.getEvent.MemberCost)#<br>
 							NonMember Cost: #DollarFormat(Session.getEvent.NonMemberCost)#<hr>
 							<cfif Session.getEvent.EarlyBird_RegistrationAvailable IS 1>
-								EarlyBird Registration Deadline: #DateFormat(Session.getEvent.EarlyBird_RegistrationDeadline, "full")#<br>
+								EarlyBird Registration Deadline: #DateFormat(Session.getEvent.EarlyBird_RegistrationDeadline, "mm/dd/yyyy")#<br>
 								EarlyBird Member Cost: #DollarFormat(Session.getEvent.EarlyBird_MemberCost)#<br>
 								EarlyBird NonMember Cost: #DollarFormat(Session.getEvent.EarlyBird_NonMemberCost)#<hr>
 							</cfif>
@@ -88,7 +88,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<td width="30%" style="Font-Family: Arial; Font-Size: 12px;">#Session.getRegistrations.Fname# #Session.getRegistrations.Lname#</td>
 								<td width="30%" style="Font-Family: Arial; Font-Size: 12px;">#getUserMembership.OrganizationName#</td>
 								<td width="15%" style="Font-Family: Arial; Font-Size: 12px;"><cfif getUserMembership.Active IS 1>Yes<cfelse>No</cfif></td>
-								<td width="15%" style="Font-Family: Arial; Font-Size: 12px;">#DateFormat(Session.getRegistrations.RegistrationDate, "mmm dd, yyyy")#</td>
+								<td width="15%" style="Font-Family: Arial; Font-Size: 12px;">#DateFormat(Session.getRegistrations.RegistrationDate, "mm/dd/yyyy")#</td>
 								<td style="Font-Family: Arial; Font-Size: 12px;">#DollarFormat(Session.getRegistrations.AttendeePrice)#</td>
 								<td style="Font-Family: Arial; Font-Size: 12px;">
 									<cfif Session.getRegistrations.AttendeePriceVerified EQ 0>

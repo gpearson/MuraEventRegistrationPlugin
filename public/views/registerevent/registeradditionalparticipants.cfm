@@ -16,7 +16,7 @@
 <cfoutput>
 	<cfif not isDefined("URL.FormRetry")>
 		<div class="panel panel-default">
-			<div class="panel-heading"><h1>Registering Additional Participants for Event: #Session.getSelectedEvent.ShortTitle#</h1></div>
+			<div class="panel-heading"><h2>Registering Additional Participants for Event: #Session.getSelectedEvent.ShortTitle#</h2></div>
 			<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
@@ -254,7 +254,7 @@
 						</cfswitch>
 					</table>
 					<hr>
-					<div class="alert alert-info"><p>Complete the below form to add anyone in your organization who is not listed above. Please make sure the information entered is accurate as this system will communicate to individuals electronically. Be sure to click the Add button after entering First Name, Last Name and EMail Address to add them to the list above</p></div>
+					<div class="alert alert-info"><p>Complete the form below to add anyone in your organization who is not listed above. Please make sure the information entered is accurate as this system will communicate to individuals electronically. After clicking the Add Button, you will need to select their name above to register them for the event.</p></div>
 					<table id="NewParticipantRows" class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
 						<thead>
 							<tr>
@@ -529,7 +529,7 @@
 						</cfswitch>
 					</table>
 					<hr>
-					<div class="alert alert-info"><p>Complete the below form to add anyone in your organization who is not listed above. Please make sure the information entered is accurate as this system will communicate to individuals electronically. Be sure to click the Add button after entering First Name, Last Name and EMail Address to add them to the list above</p></div>
+					<div class="alert alert-info"><p>Complete the form below to add anyone in your organization who is not listed above. Please make sure the information entered is accurate as this system will communicate to individuals electronically. After clicking the Add Button, you will need to select their name above to register them for the event.</p></div>
 					<table id="NewParticipantRows" class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
 						<thead>
 							<tr>
@@ -570,6 +570,10 @@
 				CGIScriptName: "#CGI.Script_name#",
 				CGIPathInfo: "#CGI.path_info#",
 				SiteID: "#rc.$.siteConfig('siteID')#",
+				SiteName: "#rc.$.siteConfig('site')#",
+				ContactName: "#rc.$.siteConfig('ContactName')#",
+				ContactEmail: "#rc.$.siteConfig('ContactEmail')#",
+				ContactPhone: "#rc.$.siteConfig('ContactPhone')#",
 				EventID: "#Session.FormInput.EventID#"
 			};
 

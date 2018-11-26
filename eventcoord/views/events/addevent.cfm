@@ -110,10 +110,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="ViewSpecialPricing" class="control-label col-sm-3">Special Pricing Available:&nbsp;</label>
+							<label for="ViewGroupPricing" class="control-label col-sm-3">Group Pricing Available:&nbsp;</label>
 							<div class="col-sm-8">
-								<cfselect name="ViewSpecialPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
-									<option value="----">Will Event have special pricing available</option>
+								<cfselect name="ViewGroupPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below">
+									<option value="----">Will Event have Group pricing available</option>
 								</cfselect>
 							</div>
 						</div>
@@ -250,10 +250,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="ViewSpecialPricing" class="control-label col-sm-3">Special Pricing Available:&nbsp;</label>
+							<label for="ViewGroupPricing" class="control-label col-sm-3">Group Pricing Available:&nbsp;</label>
 							<div class="col-sm-8">
-								<cfselect name="ViewSpecialPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.UserSuppliedInfo.ViewSpecialPricing#" Display="OptionName"  queryposition="below">
-									<option value="----">Will Event have special pricing avialable</option>
+								<cfselect name="ViewGroupPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" selected="#Session.UserSuppliedInfo.ViewGroupPricing#" Display="OptionName"  queryposition="below">
+									<option value="----">Will Event have Group pricing avialable</option>
 								</cfselect>
 							</div>
 						</div>

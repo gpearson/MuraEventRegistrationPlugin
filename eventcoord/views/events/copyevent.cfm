@@ -24,7 +24,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<div class="panel-body">
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event Description:&nbsp;</label>
@@ -32,19 +32,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "mm/dd/yyyy")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Registration Begin Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_StartTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_StartTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event End Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event Agenda:&nbsp;</label>
@@ -93,7 +93,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<div class="panel-body">
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Primary Event Date:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.EventDate, "mm/dd/yyyy")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event Description:&nbsp;</label>
@@ -101,19 +101,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Registration Deadline:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#dateFormat(Session.getSelectedEvent.Registration_Deadline, "mm/dd/yyyy")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Registration Begin Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Registration_BeginTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event Start Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_StartTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_StartTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event End Time:&nbsp;</label>
-						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "full")#</p></div>
+						<div class="col-sm-8"><p class="form-control-static">#TimeFormat(Session.getSelectedEvent.Event_EndTime, "hh:mm tt")#</p></div>
 					</div>
 					<div class="form-group">
 						<label for="EventDate" class="control-label col-sm-3">Event Agenda:&nbsp;</label>

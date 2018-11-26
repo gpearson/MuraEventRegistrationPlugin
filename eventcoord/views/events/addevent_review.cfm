@@ -241,27 +241,27 @@
 						</div>
 					</cfif>
 					<br />
-					<h2 class="panel-title">Special Pricing Availibility for Event Information</h2>
+					<h2 class="panel-title">Group Pricing Availibility for Event Information</h2>
 					<div class="form-group">
-						<label for="ViewSpecialPricing" class="control-label col-sm-3">Special Pricing Available:&nbsp;</label>
+						<label for="ViewGroupPricing" class="control-label col-sm-3">Group Pricing Available:&nbsp;</label>
 						<div class="col-sm-8">
-							<cfselect name="ViewSpecialPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.UserSuppliedInfo.FirstStep.ViewSpecialPricing#" value="ID" Display="OptionName"  queryposition="below">
-								<option value="----">Will Event have special pricing avialable</option>
+							<cfselect name="ViewGroupPricing" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.UserSuppliedInfo.FirstStep.ViewGroupPricing#" value="ID" Display="OptionName"  queryposition="below">
+								<option value="----">Will Event have Group pricing avialable</option>
 							</cfselect>
 						</div>
 					</div>
-					<cfif Session.UserSuppliedInfo.FirstStep.ViewSpecialPricing EQ 1 and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
+					<cfif Session.UserSuppliedInfo.FirstStep.ViewGroupPricing EQ 1 and Session.UserSuppliedInfo.FirstStep.WebinarEvent EQ 0>
 						<div class="form-group">
-							<label for="SpecialPriceRequirements" class="control-label col-sm-3">Requirements to Meet Special Pricing:&nbsp;</label>
-							<div class="col-sm-8"><textarea name="SpecialPriceRequirements" id="SpecialPriceRequirements" class="form-control">#Session.UserSuppliedInfo.SecondStep.SpecialPriceRequirements#</textarea><span id="SpecialPricingRequirementsCharacters"></span> Characters</div>
+							<label for="GroupPriceRequirements" class="control-label col-sm-3">Requirements to Meet Group Pricing:&nbsp;</label>
+							<div class="col-sm-8"><textarea name="GroupPriceRequirements" id="GroupPriceRequirements" class="form-control">#Session.UserSuppliedInfo.SecondStep.GroupPriceRequirements#</textarea><span id="GroupPricingRequirementsCharacters"></span> Characters</div>
 						</div>
 						<div class="form-group">
-							<label for="SpecialMemberCost" class="control-label col-sm-3">Special Member Pricing:&nbsp;</label>
-							<div class="col-sm-8"><cfinput type="text" class="form-control" id="SpecialMemberCost" name="SpecialMemberCost" value="#Session.UserSuppliedInfo.SecondStep.SpecialMemberCost#" required="yes"></div>
+							<label for="GroupMemberCost" class="control-label col-sm-3">Group Member Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupMemberCost" name="GroupMemberCost" value="#Session.UserSuppliedInfo.SecondStep.GroupMemberCost#" required="yes"></div>
 						</div>
 						<div class="form-group">
-							<label for="SpecialNonMemberCost" class="control-label col-sm-3">Special NonMember Pricing:&nbsp;</label>
-							<div class="col-sm-8"><cfinput type="text" class="form-control" id="SpecialNonMemberCost" name="SpecialNonMemberCost" value="#Session.UserSuppliedInfo.SecondStep.SpecialNonMemberCost#" required="yes"></div>
+							<label for="GroupNonMemberCost" class="control-label col-sm-3">Group NonMember Pricing:&nbsp;</label>
+							<div class="col-sm-8"><cfinput type="text" class="form-control" id="GroupNonMemberCost" name="GroupNonMemberCost" value="#Session.UserSuppliedInfo.SecondStep.GroupNonMemberCost#" required="yes"></div>
 						</div>
 					</cfif>
 					<br />
@@ -395,12 +395,12 @@
 				$('##LongDescriptionCharacters').text(cs);
 			}
 
-			$('##SpecialPriceRequirements').keyup(SpecialPriceRequirementsupdateCounter);
-			$('##SpecialPriceRequirements').keydown(SpecialPriceRequirementsupdateCounter);
+			$('##GroupPriceRequirements').keyup(GroupPriceRequirementsupdateCounter);
+			$('##GroupPriceRequirements').keydown(GroupPriceRequirementsupdateCounter);
 
-			function SpecialPriceRequirementsupdateCounter() {
+			function GroupPriceRequirementsupdateCounter() {
 				var cs = $(this).val().length;
-				$('##SpecialPriceRequirementsCharacters').text(cs);
+				$('##GroupPriceRequirementsCharacters').text(cs);
 			}
 
 			$('##VideoConferenceInfo').keyup(VideoConferenceInfoupdateCounter);

@@ -12,11 +12,12 @@
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('public:main')#">Home <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<cfif Session.Mura.IsLoggedIn EQ True>
+									<li class="<cfif rc.action eq 'public:main.login'>active</cfif>"><a href="#buildURL('public:main.default')#"><i class="icon-home"></i> Event Listing</a></li>
 									<li class="<cfif rc.action eq 'public:main.login'>active</cfif>">
 										<a href="#CGI.Script_name##CGI.path_info#?doaction=logout"><i class="icon-home"></i> Account Logout</a>
 									</li>
 									<li class="<cfif rc.action eq 'public:main.login'>active</cfif>">
-										<a href="#CGI.Script_name##CGI.path_info#?display=login"><i class="icon-home"></i> Manage Profile</a>
+										<a href="#buildURL('public:usermenu.editprofile')#"><i class="icon-home"></i> Manage Profile</a>
 									</li>
 								<cfelse>
 									<li class="<cfif rc.action eq 'public:main.login'>active</cfif>">
@@ -26,7 +27,7 @@
 										<a href="#buildURL('public:registeruser.default')#"><i class="icon-home"></i> Register Account</a>
 									</li>
 									<li class="<cfif rc.action eq 'public:main.forgotpassword'>active</cfif>">
-										<a href="#buildURL('public:main.forgotpassword')#"><i class="icon-leaf"></i> Forgot Password</a>
+										<a href="#buildURL('public:usermenu.forgotpassword')#"><i class="icon-leaf"></i> Forgot Password</a>
 									</li>
 								</cfif>
 							</ul>
@@ -38,8 +39,8 @@
 							<li class="<cfif rc.action eq 'public:usermenu'>active</cfif> dropdown">
 								<a class="dropdown-toggle" data-toggle="dropdown" href="#buildURL('public:usermenu')#">User Menu<span class="caret"></span></a>
 								<ul class="dropdown-menu">
-									<li><a href="#buildURL('public:usermenu.manageregistrations')#" class="active">Manage Registrations</a></li>
-									<li><a href="#buildURL('public:usermenu.getcertificate')#" class="active">Print Certificates</a></li>
+									<li><a href="#buildURL('public:usermenu.eventhistory')#" class="active">My Event History</a></li>
+									<li><a href="#buildURL('public:usermenu.upcomingevents')#" class="active">My Upcoming Events</a></li>
 								</ul>
 							</li>
 							</cfif>
@@ -55,6 +56,17 @@
 					</ul>
 				</div>
 			</nav>
+			<cfif Session.Mura.IsLoggedIn EQ "True">
+				<div class="text-right">
+					Current User: #Session.Mura.FName# #Session.Mura.LName# (#Session.Mura.Company#) <a href="#CGI.Script_name##CGI.path_info#?doaction=logout" class="btn btn-sm btn-primary">Logout</a><br>
+					<hr>
+				</div>
+			<cfelse>
+				<div class="text-right">
+					Current User: Guest User <a href="#CGI.Script_name##CGI.path_info#?display=login" class="btn btn-sm btn-primary">Login</a> | <a href="#buildURL('public:registeruser.default')#" class="btn btn-sm btn-primary">Create Account</a>
+					<hr>
+				</div>
+			</cfif>
 		</div>
 		<div class="container-fluid">
 			<div class="row">

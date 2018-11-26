@@ -57,8 +57,22 @@
 				</cfif>
 			</cfif>
 			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
-			<cfset temp = #SendEmailCFC.SendCommentFormToAdmin(rc, Session.FormData)#>
-			<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:contactus.default&SentInquiry=true">
+			<cfif isDefined("Session.FormData.SendTo")>
+				<cfswitch expression="#Session.FormData.SendTo#">
+					<cfcase value="Presenter">
+						<cfset temp = #SendEmailCFC.SendCommentFormToPresenter(rc, Session.FormData)#>
+						<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#URL.EventID#&SentInquiry=true">
+					</cfcase>
+					<cfcase value="Facilitator">
+						<cfset temp = #SendEmailCFC.SendCommentFormToFacilitator(rc, Session.FormData)#>
+						<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#URL.EventID#&SentInquiry=true">
+					</cfcase>
+				</cfswitch>
+			<cfelse>
+				<cfset temp = #SendEmailCFC.SendCommentFormToAdmin(rc, Session.FormData)#>
+				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:contactus.default&SentInquiry=true">
+			</cfif>
+
 		</cfif>
 	</cffunction>
 

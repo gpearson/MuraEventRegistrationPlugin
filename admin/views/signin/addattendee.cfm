@@ -62,7 +62,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<table class="table table-striped table-hover" cellspacing="0" cellpadding="0" width="95%">
 					<thead>
 						<tr>
-							<td colspan="4"><h1 class="text-center">Attendee Electronic Signin Sheet<br><small>#getEvents.ShortTitle# on #DateFormat(getEvents.EventDate, "mmm dd, yyyy")#</small></h1></td>
+							<td colspan="4"><h1 class="text-center">Attendee Electronic Signin Sheet<br><small>#getEvents.ShortTitle# on #DateFormat(getEvents.EventDate, "mm/dd/yyyy")#</small></h1></td>
 						</tr>
 					</thead>
 					<tbody>
