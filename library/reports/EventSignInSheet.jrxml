@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
-<!-- 2015-07-23T13:08:53 -->
+<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
+<!-- 2017-01-20T09:17:28 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="getRegisteredParticipants" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="10601a87-fe87-435b-bb5c-dcfb6a66fa53">
 	<style name="Title" fontName="Serif" fontSize="50" isBold="true"/>
 	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
@@ -86,21 +86,21 @@
 				<text><![CDATA[Northern Indiana Educational Services Center]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="120" y="97" width="434" height="22" uuid="8a1557b6-8b4c-4b9d-a1a9-2fb4be4fb86e"/>
+				<reportElement x="3" y="120" width="552" height="22" uuid="8a1557b6-8b4c-4b9d-a1a9-2fb4be4fb86e"/>
 				<textElement textAlignment="Center">
 					<font fontName="Serif" size="16"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{EventDateFormat}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="120" y="75" width="432" height="22" uuid="21bb45c8-710c-4273-a19b-77eca11600ac"/>
+				<reportElement x="3" y="100" width="549" height="22" uuid="21bb45c8-710c-4273-a19b-77eca11600ac"/>
 				<textElement textAlignment="Center">
 					<font fontName="Serif" size="16" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ShortTitle}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="3" y="130" width="552" height="40" uuid="7326ccc2-f03a-43eb-b76e-e92a3012189d"/>
+				<reportElement x="3" y="140" width="552" height="30" uuid="7326ccc2-f03a-43eb-b76e-e92a3012189d"/>
 				<textElement textAlignment="Center">
 					<font fontName="Serif" size="10"/>
 				</textElement>
@@ -108,7 +108,7 @@
 If participants need to make changes to Name, Email they must update their account on website.]]></text>
 			</staticText>
 			<image evaluationTime="Report">
-				<reportElement x="3" y="0" width="167" height="130" uuid="87255935-393b-4ff7-a783-d540b1d405f7"/>
+				<reportElement x="3" y="0" width="127" height="90" uuid="87255935-393b-4ff7-a783-d540b1d405f7"/>
 				<imageExpression><![CDATA[$F{NIESCLogoPath}]]></imageExpression>
 			</image>
 			<staticText>

@@ -184,6 +184,7 @@
 									<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.updateregistration&RegistrationID=#Session.GetRegisteredEvents.RegistrationID#" class="btn btn-primary btn-small pull-right" alt="Update Registration">Update Registration</a>
 								<cfelse>
 									<button type="button" class="btn btn-secondary btn-small pull-right">Cancel Deadline Passed</button>
+									<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.updateregistration&RegistrationID=#Session.GetRegisteredEvents.RegistrationID#" class="btn btn-primary btn-small pull-right" alt="Update Registration">Update Registration</a>
 								</cfif>
 
 							</td>
