@@ -1,12 +1,3 @@
-/*
-
-This file is part of MuraFW1
-
-Copyright 2010-2013 Stephen J. Withington, Jr.
-Licensed under the Apache License, Version v2.0
-http://www.apache.org/licenses/LICENSE-2.0
-
-*/
 <cfcomponent output="false" persistent="false" accessors="true">
 
 	<cffunction name="default" returntype="any" output="false">
@@ -24,7 +15,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</cfif>
 			</cflock>
 			<cfquery name="getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewGroupPricing, GroupMemberCost, GroupNonMemberCost, GroupPriceRequirements, PGPAvailable, PGPPoints, MealAvailable, MealIncluded, MealProvidedBy, MealCost, Meal_Notes, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Facilitator, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, Presenters, EventHasDailySessions, Session1BeginTime, Session1EndTime, Session2BeginTime, Session2EndTime
+				Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, EventDate6, LongDescription, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, Event_SpecialMessage, Event_StartTime, Event_EndTime, Event_MemberCost, Event_NonMemberCost, Event_HeldAtFacilityID, Event_FacilityRoomID, Event_MaxParticipants, Registration_Deadline, Registration_BeginTime, Registration_EndTime, Featured_Event, Featured_StartDate, Featured_EndDate, Featured_SortOrder, EarlyBird_Available, EarlyBird_Deadline, EarlyBird_MemberCost, EarlyBird_NonMemberCost, GroupPrice_Available, GroupPrice_Requirements, GroupPrice_MemberCost, GroupPrice_NonMemberCost, PGPCertificate_Available, PGPCertificate_Points, Meal_Available, Meal_Included, Meal_Information, Meal_Cost, Meal_ProvidedBy, PresenterID, FacilitatorID, Webinar_Available, Webinar_ConnectInfo, Webinar_MemberCost, Webinar_NonMemberCost, Event_DailySessions, Event_Session1BeginTime, Event_Session1EndTime, Event_Session2BeginTime, Event_Session2EndTime, H323_Available, H323_ConnectInfo, H323_MemberCost, H323_NonMemberCost, Active, AcceptRegistrations, EventCancelled, EventInvoicesGenerated, BillForNoShow, PGPCertificatesGenerated, EventPricePerDay, PostedTo_Facebook, PostedTo_Twitter, Event_OptionalCosts, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 				From p_EventRegistration_Events
 				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 					TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
@@ -38,7 +29,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 		<cfelseif isDefined("URL.EventID") and isNumeric(URL.EventID) and Session.Mura.IsLoggedIn EQ "true" and not isDefined("FORM.formSubmit")>
 			<cflock timeout="60" scope="SESSION" type="Exclusive">
 				<cfquery name="getSelectedEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, LongDescription, Event_StartTime, Event_EndTime, Registration_Deadline, Registration_BeginTime, Registration_EndTime, EventFeatured, Featured_StartDate, Featured_EndDate, Featured_SortOrder, MemberCost, NonMemberCost, EarlyBird_RegistrationDeadline, EarlyBird_RegistrationAvailable, EarlyBird_MemberCost, EarlyBird_NonMemberCost, ViewGroupPricing, GroupMemberCost, GroupNonMemberCost, GroupPriceRequirements, PGPAvailable, PGPPoints, MealAvailable, MealIncluded, MealProvidedBy, MealCost, Meal_Notes, AllowVideoConference, VideoConferenceInfo, VideoConferenceCost, AcceptRegistrations, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, MaxParticipants, LocationID, LocationRoomID, Facilitator, Active, EventCancelled, WebinarAvailable, WebinarConnectInfo, WebinarMemberCost, WebinarNonMemberCost, Presenters, EventHasDailySessions, Session1BeginTime, Session1EndTime, Session2BeginTime, Session2EndTime
+					Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, EventDate6, LongDescription, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, Event_SpecialMessage, Event_StartTime, Event_EndTime, Event_MemberCost, Event_NonMemberCost, Event_HeldAtFacilityID, Event_FacilityRoomID, Event_MaxParticipants, Registration_Deadline, Registration_BeginTime, Registration_EndTime, Featured_Event, Featured_StartDate, Featured_EndDate, Featured_SortOrder, EarlyBird_Available, EarlyBird_Deadline, EarlyBird_MemberCost, EarlyBird_NonMemberCost, GroupPrice_Available, GroupPrice_Requirements, GroupPrice_MemberCost, GroupPrice_NonMemberCost, PGPCertificate_Available, PGPCertificate_Points, Meal_Available, Meal_Included, Meal_Information, Meal_Cost, Meal_ProvidedBy, PresenterID, FacilitatorID, Webinar_Available, Webinar_ConnectInfo, Webinar_MemberCost, Webinar_NonMemberCost, Event_DailySessions, Event_Session1BeginTime, Event_Session1EndTime, Event_Session2BeginTime, Event_Session2EndTime, H323_Available, H323_ConnectInfo, H323_MemberCost, H323_NonMemberCost, Active, AcceptRegistrations, EventCancelled, EventInvoicesGenerated, BillForNoShow, PGPCertificatesGenerated, EventPricePerDay, PostedTo_Facebook, PostedTo_Twitter, Event_OptionalCosts, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 					From p_EventRegistration_Events
 					Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 						TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
@@ -49,11 +40,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfquery name="checkRegisteredForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					Select TContent_ID, RegistrationID, RegistrationDate
 					From p_EventRegistration_UserRegistrations
-					Where EventID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
+					Where Event_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
 						User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
 						Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
 				</cfquery>
-				<cfif getSelectedEvent.MealAvailable EQ 1 and getSelectedEvent.MealIncluded EQ 0>
+				<cfif getSelectedEvent.Meal_Available EQ 1 and getSelectedEvent.Meal_Included EQ 0>
 					<cfquery name="getEventCatererInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 						Select FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber
 						From p_EventRegistration_Caterers
@@ -88,8 +79,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 						OrganizationDomainName = <cfqueryparam value="#Session.UserRegistrationInfo.UserEmailDomain#" cfsqltype="cf_sql_varchar">
 				</cfquery>
 
-				<cfif Session.getSelectedEvent.EarlyBird_RegistrationAvailable EQ 1>
-					<cfif DateDiff("d", Now(), Session.getSelectedEvent.EarlyBird_RegistrationDeadline) GTE 0>
+				<cfif Session.getSelectedEvent.EarlyBird_Available EQ 1>
+					<cfif DateDiff("d", Now(), Session.getSelectedEvent.EarlyBird_Deadline) GTE 0>
 						<cfset Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration = True>
 					<cfelse>
 						<cfset Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration = False>
@@ -98,30 +89,30 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfset Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration = False>
 				</cfif>
 
-				<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
+				<cfif Session.getSelectedEvent.Webinar_Available EQ 1>
 					<cfset Session.UserRegistrationInfo.WebinarPricingAvailable = True>
 					<cfif Session.getActiveMembership.RecordCount GTE 1>
-						<cfset Session.UserRegistrationInfo.WebinarPricingEventCost = #Session.getSelectedEvent.WebinarMemberCost#>
+						<cfset Session.UserRegistrationInfo.WebinarPricingEventCost = #Session.getSelectedEvent.Webinar_MemberCost#>
 					<cfelse>
-						<cfset Session.UserRegistrationInfo.WebinarPricingEventCost = #Session.getSelectedEvent.WebinarNonMemberCost#>
+						<cfset Session.UserRegistrationInfo.WebinarPricingEventCost = #Session.getSelectedEvent.Webinar_NonMemberCost#>
 					</cfif>
 				<cfelse>
 					<cfset Session.UserRegistrationInfo.WebinarPricingAvailable = False>
 				</cfif>
 
-				<cfif Session.getSelectedEvent.ViewGroupPricing EQ 1>
+				<cfif Session.getSelectedEvent.GroupPrice_Available EQ 1>
 					<cfset Session.UserRegistrationInfo.GroupPricingAvailable = True>
 				<cfelse>
 					<cfset Session.UserRegistrationInfo.GroupPricingAvailable = False>
 				</cfif>
 
-				<cfif Session.getSelectedEvent.AllowVideoConference EQ 1>
+				<cfif Session.getSelectedEvent.H323_Available EQ 1>
 					<cfset Session.UserRegistrationInfo.VideoConferenceOption = True>
-					<cfset Session.UserRegistrationInfo.VideoConferenceInfo = #Session.getSelectedEvent.VideoConferenceInfo#>
+					<cfset Session.UserRegistrationInfo.VideoConferenceInfo = #Session.getSelectedEvent.H323_ConnectInfo#>
 					<cfif Session.getActiveMembership.RecordCount GTE 1>
-						<cfset Session.UserRegistrationInfo.VideoConferenceCost = #Session.getSelectedEvent.VideoConferenceCost#>
+						<cfset Session.UserRegistrationInfo.VideoConferenceCost = #Session.getSelectedEvent.H323_MemberCost#>
 					<cfelse>
-						<cfset Session.UserRegistrationInfo.VideoConferenceCost = #Session.getSelectedEvent.VideoConferenceCost#>
+						<cfset Session.UserRegistrationInfo.VideoConferenceCost = #Session.getSelectedEvent.H323_NonMemberCost#>
 					</cfif>
 				<cfelse>
 					<cfset Session.UserRegistrationInfo.VideoConferenceOption = False>
@@ -129,13 +120,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 				<cfif Session.getActiveMembership.Active EQ 1>
 					<cfset Session.UserRegistrationInfo.UserGetsMembershipPrice = True>
-					<cfset Session.UserRegistrationInfo.UserEventPrice = #Session.getSelectedEvent.MemberCost#>
-					<cfset Session.UserRegistrationInfo.GroupEventPrice = #Session.getSelectedEvent.GroupMemberCost#>
+					<cfset Session.UserRegistrationInfo.UserEventPrice = #Session.getSelectedEvent.Event_MemberCost#>
+					<cfset Session.UserRegistrationInfo.GroupEventPrice = #Session.getSelectedEvent.GroupPrice_MemberCost#>
 					<cfset Session.UserRegistrationInfo.UserEventEarlyBirdPrice = #Session.getSelectedEvent.EarlyBird_MemberCost#>
 				<cfelse>
 					<cfset Session.UserRegistrationInfo.UserGetsMembershipPrice = False>
-					<cfset Session.UserRegistrationInfo.UserEventPrice = #Session.getSelectedEvent.NonMemberCost#>
-					<cfset Session.UserRegistrationInfo.GroupEventPrice = #Session.getSelectedEvent.GroupNonMemberCost#>
+					<cfset Session.UserRegistrationInfo.UserEventPrice = #Session.getSelectedEvent.Event_NonMemberCost#>
+					<cfset Session.UserRegistrationInfo.GroupEventPrice = #Session.getSelectedEvent.GroupPrice_NonMemberCost#>
 					<cfset Session.UserRegistrationInfo.UserEventEarlyBirdPrice = #Session.getSelectedEvent.EarlyBird_NonMemberCost#>
 				</cfif>
 			</cflock>
@@ -154,6 +145,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" addtoken="false">
 			</cfif>
 
+			<cfset userBean = rc.$.getBean('user').loadBy(username='#Session.Mura.Username#', siteid='#rc.$.siteConfig('siteID')#')>
+
 			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
 			<cfset CreateiCalCard = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>
 
@@ -165,7 +158,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True" addtoken="false">
 			</cfif>
 
-			<cfif Session.getSelectedEvent.EventHasDailySessions EQ 1>
+			<cfif Session.getSelectedEvent.Event_DailySessions EQ 1>
 				<cfif FORM.AttendSession1 EQ "----">
 					<cfscript>
 						errormsg = {property="EmailMsg",message="Do you want to attend Session 1 of this event? Select Yes or No below."};
@@ -273,17 +266,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 					From p_EventRegistration_UserRegistrations
 					Where Site_ID = <cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar"> and
 						User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
-						EventID = <cfqueryparam value="#FORM.EventID#" cfsqltype="cf_sql_integer">
+						Event_ID = <cfqueryparam value="#FORM.EventID#" cfsqltype="cf_sql_integer">
 				</cfquery>
 				<cfif CheckUserAlreadyRegistered.RecordCount EQ 0>
 					<cfset RegistrationID = #CreateUUID()#>
-					<cfif Session.getSelectedEvent.MealAvailable EQ 0>
+					<cfif Session.getSelectedEvent.Meal_Available EQ 0>
 						<cfset FORM.StayForMeal = 0>
+					<cfelseif Session.getSelectedEvent.Meal_Available EQ 1 and Session.getSelectedEvent.Meal_Included EQ 1>
+						<cfset FORM.StayForMeal = 1>
 					</cfif>
 					<cftry>
 						<cfif isDefined("FORM.RegisterDate")>
 							<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RequestsMeal)
+								insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, Event_ID, AttendeePrice, RegistrationIPAddr, RegisteredByUserID, RequestsMeal)
 								Values(
 									<cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar">,
 									<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
@@ -299,7 +294,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</cfquery>
 						<cfelse>
 							<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RequestsMeal)
+								insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, Event_ID, AttendeePrice, RegistrationIPAddr, RegisteredByUserID, RequestsMeal)
 								Values(
 									<cfqueryparam value="#FORM.SiteID#" cfsqltype="cf_sql_varchar">,
 									<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
@@ -378,32 +373,67 @@ http://www.apache.org/licenses/LICENSE-2.0
 								Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
 							</cfquery>
 						</cfif>
-						<cfif Session.getSelectedEvent.MealAvailable EQ 1>
+						<cfif Session.getSelectedEvent.Meal_Available EQ 1>
 							<cfquery name="updateRegistrationRegisterDates" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 								Update p_EventRegistration_UserRegistrations
 								Set RequestsMeal = <cfqueryparam value="#FORM.StayForMeal#" cfsqltype="cf_sql_bit">
 								Where TContent_ID = <cfqueryparam value="#insertNewRegistration.GENERATED_KEY#" cfsqltype="cf_sql_varchar">
 							</cfquery>
 						</cfif>
-						<cfset Temp = #SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, insertNewRegistration.GENERATED_KEY)#>
+
+						<cfif LEN(rc.$.siteConfig('mailserverip')) EQ 0>
+							<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, insertNewRegistration.GENERATED_KEY, "127.0.0.1")#>
+						<cfelse>
+							<cfif LEN(rc.$.siteConfig('mailserverusername')) and LEN(rc.$.siteConfig('mailserverpassword'))>
+								<cfif rc.$.siteConfig('mailserverssl') EQ "True">
+									<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, insertNewRegistration.GENERATED_KEY, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'), "True")#>
+								<cfelse>
+									<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, insertNewRegistration.GENERATED_KEY, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'))#>
+								</cfif>
+							<cfelse>
+								<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, insertNewRegistration.GENERATED_KEY, rc.$.siteConfig('mailserverip'))#>
+							</cfif>
+						</cfif>
+						
 						<cfset temp = StructDelete(Session, "FormErrors")>
 						<cfset temp = StructDelete(Session, "FormInput")>
 						<cfset temp = StructDelete(Session, "UserRegistrationInfo")>
 						<cfset temp = StructDelete(Session, "getActiveMembership")>
-						<cfif Session.Mura.EventCoordinatorRole EQ 1>
-							<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=eventcoord:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" addtoken="false">
+
+						<cfif userBean.isInGroup("Event Facilitator")>
+							<cfif LEN(cgi.path_info)>
+								<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" >
+							<cfelse>
+								<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" >
+							</cfif>
+							<cflocation url="#variables.newurl#" addtoken="false">
 						<cfelse>
-							<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" addtoken="false">
+							<cfif LEN(cgi.path_info)>
+								<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" >
+							<cfelse>
+								<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=UserRegistered&Successfull=True&SingleRegistration=True" >
+							</cfif>
+							<cflocation url="#variables.newurl#" addtoken="false">
 						</cfif>
 						<cfcatch type="Database">
 							<cfdump var="#CFCATCH#"><cfabort>
 						</cfcatch>
 					</cftry>
 				<cfelse>
-					<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&FormRetry=True&UserAction=UserAlreadyRegistered" addtoken="false">
+					<cfif LEN(cgi.path_info)>
+						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:registerevent.default&FormRetry=True&UserAction=UserAlreadyRegistered" >
+					<cfelse>
+						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:registerevent.default&FormRetry=True&UserAction=UserAlreadyRegistered" >
+					</cfif>
+					<cflocation url="#variables.newurl#" addtoken="false">
 				</cfif>
 			<cfelseif FORM.RegisterAdditionalIndividuals EQ 1>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.registeradditionalparticipants" addtoken="false">
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:registerevent.registeradditionalparticipants" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:registerevent.registeradditionalparticipants" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 		</cfif>
 	</cffunction>
@@ -448,12 +478,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 								From p_EventRegistration_UserRegistrations
 								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 									User_ID = <cfqueryparam value="#Variables.ParticipantUserID#" cfsqltype="cf_sql_varchar"> and
-									EventID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
+									Event_ID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
 							</cfquery>
 							<cfif CheckRegisteredAlready.RecordCount EQ 0>
 								<cfset RegistrationUUID = #CreateUUID()#>
 								<cfquery name="InsertRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate1)
+									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, Event_ID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate1)
 									Values(
 										<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
 										<cfqueryparam value="#Variables.RegistrationUUID#" cfsqltype="cf_sql_varchar">,
@@ -515,12 +545,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 								From p_EventRegistration_UserRegistrations
 								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 									User_ID = <cfqueryparam value="#Variables.ParticipantUserID#" cfsqltype="cf_sql_varchar"> and
-									EventID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
+									Event_ID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
 							</cfquery>
 							<cfif CheckRegisteredAlready.RecordCount EQ 0>
 								<cfset RegistrationUUID = #CreateUUID()#>
 								<cfquery name="InsertRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate2)
+									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, Event_ID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate2)
 									Values(
 										<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
 										<cfqueryparam value="#Variables.RegistrationUUID#" cfsqltype="cf_sql_varchar">,
@@ -582,12 +612,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 								From p_EventRegistration_UserRegistrations
 								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 									User_ID = <cfqueryparam value="#Variables.ParticipantUserID#" cfsqltype="cf_sql_varchar"> and
-									EventID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
+									Event_ID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
 							</cfquery>
 							<cfif CheckRegisteredAlready.RecordCount EQ 0>
 								<cfset RegistrationUUID = #CreateUUID()#>
 								<cfquery name="InsertRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate3)
+									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, Event_ID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate3)
 									Values(
 										<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
 										<cfqueryparam value="#Variables.RegistrationUUID#" cfsqltype="cf_sql_varchar">,
@@ -649,12 +679,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 								From p_EventRegistration_UserRegistrations
 								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 									User_ID = <cfqueryparam value="#Variables.ParticipantUserID#" cfsqltype="cf_sql_varchar"> and
-									EventID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
+									Event_ID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
 							</cfquery>
 							<cfif CheckRegisteredAlready.RecordCount EQ 0>
 								<cfset RegistrationUUID = #CreateUUID()#>
 								<cfquery name="InsertRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate4)
+									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, Event_ID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate4)
 									Values(
 										<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
 										<cfqueryparam value="#Variables.RegistrationUUID#" cfsqltype="cf_sql_varchar">,
@@ -716,12 +746,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 								From p_EventRegistration_UserRegistrations
 								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 									User_ID = <cfqueryparam value="#Variables.ParticipantUserID#" cfsqltype="cf_sql_varchar"> and
-									EventID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
+									Event_ID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
 							</cfquery>
 							<cfif CheckRegisteredAlready.RecordCount EQ 0>
 								<cfset RegistrationUUID = #CreateUUID()#>
 								<cfquery name="InsertRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate5)
+									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, Event_ID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate5)
 									Values(
 										<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
 										<cfqueryparam value="#Variables.RegistrationUUID#" cfsqltype="cf_sql_varchar">,
@@ -783,12 +813,12 @@ http://www.apache.org/licenses/LICENSE-2.0
 								From p_EventRegistration_UserRegistrations
 								Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 									User_ID = <cfqueryparam value="#Variables.ParticipantUserID#" cfsqltype="cf_sql_varchar"> and
-									EventID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
+									Event_ID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
 							</cfquery>
 							<cfif CheckRegisteredAlready.RecordCount EQ 0>
 								<cfset RegistrationUUID = #CreateUUID()#>
 								<cfquery name="InsertRegistration" result="insertNewRegistration" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate6)
+									Insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, User_ID, Event_ID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RegisterForEventDate6)
 									Values(
 										<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
 										<cfqueryparam value="#Variables.RegistrationUUID#" cfsqltype="cf_sql_varchar">,
@@ -850,15 +880,34 @@ http://www.apache.org/licenses/LICENSE-2.0
 						From p_EventRegistration_UserRegistrations
 						Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 							User_ID = <cfqueryparam value="#Variables.ParticipantUserID#" cfsqltype="cf_sql_varchar"> and
-							EventID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
+							Event_ID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer">
 					</cfquery>
-					<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, GetRegistrationID.TContent_ID)#>
+
+					<cfif LEN(rc.$.siteConfig('mailserverip')) EQ 0>
+						<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, GetRegistrationID.TContent_ID, "127.0.0.1")#>
+					<cfelse>
+						<cfif LEN(rc.$.siteConfig('mailserverusername')) and LEN(rc.$.siteConfig('mailserverpassword'))>
+							<cfif rc.$.siteConfig('mailserverssl') EQ "True">
+								<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, GetRegistrationID.TContent_ID, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'), "True")#>
+							<cfelse>
+								<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, GetRegistrationID.TContent_ID, rc.$.siteConfig('mailserverip'), rc.$.siteConfig('mailserverusername'), rc.$.siteConfig('mailserverpassword'))#>
+							</cfif>
+						<cfelse>
+							<cfset temp = #Variables.SendEmailCFC.SendEventRegistrationToSingleParticipant(rc, GetRegistrationID.TContent_ID, rc.$.siteConfig('mailserverip'))#>
+						</cfif>
+					</cfif>
 				</cfloop>
 				<cfset temp = StructDelete(Session, "FormErrors")>
 				<cfset temp = StructDelete(Session, "FormInput")>
 				<cfset temp = StructDelete(Session, "UserRegistrationInfo")>
 				<cfset temp = StructDelete(Session, "getActiveMembership")>
-				<cflocation url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=UserRegistered&Successfull=True&MultipleRegistration=True" addtoken="false">
+
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=UserRegistered&Successfull=True&MultipleRegistration=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=UserRegistered&Successfull=True&MultipleRegistration=True" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 		</cfif>
 	</cffunction>

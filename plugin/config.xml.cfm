@@ -2,17 +2,17 @@
 
 This file is part of MuraFW1
 
-Copyright 2010-2015 Stephen J. Withington, Jr.
+Copyright 2010-2016 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
 --->
-<cfinclude template="../includes/fw1config.cfm" />
+<cfinclude template="../config.fw1.cfm" />
 <cfoutput>
 	<plugin>
 
 		<!-- Name : the name of the plugin -->
-		<name>#variables.framework.package#</name>
+		<name>#variables.framework.packageName#</name>
 
 		<!-- Package : a unique, variable-safe name for the plugin -->
 		<package>#variables.framework.package#</package>
@@ -49,7 +49,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 			ProviderURL :
 			URL of the creator/organization that developed the plugin.
 		-->
-		<providerURL>http://www.yourcfpro.com</providerURL>
+		<providerURL>http://yourcfpro.com</providerURL>
 
 		<!-- Category : Usually either 'Application' or 'Utility' -->
 		<category>Application</category>
@@ -134,42 +134,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 			<!-- only need to register the eventHandler.cfc via onApplicationLoad() -->
 			<eventHandler
 					event="onApplicationLoad"
-					component="includes.eventHandler"
+					component="model.handlers.murafw1"
 					persist="false" />
 		</eventHandlers>
-
-
-		<!--
-			Display Objects :
-			Allows developers to provide widgets that end users can apply to a
-			content node's display region(s) when editing a page. They'll be
-			listed under the Layout & Objects tab. The 'persist' attribute
-			for CFC-based objects determine whether they are cached or instantiated
-			on a per-request basis.
-		-->
-		<displayobjects location="global">
-
-			<!-- An uber simple display object, has nothing to do with FW/1 -->
-			<displayobject
-					name="Public Event Registration Site"
-					component="includes.displayObjects"
-					displaymethod="dspEventRegistrationPublicView"
-					persist="false" />
-
-			<displayobject
-					name="Event Coordinator View Site"
-					component="includes.displayObjects"
-					displaymethod="dspEventRegistrationEventCoordinatorView"
-					persist="false" />
-
-			<displayobject
-					name="Site Administrator View Site"
-					component="includes.displayObjects"
-					displaymethod="dspEventRegistrationSiteAdminPublicView"
-					persist="false" />
-
-		</displayobjects>
-
 
 		<!--
 			Extensions :
