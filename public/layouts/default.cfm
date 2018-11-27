@@ -1,13 +1,9 @@
 <cfsilent>
-<!---
-
-This file is part of MuraFW1
-
-Copyright 2010-2016 Stephen J. Withington, Jr.
-Licensed under the Apache License, Version v2.0
-http://www.apache.org/licenses/LICENSE-2.0
-
---->
+	<cfif not isDefined("Session.PluginFramework")>
+		<cflock timeout="60" scope="Session" type="Exclusive">
+			<cfset Session.PluginFramework = StructCopy(Variables.Framework)>
+		</cflock>
+	</cfif>
 </cfsilent>
 <cfoutput>
 	<div class="row-fluid">
@@ -20,7 +16,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<ul class="dropdown-menu">
 								<cfif Session.Mura.IsLoggedIn EQ True>
 									<li class="">
-										<a href="#CGI.Script_name##CGI.path_info#?doaction=logout"><i class="icon-home"></i> Account Logout</a>
+										<a href="http://#CGI.server_name#/index.cfm?doaction=logout"><i class="icon-home"></i> Account Logout</a>
 									</li>
 								<cfelse>
 									<li class="<cfif rc.action eq 'public:main.login'>active</cfif>">
@@ -50,8 +46,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 								--->
 						</li>
 						<cfif $.currentUser().isSuperUser()>
-							<li class=""><a href="/plugins/#variables.framework.package#">Administration</a></li>
+							<li class=""><a href="/plugins/#Session.PluginFramework.CFCBase#/?#Session.PluginFramework.Action#=admin:main.default">Administration</a></li>
+							<li class=""><a href="/plugins/#Session.PluginFramework.CFCBase#/?#Session.PluginFramework.Action#=eventcoordinator:main.default">Facilitator Menu</a></li>
 						</cfif>
+						<cfif $.currentUser().isInGroup("Event Facilitator")>
+							<li class=""><a href="/plugins/#Session.PluginFramework.CFCBase#/?#Session.PluginFramework.Action#=eventcoordinator:main.default">Facilitator Menu</a></li>
+						</cfif>
+
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li class="<cfif rc.action contains 'public:faq.default'>active</cfif>">
@@ -67,6 +68,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 	</div>
 	<div class="row-fluid">
 		<div class="col-md-12">
+			<cfdump var="#Session.PluginFramework#">
 			#body#
 		</div>
 	</div>

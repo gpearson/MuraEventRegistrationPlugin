@@ -134,15 +134,15 @@
 
 				<cfif LEN(cgi.path_info)>
 					<cfif rc.$.siteConfig('useSSL') EQ 1>
-						<cfset ShortURLLink = "https://" & #rc.$.siteconfig('domain')# & "/" & #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
+						<cfset ShortURLLink = "https://" & #rc.$.siteconfig('domain')# & #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
 					<cfelse>
-						<cfset ShortURLLink = "http://" & #rc.$.siteconfig('domain')# & "/" & #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
+						<cfset ShortURLLink = "http://" & #rc.$.siteconfig('domain')# & #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
 					</cfif>
 				<cfelse>
 					<cfif rc.$.siteConfig('useSSL') EQ 1>
-						<cfset ShortURLLink = "https://" & #rc.$.siteconfig('domain')# & "/" & #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
+						<cfset ShortURLLink = "https://" & #rc.$.siteconfig('domain')# & #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
 					<cfelse>
-						<cfset ShortURLLink = "http://" & #rc.$.siteconfig('domain')# & "/" & #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
+						<cfset ShortURLLink = "http://" & #rc.$.siteconfig('domain')# & #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&" & "ShortURL=" & #Variables.ShortURLPasswordLink#>
 					</cfif>
 				</cfif>
 				<cfif LEN(rc.$.siteConfig('mailserverip')) EQ 0>
@@ -223,10 +223,15 @@
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
-			
-			<cfset userRecord = #rc.$.getBean('user').loadBy(username='#FORM.UserID#', siteid='#rc.$.siteConfig("siteid")#')#>
+
+			<cfquery Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#" name="GetUsernameFromUserID">
+				Select UserName From tusers Where SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#"> and UserID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.UserID#">
+			</cfquery>
+
+			<cfset userRecord = #rc.$.getBean('user').loadBy(username='#GetUsernameFromUserID.UserName#', siteid='#rc.$.siteConfig("siteid")#')#>
 			<cfset temp = #userRecord.setPasswordNoCache('#FORM.NewVerifyPassword#')#>
-			<cfset AddNewAccount = #userRecord.save()#>
+			<cfset UpdateUserAccount = #userRecord.save()#>
+			
 			<cfif LEN(cgi.path_info)>
 				<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=PasswordResetSuccessfully" >
 			<cfelse>
@@ -235,72 +240,6 @@
 			<cflocation url="#variables.newurl#" addtoken="false">
 
 		</cfif>
-
-		<!--- 
-
-
-		<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EmailServices")>
-		<cfset GoogleReCaptchaCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/recaptcha")>
-		<cfif not isDefined("FORM.formSubmit") and not isDefined("URL.Key") and not isDefined("FORM.submitPasswordChange")>
-
-		<cfelseif not isDefined("FORM.formSubmit") and isDefined("URL.Key") and not isDefined("FORM.submitPasswordChange")>
-			<cfset KeyAsString = #ToString(ToBinary(URL.Key))#>
-			<cfset Session.PasswordKey = StructNew()>
-			<cfset Session.PasswordKey.UserID = #ListLast(ListFirst(Variables.KeyAsString, "&"), "=")#>
-			<cfset Session.PasswordKey.DateCreated = #ListLast(ListLast(Variables.KeyAsString, "&"), "=")#>
-
-			<cfif DateDiff("n", Session.PasswordKey.DateCreated, Now()) GT 45>
-				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=PasswordTimeExpired">
-			<cfelse>
-
-			</cfif>
-		<cfelseif isDefined("FORM.formSubmit") and isDefined("FORM.submitPasswordChange")>
-			<cfquery name="CheckAccount" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select UserID, UserName, FName, Lname, Email, created
-				From tusers
-				Where UserID = <cfqueryparam value="#FORM.UserID#" cfsqltype="cf_sql_varchar"> and
-					SiteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">
-			</cfquery>
-
-			<cfif FORM.DesiredPassword NEQ FORM.VerifyPassword>
-				<cfscript>
-					InvalidPassword = {property="VerifyPassword",message="The Password and the Verify Password Fields do not match each other. Please make sure these fields match."};
-					arrayAppend(Session.FormErrors, InvalidPassword);
-				</cfscript>
-				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.forgotpassword&Key=#URL.Key#&FormRetry=True">
-			</cfif>
-
-			<!--- Initiates the User Bean --->
-			<cfset NewUser = #Application.userManager.readByUsername(CheckAccount.UserName, rc.$.siteConfig('siteID'))#>
-			<cfset NewUser.setPassword(FORM.DesiredPassword)>
-			<cfset updateAccountPassword = #Application.userManager.save(NewUser)#>
-
-			<cfif LEN(updateAccountPassword.getErrors()) EQ 0>
-				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=PasswordChanged">
-			<cfelse>
-				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=PasswordNotChanged">
-			</cfif>
-
-		<cfelseif isDefined("FORM.formSubmit") and not isDefined("FORM.submitPasswordChange")>
-			<cfset Session.FormErrors = #ArrayNew()#>
-			<cfset Session.FormData = #StructCopy(FORM)#>
-
-			
-			
-
-			
-			<cfif CheckAccount.RecordCount EQ 0>
-				
-			<cfelse>
-				<cfset ValueToEncrypt = "UserID=" & #CheckAccount.UserID# & "&" & "Created=" & #CheckAccount.created# & "&DateSent=" & #Now()#>
-				<cfset EncryptedValue = #Tobase64(Variables.ValueToEncrypt)#>
-				<cfset AccountVars = "Key=" & #Variables.EncryptedValue#>
-				<cfset AccountPasswordLink = "http://" & #CGI.Server_Name# & "#CGI.Script_name##CGI.path_info#?#rc.pc.getPackage()#action=public:usermenu.forgotpassword&" & #Variables.AccountVars#>
-				<cfset temp = SendEmailCFC.SendForgotPasswordRequest(rc, CheckAccount, AccountPasswordLink)>
-				<cflocation addtoken="true" url="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default&UserAction=PasswordRequestSent">
-			</cfif>
-		</cfif>
-	--->
 	</cffunction>
 	
 </cfcomponent>

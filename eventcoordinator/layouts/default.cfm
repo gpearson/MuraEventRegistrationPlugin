@@ -81,33 +81,31 @@
 											</ul>
 										</li>
 										<li class="">
-											<a href="#buildURL('admin:license.default')#"><i class="icon-book"></i> License</a>
+											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Catering Menu <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+												<li class=""><a href="#buildURL('eventcoordinator:catering.addcaterer')#">Add New Caterer</a></li>
+												<li class=""><a href="#buildURL('eventcoordinator:catering.default')#">List All Caterers</a></li>
+											</ul>
 										</li>
 										<li class="">
-											<a href="#buildURL('admin:instructions.default')#"><i class="icon-info-sign"></i> Instructions</a>
+											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Facility Menu <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+												<li class=""><a href="#buildURL('eventcoordinator:facilities.addfacility')#">Add New Facility</a></li>
+												<li class=""><a href="#buildURL('eventcoordinator:facilities.default')#">List All Facilities</a></li>
+											</ul>
 										</li>
 										<li class="">
-											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Site Configuration <b class="caret"></b></a>
-											<ul class="dropdown-menu multi-level">
-												<li class="dropdown-submenu"><a href="" class="" data-toggle="dropdown">Catering</a>
-													<ul class="dropdown-menu">
-														<li class=""><a href="#buildURL('admin:catering.addcaterer')#">Add New Caterer</a></li>
-														<li class=""><a href="#buildURL('admin:catering.default')#">List All Caterers</a></li>
-													</ul>
-												</li>
-												<li class="dropdown-submenu"><a href="" class="" data-toggle="dropdown">Facilities</a>
-													<ul class="dropdown-menu">
-														<li class=""><a href="#buildURL('admin:facilities.addfacility')#">Add New Facility</a></li>
-														<li class=""><a href="#buildURL('admin:facilities.default')#">List All Facilities</a></li>
-													</ul>
-												</li>
-												<li class=""><a href="#buildURL('admin:siteconfig.default')#">Site Settings</a></li>
-												<li class="dropdown-submenu"><a href="" class="" data-toggle="dropdown">User Management</a>
-													<ul class="dropdown-menu">
-														<li class=""><a href="#buildURL('admin:siteconfig.newuser')#">Add New User</a></li>
-														<li class=""><a href="#buildURL('admin:siteconfig.usermain')#">List All Users</a></li>
-													</ul>
-												</li>
+											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Membership Menu <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+												<li class=""><a href="#buildURL('eventcoordinator:membership.addmember')#">Add New Member</a></li>
+												<li class=""><a href="#buildURL('eventcoordinator:membership.default')#">List All Members</a></li>
+											</ul>
+										</li>
+										<li class="">
+											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Users Menu <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+												<li class=""><a href="#buildURL('eventcoordinator:users.newuser')#">Add New User</a></li>
+												<li class=""><a href="#buildURL('eventcoordinator:users.default')#">List All Users</a></li>
 											</ul>
 										</li>
 									</ul>

@@ -2,229 +2,6 @@
 	<cffunction name="default" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
-		<cfif not isDefined("FORM.formSubmit")>
-			<cfquery name="SiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-				Select TContent_ID, dateCreated, lastUpdated, lastUpdateBy, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, BillForNoShowRegistrations, RequireEventSurveyToGetCertificate
-				From p_EventRegistration_SiteConfig
-				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
-			</cfquery>
-			<cfset Session.SiteConfigSettings = StructCopy(SiteConfigSettings)>
-		<cfelseif isDefined("FORM.formSubmit")>
-			<cflock timeout="60" scope="Session" type="Exclusive">
-				<cfset Session.FormErrors = #ArrayNew()#>
-				<cfset Session.FormInput = #StructCopy(FORM)#>
-			</cflock>
-			<cfif FORM.UserAction EQ "Back to Main Menu">
-				<cfset temp = StructDelete(Session, "FormErrors")>
-				<cfset temp = StructDelete(Session, "FormInput")>
-				<cfset temp = StructDelete(Session, "SiteConfigSettings")>
-				
-				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default" >
-				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default" >
-				</cfif>
-				<cflocation url="#variables.newurl#" addtoken="false">
-			</cfif>
-
-			<cfif FORM.ProcessPaymentsStripe EQ "----">
-				<cfset FORM.ProcessPaymentsStripe = 0>
-				<cfset FORM.StripeTestMode = 1>
-			<cfelseif FORM.ProcessPaymentsStripe EQ 1 and LEN(FORM.StripeTestAPIKey) EQ 0 or FORM.ProcessPaymentsStripe EQ 1 and LEN(FORM.StripeLiveAPIKey) EQ 0>
-				<cfscript>
-					errormsg = {property="EmailMsg",message="If you would like to enable Stripe Processing of Payments, please enter your Stripe API Keys for both the Live Processing and the Test Processing of this payment processor."};
-					arrayAppend(Session.FormErrors, errormsg);
-				</cfscript>
-				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-				</cfif>
-				<cflocation url="#variables.newurl#" addtoken="false">
-			<cfelse>
-				<cfif FORM.StripeTestMode EQ "----" and LEN(FORM.StripeTestAPIKey) EQ 0 and LEN(FORM.StripeLiveAPIKey) EQ 0>
-					<cfset FORM.StripeTestMode = 1>
-				<cfelseif FORM.ProcessPaymentsStripe EQ 1 and FORM.StripeTestMode EQ 1 and LEN(FORM.StripeTestAPIKey) EQ 0>
-					<cfscript>
-						errormsg = {property="EmailMsg",message="Please Enter the Stripe API Key for the Stripe Testing Server so you can process test payments through the stripe server."};
-						arrayAppend(Session.FormErrors, errormsg);
-					</cfscript>
-					<cfif LEN(cgi.path_info)>
-						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-					<cfelse>
-						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-					</cfif>
-					<cflocation url="#variables.newurl#" addtoken="false">
-				</cfif>
-			</cfif>
-
-			<cfif FORM.BillForNoShowRegistration EQ "----">
-				<cfset FORM.BillForNoShowRegistration = 0>
-			</cfif>
-
-			<cfif FORM.RequireEventSurveyToGetCertificate EQ "----">
-				<cfset FORM.RequireEventSurveyToGetCertificate = 0>
-			</cfif>
-
-			<cfif FORM.FacebookEnabled EQ "----">
-				<cfset FORM.FacebookEnabled = 0>
-			<cfelseif FORM.FacebookEnabled EQ 1 and LEN(FORM.FacebookAppID) EQ 0 or FORM.FacebookEnabled EQ 1 and LEN(FORM.FacebookAppSecretKey) EQ 0 or FORM.FacebookEnabled EQ 1 and LEN(FORM.FacebookPageID) EQ 0 or FORM.FacebookEnabled EQ 1 and LEN(FORM.FacebookAppScope) EQ 0>
-				<cfscript>
-					errormsg = {property="EmailMsg",message="Please Enter the Facebook Application Credientials to allow this plugin to post to the companies profile page."};
-					arrayAppend(Session.FormErrors, errormsg);
-				</cfscript>
-				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-				</cfif>
-				<cflocation url="#variables.newurl#" addtoken="false">
-			</cfif>
-
-			<cfif FORM.GoogleReCaptchaEnabled EQ "----">
-				<cfset FORM.GoogleReCaptchaEnabled = 0>
-			<cfelseif FORM.GoogleReCaptchaEnabled EQ 1 and LEN(FORM.GoogleReCaptchaSiteKey) EQ 0 or FORM.GoogleReCaptchaEnabled EQ 1 and LEN(FORM.GoogleReCaptchaSecretKey) EQ 0>
-				<cfscript>
-					errormsg = {property="EmailMsg",message="Please Enter the Google Captcha Site Key and Secret Key for this to work properly."};
-					arrayAppend(Session.FormErrors, errormsg);
-				</cfscript>
-				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-				</cfif>
-				<cflocation url="#variables.newurl#" addtoken="false">
-			</cfif>
-
-			<cfif FORM.SmartyStreetsEnabled EQ "----">
-				<cfset FORM.SmartyStreetsEnabled = 0>
-			<cfelseif FORM.SmartyStreetsEnabled EQ 1 and LEN(FORM.SmartyStreetsAPIID) EQ 0 or FORM.SmartyStreetsEnabled EQ 1 and LEN(FORM.SmartyStreetsAPITOKEN) EQ 0>
-				<cfscript>
-					errormsg = {property="EmailMsg",message="Please Enter the Smarty Streets API ID and API Token from your account to enable address verification through this API Service."};
-					arrayAppend(Session.FormErrors, errormsg);
-				</cfscript>
-				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-				</cfif>
-				<cflocation url="#variables.newurl#" addtoken="false">
-			</cfif>
-			<cfif FORM.SmartyStreetsEnabled EQ "----">
-				<cfset FORM.SmartyStreetsEnabled = 0>
-			</cfif>
-			<cfif Session.SiteConfigSettings.recordcount EQ 0>
-				<cftry>
-					<cfquery name="insertSiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-						insert into p_EventRegistration_SiteConfig(Site_ID, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, BillForNoShowRegistrations, RequireEventSurveyToGetCertificate)
-						values(
-							<cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_date">, 
-							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">, 
-							<cfqueryparam value="#Session.Mura.Fname# #Session.Mura.LName#" cfsqltype="cf_sql_varchar">, 
-							<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.ProcessPaymentsStripe#" cfsqltype="cf_sql_bit">,
-							<cfqueryparam value="#FORM.StripeTestMode#" cfsqltype="cf_sql_bit">,
-							<cfqueryparam value="#FORM.StripeTestAPIKey#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.StripeLiveAPIKey#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.FacebookEnabled#" cfsqltype="cf_sql_bit">,
-							<cfqueryparam value="#FORM.FacebookAppID#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.FacebookAppSecretKey#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.FacebookPageID#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.FacebookAppScope#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.GoogleReCaptchaEnabled#" cfsqltype="cf_sql_bit">,
-							<cfqueryparam value="#FORM.GoogleReCaptchaSiteKey#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.GoogleReCaptchaSecretKey#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.SmartyStreetsEnabled#" cfsqltype="cf_sql_bit">,
-							<cfqueryparam value="#FORM.SmartyStreetsAPIID#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.SmartyStreetsAPITOKEN#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.GitHubProfileURL#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.TwitterProfileURL#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.FacebookProfileURL#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.GoogleProfileURL#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.LinkedInProfileURL#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.BillForNoShowRegistration#" cfsqltype="cf_sql_bit">,
-							<cfqueryparam value="#FORM.RequireEventSurveyToGetCertificate#" cfsqltype="cf_sql_bit">
-							)
-					</cfquery>
-					<cfcatch type="Any">
-						<cfscript>
-							eventdate = {property="Registration_Deadline",message="Event was not added to the database due to an error: " & cfcatch.detail};
-							arrayAppend(Session.FormErrors, eventdate);
-							arrayAppend(Session.FormErrors, cfcatch);
-						</cfscript>
-						<cfif LEN(cgi.path_info)>
-							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-						<cfelse>
-							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-						</cfif>
-						<cflocation url="#variables.newurl#" addtoken="false">
-					</cfcatch>
-				</cftry>
-				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
-				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
-				</cfif>
-				<cflocation url="#variables.newurl#" addtoken="false">
-			<cfelse>
-				<cftry>
-					<cfquery name="insertSiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-						Update p_EventRegistration_SiteConfig
-						Set lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-							lastUpdateBy = <cfqueryparam value="#Session.Mura.Fname# #Session.Mura.LName#" cfsqltype="cf_sql_varchar">,
-							lastUpdateByID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
-							ProcessPayments_Stripe = <cfqueryparam value="#FORM.ProcessPaymentsStripe#" cfsqltype="cf_sql_bit">,
-							Stripe_TestMode = <cfqueryparam value="#FORM.StripeTestMode#" cfsqltype="cf_sql_bit">,
-							Stripe_testAPIKey = <cfqueryparam value="#FORM.StripeTestAPIKey#" cfsqltype="cf_sql_varchar">,
-							Stripe_LiveAPIKey = <cfqueryparam value="#FORM.StripeLiveAPIKey#" cfsqltype="cf_sql_varchar">,
-							Facebook_Enabled = <cfqueryparam value="#FORM.FacebookEnabled#" cfsqltype="cf_sql_bit">,
-							Facebook_AppID = <cfqueryparam value="#FORM.FacebookAppID#" cfsqltype="cf_sql_varchar">,
-							Facebook_AppSecretKey = <cfqueryparam value="#FORM.FacebookAppSecretKey#" cfsqltype="cf_sql_varchar">,
-							Facebook_PageID = <cfqueryparam value="#FORM.FacebookPageID#" cfsqltype="cf_sql_varchar">,
-							Facebook_AppScope = <cfqueryparam value="#FORM.FacebookAppScope#" cfsqltype="cf_sql_varchar">,
-							Google_ReCaptchaEnabled = <cfqueryparam value="#FORM.GoogleReCaptchaEnabled#" cfsqltype="cf_sql_bit">,
-							Google_ReCaptchaSiteKey = <cfqueryparam value="#FORM.GoogleReCaptchaSiteKey#" cfsqltype="cf_sql_varchar">,
-							Google_ReCaptchaSecretKey = <cfqueryparam value="#FORM.GoogleReCaptchaSecretKey#" cfsqltype="cf_sql_varchar">,
-							SmartyStreets_Enabled = <cfqueryparam value="#FORM.SmartyStreetsEnabled#" cfsqltype="cf_sql_bit">,
-							SmartyStreets_APIID = <cfqueryparam value="#FORM.SmartyStreetsAPIID#" cfsqltype="cf_sql_varchar">,
-							SmartyStreets_APIToken = <cfqueryparam value="#FORM.SmartyStreetsAPITOKEN#" cfsqltype="cf_sql_varchar">,
-							GitHub_URL = <cfqueryparam value="#FORM.GitHubProfileURL#" cfsqltype="cf_sql_varchar">,
-							Twitter_URL = <cfqueryparam value="#FORM.TwitterProfileURL#" cfsqltype="cf_sql_varchar">,
-							Facebook_URL = <cfqueryparam value="#FORM.FacebookProfileURL#" cfsqltype="cf_sql_varchar">,
-							GoogleProfile_URL = <cfqueryparam value="#FORM.GoogleProfileURL#" cfsqltype="cf_sql_varchar">,
-							LinkedIn_URL = <cfqueryparam value="#FORM.LinkedInProfileURL#" cfsqltype="cf_sql_varchar">,
-							BillForNoShowRegistrations = <cfqueryparam value="#FORM.BillForNoShowRegistration#" cfsqltype="cf_sql_bit">,
-							RequireEventSurveyToGetCertificate = <cfqueryparam value="#FORM.RequireEventSurveyToGetCertificate#" cfsqltype="cf_sql_bit">
-						Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar">
-					</cfquery>
-					<cfcatch type="Any">
-						<cfscript>
-							eventdate = {property="Registration_Deadline",message="Event was not added to the database due to an error: " & cfcatch.detail};
-							arrayAppend(Session.FormErrors, eventdate);
-							arrayAppend(Session.FormErrors, cfcatch);
-						</cfscript>
-						<cfif LEN(cgi.path_info)>
-							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-						<cfelse>
-							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
-						</cfif>
-						<cflocation url="#variables.newurl#" addtoken="false">
-					</cfcatch>
-				</cftry>
-				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
-				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
-				</cfif>
-				<cflocation url="#variables.newurl#" addtoken="false">
-			</cfif>
-		</cfif>
-	</cffunction>
-
-	<cffunction name="usermain" returntype="any" output="false">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
 		<cfswitch expression="#application.configbean.getDBType()#">
 			<cfcase value="mysql">
 				<cfquery name="getUsers" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
@@ -244,7 +21,6 @@
 			</cfcase>
 		</cfswitch>
 		<cfset Session.getUsers = StructCopy(getUsers)>
-
 	</cffunction>
 
 	<cffunction name="getAllUsers" access="remote" returnformat="json">
@@ -399,11 +175,14 @@
 				<cfset temp = StructDelete(Session, "FormInput")>
 				<cfset temp = StructDelete(Session, "GetEventGroups")>
 				<cfset temp = StructDelete(Session, "GetUsers")>
+				<cfif isDefined("Session.getMembership")><cfset temp = StructDelete(Session, "getMembership")></cfif>
+				<cfif isDefined("Session.getCaterers")><cfset temp = StructDelete(Session, "getCaterers")></cfif>
+				<cfif isDefined("Session.getFacilities")><cfset temp = StructDelete(Session, "getFacilities")></cfif>
 
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.default" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.default" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -414,9 +193,9 @@
 					arrayAppend(Session.FormErrors, eventdate);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -426,9 +205,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -438,9 +217,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -450,9 +229,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -462,9 +241,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -474,9 +253,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -486,9 +265,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.newuser&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.newuser&FormRetry=True" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -527,9 +306,9 @@
           		</cfif>
           	</cfif>
           	<cfif LEN(cgi.path_info)>
-				<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain&UserAction=AccountCreated&Successful=True" >
+				<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.default&UserAction=AccountCreated&Successful=True" >
 			<cfelse>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain&UserAction=AccountCreated&Successful=True" >
+				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.default&UserAction=AccountCreated&Successful=True" >
 			</cfif>
 			<cflocation url="#variables.newurl#" addtoken="false">
 		</cfif>
@@ -564,17 +343,17 @@
 				<cfset temp = StructDelete(Session, "GetSelectedUser")>
 				<cfset temp = StructDelete(Session, "GetUsers")>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.default" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.default" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 			<cfif FORM.UserAction EQ "Change Password">
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.changepswd" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.changepswd" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -588,9 +367,9 @@
 				<cfset AddNewAccount = #userRecord.save()#>
 				<cfif LEN(AddNewAccount.getErrors()) EQ 0>
 					<cfif LEN(cgi.path_info)>
-						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#&UserAction=UserAccountActivated&Successful=True" >
+						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&UserID=#Session.FormInput.UserID#&UserAction=UserAccountActivated&Successful=True" >
 					<cfelse>
-						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#&UserAction=UserAccountActivated&Successful=True" >
+						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&UserID=#Session.FormInput.UserID#&UserAction=UserAccountActivated&Successful=True" >
 					</cfif>
 					<cflocation url="#variables.newurl#" addtoken="false">
 				<cfelse>
@@ -617,9 +396,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -629,9 +408,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -642,9 +421,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -654,9 +433,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&FormRetry=True&UserID=#Session.FormInput.UserID#" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -720,9 +499,9 @@
 					</cfif>
 				</cfif>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain&UserID=#Session.FormInput.UserID#&UserAction=UserAccountUpdated&Successful=True" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.default&UserID=#Session.FormInput.UserID#&UserAction=UserAccountUpdated&Successful=True" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.usermain&UserID=#Session.FormInput.UserID#&UserAction=UserAccountUpdated&Successful=True" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.default&UserID=#Session.FormInput.UserID#&UserAction=UserAccountUpdated&Successful=True" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
           	<cfelse>
@@ -731,7 +510,7 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="userchangepswd" returntype="any" output="false">
+	<cffunction name="changepswd" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
 		<cfif not isDefined("FORM.formSubmit")>
@@ -748,9 +527,9 @@
 			<cfif FORM.UserAction EQ "Back to User Management">
 				<cfset temp = StructDelete(Session, "FormErrors")>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&UserID=#Session.FormInput.UserID#" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&UserID=#Session.FormInput.UserID#" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -760,9 +539,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.changepswd&FormRetry=True" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.changepswd&FormRetry=True" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -772,9 +551,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.changepswd&FormRetry=True" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.changepswd&FormRetry=True" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -784,9 +563,9 @@
 					arrayAppend(Session.FormErrors, errormsg);
 				</cfscript>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.changepswd&FormRetry=True" >
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.userchangepswd&FormRetry=True" >
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.changepswd&FormRetry=True" >
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -798,13 +577,11 @@
 			<cfset temp = #userRecord.setPasswordNoCache('#FORM.VerifyPassword#')#>
 			<cfset AddNewAccount = #userRecord.save()#>
 			<cfif LEN(cgi.path_info)>
-				<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#&UserAction=AccountPasswordChanged&Successful=True" >
+				<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&UserID=#Session.FormInput.UserID#&UserAction=AccountPasswordChanged&Successful=True" >
 			<cfelse>
-				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.edituser&UserID=#Session.FormInput.UserID#&UserAction=AccountPasswordChanged&Successful=True" >
+				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:users.edituser&UserID=#Session.FormInput.UserID#&UserAction=AccountPasswordChanged&Successful=True" >
 			</cfif>
 			<cflocation url="#variables.newurl#" addtoken="false">
 		</cfif>
 	</cffunction>
-
-
 </cfcomponent>

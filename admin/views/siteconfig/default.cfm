@@ -113,6 +113,10 @@
 						<label for="BillForNoShowRegistration" class="col-lg-3 col-md-3">Bill Participant For NoShow:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfselect name="BillForNoShowRegistration" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Should Application Bill Participant for NoShows?</option></cfselect></div>
 					</div>
+					<div class="form-group">
+						<label for="RequireEventSurveyToGetCertificate" class="col-lg-3 col-md-3">Require Survey to Get Certificate:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfselect name="RequireEventSurveyToGetCertificate" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Require Submission of Event Survey to Obtain Completion Certiifcate?</option></cfselect></div>
+					</div>
 					<fieldset>
 						<legend><h2>Social Media Profiles</h2></legend>
 					</fieldset>
@@ -285,6 +289,10 @@
 						<label for="BillForNoShowRegistration" class="col-lg-3 col-md-3">Bill Participant For NoShow:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfselect name="BillForNoShowRegistration" class="form-control" required="no" Multiple="No" selected="#Session.FormInput.BillForNoShowRegistration#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Should Application Bill Participant for NoShows?</option></cfselect></div>
 					</div>
+					<div class="form-group">
+						<label for="RequireEventSurveyToGetCertificate" class="col-lg-3 col-md-3">Require Survey to Get Certificate:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfselect name="RequireEventSurveyToGetCertificate" class="form-control" required="no" Multiple="No" query="YesNoQuery" selected="#Session.FormInput.RequireEventSurveyToGetCertificate#" value="ID" Display="OptionName" queryposition="below"><option value="----">Require Submission of Event Survey to Obtain Completion Certiifcate?</option></cfselect></div>
+					</div>
 					<fieldset>
 						<legend><h2>Social Media Profiles</h2></legend>
 					</fieldset>
@@ -413,6 +421,10 @@
 						<div class="form-group">
 							<label for="BillForNoShowRegistration" class="col-lg-3 col-md-3">Bill Participant For NoShow:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfselect name="BillForNoShowRegistration" class="form-control" required="no" Multiple="No" selected="#Session.SiteConfigSettings.BillForNoShowRegistrations#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Should Application Bill Participant for NoShows?</option></cfselect></div>
+						</div>
+						<div class="form-group">
+							<label for="RequireEventSurveyToGetCertificate" class="col-lg-3 col-md-3">Require Survey to Get Certificate:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfselect name="RequireEventSurveyToGetCertificate" class="form-control" required="no" Multiple="No" selected="#Session.SiteConfigSettings.RequireEventSurveyToGetCertificate#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Require Submission of Event Survey to Obtain Completion Certiifcate?</option></cfselect></div>
 						</div>
 						<fieldset>
 							<legend><h2>Social Media Profiles</h2></legend>
@@ -584,6 +596,10 @@
 						<div class="form-group">
 							<label for="BillForNoShowRegistration" class="col-lg-3 col-md-3">Bill Participant For NoShow:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfselect name="BillForNoShowRegistration" class="form-control" required="no" Multiple="No" selected="#Session.FormInput.BillForNoShowRegistration#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Should Application Bill Participant for NoShows?</option></cfselect></div>
+						</div>
+						<div class="form-group">
+							<label for="RequireEventSurveyToGetCertificate" class="col-lg-3 col-md-3">Require Survey to Get Certificate:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfselect name="RequireEventSurveyToGetCertificate" class="form-control" required="no" Multiple="No" selected="#Session.FormInput.RequireEventSurveyToGetCertificate#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Require Submission of Event Survey to Obtain Completion Certiifcate?</option></cfselect></div>
 						</div>
 						<fieldset>
 							<legend><h2>Social Media Profiles</h2></legend>

@@ -32,7 +32,7 @@
 						<legend><h2>Your Contact Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EmailAddress" class="control-label col-sm-3">Email Address:&nbsp;</label>
+						<label for="EmailAddress" class="control-label col-sm-3">Email Address:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-sm-9">
 							<cfinput type="text" class="form-control" id="UserEmailAddress" name="UserEmailAddress" required="no">
 						</div>
@@ -147,13 +147,13 @@
 						<legend><h2>Your New Account Password Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="NewPassword" class="control-label col-sm-3">Desired Password:&nbsp;</label>
+						<label for="NewPassword" class="control-label col-sm-3">Desired Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-sm-9">
 							<cfinput type="password" class="form-control" id="NewPassword" name="NewPassword" required="no">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="NewVerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
+						<label for="NewVerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-sm-9">
 							<cfinput type="password" class="form-control" id="NewVerifyPassword" name="NewVerifyPassword" required="no">
 						</div>
@@ -233,13 +233,13 @@
 						<legend><h2>Your New Account Password Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="NewPassword" class="control-label col-sm-3">Desired Password:&nbsp;</label>
+						<label for="NewPassword" class="control-label col-sm-3">Desired Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-sm-9">
 							<cfinput type="password" class="form-control" id="NewPassword" name="NewPassword" value="#Session.FormInput.NewPassword#" required="no">
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="NewVerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;</label>
+						<label for="NewVerifyPassword" class="control-label col-sm-3">Verify Password:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-sm-9">
 							<cfinput type="password" class="form-control" id="NewVerifyPassword" name="NewVerifyPassword" value="#Session.FormInput.NewVerifyPassword#" required="no">
 						</div>

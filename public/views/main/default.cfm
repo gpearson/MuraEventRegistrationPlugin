@@ -28,9 +28,47 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</cfcase>
 		</cfswitch>
 	</cfif>
+	<cfif isDefined("URL.UserAction")>
+		<cfswitch expression="#URL.UserAction#">
+			<cfcase value="PasswordRequestSent">
+				<div class="panel panel-success">
+					<div class="panel-heading"><h3>Password Reset Request Submitted</h3></div>
+					<div class="panel-body alert alert-success">
+						<p>The password reset inquiry has been submitted. Within the next few minutes you will be receiving a special link to reset your password. If you do not receive this message please check your Junk or Spam folder for a message from our server. If you are having isuses with this password reset, please contact our office.</p>
+					</div>
+				</div>
+			</cfcase>
+			<cfcase value="PasswordResetSuccessfully">
+				<div class="panel panel-success">
+					<div class="panel-heading"><h3>Password Reset Successfully</h3></div>
+					<div class="panel-body alert alert-success">
+						<p>The password reset has been saved to the user account entered. You will now have the ability to login to this system with your username and current password. If you have any issues please contact our office.</p>
+					</div>
+				</div>
+			</cfcase>
+			<cfcase value="PasswordRequestFailed">
+				<div class="panel panel-danger">
+					<div class="panel-heading"><h3>Password Reset Request Failed</h3></div>
+					<div class="panel-body alert">
+						<p>#Session.FormErrors[1].Message#</p>
+					</div>
+				</div>
+			</cfcase>
+			<cfcase value="PasswordTimeExpired">
+				<div class="panel panel-danger">
+					<div class="panel-heading"><h3>Password Reset Request Expired</h3></div>
+					<div class="panel-body alert">
+						<p>#Session.FormErrors[1].Message#</p>
+					</div>
+				</div>
+			</cfcase>
+		</cfswitch>
+
+	</cfif>
 	<div class="panel panel-default">
 		<div class="panel-heading"><h3>Available Events</h3></div>
 		<div class="panel-body">
+			
 		</div>
 	</div>
 </cfoutput>
