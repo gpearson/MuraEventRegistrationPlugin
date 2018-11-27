@@ -22,6 +22,9 @@
 			<link rel="stylesheet" href="#$.siteConfig('themeAssetPath')#/assets/bootstrap/css/bootstrap.min.css">
 			<!--- Font Awesome --->
 			<link rel="stylesheet" href="#$.siteConfig('themeAssetPath')#/assets/font-awesome/css/font-awesome.css">
+			<link rel="stylesheet" type="text/css" href="/plugins/#Variables.Framework.CFCBASE#/assets/js/jquery-datepicker/css/jquery.datepick.css"> 
+			<link rel="stylesheet" type="text/css" href="/plugins/#Variables.Framework.CFCBASE#/assets/js/jquery-timepicker/jquery.timepicker.min.css"> 
+
 			<!---
 				THEME CSS
 				This has been compiled using a pre-processor such as CodeKit or Prepros
@@ -37,9 +40,12 @@
 				<script src="#$.siteConfig('themeAssetPath')#/js/html5shiv/html5shiv.js"></script>
 				<script src="#$.siteConfig('themeAssetPath')#/js/respond/respond.min.js"></script>
 			<![endif]-->
-
+			
 			<!--- jQuery --->
 			<script src="#$.siteConfig('assetPath')#/js/external/jquery.min.js"></script>
+			<script src="/plugins/#Variables.Framework.CFCBASE#/assets/js/jquery-datepicker/js/jquery.plugin.js"></script>
+			<script src="/plugins/#Variables.Framework.CFCBASE#/assets/js/jquery-datepicker/js/jquery.datepick.js"></script>
+			<script src="/plugins/#Variables.Framework.CFCBASE#/assets/js/jquery-timepicker//jquery.timepicker.min.js"></script>
 
 			<!--- FAV AND TOUCH ICONS --->
 			<link rel="shortcut icon" href="#$.siteConfig('assetPath')#/images/favicon.ico">
@@ -68,7 +74,7 @@
 							<div class="row">
 								<div class="col-md-9">
 									<ul id="navPrimary" class="nav navbar-nav">
-										<li class="active">
+										<li class="<cfif URL[Variables.Framework.Action] CONTAINS 'eventcoordinator:main'>active</cfif>">
 											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Main <b class="caret"></b></a>
 											<ul class="dropdown-menu">
 												<cfif Session.Mura.IsLoggedIn EQ True>
@@ -80,28 +86,36 @@
 												</cfif>
 											</ul>
 										</li>
-										<li class="">
+										<li class="<cfif URL[Variables.Framework.Action] CONTAINS 'eventcoordinator:catering'>active</cfif>">
 											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Catering Menu <b class="caret"></b></a>
 											<ul class="dropdown-menu">
 												<li class=""><a href="#buildURL('eventcoordinator:catering.addcaterer')#">Add New Caterer</a></li>
 												<li class=""><a href="#buildURL('eventcoordinator:catering.default')#">List All Caterers</a></li>
 											</ul>
 										</li>
-										<li class="">
+										<li class="<cfif URL[Variables.Framework.Action] CONTAINS 'eventcoordinator:events'>active</cfif>">
+											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Events Menu <b class="caret"></b></a>
+											<ul class="dropdown-menu">
+												<li class=""><a href="#buildURL('eventcoordinator:events.addevent')#">Add New Event</a></li>
+												<li class=""><a href="#buildURL('eventcoordinator:events.default')#">List All Events</a></li>
+											</ul
+											>
+										</li>
+										<li class="<cfif URL[Variables.Framework.Action] CONTAINS 'eventcoordinator:facilities'>active</cfif>">
 											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Facility Menu <b class="caret"></b></a>
 											<ul class="dropdown-menu">
 												<li class=""><a href="#buildURL('eventcoordinator:facilities.addfacility')#">Add New Facility</a></li>
 												<li class=""><a href="#buildURL('eventcoordinator:facilities.default')#">List All Facilities</a></li>
 											</ul>
 										</li>
-										<li class="">
+										<li class="<cfif URL[Variables.Framework.Action] CONTAINS 'eventcoordinator:membership'>active</cfif>">
 											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Membership Menu <b class="caret"></b></a>
 											<ul class="dropdown-menu">
 												<li class=""><a href="#buildURL('eventcoordinator:membership.addmember')#">Add New Member</a></li>
 												<li class=""><a href="#buildURL('eventcoordinator:membership.default')#">List All Members</a></li>
 											</ul>
 										</li>
-										<li class="">
+										<li class="<cfif URL[Variables.Framework.Action] CONTAINS 'eventcoordinator:users'>active</cfif>">
 											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Users Menu <b class="caret"></b></a>
 											<ul class="dropdown-menu">
 												<li class=""><a href="#buildURL('eventcoordinator:users.newuser')#">Add New User</a></li>

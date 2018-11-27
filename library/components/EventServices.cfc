@@ -1,4 +1,4 @@
-<cfcomponent>
+<cfcomponent output="false" persistent="false" accessors="true">
 	<cffunction name="generateShortLink" returntype="string">
 		<cfargument name="length" type="Numeric" required="true" default="6">
 		<cfset var local=StructNew()>
@@ -22,33 +22,65 @@
 		<cfreturn local.shortlink>
 	</cffunction>
 
+	<cffunction name="ConvertCurrencyToDecimal" returntype="string" output="false" hint="I convert currency values to decimal for database">
+		<cfargument name="Amount" type="string" required="true" hint="I am the currency amount to convert.">
+
+		<cfset temp = #Replace(Arguments.Amount, '$', '', 'all')#>
+		<cfset temp = #Replace(variables.temp, ',', '', 'all')#>
+		<cfif isNumeric(variables.temp)>
+			<cfset newnumber = #NumberFormat(Variables.temp, '-999999.99')#>
+		<cfelse>
+			<cfset newnumber = #variables.temp#>
+		</cfif>
+		<cfreturn variables.newnumber>
+	</cffunction>
+
 	<cffunction name="insertShortURLContent" returntype="any">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 		<cfargument name="link" type="String" required="true">
 		<cfset var result=StructNew()>
 
+
 		<!--- begin our error-catching block --->
 		<cftry>
 			<!--- try to insert the new link into the database --->
-			<cfquery Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#" name="result.qry" result="result.stats">
-				INSERT INTO p_EventRegistration_ShortURL(Site_ID, FullLink, ShortLink, Active, dateCreated, lastUpdated)
-				VALUES(
-					<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
-					<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.link#">,
-					<cfqueryparam cfsqltype="cf_sql_varchar" value="#generateShortLink()#">,
-					<cfqueryparam cfsqltype="cf_sql_bit" value="1">,
-					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">
-				)
-			</cfquery>
-
-			<!--- try to return the new shortlink value, referencing the last returned identifier --->
-			<cfquery Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#" name="result.inserted">
-				SELECT ShortLink
-				FROM p_EventRegistration_ShortURL
-				WHERE
-					TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#result.stats.GENERATED_KEY#">
-			</cfquery>
+			<cfif IsDefined("rc.$")>
+				<cfquery Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#" name="result.qry" result="result.stats">
+					INSERT INTO p_EventRegistration_ShortURL(Site_ID, FullLink, ShortLink, Active, dateCreated, lastUpdated)
+					VALUES(
+						<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.$.siteConfig('siteID')#">,
+						<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.link#">,
+						<cfqueryparam cfsqltype="cf_sql_varchar" value="#generateShortLink()#">,
+						<cfqueryparam cfsqltype="cf_sql_bit" value="1">,
+						<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+						<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">
+					)
+				</cfquery>
+				<!--- try to return the new shortlink value, referencing the last returned identifier --->
+				<cfquery Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#" name="result.inserted">
+					SELECT ShortLink
+					FROM p_EventRegistration_ShortURL
+					WHERE TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#result.stats.GENERATED_KEY#">
+				</cfquery>
+			<cfelse>
+				<cfquery Datasource="#rc.DBInfo.Datasource#" username="#rc.DBInfo.DBUsername#" password="#rc.DBInfo.DBPassword#" name="result.qry" result="result.stats">
+					INSERT INTO p_EventRegistration_ShortURL(Site_ID, FullLink, ShortLink, Active, dateCreated, lastUpdated)
+					VALUES(
+						<cfqueryparam cfsqltype="cf_sql_varchar" value="#rc.DBInfo.SiteID#">,
+						<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.link#">,
+						<cfqueryparam cfsqltype="cf_sql_varchar" value="#generateShortLink()#">,
+						<cfqueryparam cfsqltype="cf_sql_bit" value="1">,
+						<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+						<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">
+					)
+				</cfquery>
+				<!--- try to return the new shortlink value, referencing the last returned identifier --->
+				<cfquery Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#" name="result.inserted">
+					SELECT ShortLink
+					FROM p_EventRegistration_ShortURL
+					WHERE TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#result.stats.GENERATED_KEY#">
+				</cfquery>
+			</cfif>
 
 			<cfcatch>
 				<!--- insert was not successful - the shortlink generated was not unqiue, so set the return variable to an empty string --->
@@ -84,4 +116,5 @@
 			<cfreturn "The ShortURL Link is not valid">
 		</cfif>
 	</cffunction>
+
 </cfcomponent>

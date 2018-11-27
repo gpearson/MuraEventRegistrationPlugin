@@ -79,13 +79,15 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 			.addColumn(column='TContent_ID',dataType='int',nullable=false,autoincrement=true)
 			.addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
 			.addColumn(column='Expense_ID',dataType='int',nullable=false)
+			.addColumn(column='Event_ID',dataType='int',nullable=false)
 			.addColumn(column='Cost_Amount',dataType='double',nullable=false)
 			.addColumn(column='dateCreated',dataType='datetime')
 			.addColumn(column='lastUpdated',dataType='datetime')
 			.addColumn(column='lastUpdateBy',dataType='varchar',length='255')
 			.addColumn(column='lastUpdateByID',dataType='varchar',length='35')
 			.addColumn(column='Cost_Verified',dataType='boolean',default=0,nullable=false)
-			.addPrimaryKey(column='TContent_ID');
+			.addPrimaryKey(column='TContent_ID')
+			.addIndex(column="Event_ID");
 
 		var dbEventResources = application.configbean.getBean('dbUtility');
 		dbEventResources.setTable('p_EventRegistration_EventResources')
@@ -126,11 +128,11 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		    .addColumn(column='EventDate5',dataType='date',nullable=true)
 		    .addColumn(column='EventDate6',dataType='date',nullable=true)
 		    .addColumn(column='LongDescription',dataType='longtext',nullable=false)
-		    .addColumn(column='Event_StartTime',dataType='timestamp',nullable=false)
-		    .addColumn(column='Event_EndTime',dataType='timestamp',nullable=false)
+		    .addColumn(column='Event_StartTime',dataType='time',nullable=false)
+		    .addColumn(column='Event_EndTime',dataType='time',nullable=false)
 		    .addColumn(column='Registration_Deadline',dataType='date',nullable=false)
-		    .addColumn(column='Registration_BeginTime',dataType='timestamp')
-		    .addColumn(column='Registration_EndTime',dataType='timestamp')
+		    .addColumn(column='Registration_BeginTime',dataType='time')
+		    .addColumn(column='Registration_EndTime',dataType='time')
 		    .addColumn(column='EventFeatured',dataType='boolean',default=0,nullable=false)
 		    .addColumn(column='Featured_StartDate',dataType='date',nullable=true)
 		    .addColumn(column='Featured_EndDate',dataType='date',nullable=true)
@@ -143,18 +145,19 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		    .addColumn(column='EarlyBird_NonMemberCost',dataType='double',nullable=true)
 		    .addColumn(column='ViewGroupPricing',dataType='boolean',default=0,nullable=false)
 		    .addColumn(column='GroupPrice_Requirements',dataType='longtext',nullable=true)
-		    .addColumn(column='GroupPrice_MemberCost',dataType='double',nullable=false)
-		    .addColumn(column='GroupPrice_NonMemberCost',dataType='double',nullable=false)
+		    .addColumn(column='GroupPrice_MemberCost',dataType='double',nullable=true)
+		    .addColumn(column='GroupPrice_NonMemberCost',dataType='double',nullable=true)
 		    .addColumn(column='PGPAvailable',dataType='boolean',default=0,nullable=false)
 		    .addColumn(column='PGPPoints',dataType='double',nullable=true)
 		    .addColumn(column='Meal_Available',dataType='boolean',default=0,nullable=false)
-		    .addColumn(column='Meal_Included',dataType='boolean',default=0,nullable=false)
+		    .addColumn(column='Meal_Included',dataType='boolean',default=0,nullable=true)
 		    .addColumn(column='Meal_Notes',dataType='longtext',nullable=true)
 		    .addColumn(column='Meal_Cost',dataType='double',nullable=true)
 		    .addColumn(column='Meal_ProvidedBy',dataType='int',nullable=false,default=0)
 		    .addColumn(column='AllowVideoConference',dataType='boolean',default=0,nullable=false)
 		    .addColumn(column='VideoConferenceInfo',dataType='longtext',nullable=true)
-		    .addColumn(column='VideoConferenceCost',dataType='double',nullable=true)
+		    .addColumn(column='VideoConferenceMemberCost',dataType='double',nullable=true)
+		    .addColumn(column='VideoConferenceNonMemberCost',dataType='double',nullable=true)
 		    .addColumn(column='AcceptRegistrations',dataType='boolean',default=0,nullable=false)
 		    .addColumn(column='EventAgenda',dataType='longtext',nullable=true)
 		    .addColumn(column='EventTargetAudience',dataType='longtext',nullable=true)
@@ -178,13 +181,15 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		    .addColumn(column='PostedTo_Facebook',dataType='boolean',default=0,nullable=false)
 		    .addColumn(column='PostedTo_Twitter',dataType='boolean',default=0,nullable=false)
 		    .addColumn(column='EventHasDailySessions',dataType='boolean',default=0,nullable=false)
-		    .addColumn(column='Session1BeginTime',dataType='timestamp',nullable=true)
-		    .addColumn(column='Session1EndTime',dataType='timestamp',nullable=true)
-		    .addColumn(column='Session2BeginTime',dataType='timestamp',nullable=true)
-		    .addColumn(column='Session2EndTime',dataType='timestamp',nullable=true)
+		    .addColumn(column='Session1BeginTime',dataType='time',nullable=true)
+		    .addColumn(column='Session1EndTime',dataType='time',nullable=true)
+		    .addColumn(column='Session2BeginTime',dataType='time',nullable=true)
+		    .addColumn(column='Session2EndTime',dataType='time',nullable=true)
 		    .addColumn(column='EventInvoicesGenerated',dataType='boolean',default=0,nullable=false)
 		    .addColumn(column='PGPCertificatesGenerated',dataType='boolean',default=0,nullable=false)
 		    .addColumn(column='BillForNoShow',dataType='boolean',default=0,nullable=false)
+		    .addColumn(column='EventPricePerDay',dataType='boolean',default=0,nullable=false)
+		    .addColumn(column='EventHasOptionalCosts',dataType='boolean',default=0,nullable=false)
 		    .addPrimaryKey(column='TContent_ID');
 
 	    var dbFacility = application.configbean.getBean('dbUtility');
@@ -497,6 +502,7 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		    .addColumn(column='Comments',dataType='longtext',nullable=true)
 		    .addColumn(column='WeminarParticipant',dataType='boolean',default=0,nullable=false)
 		    .addColumn(column='AttendeePriceVerified',dataType='boolean',default=0,nullable=false)
+		    .addColumn(column='RequestsMeal',dataType='boolean',default=0,nullable=false)
 		    .addPrimaryKey(column='TContent_ID')
 		    .addIndex(column='Event_ID')
 		    .addIndex(column='User_ID');
@@ -587,6 +593,24 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	  	.dropColumn(column='Physical_CountyName')
 	  	.dropColumn(column='Physical_CongressionalDistrict')
 	  	.dropColumn(column='Physical_CountyFIPS');
+
+
+	  	var dbEventsTable = application.configbean.getBean('dbUtility');
+	  	dbEventsTable.setTable('p_EventRegistration_Events')
+	  	.renameColumn(column='VideoConferenceCost', newcolumn='VideoConferenceMemberCost')
+		.addColumn(column='VideoConferenceNonMemberCost',dataType='double',nullable=true)
+		.addColumn(column='EventHasOptionalCosts',dataType='boolean',default=0,nullable=false)
+	  	.addColumn(column='EventPricePerDay',dataType='boolean',default=0,nullable=false);
+
+	  	var dbUserRegistrationsTable = application.configbean.getBean('dbUtility');
+	  	dbUserRegistrationsTable.setTable('p_EventRegistration_UserRegistrations')
+	  	.addColumn(column='RequestsMeal',dataType='boolean',default=0,nullable=false);
+
+	  	var dbEventExpensesTable = application.configbean.getBean('dbUtility');
+	  	dbEventExpensesTable.setTable('p_EventRegistration_EventExpenses')
+	  	.addColumn(column='Event_ID',dataType='int',nullable=false)
+		.addIndex(column="Event_ID");
+
 		
 	}
 	

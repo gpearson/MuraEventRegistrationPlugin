@@ -68,7 +68,6 @@
 	</div>
 	<div class="row-fluid">
 		<div class="col-md-12">
-			<cfdump var="#Session.PluginFramework#">
 			#body#
 		</div>
 	</div>
