@@ -14,212 +14,55 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 	public any function init(any config='') {
 		setConfig(arguments.config);
 	}
-
+	
 	public void function install() {
 		// triggered by the pluginManager when the plugin is INSTALLED.
 		application.appInitialized = false;
 
-		// #rc.$.globalConfig('dbtype')#
-		switch(application.configbean.getDBType()) {
-			case "mssql":
-				include "db/install/mssql-install.cfm";
-				break;
+		switch(application.configBean.getDBType()) {
 			case "mysql":
-				include "db/install/mysql-install.cfm";
+				include "db/dbstructure-mysqlinstall.cfm";
 				break;
 		}
-
-		Var dbInsertSiteConfigQuery = new query();
-		dbInsertSiteConfigQuery.setDatasource("#application.configBean.getDatasource()#");
-		dbInsertSiteConfigQuery.addparam(name="SiteID", value="#Session.SiteID#", cfsqltype="varchar");
-		dbInsertSiteConfigQuery.addparam(name="DateCreated", value="#Now()#", cfsqltype="timestamp");
-		dbInsertSiteConfigQuery.addparam(name="LastUpdateBy", value="System", cfsqltype="varchar");
-		dbInsertSiteConfigQuery.addparam(name="LastUpdated", value="#Now()#", cfsqltype="timestamp");
-		dbInsertSiteConfigQuery.addparam(name="ProcessStripe", value="0", cfsqltype="bit");
-		dbInsertSiteConfigQuery.addparam(name="TestStripe", value="1", cfsqltype="bit");
-		dbInsertSiteConfigQuery.setSQL("Insert into p_EventRegistration_SiteConfig(Site_ID, DateCreated, lastUpdateBy, lastUpdated, ProcessPayments_Stripe, Stripe_TestMode) Values(:SiteID, :DateCreated, :LastUpdateBy, :LastUpdated, :ProcessStripe, :TestStripe)");
-		dbInsertSiteConfigQuery.execute();
 	}
 
 	public void function update() {
 		// triggered by the pluginManager when the plugin is UPDATED.
 		application.appInitialized = false;
 
-		switch(application.configbean.getDBType()) {
+		switch(application.configBean.getDBType()) {
 			case "mysql":
-				include "db/update/mysql-update-3.0.4.cfm";
-				include "db/update/mysql-update-3.0.6.0.cfm";
-				include "db/update/mysql-update-3.0.8.0.cfm";
-				include "db/update/mysql-update-3.0.8.6.cfm";
-				include "db/update/mysql-update-3.0.8.7.cfm";
+				include "db/dbstructure-V3ToV4.0.0.2.cfm";
 				break;
 		}
 	}
-
+	
 	public void function delete() {
 		// triggered by the pluginManager when the plugin is DELETED.
 		application.appInitialized = false;
 
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_Membership");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
+		var dbWorker = application.configbean.getBean('dbUtility');
+		dbWorker.dropTable(table='p_EventRegistration_Caterers');
+		dbWorker.dropTable(table='p_EventRegistration_EventEmailLog');
+		dbWorker.dropTable(table='p_EventRegistration_EventExpenses');
+		dbWorker.dropTable(table='p_EventRegistration_EventResources');
+		dbWorker.dropTable(table='p_EventRegistration_ExpenseList');
+		dbWorker.dropTable(table='p_EventRegistration_Events');
+		dbWorker.dropTable(table='p_EventRegistration_Facility');
+		dbWorker.dropTable(table='p_EventRegistration_FacilityRooms');
+		dbWorker.dropTable(table='p_EventRegistration_GradeLevels');
+		dbWorker.dropTable(table='p_EventRegistration_GradeSubjects');
+		dbWorker.dropTable(table='p_EventRegistration_Membership');
+		dbWorker.dropTable(table='p_EventRegistration_MembershipBuildings');
+		dbWorker.dropTable(table='p_EventRegistration_ShortURL');
+		dbWorker.dropTable(table='p_EventRegistration_SiteConfig');
+		dbWorker.dropTable(table='p_EventRegistration_StateESCOrganizations');
+		dbWorker.dropTable(table='p_EventRegistration_UserRegistrations');
+		dbWorker.dropTable(table='p_EventRegistration_UserMatrix');
 
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_UserMatrix");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_UserRegistrations");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_Events");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_EventExpenses");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_ExpenseList");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_Facility");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_FacilityRooms");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_Caterers");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_SiteConfig");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_EventProfitLossReport");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_EventProfitLossReportExpenses");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_EventProfitLossReportRevenue");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_GradeLevels");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_GradeSubjects");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_StateESCOrganizations");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_EventEmailLog");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
-
-		var dbDropTable = new query();
-		dbDropTable.setDatasource("#application.configBean.getDatasource()#");
-		dbDropTable.setSQL("Drop Table if Exists p_EventRegistration_EventResources");
-		var dbDropTableResults = dbDropTable.execute();
-		if (len(dbDropTableResults.getResult()) neq 0) {
-			writedump(dbDropTableResults.getResult());
-			abort;
-		}
+		deleteGroups = new Query(datasource='#application.configBean.getDatasource()#', sql="Delete from tusers where GroupName LIKE :GroupPartName");
+	    deleteGroups.addParam(name="GroupPartName", value="%Event%",CFSQLTYPE="CF_SQL_VARCHAR");
+	    deleteGroupsResults = deleteGroups.execute();
 	}
+
 }

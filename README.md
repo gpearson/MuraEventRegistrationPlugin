@@ -7,9 +7,9 @@ A Mura CMS Plugin to allow website visitors the ability to register for upcoming
 Minimum Requirements
 ====================
 
-Mura CMS 6.0+
-Railo 4+ ; Lucee
-MySQL 5
+* [Mura CMS](http://www.getmura.com) Core Version 7.0+
+* [Adobe ColdFusion](http://www.adobe.com/coldfusion) 2016.0.02.299200
+* [Lucee](http://lucee.org) 5.0.0.254
 
 Note: Upon Installation create an account through the Register Account Section to add your account to the database. A manual entry of the tusersmemb table is needed which maps your account to the Event Facilitator UUID to access the Event Coordinator Subsystem of the Plugin.
 
@@ -23,3 +23,9 @@ Description
 This plugin utilizes MuraFW/1 as the base to this plugin and allows website users the ability to create events or workshops so visitors can register themselves for the upcoming event. This plugin utilizes security roles (Event Presenter, Event Coordinator) to distinguish who would have access to what part of the system.
 
 
+
+
+
+Update
+====================
+If running plugin on Mura Version 6.1, upgrade Mura first to the latest version through updating Mura Core then Mura Sites. 

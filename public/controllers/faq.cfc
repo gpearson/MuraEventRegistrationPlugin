@@ -1,17 +1,11 @@
-/*
-
-This file is part of MuraFW1
-
-Copyright 2010-2013 Stephen J. Withington, Jr.
-Licensed under the Apache License, Version v2.0
-http://www.apache.org/licenses/LICENSE-2.0
-
-*/
-<cfcomponent output="false" persistent="false" accessors="true">
-
+<cfcomponent extends="controller" output="false" persistent="false" accessors="true">
 	<cffunction name="default" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
+		<cfquery name="SiteConfigSettings" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
+			From p_EventRegistration_SiteConfig
+			Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
+		</cfquery>
+		<cfset Session.SiteConfigSettings = StructCopy(SiteConfigSettings)>
 	</cffunction>
-
 </cfcomponent>

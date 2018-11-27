@@ -3,7 +3,7 @@
 		<div class="panel-body">
 			<fieldset>
 				<legend>
-					<h3 align="center">#Session.EventInfo.SelectedEvent.ShortTitle# <cfif Len(Session.EventInfo.SelectedEvent.Presenters)><br>(#Session.EventInfo.EventPresenter.FName# #Session.EventInfo.EventPresenter.Lname#)</cfif></h3>
+					<h3 align="center">#Session.EventInfo.SelectedEvent.ShortTitle# <cfif Len(Session.EventInfo.SelectedEvent.PresenterID)><br>(#Session.EventInfo.EventPresenter.FName# #Session.EventInfo.EventPresenter.Lname#)</cfif></h3>
 				</legend>
 			</fieldset>
 			<cfif isDefined("URL.SentInquiry")>
@@ -65,18 +65,18 @@
 					</tr>
 					<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">Event Time:</span></td>
-						<td style="width: 390px;">#TimeFormat(Session.EventInfo.SelectedEvent.Event_StartTime, "hh:mm tt")# till #TimeFormat(Session.EventInfo.SelectedEvent.Event_EndTime, "hh:mm tt")#</td>
+						<td style="width: 390px;">#TimeFormat(Session.EventInfo.SelectedEvent.Event_StartTime, "hh:mm tt")# till #TimeFormat(Session.EventInfo.SelectedEvent.Event_EndTime, "hh:mm tt")# <cfif LEN(Session.EventInfo.EventFacility.Physical_TimeZone)>(#Session.EventInfo.EventFacility.Physical_TimeZone#)</cfif></td>
 						<td style="text-align: right; width: 175px;"><span style="font-weight: bold;">Registration Deadline:</span></td>
 						<td style="width: 175px;">#DateFormat(Session.EventInfo.SelectedEvent.Registration_Deadline, "mm/dd/yyyy")#</td>
 					</tr>
 					<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">Seats Available:</span></td>
 						<td style="width: 390px;">
-							<cfif Session.EventInfo.SelectedEvent.MaxParticipants EQ 0>
+							<cfif Session.EventInfo.SelectedEvent.Event_MaxParticipants EQ 0>
 								<cfset SeatsLeft = #Session.EventInfo.EventFacilityRoom.Capacity# - #Session.EventInfo.EventRegistrations.CurrentNumberofRegistrations#>
 								#Variables.SeatsLeft# (#Session.EventInfo.EventRegistrations.CurrentNumberofRegistrations# Registered)
 							<cfelse>
-								<cfset SeatsLeft = #Session.EventInfo.SelectedEvent.MaxParticipants# - #Session.EventInfo.EventRegistrations.CurrentNumberofRegistrations#>
+								<cfset SeatsLeft = #Session.EventInfo.SelectedEvent.Event_MaxParticipants# - #Session.EventInfo.EventRegistrations.CurrentNumberofRegistrations#>
 								#Variables.SeatsLeft# (#Session.EventInfo.EventRegistrations.CurrentNumberofRegistrations# Registered)
 							</cfif>
 						</td>
@@ -118,59 +118,59 @@
 						<td colspan="3">#Session.EventInfo.SelectedEvent.EventSpecialInstructions#</td>
 						</tr>
 					</cfif>
-					<cfif Session.EventInfo.SelectedEvent.EventHasDailySessions EQ 1>
+					<cfif Session.EventInfo.SelectedEvent.Event_DailySessions EQ 1>
 						<tr>
 						<td style="width: 155px; valign: middle;"><span style="font-weight: bold;">Event Sessions:</span></td>
 						<td colspan="3">
 							<table border="0" colspan="0" cellspan="0" align="center" width="100%">
 								<tr>
 									<td width="25%"><span style="font-weight: bold;">Session 1:</span></td>
-									<td width="25%">#timeFormat(Session.EventInfo.SelectedEvent.Session1BeginTime, "hh:mm tt")# till #timeFormat(Session.EventInfo.SelectedEvent.Session1EndTime, "hh:mm tt")#</td>
+									<td width="25%">#timeFormat(Session.EventInfo.SelectedEvent.Event_Session1BeginTime, "hh:mm tt")# till #timeFormat(Session.EventInfo.SelectedEvent.Event_Session1EndTime, "hh:mm tt")#</td>
 									<td width="25%"><span style="font-weight: bold;">Session 2:</span></td>
-									<td width="25%">#timeFormat(Session.EventInfo.SelectedEvent.Session2BeginTime, "hh:mm tt")# till #timeFormat(Session.EventInfo.SelectedEvent.Session2EndTime, "hh:mm tt")#</td>
+									<td width="25%">#timeFormat(Session.EventInfo.SelectedEvent.Event_Session2BeginTime, "hh:mm tt")# till #timeFormat(Session.EventInfo.SelectedEvent.Event_Session2EndTime, "hh:mm tt")#</td>
 								</tr>
 							</table>
 						</td>
 						</tr>
 					</cfif>
-					<cfif Session.EventInfo.SelectedEvent.PGPAvailable GT 0 and Session.EventInfo.SelectedEvent.MealAvailable EQ 1>
+					<cfif Session.EventInfo.SelectedEvent.PGPCertificate_Available GT 0 and Session.EventInfo.SelectedEvent.Meal_Available EQ 1>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">PGP Points:</span></td>
-						<td style="width: 390px;">#NumberFormat(Session.EventInfo.SelectedEvent.PGPPoints, "999.99")#</td>
+						<td style="width: 390px;">#NumberFormat(Session.EventInfo.SelectedEvent.PGPCertificate_Points, "999.99")#<cfif Session.EventInfo.SelectedEvent.EventPricePerDay EQ 1> Per Day</cfif></td>
 						<td style="width: 175px;"><span style="font-weight: bold;">Meal Provided:</span></td>
-						<td style="width: 175px;"><cfif Session.EventInfo.SelectedEvent.MealAvailable EQ 1>Yes<cfelse>No</cfif></td>
+						<td style="width: 175px;"><cfif Session.EventInfo.SelectedEvent.Meal_Available EQ 1>Yes<cfelse>No</cfif></td>
 						</tr>
-					<cfelseif Session.EventInfo.SelectedEvent.PGPAvailable GT 0 and Session.EventInfo.SelectedEvent.MealAvailable EQ 0>
+					<cfelseif Session.EventInfo.SelectedEvent.PGPCertificate_Available GT 0 and Session.EventInfo.SelectedEvent.Meal_Available EQ 0>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">PGP Points:</span></td>
-						<td colspan="3">&nbsp;&nbsp;#NumberFormat(Session.EventInfo.SelectedEvent.PGPPoints, "999.99")#</td>
+						<td colspan="3">&nbsp;&nbsp;#NumberFormat(Session.EventInfo.SelectedEvent.PGPCertificate_Points, "999.99")#</td>
 						</tr>
-					<cfelseif Session.EventInfo.SelectedEvent.PGPAvailable EQ 0 and Session.EventInfo.SelectedEvent.MealAvailable EQ 1>
+					<cfelseif Session.EventInfo.SelectedEvent.PGPCertificate_Available EQ 0 and Session.EventInfo.SelectedEvent.Meal_Available EQ 1>
 						<tr>
 						<td colspan="2">&nbsp;</td>
 						<td style="width: 175px;"><span style="font-weight: bold;">Meal Provided:</span></td>
-						<td style="width: 175px;"><cfif Session.EventInfo.SelectedEvent.MealAvailable EQ 1>Yes<cfelse>No</cfif></td>
+						<td style="width: 175px;"><cfif Session.EventInfo.SelectedEvent.Meal_Available EQ 1>Yes<cfelse>No</cfif></td>
 						</tr>
 					</cfif>
-					<cfif Session.EventInfo.SelectedEvent.WebinarAvailable EQ 1>
+					<cfif Session.EventInfo.SelectedEvent.Webinar_Available EQ 1>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">Webinar Information:</span></td>
-						<td colspan="3">#Session.EventInfo.SelectedEvent.WebinarConnectInfo#</td>
+						<td colspan="3">#Session.EventInfo.SelectedEvent.Webinar_ConnectInfo#</td>
 						</tr>
 						<tr>
 						<td colspan="4">
 						<table border="0" colspan="0" cellspan="0" align="center" width="100%">
 						<tr>
 						<td width="25%"><span style="font-weight: bold;">Webinar Member Cost:</span></td>
-						<td width="25%">#DollarFormat(Session.EventInfo.SelectedEvent.WebinarMemberCost)#</td>
+						<td width="25%">#DollarFormat(Session.EventInfo.SelectedEvent.Webinar_MemberCost)#</td>
 						<td width="25%"><span style="font-weight: bold;">Webinar NonMember Cost:</span></td>
-						<td width="25%">#DollarFormat(Session.EventInfo.SelectedEvent.WebinarNonMemberCost)#</td>
+						<td width="25%">#DollarFormat(Session.EventInfo.SelectedEvent.Webinar_NonMemberCost)#</td>
 						</tr>
 						</table>
 						</td>
 						</tr>
 					</cfif>
-					<cfif Session.EventInfo.SelectedEvent.WebinarAvailable EQ 0 and Session.EventInfo.EventFacility.RecordCount NEQ 0 OR LEN(Session.EventInfo.SelectedEvent.WebinarAvailable) EQ 0 and Session.EventInfo.EventFacility.RecordCount NEQ 0>
+					<cfif Session.EventInfo.SelectedEvent.Webinar_Available EQ 0 and Session.EventInfo.EventFacility.RecordCount NEQ 0 OR LEN(Session.EventInfo.SelectedEvent.Webinar_Available) EQ 0 and Session.EventInfo.EventFacility.RecordCount NEQ 0>
 						<tr>
 						<td style="width: 141px;" colspan="4">
 						<table class="art-article" style="width:100%;">
@@ -189,12 +189,12 @@
 						<script>
 							var facilitymarker;
 							var map = L.map('map');
-							map.setView(new L.LatLng(#Session.EventInfo.EventFacility.GeoCode_Latitude#, #Session.EventInfo.EventFacility.GeoCode_Longitude#), 12);
+							map.setView(new L.LatLng(#Session.EventInfo.EventFacility.Physical_Latitude#, #Session.EventInfo.EventFacility.Physical_Longitude#), 12);
 							L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '', maxZoom: 16 }).addTo(map);
 							var FacilityMarker = L.icon({
 								iconUrl: '/plugins/#Variables.Framework.Package#/library/LeafLet/images/conference.png'
 							});
-							var marker = L.marker([#Session.EventInfo.EventFacility.GeoCode_Latitude#, #Session.EventInfo.EventFacility.GeoCode_Longitude#], {icon: FacilityMarker}).addTo(map);
+							var marker = L.marker([#Session.EventInfo.EventFacility.Physical_Latitude#, #Session.EventInfo.EventFacility.Physical_Longitude#], {icon: FacilityMarker}).addTo(map);
 						</script>
 						</td>
 						</tr>
@@ -210,7 +210,7 @@
 						</table>
 						</td>
 						</tr>
-					<cfelseif Session.EventInfo.SelectedEvent.WebinarAvailable EQ 0 and Session.EventInfo.EventFacility.RecordCount EQ 0>
+					<cfelseif Session.EventInfo.SelectedEvent.Webinar_Available EQ 0 and Session.EventInfo.EventFacility.RecordCount EQ 0>
 						<tr>
 						<td style="width: 141px;" colspan="4">
 						<h4><strong>Please contact us to find out where this event will be held as this information might not have been available when the event went live to see how much interest was generated.
@@ -221,65 +221,65 @@
 			</table>
 			<table class="table"  width="100%" cellspacing="0" cellpadding="0">
 				<tbody>
-					<cfif Session.EventInfo.SelectedEvent.WebinarAvailable EQ 0>
+					<cfif Session.EventInfo.SelectedEvent.Webinar_Available EQ 0>
 						<tr>
 							<td colspan="4"><big><big><span style="font-weight: bold;">Pricing Information:</span></big></big></td>
 						</tr>
-						<cfif Session.EventInfo.SelectedEvent.EarlyBird_RegistrationAvailable EQ 1 and DateDiff("d", Now(), Session.EventInfo.SelectedEvent.EarlyBird_RegistrationDeadline) GT 0>
+						<cfif Session.EventInfo.SelectedEvent.EarlyBird_Available EQ 1 and DateDiff("d", Now(), Session.EventInfo.SelectedEvent.EarlyBird_Deadline) GT 0>
 							<tr>
 								<td colspan="4"><big><big><span style="font-weight: bold;">Early Bird Registration Pricing</span></big></big></td>
 							</tr>
 							<tr>
 								<td>Registration Deadline:</td>
-								<td colspan="3">#DateFormat(Session.EventInfo.SelectedEvent.EarlyBird_RegistrationDeadline, "mm/dd/yyyy")#</td>
+								<td colspan="3">#DateFormat(Session.EventInfo.SelectedEvent.EarlyBird_Deadline, "mm/dd/yyyy")#</td>
 							</tr>
 							<tr>
 								<td style="width: 155px;">ESC Member Price:</td>
-								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.EarlyBird_MemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)> Per Event Date</cfif></td>
+								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.EarlyBird_MemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)> <!--- Per Event Day ---></cfif></td>
 								<td style="width: 155px;">Non-Member Price:</td>
-								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.EarlyBird_NonMemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)> Per Event Date</cfif></td>
+								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.EarlyBird_NonMemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)>  <!--- Per Event Day ---></cfif></td>
 							</tr>
-						<cfelseif Session.EventInfo.SelectedEvent.EarlyBird_RegistrationAvailable EQ 1 and DateDiff("d", Now(), Session.EventInfo.SelectedEvent.EarlyBird_RegistrationDeadline) EQ 0>
+						<cfelseif Session.EventInfo.SelectedEvent.EarlyBird_Available EQ 1 and DateDiff("d", Now(), Session.EventInfo.SelectedEvent.EarlyBird_Deadline) EQ 0>
 							<tr>
 								<td colspan="4"><big><big><span style="font-weight: bold;">Early Bird Registration Pricing</span></big></big></td>
 							</tr>
 							<tr>
 								<td>Registration Deadline:</td>
-								<td colspan="3">#DateFormat(Session.EventInfo.SelectedEvent.EarlyBird_RegistrationDeadline, "mm/dd/yyyy")#</td>
+								<td colspan="3">#DateFormat(Session.EventInfo.SelectedEvent.EarlyBird_Deadline, "mm/dd/yyyy")#</td>
 							</tr>
 							<tr>
 								<td colspan="4"><big style="color: red;"><big><span style="font-weight: bold;">Early Bird Registration Ends Today</span></big></big></td>
 							</tr>
 							<tr>
 								<td style="width: 155px;">ESC Member Price:</td>
-								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.EarlyBird_MemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)> Per Event Date</cfif></td>
+								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.EarlyBird_MemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)>  <!--- Per Event Day ---></cfif></td>
 								<td style="width: 155px;">Non-Member Price:</td>
-								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.EarlyBird_NonMemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)> Per Event Date</cfif></td>
+								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.EarlyBird_NonMemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)>  <!--- Per Event Day ---></cfif></td>
 							</tr>
 						<cfelse>
 							<tr>
 								<td style="width: 155px;">ESC Member Price:</td>
-								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.MemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)> Per Event Date</cfif></td>
+								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.Event_MemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)>  <!--- Per Event Day ---></cfif></td>
 								<td style="width: 155px;">Non-Member Price:</td>
-								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.NonMemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)> Per Event Date</cfif></td>
+								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.Event_NonMemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)>  <!--- Per Event Day ---></cfif></td>
 							</tr>
 						</cfif>
-						<cfif Session.EventInfo.SelectedEvent.ViewGroupPricing EQ 1>
+						<cfif Session.EventInfo.SelectedEvent.GroupPrice_Available EQ 1>
 							<tr>
 								<td colspan="4"><big><big><span style="font-weight: bold;">Group Price (<small><small>if Requirements are Met</small></small>)</span></big></big></td>
 							</tr>
 							<tr>
 								<td style="width: 155px;">Requirements:</td>
-								<td colspan="3">#Session.EventInfo.SelectedEvent.GroupPriceRequirements#</td>
+								<td colspan="3">#Session.EventInfo.SelectedEvent.GroupPrice_Requirements#</td>
 							</tr>
 							<tr>
 								<td style="width: 155px;">ESC Member Price:</td>
-								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.GroupMemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)> Per Event Date</cfif></td>
+								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.GroupPrice_MemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)>  <!--- Per Event Day ---></cfif></td>
 								<td style="width: 155px;">Non-Member Price:</td>
-								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.GroupNonMemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)> Per Event Date</cfif></td>
+								<td style="width: 292px;">#DollarFormat(Session.EventInfo.SelectedEvent.GroupPrice_NonMemberCost)# <cfif isDate(Session.EventInfo.SelectedEvent.EventDate1) or isDate(Session.EventInfo.SelectedEvent.EventDate2) or isDate(Session.EventInfo.SelectedEvent.EventDate3) or isDate(Session.EventInfo.SelectedEvent.EventDate4) or isDate(Session.EventInfo.SelectedEvent.EventDate5)>  <!--- Per Event Day ---></cfif></td>
 							</tr>
 						</cfif>
-						<cfif Session.EventInfo.SelectedEvent.AllowVideoConference EQ 1>
+						<cfif Session.EventInfo.SelectedEvent.H323_Available EQ 1>
 							<tr>
 								<td colspan="4"><big><big><span style="font-weight: bold;">Video Conference Price</span></big></big></td>
 							</tr>
@@ -288,26 +288,26 @@
 							</tr>
 							<tr>
 								<td style="width: 155px;">Information Cost:</td>
-								<td colspan="3">#Session.EventInfo.SelectedEvent.VideoConferenceInfo#</td>
+								<td colspan="3">#Session.EventInfo.SelectedEvent.H323_ConnectInfo#</td>
 							</tr>
 							<tr>
 								<td style="width: 155px;">Connection Cost:</td>
-								<td colspan="3">#DollarFormat(Session.EventInfo.SelectedEvent.VideoConferenceCost)#</td>
+								<td colspan="3">#DollarFormat(Session.EventInfo.SelectedEvent.H323_MemberCost)#</td>
 							</tr>
 						</cfif>
 					</cfif>
 					<tr>
 						<td colspan="4"><big><big><span style="font-weight: bold;">Contact Information</span></big></big></td>
 					</tr>
-					<cfif Len(Session.EventInfo.SelectedEvent.Presenters)>
+					<cfif Len(Session.EventInfo.SelectedEvent.PresenterID)>
 						<tr>
 							<td style="width: 155px;"><span style="font-weight: bold;">Presenter(s)</span></td>
-							<td colspan="3" style="width: 740px;">#Session.EventInfo.EventPresenter.Fname# #Session.EventInfo.EventPresenter.Lname# &nbsp;&nbsp;&nbsp; <a href="#buildURL('public:contactus.sendfeedback')#&EventID=#URL.EventID#&SendTo=Presenter" class="btn btn-primary btn-sm">Have Questions</a></td>
+							<td colspan="3" style="width: 740px;">#Session.EventInfo.EventPresenter.Fname# #Session.EventInfo.EventPresenter.Lname# &nbsp;&nbsp;&nbsp; <a href="#buildURL('public:contactus.sendfeedback')#&EventID=#URL.EventID#&SendTo=Presenter" class="btn btn-primary btn-sm BtnSameSize">Have Questions</a></td>
 						</tr>
 					</cfif>
 					<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">Facilitator:</span></td>
-						<td colspan="3" style="width: 740px;">#Session.EventInfo.EventFacilitator.FName# #Session.EventInfo.EventFacilitator.LName# &nbsp;&nbsp;&nbsp; <a href="#buildURL('public:contactus.sendfeedback')#&EventID=#URL.EventID#&SendTo=Facilitator" class="btn btn-primary btn-sm">Have Questions</a></td>
+						<td colspan="3" style="width: 740px;">#Session.EventInfo.EventFacilitator.FName# #Session.EventInfo.EventFacilitator.LName# &nbsp;&nbsp;&nbsp; <a href="#buildURL('public:contactus.sendfeedback')#&EventID=#URL.EventID#&SendTo=Facilitator" class="btn btn-primary btn-sm BtnSameSize">Have Questions</a></td>
 					</tr>
 				</tbody>
 			</table>
@@ -316,13 +316,13 @@
 			<cfif Session.EventInfo.SelectedEvent.AcceptRegistrations EQ 1>
 				<cfswitch expression="#ListLast(CGI.HTTP_REFERER, '=')#">
 					<cfcase value="public:usermenu.eventhistory">
-						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.eventhistory" class="btn btn-primary">My Past Events</a>
+						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.eventhistory" class="btn btn-primary">Past Events</a>
 					</cfcase>
 					<cfcase value="public:usermenu.upcomingevents">
-						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.upcomingevents" class="btn btn-primary">My Upcoming Events</a>
+						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.upcomingevents" class="btn btn-primary">Upcoming Events</a>
 					</cfcase>
 					<cfdefaultcase>
-						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary">Return to Event Listing</a>
+						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary">Back to Events</a>
 					</cfdefaultcase>
 				</cfswitch>
 				<cfif DateDiff("d", Now(), Session.EventInfo.SelectedEvent.Registration_Deadline) GTE 0>
@@ -339,7 +339,7 @@
 				</cfif>
 				<br /><br />
 			<cfelse>
-				<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary pull-left">Return to Event Listing</a><br /><br />
+				<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary pull-left">Back to Events</a><br /><br />
 				<br /><br />
 			</cfif>
 		</div>

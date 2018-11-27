@@ -3,109 +3,205 @@
 
 This file is part of MuraFW1
 
-Copyright 2010-2013 Stephen J. Withington, Jr.
+Copyright 2010-2015 Stephen J. Withington, Jr.
 Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
 --->
 </cfsilent>
-
-<cfquery name="getAllFacilities" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-	Select TContent_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, dateCreated, lastUpdated, lastUpdateBy, isAddressVerified, GeoCode_Latitude, GeoCode_Longitude, GeoCode_Township, GeoCode_StateLongName, GeoCode_CountryShortName, GeoCode_Neighborhood, USPS_CarrierRoute, USPS_CheckDigit, USPS_DeliveryPoint, PhysicalLocationCountry, PhysicalCountry
-	From eFacility
-	Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and Active = 1
-	Order by FacilityName ASC
-</cfquery>
-
-<cflock timeout="60" scope="SESSION" type="Exclusive">
-	<cfset Session.FormData = #StructNew()#>
-	<cfset Session.FormErrors = #ArrayNew()#>
-	<cfset Session.UserSuppliedInfo = #structNew()#>
-</cflock>
-
-<cfoutput>
-	<cfif isDefined("URL.Successful")>
-		<cfswitch expression="#URL.Successful#">
-			<cfcase value="false">
+<cfsavecontent variable="htmlhead"><cfoutput>
+	<link rel="stylesheet" href="/plugins/#Session.PluginFramework.Package#/assets/js/jqGrid_5.1.0/css/ui.jqgrid-bootstrap.css" />
+	<script type="text/ecmascript" src="/plugins/#Session.PluginFramework.Package#/assets/js/jqGrid_5.1.0/js/i18n/grid.locale-en.js"></script>
+	<script type="text/ecmascript" src="/plugins/#Session.PluginFramework.Package#/assets/js/jqGrid_5.1.0/js/jquery.jqGrid.min.js"></script>
+</cfoutput></cfsavecontent>
+<cfhtmlhead text="#htmlhead#" />
+<cfoutput>	    
+	<script>
+		$.jgrid.defaults.responsive = true;
+		$.jgrid.defaults.styleUI = 'Bootstrap';
+	</script>
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<fieldset>
+				<legend><h2>Available Event Facilities</h2></legend>
+			</fieldset>
+			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
-					<cfcase value="ErrorDatabase">
-						<div class="alert-box success">
-							<p>An Error has occurred in the database. Please try your request again.</p>
-						</div>
-						<cfdump var="#Session#">
+					<cfcase value="FacilityAdded">
+						<cfif URL.Successful EQ "true">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Facility Added</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully added a new event facility to the database.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						<cfelse>
+							<div class="alert alert-danger">
+							</div>
+						</cfif>
+					</cfcase>
+					<cfcase value="FacilityUpdated">
+						<cfif URL.Successful EQ "true">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Catering Facility Added</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully updated an event facility to the database.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						<cfelse>
+							<div class="alert alert-danger">
+							</div>
+						</cfif>
 					</cfcase>
 				</cfswitch>
-			</cfcase>
-			<cfcase value="true">
-				<cfif isDefined("URL.UserAction")>
-					<cfswitch expression="#URL.UserAction#">
-						<cfcase value="AddFacilityRoom">
-							<div class="alert-box success">
-								<p>You have successfully added a new facility room to {Name of Facility}</p>
-							</div>
-						</cfcase>
-						<cfcase value="AddedFacility">
-							<div class="alert-box success">
-								<p>You have successfully added a new facility to the database.</p>
-							</div>
-						</cfcase>
-						<cfcase value="UpdatedFacility">
-							<div class="alert-box success">
-								<p>You have successfully updated a facility in the database.</p>
-							</div>
-						</cfcase>
-						<cfcase value="DeleteFacility">
-							<div class="alert-box success">
-								<p>You have successfully removed a facility from the database.</p>
-							</div>
-						</cfcase>
-					</cfswitch>
-				</cfif>
-			</cfcase>
-		</cfswitch>
-	</cfif>
-	<div class="art-block clearfix">
-		<div class="art-blockheader">
-			<h3 class="t">Facility Locations</h3>
-		</div>
-		<div class="art-blockcontent">
-			<table class="art-article" style="width:100%;">
-				<thead>
-					<tr>
-						<td>Facility Name</td>
-						<td>Address</td>
-						<td>City</td>
-						<td>State</td>
-						<td>ZipCode</td>
-						<td>Actions</td>
-					</tr>
-				</thead>
-				<cfif getAllFacilities.RecordCount>
-					<tfoot>
-						<tr>
-							<td colspan="6">Add a new Facility for an upcoming event that is not listed above by clicking <a href="#buildURL('admin:facilities.addfacility')#" class="art-button">here</a></td>
-						</tr>
-					</tfoot>
-					<tbody>
-						<cfloop query="getAllFacilities">
-							<tr bgcolor="###iif(currentrow MOD 2,DE('ffffff'),DE('efefef'))#">
-								<td>#getAllFacilities.FacilityName#</td>
-								<td>#getAllFacilities.PhysicalAddress#</td>
-								<td>#getAllFacilities.PhysicalCity#</td>
-								<td>#getAllFacilities.PhysicalState#</td>
-								<td>#getAllFacilities.PhysicalZipCode#</td>
-								<td><a href="#buildURL('admin:facilities.updatefacility')#&PerformAction=Edit&RecNo=#getAllFacilities.TContent_ID#" class="art-button">Update</a>&nbsp;&nbsp;<a href="#buildURL('admin:facilities.updatefacility')#&PerformAction=Delete&RecNo=#getAllFacilities.TContent_ID#" class="art-button">D</a>&nbsp;&nbsp;<a href="#buildURL('admin:facilities.managerooms')#&RecNo=#getAllFacilities.TContent_ID#" class="art-button">Rooms</a></td>
-							</tr>
-						</cfloop>
-					</tbody>
-				<cfelse>
-					<tbody>
-						<tr>
-							<td colspan="6"><div align="center" class="alert-box notice">No Facilities are located within the database Please click <a href="#buildURL('admin:facilities.addfacility')#" class="art-button">here</a> to add one.</div></td>
-						</tr>
-					</tbody>
-				</cfif>
-			</table>
+			</cfif>
+			<table id="jqGrid"></table>
+			<div id="jqGridPager"></div>
+			<div id="dialog" title="Feature not supported" style="display:none"><p>That feature is not supported.</p></div>
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			var selectedRow = 0;
+			$("##jqGrid").jqGrid({
+				url: "/plugins/#Variables.Framework.Package#/admin/controllers/facilities.cfc?method=getAllFacilities",
+				// we set the changes to be made at client side using predefined word clientArray
+				datatype: "json",
+				colNames: ["Rec No", "Facility Name","Address","City","State","Voice Number","Last Updated","Active"],
+				colModel: [
+					{ label: 'Rec ##', name: 'TContent_ID', width: 75, key: true, hidden: true, editable: false },
+					{ label: 'Facility Name', name: 'FacilityName', width: 75, editable: false },
+					{ label: 'Address', name: 'PhysicalAddress', width: 75, editable: false },
+					{ label: 'City', name: 'PhysicalCity', width: 75, editable: false },
+					{ label: 'State', name: 'PhysicalState', width: 75, editable: false },
+					{ label: 'Voice Number', name: 'PrimaryVoiceNumber', width: 75, editable: false },
+					{ label: 'Last Updated', name: 'lastUpdated', width: 75, editable: false },
+					{ label: 'Active', name: 'Active', width: 75, editable: false }
+				],
+				sortname: 'FacilityName',
+				sortorder : 'asc',
+				viewrecords: true,
+				height: 500,
+				autowidth: true,
+				rowNum: 60,
+				rowList : [20,30,50],
+				rowTotal: 2000,
+				pgText: " of ",
+				pager: "##jqGridPager",
+				jsonReader: {
+					root: "ROWS",
+					page: "PAGE",
+					total: "TOTAL",
+					records: "RECORDS",
+					cell: "",
+					id: "0"
+				},
+				onSelectRow: function(id){
+					//We verify a valid new row selection
+					if(id && id!==selectedRow) {
+						//If a previous row was selected, but the values were not saved, we restore it to the original data.
+						$('##jqGrid').restoreRow(selectedRow);
+						selectedRow=id;
+					}
+				}
+			});
+			$('##jqGrid').navGrid('##jqGridPager', {edit: false, add: false, del:false, search:true});
+
+			$('##jqGrid').navButtonAdd('##jqGridPager',
+				{
+					caption: "",
+					buttonicon: "glyphicon-plus",
+					onClickButton: function(id) {
+						var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=admin:facilities.addfacility";
+						window.open(urlToGo,"_self");
+					},
+					position: "last"
+				}
+			)
+
+			$('##jqGrid').navButtonAdd('##jqGridPager',
+				{
+					caption: "",
+					buttonicon: "glyphicon-pencil",
+					onClickButton: function(id) {
+						if (selectedRow == 0) {
+							alert("Please Select a Row first then the Edit Icon to make changes to a Users Account");
+						} else {
+							var grid = $('##jqGrid');
+							var RowIDValue = grid.getCell(selectedRow, 'TContent_ID');
+							var urlToGo = "http://" + window.location.hostname + "#cgi.script_name#" + "#cgi.path_info#?#rc.pc.getPackage()#action=admin:facilities.editfacility&FacilityID="+ RowIDValue;
+							window.open(urlToGo,"_self");
+						}
+						},
+					position: "last"
+				}
+			)
+		});
+	</script>
 </cfoutput>
