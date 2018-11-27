@@ -672,6 +672,17 @@
 				</cfquery>
 			</cfif>
 
+			<cfif Variables.UpdateRecord.Active EQ 1>
+				<cfquery name="UpdateCatererInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					update p_EventRegistration_Membership
+					Set Active = <cfqueryparam value="#FORM.Active#" cfsqltype="cf_sql_bit">,
+						lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+						lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
+						lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+					Where TContent_ID = <cfqueryparam value="#URL.MemberID#" cfsqltype="cf_sql_integer">
+				</cfquery>
+			</cfif>
+
 			<cfif LEN(cgi.path_info)>
 				<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:membership.default&UserAction=MemberFacilityUpdated&Successful=True" >
 			<cfelse>

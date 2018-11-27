@@ -97,6 +97,7 @@
 											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Events Menu <b class="caret"></b></a>
 											<ul class="dropdown-menu">
 												<li class=""><a href="#buildURL('eventcoordinator:events.addevent')#">Add New Event</a></li>
+												<li class=""><a href="#buildURL('eventcoordinator:events.addexpense')#">Add New Event Expense</a></li>
 												<li class=""><a href="#buildURL('eventcoordinator:events.default')#">List All Events</a></li>
 											</ul
 											>

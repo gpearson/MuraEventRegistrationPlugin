@@ -8,6 +8,7 @@ Licensed under the Apache License, Version v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 
 --->
+<cfif not isDefined("Session.ReportJars")><cfset Session.ReportJars = #this.javaSettings.Loadpaths[1]#></cfif>
 </cfsilent>
 <cfif not isDefined("Session.PluginFramework")><cflocation url="/" addtoken="false"></cfif>
 <cfsavecontent variable="htmlhead"><cfoutput>
@@ -21,7 +22,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 		$.jgrid.defaults.responsive = true;
 		$.jgrid.defaults.styleUI = 'Bootstrap';
 	</script>
-	<cfdump var="#Session#">
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<fieldset>
@@ -29,6 +29,190 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</fieldset>
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
+					<cfcase value="EventCopied">
+						<cfif URL.Successful EQ "true">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Event Cancelled</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully copied an event to a new event.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						<cfelse>
+							<div class="alert alert-danger">
+							</div>
+						</cfif>
+					</cfcase>
+					<cfcase value="EventCancelled">
+						<cfif URL.Successful EQ "true">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Event Cancelled</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully cancelled the event. If you selected to notify registered partiicpants an email is being sent to those individuals.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						<cfelse>
+							<div class="alert alert-danger">
+							</div>
+						</cfif>
+					</cfcase>
+					<cfcase value="ParticipantsRegistered">
+						<cfif URL.Successful EQ "true">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Participants Registered for Event</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully registered participants for the event you selected. If you selected the option to send email confirmations, those are on the process to be delivered to the selected participants.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						<cfelse>
+							<div class="alert alert-danger">
+							</div>
+						</cfif>
+					</cfcase>
+					<cfcase value="EventExpensesCostVerified">
+						<cfif URL.Successful EQ "true">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Event Expenses Cost Verified</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully verified the expenses for the event within the database.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						<cfelse>
+							<div class="alert alert-danger">
+							</div>
+						</cfif>
+					</cfcase>
 					<cfcase value="EventAdded">
 						<cfif URL.Successful EQ "true">
 							<div id="modelWindowDialog" class="modal fade">
@@ -167,6 +351,52 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</div>
 						</cfif>
 					</cfcase>
+					<cfcase value="EmailSentToParticipants">
+						<cfif URL.Successful EQ "true">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Email Sending to Participants</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">The system is in process of sending your message to the participants of the event.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						<cfelse>
+							<div class="alert alert-danger">
+							</div>
+						</cfif>
+					</cfcase>
 				</cfswitch>
 			</cfif>
 			<table class="table table-striped">
@@ -180,20 +410,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<tbody>
 					<cfloop query="Session.getAllEvents">
 						<cfquery name="getRegisteredParticipantsForEvent" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-							SELECT p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.IVCParticipant, p_EventRegistration_UserRegistrations.OnWaitingList, tusers.Fname, tusers.Lname, tusers.Email, SUBSTRING_INDEX(tusers.Email,"@",-1) AS Domain, tusers.Company, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, Date_FORMAT(p_EventRegistration_Events.EventDate, "%a, %M %d, %Y") as EventDateFormat, p_EventRegistration_UserRegistrations.RegisterFOrEventDate1, p_EventRegistration_UserRegistrations.RegisterFOrEventDate2, p_EventRegistration_UserRegistrations.RegisterFOrEventDate3, p_EventRegistration_UserRegistrations.RegisterFOrEventDate4, p_EventRegistration_UserRegistrations.RegisterFOrEventDate5, p_EventRegistration_UserRegistrations.RegisterFOrEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM
+							SELECT p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.H323Participant, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.OnWaitingList, tusers.Fname, tusers.Lname, tusers.Email, SUBSTRING_INDEX(tusers.Email,"@",-1) AS Domain, tusers.Company, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM
 							FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.Event_ID
 							WHERE
-								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterFOrEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR 
-								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterFOrEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR
-								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterFOrEventDate3 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR
-								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterFOrEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR
-								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterFOrEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR
+								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterForEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR 
+								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterForEventDate2 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR
+								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterForEventDate3 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR
+								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterForEventDate4 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR
+								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterForEventDate5 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR
 								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterForEventSessionAM = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR
 								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterForEventSessionPM = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> )
 							ORDER BY Domain ASC, tusers.LName ASC, tusers.Fname ASC
 						</cfquery>
+
 						<cfquery name="getAttendedParticipantsForEvent" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-							SELECT p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.IVCParticipant, p_EventRegistration_UserRegistrations.OnWaitingList, tusers.Fname, tusers.Lname, tusers.Email, SUBSTRING_INDEX(tusers.Email,"@",-1) AS Domain, tusers.Company, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, Date_FORMAT(p_EventRegistration_Events.EventDate, "%a, %M %d, %Y") as EventDateFormat, p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6, p_EventRegistration_UserRegistrations.AttendedEventSessionAM, p_EventRegistration_UserRegistrations.AttendedEventSessionPM
+							SELECT p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.H323Participant, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.OnWaitingList, tusers.Fname, tusers.Lname, tusers.Email, SUBSTRING_INDEX(tusers.Email,"@",-1) AS Domain, tusers.Company, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_UserRegistrations.AttendedEventDate1, p_EventRegistration_UserRegistrations.AttendedEventDate2, p_EventRegistration_UserRegistrations.AttendedEventDate3, p_EventRegistration_UserRegistrations.AttendedEventDate4, p_EventRegistration_UserRegistrations.AttendedEventDate5, p_EventRegistration_UserRegistrations.AttendedEventDate6, p_EventRegistration_UserRegistrations.AttendedEventSessionAM, p_EventRegistration_UserRegistrations.AttendedEventSessionPM
 							FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.Event_ID
 							WHERE
 								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.AttendedEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR 
@@ -282,7 +513,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 											From getRegisteredParticipantsForEvent
 											Where OnWaitingList = <cfqueryparam value="1" cfsqltype="cf_sql_integer">
 										</cfquery>
-										<cfif Session.getAllEvents.MaxParticipants EQ getRegisteredParticipantsForEvent.RecordCount>
+										<cfif Session.getAllEvents.Event_MaxParticipants EQ getRegisteredParticipantsForEvent.RecordCount>
 											<div class="alert alert-success small">Event Full<hr></div>
 										<cfelseif WaitingListCount.RecordCount>
 											<div class="alert alert-danger small">Event Full<br>#WaitingListCount.RecordCount# on Waiting List<hr>Click Update Event to change settings</div>
@@ -298,16 +529,16 @@ http://www.apache.org/licenses/LICENSE-2.0
 							<cfif Session.SiteConfigSettings.Facebook_Enabled EQ 1><a href="#buildURL('eventcoordinator:events.publishtofb')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small small"><small>Post Facebook</small></a></cfif><br>
 							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.emailparticipants')#&EventID=#Session.getAllEvents.TContent_ID#&EmailType=EmailRegistered" class="btn btn-primary btn-small"><small>Email Registered</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Email Registered</small></button></cfif>
 							<cfif getAttendedParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.emailparticipants')#&EventID=#Session.getAllEvents.TContent_ID#&EmailType=EmailAttended" class="btn btn-primary btn-small"><small>Email Attended</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Email Attended</small></button></cfif>
-							<cfif getAttendedParticipantsForEvent.RecordCount><cfif Session.getAllEvents.PGPAvailable EQ 1><a href="#buildURL('eventcoordinator:events.sendpgpcertificates')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Send Certificates</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Send Certificates</small></button></cfif><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Send Certificates</small></button></CFIF><br>
-							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.eventsigninsheet')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Sheet</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Sign-In Sheet</small></button></cfif>
-							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.namebadges')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Name Badges</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Name Badges</small></button></cfif>
+							<cfif getAttendedParticipantsForEvent.RecordCount><cfif Session.getAllEvents.PGPCertificate_Available EQ 1><a href="#buildURL('eventcoordinator:events.sendpgpcertificates')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Send Certificates</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Send Certificates</small></button></cfif><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Send Certificates</small></button></CFIF><br>
+							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Sheet</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Sign-In Sheet</small></button></cfif>
+							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Name Tags</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Name Tags</small></button></cfif>
 							<cfif getRegisteredParticipantsForEvent.RecordCount and DateDiff("d", Now(), Session.getAllEvents.EventDate) LT 1><a href="#buildURL('eventcoordinator:events.signinparticipant')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Participant</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Sign-In Participant</small></button></cfif>
 							<a href="#buildURL('eventcoordinator:events.updateevent_review')#&EventID=#Session.getAllEvents.TContent_ID#" role="button" class="btn btn-primary btn-small"><small>Update Event</small></a>
 							<a href="#buildURL('eventcoordinator:events.cancelevent')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Cancel Event</small></a>
 							<a href="#buildURL('eventcoordinator:events.copyevent')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Copy Event</small></a><br>
 							<a href="#buildURL('eventcoordinator:events.eventdocs')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Event Documents</small></a>
 							<a href="#buildURL('eventcoordinator:events.eventweblinks')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Event Web Links</small></a><br>
-							<cfif getAttendedParticipantsForEvent.RecordCount and Session.getAllEvents.EventInvoicesGenerated EQ 0><a href="#buildURL('eventcoordinator:events.enterexpenses')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Expenses</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Expenses</small></button></cfif>
+							<cfif Session.getAllEvents.EventInvoicesGenerated EQ 0><a href="#buildURL('eventcoordinator:events.enterexpenses')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Expenses</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Expenses</small></button></cfif>
 							<cfif getAttendedParticipantsForEvent.RecordCount and Session.getAllEvents.EventInvoicesGenerated EQ 0><a href="#buildURL('eventcoordinator:events.enterrevenue')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Revenue</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Revenue</small></button></cfif>
 							<cfset IncomeCompleted = 0>
 							<cfif checkIncomeVerified.RecordCount EQ 1 and CheckIncomeVerified.AttendeePriceVerified EQ 1><cfset IncomeCOmpleted = 1></cfif>

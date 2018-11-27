@@ -53,25 +53,20 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<table class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
 						<cfloop query="Session.getRegisteredParticipants">
 							<cfset CurrentModRow = #Session.getRegisteredParticipants.CurrentRow# MOD 4>
-							<cfquery name="GetOrgName" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								Select OrganizationName
-								From p_EventRegistration_Membership
-								Where OrganizationDomainName = <cfqueryparam value="#Session.getRegisteredparticipants.Domain#" cfsqltype="cf_sql_varchar">
-							</cfquery>
 							<cfswitch expression="#Variables.NumberOfEventDates#">
 								<cfcase value="1">
 									<cfswitch expression="#Variables.CurrentModRow#">
 										<cfcase value="1">
 											<tr>
 												<cfif LEN(Session.getRegisteredParticipants.User_ID)>
-													<td width="25%"><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td>
+													<td width="25%"><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small>(#Session.getRegisteredParticipants.Email#)</small></td>
 												<cfelse>
 													<td width="25%">&nbsp;&nbsp;<br><small>&nbsp;&nbsp;</small></td>
 												</cfif>
 										</cfcase>
 										<cfcase value="0">
 											<cfif LEN(Session.getRegisteredParticipants.User_ID)>
-												<td width="25%"><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td>
+												<td width="25%"><cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small>(#Session.getRegisteredParticipants.Email#)</small></td>
 											<cfelse>
 												<td width="25%">&nbsp;&nbsp;<br><small>&nbsp;&nbsp;</small></td>
 											</cfif>
@@ -80,7 +75,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 										<cfdefaultcase>
 											<cfif LEN(Session.getRegisteredParticipants.User_ID)>
 												<td width="25%">
-													<cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td>
+													<cfinput type="CheckBox" Name="ParticipantEmployee" Value="#Session.getRegisteredParticipants.User_ID#_1">&nbsp;&nbsp;#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small>(#Session.getRegisteredParticipants.Email#)</small></td>
 											<cfelse>
 												<td width="25%">&nbsp;&nbsp;<br><small>&nbsp;&nbsp;</small></td>
 											</cfif>
@@ -93,7 +88,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 											<tr>
 											<td width="25%">
 											<table class="table" width="25%" cellspacing="0" cellpadding="0">
-											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td></th>
+											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small>(#Session.getRegisteredParticipants.Email#)</small></td></th>
 											<tr>
 											<cfswitch expression="#Variables.NumberOfEventDates#">
 												<cfcase value="1">
@@ -137,7 +132,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 										<cfcase value="0">
 											<td width="25%">
 											<table class="table" width="25%" cellspacing="0" cellpadding="0">
-											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td></th>
+											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small>(#Session.getRegisteredParticipants.Email#)</small></td></th>
 											<tr>
 											<cfswitch expression="#Variables.NumberOfEventDates#">
 												<cfcase value="1">
@@ -181,7 +176,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 										<cfdefaultcase>
 											<td width="25%">
 											<table class="table" width="25%" cellspacing="0" cellpadding="0">
-											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small><cfif GetOrgName.RecordCount GT 0>(#GetOrgName.OrganizationName#)<cfelse>(#Session.getRegisteredparticipants.Domain#)</cfif></small></td></th>
+											<th><td colspan="#Variables.NumberOfEventDates#">#Session.getRegisteredParticipants.LName#, #Session.getRegisteredParticipants.FName#<br><small>(#Session.getRegisteredParticipants.Email#)</small></td></th>
 											<tr>
 											<cfswitch expression="#Variables.NumberOfEventDates#">
 												<cfcase value="1">

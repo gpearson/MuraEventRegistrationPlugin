@@ -117,4 +117,116 @@
 		</cfif>
 	</cffunction>
 
+	<cffunction name="QRCodeImage" ReturnType="String" output="False">
+		<cfargument name="Data" type="string" Required="True">
+		<cfargument name="PluginDirectory" type="string" Required="True">
+		<cfargument name="QRCodeImageFilename" type="string" Required="True">
+
+		<cfset qr = createObject("component","plugins/#Arguments.PluginDirectory#/library/components/QRCode")>
+		<cfset CurLoc = #ExpandPath("/")#>
+		<cfset FileStoreLoc = #Variables.CurLoc# & "plugins/" & #Arguments.PluginDirectory# & "/library/images/QRCodes">
+		<cfset ImageFilename = #Arguments.QRCodeImageFilename# & ".png">
+		<cfset FileWritePathWithName = #Variables.FileStoreLoc# & "/" & #Variables.ImageFilename#>
+		<cfset URLFileLocation = "/plugins/" & #Arguments.PluginDirectory# & "/library/images/QRCodes/" & #Variables.ImageFilename#>
+		<cffile action="write" file="#Variables.FileWritePathWithName#" output="#qr.getQRCode("#Arguments.Data#",100,100,"png")#">
+		<cfreturn #Variables.URLFileLocation#>
+	</cffunction>
+
+	<cffunction name="iCalUS" returntype="String" output="false" hint="Create iCal Event for Registered Users">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="RegistrationRecordID" required="true" type="numeric">
+
+		<cfquery name="getRegistrationInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			SELECT
+				tusers.Fname, tusers.Lname, tusers.Email, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.RegistrationID,p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_UserRegistrations.OnWaitingList, p_EventRegistration_UserRegistrations.AttendeePrice, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.H323Participant, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM, p_EventRegistration_UserRegistrations.RegistrationIPAddr, p_EventRegistration_UserRegistrations.RegisteredByUserID, p_EventRegistration_UserRegistrations.dateCreated, p_EventRegistration_UserRegistrations.lastUpdated, p_EventRegistration_UserRegistrations.lastUpdateBy, p_EventRegistration_UserRegistrations.lastUpdateByID, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5, p_EventRegistration_Events.EventDate6, p_EventRegistration_Events.LongDescription, p_EventRegistration_Events.Event_StartTime, p_EventRegistration_Events.Event_EndTime, p_EventRegistration_Events.PresenterID, p_EventRegistration_Events.FacilitatorID, p_EventRegistration_Facility.FacilityName, p_EventRegistration_Facility.PhysicalAddress, p_EventRegistration_Facility.PhysicalCity, p_EventRegistration_Facility.PhysicalState, p_EventRegistration_Facility.PhysicalZipCode, p_EventRegistration_Facility.PhysicalZip4, p_EventRegistration_Facility.Physical_isAddressVerified, p_EventRegistration_Facility.Physical_Latitude, p_EventRegistration_Facility.Physical_Longitude, p_EventRegistration_FacilityRooms.RoomName, p_EventRegistration_Events.Event_MemberCost, p_EventRegistration_Events.Event_MaxParticipants, p_EventRegistration_Events.EventAgenda, p_EventRegistration_Events.EventTargetAudience, p_EventRegistration_Events.EventStrategies, p_EventRegistration_Events.EventSpecialInstructions, p_EventRegistration_Events.PGPCertificate_Available, p_EventRegistration_Events.PGPCertificate_Points, p_EventRegistration_Events.Webinar_Available, p_EventRegistration_Events.Event_DailySessions, p_EventRegistration_Events.H323_Available, p_EventRegistration_Events.BillForNoShow
+			FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.Event_ID INNER JOIN p_EventRegistration_Facility ON p_EventRegistration_Facility.TContent_ID = p_EventRegistration_Events.Event_HeldAtFacilityID INNER JOIN p_EventRegistration_FacilityRooms ON p_EventRegistration_FacilityRooms.TContent_ID = p_EventRegistration_Events.Event_FacilityRoomID
+			WHERE p_EventRegistration_UserRegistrations.TContent_ID = <cfqueryparam value="#Arguments.RegistrationRecordID#" cfsqltype="cf_sql_integer">
+		</cfquery>
+
+		<cfif getRegistrationInfo.User_ID NEQ getRegistrationInfo.RegisteredByUserID>
+			<cfquery name="getRegisteredByUserInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select Fname, Lname, Email
+				From tusers
+				Where UserID = <cfqueryparam value="#getRegistrationInfo.RegisteredByUserID#" cfsqltype="cf_sql_varchar">
+			</cfquery>
+			<cfset RegisteredBy = #getRegisteredByUserInfo.Lname# & ", " & #getRegisteredByUserInfo.Fname# & " (" & #getRegisteredByUserInfo.Email# & ")">
+		<cfelse>
+			<cfset RegisteredBy = "self">
+		</cfif>
+
+		<cfif LEN(getRegistrationInfo.PresenterID)>
+			<cfquery name="getEventPresenter" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				Select Fname, Lname, Email
+				From tusers
+				Where UserID = <cfqueryparam value="#getRegistrationInfo.PresenterID#" cfsqltype="cf_sql_varchar">
+			</cfquery>
+		</cfif>
+
+		<cfquery name="getEventFacilitator" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select Fname, Lname, Email
+			From tusers
+			Where UserID = <cfqueryparam value="#getRegistrationInfo.FacilitatorID#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+
+		<cfset CRLF = #chr(13)# & #chr(10)#>
+		<cfset CurrentDateTime = #Now()#>
+		<cfset stEvent = StructNew()>
+		<cfset stEvent.FacilitatorName = #getEventFacilitator.Fname# & " " & #getEventFacilitator.Lname#>
+		<cfset stEvent.FacilitatorEmail = #getEventFacilitator.Email#>
+		<cfset stEvent.EventLocation = #getRegistrationInfo.FacilityName# & " (" & #getRegistrationInfo.PhysicalAddress# & " " & #getRegistrationInfo.PhysicalCity# & ", " & #getRegistrationInfo.PhysicalState# & " " & #getRegistrationInfo.PhysicalZipCode# & ")">
+		<cfset stEvent.EventDescription = #getRegistrationInfo.LongDescription# & "\n\n" & "Special Instructions:\n" & #getRegistrationInfo.EventSpecialInstructions#>
+		<cfset stEvent.Priority = 1>
+
+		<cfset vCal = "BEGIN:VCALENDAR" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "PRODID: -//Northern Indiana ESC//Event Registration System//EN" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "VERSION:2.0" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "METHOD:REQUEST" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "BEGIN:VTIMEZONE" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "TZID:Eastern Time" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "BEGIN:STANDARD" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "DTSTART:20061101T020000" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=1SU;BYMONTH=11" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "TZOFFSETFROM:-0400" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "TZOFFSETTO:-0500" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "TZNAME:Standard Time" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "END:STANDARD" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "BEGIN:DAYLIGHT" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "DTSTART:20060301T020000" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "RRULE:FREQ=YEARLY;INTERVAL=1;BYDAY=2SU;BYMONTH=3" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "TZOFFSETFROM:-0500" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "TZOFFSETTO:-0400" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "TZNAME:Daylight Savings Time" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "END:DAYLIGHT" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "END:VTIMEZONE" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "BEGIN:VEVENT" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "UID:" & #getRegistrationInfo.RegistrationID# & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "ORGANIZER;CN=:" & #stEvent.FacilitatorName# & ":MAILTO:" & #stEvent.FacilitatorEmail# & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "DTSTAMP:" & #DateFormat(Now(), "yyyymmdd")# & "T" & TimeFormat(Now(), "HHmmss") & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "DTSTART;TZID=Eastern Time:" & #DateFormat(getRegistrationInfo.EventDate, "yyyymmdd")# & "T" & TimeFormat(getRegistrationInfo.Event_StartTime, "HHmmss") & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "DTEND;TZID=Eastern Time:" & #DateFormat(getRegistrationInfo.EventDate, "yyyymmdd")# & "T" & TimeFormat(getRegistrationInfo.Event_EndTime, "HHmmss") & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "SUMMARY:" & #getRegistrationInfo.ShortTitle# & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "LOCATION:" & #stEvent.EventLocation# & #Variables.CRLF#>
+		<cfif getRegistrationInfo.WebinarParticipant EQ 0>
+			<cfset vCal = #Variables.vCal# & "DESCRIPTION:" & #stEvent.EventDescription# & #Variables.CRLF#>
+		<cfelseif getRegistrationInfo.WebinarParticipant EQ 1 AND getRegistrationInfo.WebinarAvailable EQ 1>
+			<cfset vCal = #Variables.vCal# & "DESCRIPTION:" & #stEvent.EventDescription# & #Variables.CRLF#>
+			<cfset vCal = #Variables.vCal# & "Webinar Information: " & #getRegistrationInfo.WebinarConnectInfo# & #Variables.CRLF#>
+		</cfif>
+		<cfset vCal = #Variables.vCal# & "PRIORITY:" & #stEvent.Priority# & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "TRANSP:OPAQUE" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "CLASS:PUBLIC" & #Variables.CRLF#>
+		<!---
+			For a Reminder Use the Below Lines
+			<cfset vCal = #Variables.vCal# & "BEGIN:VALARM" & #Variables.CRLF#>
+			<cfset vCal = #Variables.vCal# & "TRIGGER:-PT30M" & #Variables.CRLF#>
+			<cfset vCal = #Variables.vCal# & "ACTION:DISPLAY" & #Variables.CRLF#>
+			<cfset vCal = #Variables.vCal# & "DESCRIPTION:Reminder" & #Variables.CRLF#>
+			<cfset vCal = #Variables.vCal# & "END:VALARM" & #Variables.CRLF#>
+
+		--->
+		<cfset vCal = #Variables.vCal# & "END:VEVENT" & #Variables.CRLF#>
+		<cfset vCal = #Variables.vCal# & "END:VCALENDAR" & #Variables.CRLF#>
+		<cfreturn Trim(variables.vcal)>
+	</cffunction>
+
 </cfcomponent>
