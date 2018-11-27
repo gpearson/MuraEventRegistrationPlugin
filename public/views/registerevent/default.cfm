@@ -23,15 +23,16 @@
 			<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfinput type="hidden" name="StayForMeal" value="0">
 				<cfinput type="hidden" name="EventID" value="#Session.UserRegistrationInfo.EventID#">
 				<div class="panel-body">
 					<fieldset>
 						<legend>Registering for Event: #Session.getSelectedEvent.ShortTitle#</legend>
 					</fieldset>
 					<div class="alert alert-info">Please complete the following information to register for this event. All electronic communication from this system will be sent to the Participant's Email Address
-					<cfif Session.getSelectedEvent.EventHasDailySessions EQ 1><p align="center"><hr>
-					<strong>Session 1:</strong> #timeFormat(Session.getSelectedEvent.Session1BeginTime, "hh:mm tt")# till #timeFormat(Session.getSelectedEvent.Session1EndTime, "hh:mm tt")#<br>
-					<strong>Session 2:</strong> #timeFormat(Session.getSelectedEvent.Session2BeginTime, "hh:mm tt")# till #timeFormat(Session.getSelectedEvent.Session2EndTime, "hh:mm tt")#<br>
+					<cfif Session.getSelectedEvent.Event_DailySessions EQ 1><p align="center"><hr>
+					<strong>Session 1:</strong> #timeFormat(Session.getSelectedEvent.Event_Session1BeginTime, "hh:mm tt")# till #timeFormat(Session.getSelectedEvent.Event_Session1EndTime, "hh:mm tt")#<br>
+					<strong>Session 2:</strong> #timeFormat(Session.getSelectedEvent.Event_Session2BeginTime, "hh:mm tt")# till #timeFormat(Session.getSelectedEvent.Event_Session2EndTime, "hh:mm tt")#<br>
 					</p></cfif>
 					</div>
 					<cfif isDate(Session.getSelectedEvent.EventDate1) or isDate(Session.getSelectedEvent.EventDate2) or isDate(Session.getSelectedEvent.EventDate3) or isDate(Session.getSelectedEvent.EventDate4) or isDate(Session.getSelectedEvent.EventDate5)>
@@ -61,10 +62,10 @@
 						<label for="RegistrationEmail" class="control-label col-sm-3">Your Email:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#Session.Mura.Email#</p></div>
 					</div>
-					<cfif Session.getSelectedEvent.PGPAvailable EQ 1>
+					<cfif Session.getSelectedEvent.PGPCertificate_Available EQ 1>
 						<div class="form-group">
 							<label for="RegistrationEmail" class="control-label col-sm-3">PGP Points:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#NumberFormat(Session.getSelectedEvent.PGPPoints, "999.99")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#NumberFormat(Session.getSelectedEvent.PGPCertificate_Points, "999.99")#</p></div>
 						</div>
 					</cfif>
 					<div class="form-group">
@@ -81,7 +82,7 @@
 							</cfif>
 						</div>
 					</div>
-					<cfif Session.getSelectedEvent.EventHasDailySessions EQ 1>
+					<cfif Session.getSelectedEvent.Event_DailySessions EQ 1>
 						<div class="form-group">
 						<label for="AttendSession1" class="control-label col-sm-3">Attend Session 1:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="AttendSession1" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 1</option></cfselect></div>
@@ -91,17 +92,17 @@
 						<div class="col-sm-8"><cfselect name="AttendSession2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 2</option></cfselect></div>
 						</div>
 					</cfif>
-					<cfif Session.getSelectedEvent.MealAvailable EQ 1>
+					<cfif Session.getSelectedEvent.Meal_Available EQ 1 and Session.getSelectedEvent.Meal_Included EQ 0>
 						<div class="form-group">
 						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="StayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="1" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect></div>
 						</div>
-						<cfif Session.getSelectedEvent.MealIncluded EQ 0>
+						<cfif Session.getSelectedEvent.Meal_Included EQ 0>
 							<div class="form-group">
 								<label for="RegisterAllDates" class="control-label col-sm-3">Participants wanting lunch<br>will pay the caterer directly:</label>
 								<div class="col-sm-8">
 									<strong>Caterer:</strong> #Session.getEventCaterer.FacilityName# <cfif LEN(Session.getEventCaterer.ContactName) or LEN(Session.getEventCaterer.ContactPhoneNumber)>(<cfif LEN(Session.getEventCaterer.ContactName)>#Session.getEventCaterer.ContactName# - </cfif>#Session.getEventCaterer.ContactPhoneNumber#)<br></cfif>
-									<strong>Meal Information:</strong> #DollarFormat(Session.getSelectedEvent.MealCost)# (#Session.getSelectedEvent.Meal_Notes#)
+									<strong>Meal Information:</strong> #DollarFormat(Session.getSelectedEvent.Meal_Cost)# (#Session.getSelectedEvent.Meal_Information#)
 								</div>
 							</div>
 						</cfif>
@@ -142,12 +143,12 @@
 							</div>
 						</cfif>
 					</cfif>
-					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
+					<cfif Session.getSelectedEvent.Webinar_Available EQ 1>
 						<div class="form-group">
 						<label for="AttendViaWebinar" class="control-label col-sm-3">Attend via Webinar?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="AttendViaWebinar" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend via Webinar Option</option></cfselect></div>
 						</div>
-					<cfelseif Session.getSelectedEvent.WebinarAvailable EQ 0>
+					<cfelseif Session.getSelectedEvent.Webinar_Available EQ 0>
 						<cfif Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration EQ "True">
 							<div class="form-group">
 							<label for="RegistrationEmail" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
@@ -182,8 +183,8 @@
 					</cfif>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Register For Event"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Events">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Register Event"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -192,6 +193,7 @@
 			<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfinput type="hidden" name="StayForMeal" value="0">
 				<cfinput type="hidden" name="EventID" value="#Session.FormInput.EventID#">
 				<cfif isDefined("Session.FormErrors")>
 					<cfif ArrayLen(Session.FormErrors)>
@@ -333,10 +335,10 @@
 						<label for="RegistrationEmail" class="control-label col-sm-3">Your Email:&nbsp;</label>
 						<div class="col-sm-8"><p class="form-control-static">#Session.Mura.Email#</p></div>
 					</div>
-					<cfif Session.getSelectedEvent.PGPAvailable EQ 1>
+					<cfif Session.getSelectedEvent.PGPCertificate_Available EQ 1>
 						<div class="form-group">
 							<label for="RegistrationEmail" class="control-label col-sm-3">PGP Points:&nbsp;</label>
-							<div class="col-sm-8"><p class="form-control-static">#NumberFormat(Session.getSelectedEvent.PGPPoints, "999.99")#</p></div>
+							<div class="col-sm-8"><p class="form-control-static">#NumberFormat(Session.getSelectedEvent.PGPCertificate_Points, "999.99")#</p></div>
 						</div>
 					</cfif>
 					<div class="form-group">
@@ -357,7 +359,7 @@
 							</cfif>
 						</div>
 					</div>
-					<cfif Session.getSelectedEvent.EventHasDailySessions EQ 1>
+					<cfif Session.getSelectedEvent.Event_DailySessions EQ 1>
 						<div class="form-group">
 						<label for="AttendSession1" class="control-label col-sm-3">Attend Session 1:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="AttendSession1" class="form-control" Required="Yes" Multiple="No" selected="#Session.FormInput.AttendSession1#" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 1</option></cfselect></div>
@@ -367,23 +369,21 @@
 						<div class="col-sm-8"><cfselect name="AttendSession2" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" selected="#Session.FormInput.AttendSession2#" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be attending session 2</option></cfselect></div>
 						</div>
 					</cfif>
-					<cfif Session.getSelectedEvent.MealAvailable EQ 1>
+					<cfif Session.getSelectedEvent.Meal_Available EQ 1 and Session.getSelectedEvent.Meal_Included EQ 0>
 						<div class="form-group">
-							<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-							<div class="col-sm-8">
-								<cfif isDefined("Session.FormInput.StayForMeal")>
+						<label for="StayForMeal" class="control-label col-sm-3">Staying for Meal?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+						<div class="col-sm-8"><cfif isDefined("Session.FormInput.StayForMeal")>
 									<cfselect name="StayForMeal" class="form-control" selected="#Session.FormInput.StayForMeal#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect>
 								<cfelse>
 									<cfselect name="StayForMeal" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you be staying for Meal</option></cfselect>
-								</cfif>
-							</div>
+								</cfif></div>
 						</div>
-						<cfif Session.getSelectedEvent.MealIncluded EQ 0>
+						<cfif Session.getSelectedEvent.Meal_Included EQ 0>
 							<div class="form-group">
 								<label for="RegisterAllDates" class="control-label col-sm-3">Participants wanting lunch<br>will pay the caterer directly:</label>
 								<div class="col-sm-8">
 									<strong>Caterer:</strong> #Session.getEventCaterer.FacilityName# <cfif LEN(Session.getEventCaterer.ContactName) or LEN(Session.getEventCaterer.ContactPhoneNumber)>(<cfif LEN(Session.getEventCaterer.ContactName)>#Session.getEventCaterer.ContactName# - </cfif>#Session.getEventCaterer.ContactPhoneNumber#)<br></cfif>
-									<strong>Meal Information:</strong> #DollarFormat(Session.getSelectedEvent.MealCost)# (#Session.getSelectedEvent.Meal_Notes#)
+									<strong>Meal Information:</strong> #DollarFormat(Session.getSelectedEvent.Meal_Cost)# (#Session.getSelectedEvent.Meal_Information#)
 								</div>
 							</div>
 						</cfif>
@@ -454,18 +454,12 @@
 							</div>
 						</cfif>
 					</cfif>
-					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
+					<cfif Session.getSelectedEvent.Webinar_Available EQ 1>
 						<div class="form-group">
 						<label for="AttendViaWebinar" class="control-label col-sm-3">Attend via Webinar?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-sm-8">
-							<cfif isDefined("Session.FormInput.AttendViaWebinar")>
-								<cfselect name="AttendViaWebinar" class="form-control" Selected="#Session.FormInput.AttendViaWebinar#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend via Webinar Option</option></cfselect>
-							<cfelse>
-								<cfselect name="AttendViaWebinar" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend via Webinar Option</option></cfselect>
-							</cfif>
+						<div class="col-sm-8"><cfselect name="AttendViaWebinar" class="form-control" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will you attend via Webinar Option</option></cfselect></div>
 						</div>
-						</div>
-					<cfelseif Session.getSelectedEvent.WebinarAvailable EQ 0>
+					<cfelseif Session.getSelectedEvent.Webinar_Available EQ 0>
 						<cfif Session.UserRegistrationInfo.UserGetsEarlyBirdRegistration EQ "True">
 							<div class="form-group">
 							<label for="RegistrationEmail" class="control-label col-sm-3">Cost to Participate:&nbsp;</label>
@@ -506,8 +500,8 @@
 					</cfif>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Register For Event"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Events">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Register Event"><br /><br />
 				</div>
 			</cfform>
 		</div>

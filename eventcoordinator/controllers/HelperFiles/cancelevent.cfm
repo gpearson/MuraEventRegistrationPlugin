@@ -1,6 +1,6 @@
 <cfif not isDefined("FORM.formSubmit")>
 	<cfquery name="getSelectedEvent" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-		Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, EventDate6, LongDescription, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, Event_SpecialMessage, Event_StartTime, Event_EndTime, Event_MemberCost, Event_NonMemberCost, Event_HeldAtFacilityID, Event_FacilityRoomID, Event_MaxParticipants, Registration_Deadline, Registration_BeginTime, Registration_EndTime, Featured_Event, Featured_StartDate, Featured_EndDate, Featured_SortOrder, EarlyBird_Available, EarlyBird_Deadline, EarlyBird_MemberCost, EarlyBird_NonMemberCost, GroupPrice_Available, GroupPrice_Requirements, GroupPrice_MemberCost, GroupPrice_NonMemberCost, PGPCertificate_Available, PGPCertificate_Points, Meal_Available, Meal_Included, Meal_Information, Meal_Cost, Meal_ProvidedBy, PresenterID, FacilitatorID, Webinar_Available, Webinar_ConnectInfo, Webinar_MemberCost, Webinar_NonMemberCost, Event_DailySessions, Event_Session1BeginTime, Event_Session1EndTime, Event_Session2BeginTime, Event_Session2EndTime, H323_Available, H323_ConnectInfo, H323_MemberCost, H323_NonMemberCost, Active, AcceptRegistrations, EventCancelled, EventInvoicesGenerated, BillForNoShow, PGPCertificatesGenerated, EventPricePerDay, PostedTo_Facebook, PostedTo_Twitter, Event_OptionalCosts, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
+		Select TContent_ID, ShortTitle, EventDate, EventDate1, EventDate2, EventDate3, EventDate4, EventDate5, EventDate6, Event_HasMultipleDataes, LongDescription, EventAgenda, EventTargetAudience, EventStrategies, EventSpecialInstructions, Event_SpecialMessage, Event_StartTime, Event_EndTime, Event_MemberCost, Event_NonMemberCost, Event_HeldAtFacilityID, Event_FacilityRoomID, Event_MaxParticipants, Registration_Deadline, Registration_BeginTime, Registration_EndTime, Featured_Event, Featured_StartDate, Featured_EndDate, Featured_SortOrder, EarlyBird_Available, EarlyBird_Deadline, EarlyBird_MemberCost, EarlyBird_NonMemberCost, GroupPrice_Available, GroupPrice_Requirements, GroupPrice_MemberCost, GroupPrice_NonMemberCost, PGPCertificate_Available, PGPCertificate_Points, Meal_Available, Meal_Included, Meal_Information, Meal_Cost, Meal_ProvidedBy, PresenterID, FacilitatorID, Webinar_Available, Webinar_ConnectInfo, Webinar_MemberCost, Webinar_NonMemberCost, Event_DailySessions, Event_Session1BeginTime, Event_Session1EndTime, Event_Session2BeginTime, Event_Session2EndTime, H323_Available, H323_ConnectInfo, H323_MemberCost, H323_NonMemberCost, Active, AcceptRegistrations, EventCancelled, EventInvoicesGenerated, BillForNoShow, PGPCertificatesGenerated, EventPricePerDay, PostedTo_Facebook, PostedTo_Twitter, Event_OptionalCosts, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 		From p_EventRegistration_Events
 		Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> and TContent_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer">
 		Order By EventDate DESC
@@ -59,10 +59,20 @@
 		<cflocation url="#variables.newurl#" addtoken="false">
 	</cfif>
 
+	<cfset ShortTileLength = #Len(Session.getSelectedEvent.ShortTitle)#>
+	<cfif ShortTileLength LTE 136>
+		<cfset NewShortTitle = "CANCELLED!!!: " & #Session.getSelectedEvent.ShortTitle#>
+	<cfelse>
+		<cfset NewShortTitle = #Left(Session.getSelectedEvent.ShortTitle, 136)#>
+		<cfset NewShortTitle = "CANCELLED!!!: " & #Variables.NewShortTitle#>
+	</cfif>
+
 	<cfif Session.getRegisteredParticipants.RecordCount EQ 0>
 		<cfquery name="updateEventToCancel" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
 			Update p_EventRegistration_Events
-			Set Active = <cfqueryparam value="0" cfsqltype="cf_sql_bit">,
+			Set Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit">,
+				ShortTitle = <cfqueryparam value="#Variables.NewShortTitle#" cfsqltype="cf_sql_varchar">,
+				AcceptRegistrations = <cfqueryparam value="0" cfsqltype="cf_sql_bit">,
 				EventCancelled = <cfqueryparam value="1" cfsqltype="cf_sql_bit">,
 				lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
 				lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
@@ -140,7 +150,9 @@
 		</cfif>
 		<cfquery name="updateEventToCancel" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
 			Update p_EventRegistration_Events
-			Set Active = <cfqueryparam value="0" cfsqltype="cf_sql_bit">,
+			Set Active = <cfqueryparam value="1" cfsqltype="cf_sql_bit">,
+				ShortTitle = <cfqueryparam value="#Variables.NewShortTitle#" cfsqltype="cf_sql_varchar">,
+				AcceptRegistrations = <cfqueryparam value="0" cfsqltype="cf_sql_bit">,
 				EventCancelled = <cfqueryparam value="1" cfsqltype="cf_sql_bit">,
 				lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
 				lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,

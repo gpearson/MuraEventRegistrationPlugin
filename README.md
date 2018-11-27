@@ -22,3 +22,10 @@ Description
 ====================
 This plugin utilizes MuraFW/1 as the base to this plugin and allows website users the ability to create events or workshops so visitors can register themselves for the upcoming event. This plugin utilizes security roles (Event Presenter, Event Coordinator) to distinguish who would have access to what part of the system.
 
+
+
+
+
+Update
+====================
+If running plugin on Mura Version 6.1, upgrade Mura first to the latest version through updating Mura Core then Mura Sites. 

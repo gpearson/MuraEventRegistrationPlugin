@@ -5,6 +5,7 @@
 		</cflock>
 	</cfif>
 </cfsilent>
+<cfhtmlhead><style>.BtnSameSize { width: 110px; padding: 2px; margin: 2px; }</style></cfhtmlhead>
 <cfif Session.Mura.IsLoggedIn EQ True>
 	<cfset userBean = rc.$.getBean('user').loadBy(username='#Session.Mura.Username#', siteid='#rc.$.siteConfig('siteID')#')>
 </cfif>
@@ -38,6 +39,20 @@
 									</li>
 								</cfif>
 							</ul>
+							<cfif Session.Mura.IsLoggedIn EQ True>
+								<cfif not userBean.isInGroup("Event Facilitator") and not userBean.isInGroup("Event Presenter")>
+									<li class="">
+										<a href="#buildURL('public:main.default')#">All Events</a>
+									</li>
+									<li class="<cfif rc.action eq 'public:usermenu.default'>active</cfif>">
+										<a href="##" class="dropdown-toggle" data-toggle="dropdown">My Events <b class="caret"></b></a>
+										<ul class="dropdown-menu">
+											<li class=""><a href="#buildURL('public:usermenu.upcomingevents')#">Upcoming Events</a></li>
+											<li class=""><a href="#buildURL('public:usermenu.eventhistory')#">Event History & Certificates</a></li>
+										</ul>
+									</li>
+								</cfif>
+							</cfif>
 								<!--- 
 										<cfif Session.Mura.IsLoggedIn EQ True>
 											<li class="<cfif rc.action eq 'public:main.login'>active</cfif>"><a href="#buildURL('public:main.default')#"><i class="icon-home"></i> Event Listing</a></li>
@@ -94,7 +109,7 @@
 				</div>
 			<cfelse>
 				<div class="text-right">
-					Current User: Guest User <a href="#CGI.Script_name##CGI.path_info#?display=login" class="btn btn-sm btn-primary">Login</a> | <a href="#buildURL('public:registeraccount.default')#" class="btn btn-sm btn-primary">Create Account</a>
+					Current User: Guest User <a href="#CGI.Script_name##CGI.path_info#?display=login" class="btn btn-sm btn-primary BtnSameSize">Login</a> | <a href="#buildURL('public:registeraccount.default')#" class="btn btn-sm btn-primary BtnSameSize">Create Account</a>
 					<hr>
 				</div>
 			</cfif>

@@ -10,7 +10,7 @@
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<fieldset>
-				<legend>Cancel Registration for #Session.GetSelectedEvent.ShortTitle# <cfif Len(Session.GetSelectedEvent.Presenters)><br>(#Session.EventPresenter.FName# #Session.EventPresenter.Lname#)</cfif></legend>
+				<legend>Cancel Registration for #Session.GetSelectedEvent.ShortTitle# <cfif Len(Session.GetSelectedEvent.PresenterID)><br>(#Session.EventPresenter.FName# #Session.EventPresenter.Lname#)</cfif></legend>
 			</fieldset>
 			<table class="table" width="100%" cellspacing="0" cellpadding="0">
 				<tbody>
@@ -53,54 +53,54 @@
 						<td colspan="3">#Session.GetSelectedEvent.EventSpecialInstructions#</td>
 						</tr>
 					</cfif>
-					<cfif Session.GetSelectedEvent.PGPAvailable GT 0 and Session.GetSelectedEvent.MealAvailable EQ 1>
+					<cfif Session.GetSelectedEvent.PGPCertificate_Available GT 0 and Session.GetSelectedEvent.Meal_Available EQ 1>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">PGP Points:</span></td>
-						<td style="width: 390px;">#NumberFormat(Session.GetSelectedEvent.PGPPoints, "999.99")#</td>
+						<td style="width: 390px;">#NumberFormat(Session.GetSelectedEvent.PGPCertificate_Points, "999.99")#</td>
 						<td style="width: 175px;"><span style="font-weight: bold;">Meal Provided:</span></td>
-						<td style="width: 175px;"><cfif Session.GetSelectedEvent.MealAvailable EQ 1>Yes<cfelse>No</cfif></td>
+						<td style="width: 175px;"><cfif Session.GetSelectedEvent.Meal_Available EQ 1>Yes<cfelse>No</cfif></td>
 						</tr>
-					<cfelseif Session.GetSelectedEvent.PGPAvailable GT 0 and Session.GetSelectedEvent.MealAvailable EQ 0>
+					<cfelseif Session.GetSelectedEvent.PGPCertificate_Available GT 0 and Session.GetSelectedEvent.Meal_Available EQ 0>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">PGP Points:</span></td>
-						<td colspan="3">&nbsp;&nbsp;#NumberFormat(Session.GetSelectedEvent.PGPPoints, "999.99")#</td>
+						<td colspan="3">&nbsp;&nbsp;#NumberFormat(Session.GetSelectedEvent.PGPCertificate_Points, "999.99")#</td>
 						</tr>
-					<cfelseif Session.GetSelectedEvent.PGPAvailable EQ 0 and Session.GetSelectedEvent.MealAvailable EQ 1>
+					<cfelseif Session.GetSelectedEvent.PGPCertificate_Available GT 0 and Session.GetSelectedEvent.Meal_Available EQ 0>
 						<tr>
 						<td colspan="2">&nbsp;</td>
 						<td style="width: 175px;"><span style="font-weight: bold;">Meal Provided:</span></td>
-						<td style="width: 175px;"><cfif Session.GetSelectedEvent.MealAvailable EQ 1>Yes<cfelse>No</cfif></td>
+						<td style="width: 175px;"><cfif Session.GetSelectedEvent.Meal_Available EQ 1>Yes<cfelse>No</cfif></td>
 						</tr>
 					</cfif>
-					<cfif Session.GetSelectedEvent.WebinarAvailable EQ 1>
+					<cfif Session.GetSelectedEvent.Webinar_Available EQ 1>
 						<tr>
 						<td style="width: 155px;"><span style="font-weight: bold;">Webinar Information:</span></td>
-						<td colspan="3">#Session.GetSelectedEvent.WebinarConnectInfo#</td>
+						<td colspan="3">#Session.GetSelectedEvent.Webinar_ConnectInfo#</td>
 						</tr>
 						<tr>
 						<td colspan="4">
 						<table border="0" colspan="0" cellspan="0" align="center" width="100%">
 						<tr>
 						<td width="25%"><span style="font-weight: bold;">Webinar Member Cost:</span></td>
-						<td width="25%">#DollarFormat(Session.GetSelectedEvent.WebinarMemberCost)#</td>
+						<td width="25%">#DollarFormat(Session.GetSelectedEvent.Webinar_MemberCost)#</td>
 						<td width="25%"><span style="font-weight: bold;">Webinar NonMember Cost:</span></td>
-						<td width="25%">#DollarFormat(Session.GetSelectedEvent.WebinarNonMemberCost)#</td>
+						<td width="25%">#DollarFormat(Session.GetSelectedEvent.Webinar_NonMemberCost)#</td>
 						</tr>
 						</table>
 						</td>
 						</tr>
 					</cfif>
-					<cfif Session.GetSelectedEvent.WebinarAvailable EQ 0 and Session.GetEventFacility.RecordCount NEQ 0 OR LEN(Session.GetSelectedEvent.WebinarAvailable) EQ 0 and Session.GetEventFacility.RecordCount NEQ 0>
+					<cfif Session.GetSelectedEvent.Webinar_Available EQ 0 and LEN(Session.GetSelectedEvent.FacilityName)>
 						<tr>
 						<td style="width: 141px;" colspan="4">
 						<table class="art-article" style="width:100%;">
 						<tbody>
 						<tr>
 						<td style="width: 225px;"><span style="font-weight: bold;">Event Location:</span></td>
-						<td style="width: 300px;"><address><strong>#Session.GetEventFacility.FacilityName#</strong><br>
-						#Session.GetEventFacility.PhysicalAddress#<BR>
-						#Session.GetEventFacility.PhysicalCity#, #Session.GetEventFacility.PhysicalState# #Session.GetEventFacility.PhysicalZipCode#</address><br>
-						<abbr title="Phone">P:</abbr> #Session.GetEventFacility.PrimaryVoiceNumber#
+						<td style="width: 300px;"><address><strong>#Session.GetSelectedEvent.FacilityName#</strong><br>
+						#Session.GetSelectedEvent.PhysicalAddress#<BR>
+						#Session.GetSelectedEvent.PhysicalCity#, #Session.GetSelectedEvent.PhysicalState# #Session.GetSelectedEvent.PhysicalZipCode#</address><br>
+						<abbr title="Phone">P:</abbr> #Session.GetSelectedEvent.PrimaryVoiceNumber#
 						</td>
 						<td colspan="1" rowspan="4" style="width: 475px; text-align: center; vertical-align: top;">
 						<link rel="stylesheet" href="/plugins/#Variables.Framework.Package#/library/LeafLet/leaflet.css" />
@@ -109,24 +109,24 @@
 						<script>
 							var facilitymarker;
 							var map = L.map('map');
-							map.setView(new L.LatLng(#Session.GetEventFacility.GeoCode_Latitude#, #Session.GetEventFacility.GeoCode_Longitude#), 12);
+							map.setView(new L.LatLng(#Session.GetSelectedEvent.Physical_Latitude#, #Session.GetSelectedEvent.Physical_Longitude#), 12);
 							L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '', maxZoom: 16 }).addTo(map);
 							var FacilityMarker = L.icon({
 								iconUrl: '/plugins/#Variables.Framework.Package#/library/LeafLet/images/conference.png'
 							});
-							var marker = L.marker([#Session.GetEventFacility.GeoCode_Latitude#, #Session.GetEventFacility.GeoCode_Longitude#], {icon: FacilityMarker}).addTo(map);
+							var marker = L.marker([#Session.GetSelectedEvent.Physical_Latitude#, #Session.GetSelectedEvent.Physical_Longitude#], {icon: FacilityMarker}).addTo(map);
 						</script>
 						</td>
 						</tr>
 						<tr>
 						<td><span style="font-weight: bold;">Event Held In:</span></td>
-						<td colspan="2" rowspan="1">#Session.GetEventFacilityRoom.RoomName#</td>
+						<td colspan="2" rowspan="1">#Session.GetSelectedEvent.RoomName#</td>
 						</tr>
 						</tbody>
 						</table>
 						</td>
 						</tr>
-					<cfelseif Session.GetSelectedEvent.WebinarAvailable EQ 0 and Session.GetEventFacility.RecordCount EQ 0>
+					<cfelseif Session.GetSelectedEvent.Webinar_Available EQ 0 and LEN(Session.GetSelectedEvent.FacilitName) EQ 0>
 						<tr>
 						<td style="width: 141px;" colspan="4">
 						<h4><strong>Please contact us to find out where this event will be held as this information might not have been available when the event went live to see how much interest was generated.

@@ -1,4 +1,5 @@
 <cfoutput>
+
 	<div class="panel panel-default">
 		<div class="panel-body">
 			<fieldset>
@@ -18,7 +19,7 @@
 							3 = No PGP Available
 						--->
 						<cfif Session.GetPastRegisteredEvents.AttendedEventDate1 EQ 1 OR Session.GetPastRegisteredEvents.AttendedEventDate2 EQ 1 OR Session.GetPastRegisteredEvents.AttendedEventDate3 EQ 1 OR Session.GetPastRegisteredEvents.AttendedEventDate4 EQ 1 OR Session.GetPastRegisteredEvents.AttendedEventDate5 EQ 1 OR Session.GetPastRegisteredEvents.AttendedEventDate6 EQ 1>
-							<cfif Session.GetPastRegisteredEvents.PGPAvailable EQ 0>
+							<cfif Session.GetPastRegisteredEvents.PGPCertificate_Available EQ 0>
 								<cfset CertificateStatus = 3>
 							<cfelse>
 								<cfset CertificateStatus = 1>
@@ -37,17 +38,17 @@
 							<cfif isDate(Session.GetPastRegisteredEvents.EventDate5)><br>#dateFormat(Session.GetPastRegisteredEvents.EventDate5, "mm/dd/yyyy")# (#DateFormat(Session.GetPastRegisteredEvents.EventDate5, "ddd")#)</cfif>
 						</td>
 						<td>
-							<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.GetPastRegisteredEvents.EventID#" class="btn btn-primary btn-small pull-right" alt="Event Information">View Event Info</a>
+							<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.GetPastRegisteredEvents.Event_ID#" class="btn btn-primary btn-small pull-right BtnSameSize" alt="Event Information">View Event Info</a>
 							<div class="pull-right">&nbsp;</div>
 							<cfswitch expression="#Variables.CertificateStatus#">
 								<cfcase value="1">
-									<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.getcertificate&EventID=#Session.GetPastRegisteredEvents.EventID#&DisplayCertificate=True" class="btn btn-primary btn-small pull-right" alt="PGP Certificate">View Certificate</a>
+									<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.getcertificate&EventID=#Session.GetPastRegisteredEvents.Event_ID#&DisplayCertificate=True" class="btn btn-primary btn-small pull-right BtnSameSize" alt="PGP Certificate">View Certificate</a>
 								</cfcase>
 								<cfcase value="2">
-									<button type="button" class="btn btn-secondary btn-small pull-right">Not Attended</button>
+									<button type="button" class="btn btn-secondary btn-small pull-right BtnSameSize">Not Attended</button>
 								</cfcase>
 								<cfcase value="3">
-									<button type="button" class="btn btn-secondary btn-small pull-right">No PGP Available</button>
+									<button type="button" class="btn btn-secondary btn-small pull-right BtnSameSize">No PGP Available</button>
 								</cfcase>
 							</cfswitch>
 						</td>
@@ -55,7 +56,7 @@
 					</cfloop>
 				<cfelse>
 					<tr>
-						<td colspan="3" align="center">To view available events you can register for <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary btn-small" alt="Event Listing Button">click here</a></td>
+						<td colspan="3" align="center">To view available events you can register for <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary btn-small BtnSameSize" alt="Event Listing Button">click here</a></td>
 					</tr>
 				</cfif>
 			</table>

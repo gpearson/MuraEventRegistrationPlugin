@@ -20,15 +20,18 @@
 			<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfinput type="hidden" name="StayForMeal" value="0">
+				<cfinput type="hidden" name="AttendViaWebinar" value="0">
+				
 				<cfinput type="hidden" name="EventID" value="#Session.UserRegistrationInfo.EventID#">
 				<div class="panel-body">
-					<cfif Session.getSelectedEvent.MealAvailable EQ 1>
+					<cfif Session.getSelectedEvent.Meal_Available EQ 1 and Session.getSelectedEvent.Meal_Included EQ 0>
 						<div class="form-group">
 						<label for="StayForMeal" class="control-label col-sm-4">Will All New Participants be Staying for Meal?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="StayForMeal" class="form-control" Selected="#Session.FormInput.StayForMeal#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Everyone Registering be staying for Meal</option></cfselect></div>
 						</div>
 					</cfif>
-					<cfif Session.getSelectedEvent.WebinarAvailable EQ 1>
+					<cfif Session.getSelectedEvent.Webinar_Available EQ 1>
 						<div class="form-group">
 						<label for="AttendViaWebinar" class="control-label col-sm-4">Will All New Participants be Attending via Webinar?:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-sm-8"><cfselect name="AttendViaWebinar" class="form-control" Selected="#Session.FormInput.AttendViaWebinar#" Required="Yes" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName"  queryposition="below"><option value="----">Will Everyone Registering attend via Webinar Option</option></cfselect></div>
@@ -43,10 +46,10 @@
 					<table class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
 						<cfloop query="Session.GetUsersWithinCorporation">
 							<cfquery name="CheckUserAlreadyRegisteredDay1" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-								Select User_ID, EventID, RegisterForEventDate1, RegisterForEventDate2, RegisterForEventDate3, RegisterForEventDate4, RegisterForEventDate5, RegisterForEventDate6, RegisterForEventSessionAM, RegisterForEventSessionPM
+								Select User_ID, Event_ID, RegisterForEventDate1, RegisterForEventDate2, RegisterForEventDate3, RegisterForEventDate4, RegisterForEventDate5, RegisterForEventDate6, RegisterForEventSessionAM, RegisterForEventSessionPM
 								From p_EventRegistration_UserRegistrations
 								Where User_ID = <cfqueryparam value="#Session.GetUsersWithinCorporation.UserID#" cfsqltype="cf_sql_varchar">
-									and EventID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer"> and
+									and Event_ID = <cfqueryparam value="#Session.UserRegistrationInfo.EventID#" cfsqltype="cf_sql_integer"> and
 										RegisterForEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
 							</cfquery>
 							<cfset CurrentModRow = #Session.GetUsersWithinCorporation.CurrentRow# MOD 4>
@@ -558,6 +561,9 @@
 			</cfform>
 		</div>
 	</cfif>
+	<cfif not StructKeyExists(Session.FormInput, "EventID")>
+		<cfset Session.FormInput.EventID = #Session.getSelectedEvent.TContent_ID#>
+	</cfif>
 	<script type="text/javascript">
 		function AddRow() {
 			var msg;
@@ -566,6 +572,10 @@
 				Datasource: "#rc.$.globalConfig('datasource')#",
 				DBUsername: "#rc.$.globalConfig('dbusername')#",
 				DBPassword: "#rc.$.globalConfig('dbpassword')#",
+				MailServerIP: "#rc.$.siteConfig('mailserverip')#",
+				MailServerUsername: "#rc.$.siteConfig('mailserverusername')#",
+				MailServerPassword: "#rc.$.siteConfig('mailserverpassword')#",
+				MailServerSSL: "#rc.$.siteConfig('mailserverssl')#",
 				PackageName: "#rc.pc.getPackage()#",
 				CGIScriptName: "#CGI.Script_name#",
 				CGIPathInfo: "#CGI.path_info#",

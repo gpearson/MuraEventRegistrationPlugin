@@ -75,7 +75,7 @@
 					)
 				</cfquery>
 				<!--- try to return the new shortlink value, referencing the last returned identifier --->
-				<cfquery Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#" name="result.inserted">
+				<cfquery Datasource="#rc.DBInfo.Datasource#" username="#rc.DBInfo.DBUsername#" password="#rc.DBInfo.DBPassword#" name="result.inserted">
 					SELECT ShortLink
 					FROM p_EventRegistration_ShortURL
 					WHERE TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#result.stats.GENERATED_KEY#">
@@ -227,6 +227,61 @@
 		<cfset vCal = #Variables.vCal# & "END:VEVENT" & #Variables.CRLF#>
 		<cfset vCal = #Variables.vCal# & "END:VCALENDAR" & #Variables.CRLF#>
 		<cfreturn Trim(variables.vcal)>
+	</cffunction>
+
+	<cffunction name="AddParticipantToDatabase" Access="Remote" returntype="Any" output="true" hint="Add Participant To Database">
+		
+		<cfset requestData = getHttpRequestData()>
+		<cfset requestContent = #variables.requestData.content#>
+		<cfset requestContent = #Replace(variables.requestContent, "%7B", "{", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%22", '"', "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%3A", ":", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%2C", ",", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%2F", "/", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%7D", "}", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%40", "@", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%20", " ", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%2B", " ", "ALL")#>
+		<cfset Info = #ListLast(ListLast(variables.requestContent, "&"), "=")#>
+		<cfset requestinfo = #DeserializeJSON(Info)#>
+			
+		<cfquery name="CheckAccount" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
+			Select UserID, Fname, Lname, Email
+			From tusers
+			Where UserName = <cfqueryparam value="#requestinfo.UserInfo.Email#" cfsqltype="cf_sql_varchar">
+			Order by Lname, Fname
+		</cfquery>
+
+		<cfif CheckAccount.RecordCount EQ 0>
+			<cfset NewUser = #Application.userManager.readByUsername(requestinfo.UserInfo.Email, requestinfo.DBInfo.SiteID)#>
+			<cfset NewUser.setInActive(1)>
+			<cfset NewUser.setSiteID('#requestInfo.DBInfo.SiteID#')>
+			<cfset NewUser.setFname(Replace(requestinfo.UserInfo.Fname, "+", " ", "ALL"))>
+			<cfset NewUser.setLname(Replace(requestinfo.UserInfo.Lname, "+", " ", "ALL"))>
+			<cfset NewUser.setUsername(requestinfo.UserInfo.Email)>
+			<cfset NewUser.setEmail(requestinfo.UserInfo.Email)>
+			<cfset AddNewAccount = #Application.userManager.save(NewUser)#>
+			<cfset NewUserAccountID = #Variables.AddNewAccount.GetUserID()#>
+
+			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(requestinfo.DBInfo.PackageName)#/library/components/EmailServices")>
+
+			<cfif LEN(requestinfo.DBInfo.MailServerIP) EQ 0>
+				<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, "127.0.0.1")#>
+			<cfelse>
+				<cfif LEN(requestinfo.DBInfo.MailServerUsername) and LEN(requestinfo.DBInfo.MailServerPassword)>
+					<cfif requestinfo.DBInfo.mailServerSSL EQ "True">
+						<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, requestinfo.DBInfo.MailServerIP, requestinfo.DBInfo.MailServerUsername, requestinfo.DBInfo.MailServerPassword, "True")#>
+					<cfelse>
+						<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, requestinfo.DBInfo.MailServerIP, requestinfo.DBInfo.MailServerUsername, requestinfo.DBInfo.MailServerPassword)#>
+					</cfif>
+				<cfelse>
+					<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, requestinfo.DBInfo.MailServerIP)#>
+				</cfif>
+			</cfif>
+			<cfreturn SerializeJSON(True)>
+		<cfelse>
+			<cfreturn SerializeJSON(FALSE)>
+		</cfif>
 	</cffunction>
 
 </cfcomponent>

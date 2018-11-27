@@ -29,6 +29,98 @@ http://www.apache.org/licenses/LICENSE-2.0
 			</fieldset>
 			<cfif isDefined("URL.UserAction")>
 				<cfswitch expression="#URL.UserAction#">
+					<cfcase value="EventInvoicesGenerated">
+						<cfif URL.Successful EQ "true">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Event Invoices Generated</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully sent event invoices to individuals responsible in paying the invoice.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						<cfelse>
+							<div class="alert alert-danger">
+							</div>
+						</cfif>
+					</cfcase>
+					<cfcase value="SentPGPCertificates">
+						<cfif URL.Successful EQ "true">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Event Certificates Sent to Attendees</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have successfully sent attended participants their certificates of completion.</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						<cfelse>
+							<div class="alert alert-danger">
+							</div>
+						</cfif>
+					</cfcase>
 					<cfcase value="EventCopied">
 						<cfif URL.Successful EQ "true">
 							<div id="modelWindowDialog" class="modal fade">
@@ -523,26 +615,26 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</cfif>
 						</td>
 						<td>
-							<a href="#buildURL('eventcoordinator:events.geteventinfo')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Info</small></a>
-							<a href="#buildURL('eventcoordinator:events.registeruserforevent')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Register</small></a>
-							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.deregisteruserforevent')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>De-Register</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>De-Register</small></button></cfif>
-							<cfif Session.SiteConfigSettings.Facebook_Enabled EQ 1><a href="#buildURL('eventcoordinator:events.publishtofb')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small small"><small>Post Facebook</small></a></cfif><br>
-							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.emailparticipants')#&EventID=#Session.getAllEvents.TContent_ID#&EmailType=EmailRegistered" class="btn btn-primary btn-small"><small>Email Registered</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Email Registered</small></button></cfif>
-							<cfif getAttendedParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.emailparticipants')#&EventID=#Session.getAllEvents.TContent_ID#&EmailType=EmailAttended" class="btn btn-primary btn-small"><small>Email Attended</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Email Attended</small></button></cfif>
-							<cfif getAttendedParticipantsForEvent.RecordCount><cfif Session.getAllEvents.PGPCertificate_Available EQ 1><a href="#buildURL('eventcoordinator:events.sendpgpcertificates')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Send Certificates</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Send Certificates</small></button></cfif><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Send Certificates</small></button></CFIF><br>
-							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Sheet</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Sign-In Sheet</small></button></cfif>
-							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Name Tags</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Name Tags</small></button></cfif>
-							<cfif getRegisteredParticipantsForEvent.RecordCount and DateDiff("d", Now(), Session.getAllEvents.EventDate) LT 1><a href="#buildURL('eventcoordinator:events.signinparticipant')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Sign-In Participant</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Sign-In Participant</small></button></cfif>
-							<a href="#buildURL('eventcoordinator:events.updateevent_review')#&EventID=#Session.getAllEvents.TContent_ID#" role="button" class="btn btn-primary btn-small"><small>Update Event</small></a>
-							<a href="#buildURL('eventcoordinator:events.cancelevent')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Cancel Event</small></a>
-							<a href="#buildURL('eventcoordinator:events.copyevent')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Copy Event</small></a><br>
-							<a href="#buildURL('eventcoordinator:events.eventdocs')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Event Documents</small></a>
-							<a href="#buildURL('eventcoordinator:events.eventweblinks')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Event Web Links</small></a><br>
-							<cfif Session.getAllEvents.EventInvoicesGenerated EQ 0><a href="#buildURL('eventcoordinator:events.enterexpenses')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Expenses</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Expenses</small></button></cfif>
-							<cfif getAttendedParticipantsForEvent.RecordCount and Session.getAllEvents.EventInvoicesGenerated EQ 0><a href="#buildURL('eventcoordinator:events.enterrevenue')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>Revenue</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>Revenue</small></button></cfif>
+							<a href="#buildURL('eventcoordinator:events.geteventinfo')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Info</small></a>
+							<a href="#buildURL('eventcoordinator:events.registeruserforevent')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Register</small></a>
+							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.deregisteruserforevent')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>De-Register</small></a><cfelse><button type="button" class="btn btn-secondary btn-small BtnSameSize"><small>De-Register</small></button></cfif>
+							<cfif Session.SiteConfigSettings.Facebook_Enabled EQ 1><a href="#buildURL('eventcoordinator:events.publishtofb')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize small"><small>Post Facebook</small></a></cfif><br>
+							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.emailparticipants')#&EventID=#Session.getAllEvents.TContent_ID#&EmailType=EmailRegistered" class="btn btn-primary btn-small BtnSameSize"><small>Email Registered</small></a><cfelse><button type="button" class="btn btn-secondary btn-small BtnSameSize"><small>Email Registered</small></button></cfif>
+							<cfif getAttendedParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.emailparticipants')#&EventID=#Session.getAllEvents.TContent_ID#&EmailType=EmailAttended" class="btn btn-primary btn-small BtnSameSize"><small>Email Attended</small></a><cfelse><button type="button" class="btn btn-secondary btn-small BtnSameSize"><small>Email Attended</small></button></cfif>
+							<cfif getAttendedParticipantsForEvent.RecordCount><cfif Session.getAllEvents.PGPCertificate_Available EQ 1><a href="#buildURL('eventcoordinator:events.sendcertificates')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Send Certificates</small></a><cfelse><button type="button" class="btn btn-secondary btn-small BtnSameSize"><small>Send Certificates</small></button></cfif><cfelse><button type="button" class="btn btn-secondary btn-small BtnSameSize"><small>Send Certificates</small></button></CFIF><br>
+							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Sign-In Sheet</small></a><cfelse><button type="button" class="btn btn-secondary btn-small BtnSameSize"><small>Sign-In Sheet</small></button></cfif>
+							<cfif getRegisteredParticipantsForEvent.RecordCount><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Name Tags</small></a><cfelse><button type="button" class="btn btn-secondary btn-small BtnSameSize"><small>Name Tags</small></button></cfif>
+							<cfif getRegisteredParticipantsForEvent.RecordCount and DateDiff("d", Now(), Session.getAllEvents.EventDate) LT 1><a href="#buildURL('eventcoordinator:events.signinparticipant')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Sign-In Participant</small></a><cfelse><button type="button" class="btn btn-secondary btn-small BtnSameSize"><small>Sign-In Participant</small></button></cfif>
+							<a href="#buildURL('eventcoordinator:events.updateevent')#&EventID=#Session.getAllEvents.TContent_ID#" role="button" class="btn btn-primary btn-small BtnSameSize"><small>Update Event</small></a>
+							<a href="#buildURL('eventcoordinator:events.cancelevent')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Cancel Event</small></a>
+							<a href="#buildURL('eventcoordinator:events.copyevent')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Copy Event</small></a><br>
+							<a href="#buildURL('eventcoordinator:events.eventdocs')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Event Documents</small></a>
+							<a href="#buildURL('eventcoordinator:events.eventweblinks')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Event Web Links</small></a><br>
+							<a href="#buildURL('eventcoordinator:events.enterexpenses')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Expenses</small></a>
+							<cfif Session.getAllEvents.EventInvoicesGenerated EQ 0><a href="#buildURL('eventcoordinator:events.eventrevenue')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>Revenue</small></a><cfelse><button type="button" class="btn btn-secondary btn-small BtnSameSize"><small>Revenue</small></button></cfif>
 							<cfset IncomeCompleted = 0>
-							<cfif checkIncomeVerified.RecordCount EQ 1 and CheckIncomeVerified.AttendeePriceVerified EQ 1><cfset IncomeCOmpleted = 1></cfif>
-							<cfif getEventExpenses.RecordCount and Variables.IncomeCompleted EQ 1><a href="#buildURL('eventcoordinator:events.viewprofitlossreport')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small"><small>View Profit/Loss Report</small></a><cfelse><button type="button" class="btn btn-secondary btn-small"><small>View Profit/Loss Report</small></button></cfif><br />
+							<cfif checkIncomeVerified.RecordCount EQ 1 and CheckIncomeVerified.AttendeePriceVerified EQ 1><cfset IncomeCompleted = 1></cfif>
+							<cfif getEventExpenses.RecordCount and Variables.IncomeCompleted EQ 1><a href="#buildURL('eventcoordinator:events.viewprofitlossreport')#&EventID=#Session.getAllEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize"><small>View P & L Report</small></a><cfelse><button type="button" class="btn btn-secondary btn-small BtnSameSize"><small>View P & L Report</small></button></cfif><br />
 
 						</td>
 					</tr>

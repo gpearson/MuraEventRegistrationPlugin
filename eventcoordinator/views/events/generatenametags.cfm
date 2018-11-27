@@ -29,32 +29,32 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<table class="table" width="100%" cellspacing="0" cellpadding="0">
 						<tr>
 							<cfif Len(Session.getSelectedEvent.EventDate1) and Len(Session.getSelectedEvent.EventDate2) EQ 0 and Len(Session.getSelectedEvent.EventDate3) EQ 0 and Len(Session.getSelectedEvent.EventDate4) EQ 0and Len(Session.getSelectedEvent.EventDate5) EQ 0 and Len(Session.getSelectedEvent.EventDate6) EQ 0>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
 							<cfelseif Len(Session.getSelectedEvent.EventDate1) and Len(Session.getSelectedEvent.EventDate2) and Len(Session.getSelectedEvent.EventDate3) EQ 0 and Len(Session.getSelectedEvent.EventDate4) EQ 0 and Len(Session.getSelectedEvent.EventDate5) EQ 0 and Len(Session.getSelectedEvent.EventDate6) EQ 0>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=2">SignIn Sheet Day 2</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=2">SignIn Sheet Day 2</a></td>
 							<cfelseif Len(Session.getSelectedEvent.EventDate1) and Len(Session.getSelectedEvent.EventDate2) and Len(Session.getSelectedEvent.EventDate3) and Len(Session.getSelectedEvent.EventDate4) EQ 0 and Len(Session.getSelectedEvent.EventDate5) EQ 0 and Len(Session.getSelectedEvent.EventDate6) EQ 0>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=2">SignIn Sheet Day 2</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=3">SignIn Sheet Day 3</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=2">SignIn Sheet Day 2</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=3">SignIn Sheet Day 3</a></td>
 							<cfelseif Len(Session.getSelectedEvent.EventDate1) and Len(Session.getSelectedEvent.EventDate2) and Len(Session.getSelectedEvent.EventDate3) and Len(Session.getSelectedEvent.EventDate4) and Len(Session.getSelectedEvent.EventDate5) EQ 0 and Len(Session.getSelectedEvent.EventDate6) EQ 0>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=2">SignIn Sheet Day 2</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=3">SignIn Sheet Day 3</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=4">SignIn Sheet Day 4</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=2">SignIn Sheet Day 2</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=3">SignIn Sheet Day 3</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=4">SignIn Sheet Day 4</a></td>
 							<cfelseif Len(Session.getSelectedEvent.EventDate1) and Len(Session.getSelectedEvent.EventDate2) and Len(Session.getSelectedEvent.EventDate3) and Len(Session.getSelectedEvent.EventDate4) and Len(Session.getSelectedEvent.EventDate5) and Len(Session.getSelectedEvent.EventDate6) EQ 0>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=2">SignIn Sheet Day 2</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=3">SignIn Sheet Day 3</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=4">SignIn Sheet Day 4</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=5">SignIn Sheet Day 5</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=2">SignIn Sheet Day 2</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=3">SignIn Sheet Day 3</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=4">SignIn Sheet Day 4</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=5">SignIn Sheet Day 5</a></td>
 							<cfelse>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=2">SignIn Sheet Day 2</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=3">SignIn Sheet Day 3</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=4">SignIn Sheet Day 4</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=5">SignIn Sheet Day 5</a></td>
-								<td><a href="#buildURL('eventcoordinator:events.signinsheet')#&EventID=#URL.EventID#&EventDatePos=6">SignIn Sheet Day 6</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=1">SignIn Sheet Day 1</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=2">SignIn Sheet Day 2</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=3">SignIn Sheet Day 3</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=4">SignIn Sheet Day 4</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=5">SignIn Sheet Day 5</a></td>
+								<td><a href="#buildURL('eventcoordinator:events.generatenametags')#&EventID=#URL.EventID#&EventDatePos=6">SignIn Sheet Day 6</a></td>
 							</cfif>
 						</tr>
 					</table>

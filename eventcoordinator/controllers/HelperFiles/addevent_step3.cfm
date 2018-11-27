@@ -2,7 +2,7 @@
 	<cfquery name="getFacilitySelectedRoom" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
 		Select TContent_ID, Facility_ID, RoomName, Capacity, RoomFees, Active, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 		From p_EventRegistration_FacilityRooms
-		Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> and Facility_ID = <cfqueryparam value="#Session.FormInput.EventStep1.LocationID#" cfsqltype="cf_sql_integer"> and TContent_ID = <cfqueryparam value="#Session.FormInput.EventStep2.LocationRoomID#" cfsqltype="cf_sql_integer">
+		Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> and Facility_ID = <cfqueryparam value="#Session.FormInput.EventStep1.Event_HeldAtFacilityID#" cfsqltype="cf_sql_integer"> and TContent_ID = <cfqueryparam value="#Session.FormInput.EventStep2.Event_FacilityRoomID#" cfsqltype="cf_sql_integer">
 		Order by RoomName
 	</cfquery>
 	<cfset Session.getSelectedFacilityRoomInfo = StructCopy(getFacilitySelectedRoom)>
@@ -36,9 +36,11 @@
 	</cfif>
 
 	<cfset newEvent = #Session.FormInput.FilePath# & #Session.FormInput.EventIDConfig#>
-	<cfset temp = #SetProfileString(variables.newEvent, "NewEvent", "EventMaxParticipants", FORM.EventMaxParticipants)#>
-	<cfset temp = #SetProfileString(variables.newEvent, "NewEvent", "AcceptRegistrations", FORM.AcceptRegistrations)#>
-
+	<cfloop index="thefield" list="#form.fieldnames#">
+		<cfif FORM[thefield] EQ "0,1"><cfset FORM[thefield] = 1></cfif>
+		<cfset temp = #SetProfileString(variables.newEvent, "NewEvent_Step3", "#thefield#", FORM[thefield])#>
+	</cfloop>
+	
 	<cfif LEN(cgi.path_info)>
 		<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:events.addevent_review" >
 	<cfelse>

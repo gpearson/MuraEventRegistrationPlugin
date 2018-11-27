@@ -58,6 +58,46 @@
 		<cfinclude template="EmailTemplates/SendAccountActivationEmailToIndividual.cfm">
 	</cffunction>
 
+	<cffunction name="SendAccountActivationEmailFromOrganizationPerson" returntype="Any" Output="false">
+		<cfargument name="requestinfo" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="UserID" type="String" Required="True">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfquery name="getUserAccount" Datasource="#Arguments.requestinfo.DBInfo.Datasource#" username="#Arguments.requestinfo.DBInfo.DBUsername#" password="#Arguments.requestinfo.DBInfo.DBPassword#">
+			Select Fname, Lname, UserName, Email, created
+			From tusers
+			Where UserID = <cfqueryparam value="#Arguments.UserID#" cfsqltype="cf_sql_varchar"> and
+				InActive = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+		</cfquery>
+		<cfset ValueToEncrypt = "UserID=" & #Arguments.UserID# & "&" & "Created=" & #getUserAccount.created# & "&DateSent=" & #Now()#>
+		<cfset EncryptedValue = #Tobase64(Variables.ValueToEncrypt)#>
+		<cfset AccountVars = "Key=" & #Variables.EncryptedValue#>
+		<cfset AccountActiveLink = "http://" & #CGI.Server_Name# & "#CGI.Script_name##CGI.path_info#?#Arguments.RequestInfo.DBInfo.PackageName#action=public:registeraccount.activateaccount&" & #Variables.AccountVars#>
+
+		<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(Arguments.RequestInfo.DBInfo.PackageName)#/library/components/EventServices")>
+		<cfset ShortenedURL = EventServicesComponent.insertShortURLContent(requestinfo, AccountActiveLink)>
+
+		<cfif LEN(cgi.path_info)>
+			<cfif CGI.server_port EQ "80">
+				<cfset AccountActiveLink = "http://" & #cgi.server_name# & #cgi.script_name# & #cgi.path_info# & "?" & "ShortURL=" & #Variables.ShortenedURL# >
+			<cfelse>
+				<cfset AccountActiveLink = "https://" & #cgi.server_name# & #cgi.script_name# & #cgi.path_info# & "?" & "ShortURL=" & #Variables.ShortenedURL# >
+			</cfif>
+		<cfelse>
+			<cfif CGI.server_port EQ "80">
+				<cfset AccountActiveLink = "http://" & #cgi.server_name# & #cgi.script_name# & "?" & "ShortURL=" & #Variables.ShortenedURL# >
+			<cfelse>
+				<cfset AccountActiveLink = "https://" & #cgi.server_name# & #cgi.script_name# & "?" & "ShortURL=" & #Variables.ShortenedURL# >
+			</cfif>
+		</cfif>
+		<cfinclude template="EmailTemplates/SendAccountActivationEmailToIndividualFromOrganizationPerson.cfm">
+	</cffunction>
+
 	<cffunction name="SendAccountActivationEmailConfirmation" returntype="Any" Output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 		<cfargument name="UserID" type="String" Required="True">
@@ -182,6 +222,7 @@
 		<cfif LEN(getRegistrationInfo.EventDate5)><cfset DisplayEventDateInfo = #Variables.DisplayEventDateInfo# & ", " & #DateFormat(getRegistrationInfo.EventDate5, "ddd, mmm dd, yyyy")#></cfif>
 		<cfif LEN(getRegistrationInfo.EventDate6)><cfset DisplayEventDateInfo = #Variables.DisplayEventDateInfo# & ", " & #DateFormat(getRegistrationInfo.EventDate6, "ddd, mmm dd, yyyy")#></cfif>
 
+		<cfset CurLoc = #ExpandPath("/")#>
 		<cfif getRegistrationInfo.WebinarParticipant EQ 1 and getRegistrationInfo.Webinar_Available EQ 1>
 			<cfset FacilityEventLocationText = "Online Webinar: Connection Details to follow in email from presenter.">
 		<cfelseif getRegistrationInfo.H323Participant EQ 1 and getRegistrationInfo.H323_Available EQ 1>
@@ -189,8 +230,8 @@
 		<cfelseif getRegistrationInfo.WebinarParticipant EQ 0 and getRegistrationInfo.H323Participant EQ 0>
 			<cfset CurLoc = #ExpandPath("/")#>
 			<cfif getRegistrationInfo.Physical_isAddressVerified EQ 1>
-				<cfset FacilityLocationMapURL = "https://maps.google.com/maps?q=#getEventLocation.GeoCode_Latitude#,#getEventLocation.GeoCode_Longitude#">
-				<cfset FacilityLocationFileName = #reReplace(getEventLocation.FacilityName, "[[:space:]]", "", "ALL")#>
+				<cfset FacilityLocationMapURL = "https://maps.google.com/maps?q=#getRegistrationInfo.Physical_Latitude#,#getRegistrationInfo.Physical_Longitude#">
+				<cfset FacilityLocationFileName = #reReplace(getRegistrationInfo.FacilityName, "[[:space:]]", "", "ALL")#>
 				<cfset FacilityLocationFileName = #reReplace(Variables.FacilityLocationFileName, "'", "", "ALL")#>
 				<cfset FacilityURLAndImage = #EventServicesComponent.QRCodeImage(Variables.FacilityLocationMapURL,HTMLEditFormat(rc.pc.getPackage()),Variables.FacilityLocationFileName)#>
 				<cfset FacilityFileDirAndImage = #Variables.CurLoc# & #Variables.FacilityURLAndImage#>
@@ -219,7 +260,7 @@
 
 		<cfswitch expression="#rc.$.siteConfig('siteID')#">
 			<cfcase value="NIESCEvents">
-				<cfset LogoPathLoc = #Left(ExpandPath("*"), Find("*", ExpandPath("*"), 1) -1)# & "assets/images/NIESC_LogoSM.png">
+				<cfset LogoPathLoc = "/plugins/" & #rc.pc.getPackage()# & "/assets/images/NIESC_LogoSM.png">
 			</cfcase>
 			<cfcase value="NWIESCEvents">
 				<cfset LogoPathLoc = "/plugins/" & #rc.pc.getPackage()# & "/assets/images/NWIESC_Logo.png">
@@ -255,90 +296,90 @@
 				<cfdocumentsection>
 					<table class="table table-striped">
 						<tr>
-							<td scope="col" width="30%"><strong>Participant's Name:</strong></td>
-							<td scope="row" width="70%">#getRegistrationInfo.ParticipantFName# #getRegistrationInfo.ParticipantLName#</td>
+							<td scope="col" width="40%"><strong>Participant's Name:</strong></td>
+							<td scope="row" width="60%">#getRegistrationInfo.ParticipantFName# #getRegistrationInfo.ParticipantLName#</td>
 						</tr>
 						<tr>
-							<td scope="col" width="30%"><strong>Registration Date:</strong></td>
-							<td scope="row" width="70%">#DateFormat(getRegistrationInfo.RegistrationDate, "full")#</td>
+							<td scope="col" width="40%"><strong>Registration Date:</strong></td>
+							<td scope="row" width="60%">#DateFormat(getRegistrationInfo.RegistrationDate, "full")#</td>
 						</tr>
 						<tr>
-							<td scope="col" width="30%"><strong>Registered By:</strong></td>
-							<td scope="row" width="70%">#Variables.RegisteredBy#</td>
+							<td scope="col" width="40%"><strong>Registered By:</strong></td>
+							<td scope="row" width="60%">#Variables.RegisteredBy#</td>
 						</tr>
 						<cfif getRegistrationInfo.Meal_Available EQ 1 and getRegistrationInfo.Meal_Included EQ 0>
 							<tr>
-							<td scope="col" width="30%"><strong>Requests Meal:</strong></td>
-							<td scope="row" width="70%">#Variables.UserRequestMeal#</td>
+							<td scope="col" width="40%"><strong>Requests Meal:</strong></td>
+							<td scope="row" width="60%">#Variables.UserRequestMeal#</td>
 							</tr>
 						</cfif>
 						<cfif getRegistrationInfo.OnWaitingList EQ 1>
 							<tr>
-							<td scope="col" width="30%"><strong>On Waiting List:</strong></td>
-							<td scope="row" width="70%">#Variables.UserOnWaitingList#</td>
+							<td scope="col" width="40%"><strong>On Waiting List:</strong></td>
+							<td scope="row" width="60%">#Variables.UserOnWaitingList#</td>
 							</tr>
 						</cfif>
 						<cfif getRegistrationInfo.H323_Available EQ 1 and getRegistrationInfo.H323Participant EQ 1>
 							<tr>
-							<td scope="col" width="30%"><strong>Distance Education Partiicpant:</strong></td>
-							<td scope="row" width="70%">#Variables.UserRequestDistanceEducation#</td>
+							<td scope="col" width="40%"><strong>Distance Education Partiicpant:</strong></td>
+							<td scope="row" width="60%">#Variables.UserRequestDistanceEducation#</td>
 							</tr>
 						</cfif>
 						<cfif getRegistrationInfo.Webinar_Available EQ 1 and getRegistrationInfo.WebinarParticipant EQ 1>
 							<tr>
-							<td scope="col" width="30%"><strong>Webinar Partiicpant:</strong></td>
-							<td scope="row" width="70%">#Variables.UserRequestWebinar#</td>
+							<td scope="col" width="40%"><strong>Webinar Partiicpant:</strong></td>
+							<td scope="row" width="60%">#Variables.UserRequestWebinar#</td>
 							</tr>
 						</cfif>
 						<cfif getRegistrationInfo.PGPCertificate_Available EQ 1>
 							<tr>
-							<td scope="col" width="30%"><strong>PGP Certificate Points:</strong></td>
-							<td scope="row" width="70%">#Variables.PGPPointsFormatted#</td>
+							<td scope="col" width="40%"><strong>PGP Certificate Points:</strong></td>
+							<td scope="row" width="60%">#Variables.PGPPointsFormatted#</td>
 							</tr>
 						</cfif>
 						<tr>
-							<td scope="col" width="30%"><strong>Attendee Cost:</strong></td>
-							<td scope="row" width="70%" valign="Top">#DollarFormat(getRegistrationinfo.AttendeePrice)#<div style="Color: ##CCCCCC; font-family: Arial; font-size: 8px; font-weight: bold;">Any adjustments for special discounts or group rates will be made on your final billing and may not be reflected at time of registration.</div></td>
+							<td scope="col" width="40%"><strong>Attendee Cost:</strong></td>
+							<td scope="row" width="60%" valign="Top">#DollarFormat(getRegistrationinfo.AttendeePrice)#<div style="Color: ##CCCCCC; font-family: Arial; font-size: 8px; font-weight: bold;">Any adjustments for special discounts or group rates will be made on your final billing and may not be reflected at time of registration.</div></td>
 							</tr>
 						<tr><td colspan="2"><hr></td></tr>
 						<tr>
-							<td scope="col" width="30%"><strong>Event Date(s):</strong></td>
-							<td scope="row" width="70%">#Variables.DisplayEventDateInfo#</td>
+							<td scope="col" width="40%"><strong>Event Date(s):</strong></td>
+							<td scope="row" width="60%">#Variables.DisplayEventDateInfo#</td>
 						</tr>
 						<cfif getRegistrationInfo.Event_DailySessions EQ 0>
 							<tr>
-								<td scope="col" width="30%"><strong>Event Times:</strong></td>
-								<td scope="row" width="70%">#TimeFormat(getRegistrationInfo.Event_StartTime, "HH:MM tt")# till #TimeFormat(getRegistrationInfo.Event_EndTime, "HH:MM tt")#</td>
+								<td scope="col" width="40%"><strong>Event Times:</strong></td>
+								<td scope="row" width="60%">#TimeFormat(getRegistrationInfo.Event_StartTime, "HH:MM tt")# till #TimeFormat(getRegistrationInfo.Event_EndTime, "HH:MM tt")#</td>
 							</tr>
 						</cfif>
 						<tr>
-							<td scope="col" width="30%"><strong>Event Title:</strong></td>
-							<td scope="row" width="70%">#getRegistrationInfo.ShortTitle#</td>
+							<td scope="col" width="40%"><strong>Event Title:</strong></td>
+							<td scope="row" width="60%">#getRegistrationInfo.ShortTitle#</td>
 						</tr>
 						<cfif LEN(getRegistrationInfo.PresenterID)>
 							<tr>
-							<td scope="col" width="30%"><strong>Event Main Presenter:</strong></td>
-							<td scope="row" width="70%">#Variables.PresenterInfo#</td>
+							<td scope="col" width="40%"><strong>Event Main Presenter:</strong></td>
+							<td scope="row" width="60%">#Variables.PresenterInfo#</td>
 							</tr>
 						</cfif>
 						<tr><td colspan="2"><hr></td></tr>
 						<tr>
-							<td scope="col" width="30%"><strong>Event Location:</strong></td>
-							<td scope="row" width="70%">#Variables.FacilityEventLocationText#</td>
+							<td scope="col" width="40%"><strong>Event Location:</strong></td>
+							<td scope="row" width="60%">#Variables.FacilityEventLocationText#</td>
 						</tr>
 						<tr>
-							<td scope="col" width="30%"><strong>Room Information:</strong></td>
-							<td scope="row" width="70%">#getRegistrationInfo.RoomName#</td>
+							<td scope="col" width="40%"><strong>Room Information:</strong></td>
+							<td scope="row" width="60%">#getRegistrationInfo.RoomName#</td>
 						</tr>
 						<cfif getRegistrationInfo.Physical_isAddressVerified EQ 1>
 							<tr>
-							<td scope="col" width="30%"><strong>Map Directions:</strong><div class="form-check-label" style="Color: ##CCCCCC;">Scan Barcode for directions</div></td>
-							<td scope="row" width="70%">#Variables.FacilityFileDirAndImage#</td>
+							<td scope="col" width="40%"><strong>Map Directions:</strong><div class="form-check-label" style="Color: ##CCCCCC;">Scan Barcode for directions</div></td>
+							<td scope="row" width="60%">#Variables.FacilityFileDirAndImage#</td>
 							</tr>
 						<cfelse>
 							<tr>
-							<td scope="col" width="30%"><strong>Map Directions:</strong><div class="form-check-label" style="Color: ##CCCCCC; font-family: Arial; font-size: 8px; font-weight: bold;">Scan Barcode for directions</div></td>
-							<td scope="row" width="70%" style="Color: ##CCCCCC; font-family: Arial; font-size: 8px; font-weight: bold;">Addess of Location not verified and might not be located on Google Maps. For Assistance please contact the facility where event is to be held.</td>
+							<td scope="col" width="40%"><strong>Map Directions:</strong><div class="form-check-label" style="Color: ##CCCCCC; font-family: Arial; font-size: 8px; font-weight: bold;">Scan Barcode for directions</div></td>
+							<td scope="row" width="60%" style="Color: ##CCCCCC; font-family: Arial; font-size: 8px; font-weight: bold;">Addess of Location not verified and might not be located on Google Maps. For Assistance please contact the facility where event is to be held.</td>
 							</tr>
 						</cfif>
 						<cfif getRegistrationInfo.BillForNoShow EQ 1>
@@ -408,6 +449,106 @@
 
 		<cfinclude template="EmailTemplates/SendEventMessageToParticipantsFromFacilitator.cfm">
 	</cffunction>
+
+	<cffunction name="SendPGPCertificateToIndividual" returntype="Any" output="False">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="ParticipantInfo" type="struct" Required="True">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfinclude template="EmailTemplates/SendEventPGPCertificateToIndividual.cfm">
+	</cffunction>
+
+	<cffunction name="SendStatementofAttendanceToMembership" returntype="Any" Output="False">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="ReportLocFilename" required="true" type="String">
+		<cfargument name="ShortTitle" required="true" type="String">
+		<cfargument name="ActPayableContactName" required="true" type="String">
+		<cfargument name="ActPayableContactEmail" required="true" type="String">
+		<cfargument name="OrganizationName" required="true" type="String">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfinclude template="EmailTemplates/SendEmailStatementOfCorporationAttendance.cfm">
+	</cffunction>
+
+	<cffunction name="SendStatementofAttendanceSummaryToFacilitator" returntype="Any" Output="False">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="ReportLocFilename" required="true" type="Array">
+		<cfargument name="ShortTitle" required="true" type="String">
+		<cfargument name="ActPayableContactName" required="true" type="String">
+		<cfargument name="ActPayableContactEmail" required="true" type="String">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfinclude template="EmailTemplates/SendEmailSummaryStatementOfCorporationAttendance.cfm">
+
+	</cffunction>
+
+	<cffunction name="SendStatementofInvoiceToMembership" returntype="Any" Output="False">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="ReportLocFilename" required="true" type="String">
+		<cfargument name="ShortTitle" required="true" type="String">
+		<cfargument name="ActPayableContactName" required="true" type="String">
+		<cfargument name="ActPayableContactEmail" required="true" type="String">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfinclude template="EmailTemplates/SendStatementofInvoiceToMembership.cfm">
+	</cffunction>
+
+	<cffunction name="SendStatementofInvoiceToSiteAccountsPayableAdmin" returntype="Any" Output="False">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="ReportLocFilename" required="true" type="Array">
+		<cfargument name="ShortTitle" required="true" type="String">
+		<cfargument name="ActPayableContactName" required="true" type="String">
+		<cfargument name="ActPayableContactEmail" required="true" type="String">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfinclude template="EmailTemplates/SendStatementofInvoiceToSiteAccountsPayableAdmin.cfm">
+	</cffunction>
+
+	<cffunction name="SendEventCancellationToSingleParticipant" returntype="Any" Output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="Info" type="Struct" Required="True">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfinclude template="EmailTemplates/EventRegistrationCancellationToIndividual.cfm">
+	</cffunction>
+
+
+	
+
+
+	
+
+
 
 	
 
@@ -641,11 +782,7 @@
 
 	
 
-	<cffunction name="SendPGPCertificateToIndividual" returntype="Any" output="False">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-		<cfargument name="ParticipantInfo" type="struct" Required="True">
-		<cfinclude template="EmailTemplates/SendEventPGPCertificateToIndividual.cfm">
-	</cffunction>
+	
 
 	<cffunction name="SendEmailWithUpComingEventListing" returntype="Any" Output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
@@ -675,15 +812,7 @@
 		<cfinclude template="EmailTemplates/SendEmailInvoiceToAccountsPayable.cfm">
 	</cffunction>
 
-	<cffunction name="SendStatementofAttendanceToFacilitator" returntype="Any" Output="False">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-		<cfargument name="ReportLocFilename" required="true" type="String">
-		<cfargument name="ShortTitle" required="true" type="String">
-		<cfargument name="ActPayableContactName" required="true" type="String">
-		<cfargument name="ActPayableContactEmail" required="true" type="String">
-		<cfargument name="OrganizationName" required="true" type="String">
-		<cfinclude template="EmailTemplates/SendEmailStatementOfCorporationAttendance.cfm">
-	</cffunction>
+	
 
 	
 	<cffunction name="SendEventInquiryToFacilitator" ReturnType="Any" Output="False">

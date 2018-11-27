@@ -41,10 +41,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="EventSpanDates" class="col-lg-5 col-md-5">Event has Multiple Dates:&nbsp;</label>
 						<div class="col-lg-7">
-							<cfif Session.FormInput.EventStep1.EventSpanDates EQ 1><p class="form-control-static">Yes</p><cfelse><p class="form-control-static">No</p></cfif>
+							<cfif Session.FormInput.EventStep1.Event_HasMultipleDates CONTAINS 1><p class="form-control-static">Yes</p><cfelse><p class="form-control-static">No</p></cfif>
 						</div>
 					</div>
-					<cfif Session.FormInput.EventStep1.EventSpanDates EQ 1>
+					<cfif Session.FormInput.EventStep1.Event_HasMultipleDates CONTAINS 1>
 						<div class="form-group">
 							<label for="EventDate1" class="col-lg-5 col-md-5">Second Event Date:&nbsp;</label>
 							<div class="col-lg-7"><p class="form-control-static">#DateFormat(Session.FormInput.EventStep2.EventDate1, "full")#</p></div>
@@ -74,8 +74,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="Event_StartTime" class="col-lg-5 col-md-5">Event Start Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
-						<div class="col-lg-7">
-							
+						<div class="col-lg-7">							
 							<p class="form-control-static">#TimeFormat(Session.FormInput.EventStep1.Event_StartTime, "hh:mm tt")#</p>
 						</div>
 					</div>
@@ -128,24 +127,32 @@ http://www.apache.org/licenses/LICENSE-2.0
 							</cfif>
 						</div>
 					</div>
+					<div class="form-group">
+						<label for="EventSpecialAlertMessage" class="col-lg-5 col-md-5">Special Alert Message:&nbsp;</label>
+						<div class="col-lg-7">
+							<cfif isDefined("Session.FormInput.EventStep1.Event_SpecialMessage")>
+								<p class="form-control-static">#Session.FormInput.EventStep1.Event_SpecialMessage#</p>
+							</cfif>
+						</div>
+					</div>
 					<fieldset>
 						<legend><h2>Event At Location Pricing</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="MemberCost" class="col-lg-5 col-md-5">Membership Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
-						<div class="col-lg-7 form-control-static">#DollarFormat(Session.FormInput.EventStep1.MemberCost)# <div class="form-control-static" style="Color: ##CCCCCC;">(Cost is Per Event)</div></div>
+						<label for="Event_MemberCost" class="col-lg-5 col-md-5">Membership Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+						<div class="col-lg-7 form-control-static">#DollarFormat(Session.FormInput.EventStep1.Event_MemberCost)# </div>
 					</div>
 					<div class="form-group">
-						<label for="NonMemberCost" class="col-lg-5 col-md-5">NonMembership Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
-						<div class="col-lg-7 form-control-static">#DollarFormat(Session.FormInput.EventStep1.NonMemberCost)# <div class="form-control-static" style="Color: ##CCCCCC;">(Cost is Per Event)</div></div>
+						<label for="Event_NonMemberCost" class="col-lg-5 col-md-5">NonMembership Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+						<div class="col-lg-7 form-control-static">#DollarFormat(Session.FormInput.EventStep1.Event_NonMemberCost)#</div>
 					</div>
 					<div class="form-group">
 						<label for="EventCostPerDay" class="col-lg-5 col-md-5">Bill Per Event Date:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfif Session.FormInput.EventStep1.EventCostPerDay EQ 1>
-								Yes <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Bill Participants Per Day instead of by Event)</div>
+							<cfif Session.FormInput.EventStep1.EventPricePerDay Contains 1>
+								Yes <div class="form-check-label" style="Color: ##CCCCCC;">(Bill Participants Per Day instead of by Event)</div>
 							<cfelse>
-								No <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Bill Participants Per Day instead of by Event)</div>
+								No <div class="form-check-label" style="Color: ##CCCCCC;">(Bill Participants Per Day instead of by Event)</div>
 							</cfif>
 						</div>
 					</div>
@@ -158,7 +165,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<div class="form-group">
 						<label for="LocationID" class="col-lg-5 col-md-5">Meeting Room at Facility:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
-						<div class="col-lg-7 form-control-static">#Session.getSelectedFacilityRoomInfo.RoomName#</div>
+						<div class="col-lg-7 form-control-static">#Session.GetSelectedFacilityRoomInfo.RoomName#</div>
 					</div>
 					<div class="form-group">
 						<label for="LocationID" class="col-lg-5 col-md-5">Maximum Participants:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
@@ -167,7 +174,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="LocationID" class="col-lg-5 col-md-5">Primary Presenter:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 						<div class="col-lg-7 form-control-static">
-							<cfif LEN(Session.FormInput.EventStep1.PresenterID) EQ 1>Nobody Selected<cfelse>#Session.FormInput.EventStep1.PresenterID#</cfif>
+							<cfif LEN(Session.FormInput.EventStep1.PresenterID) EQ 1>Nobody Selected<cfelse>#Session.getSelectedPresenterInfo.Fname# #Session.getSelectedPresenterInfo.Lname#</cfif>
 						</div>
 					</div>
 					<fieldset>
@@ -176,11 +183,11 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="EventFeatured" class="col-lg-5 col-md-5">Event is Featured:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep1.EventFeatured#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div>
+							<cfif Session.FormInput.EventStep1.Event_DailySessions CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div>
 						</div>
 					</div>
-					<cfif Session.FormInput.EventStep1.EventFeatured EQ 1>
+					<cfif Session.FormInput.EventStep1.Featured_Event CONTAINS 1>
 						<div class="form-group">
 							<label for="Featured_StartDate" class="col-lg-5 col-md-5">Featured Start Date:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="form-control-static col-lg-7 col-md-7">#Session.FormInput.EventStep2.Featured_StartDate#</div>
@@ -194,28 +201,28 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<legend><h2>Event Sessions Information</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="EventHaveSessions" class="col-lg-5 col-md-5">Event has Daily Sessions:&nbsp;</label>
+						<label for="Event_DailySessions" class="col-lg-5 col-md-5">Event has Daily Sessions:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep1.EventHaveSessions#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Allow Event to have AM and PM Sessions)</div>
+							<cfif Session.FormInput.EventStep1.Event_DailySessions CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Allow Event to have AM and PM Sessions)</div>
 						</div>
 					</div>
-					<cfif Session.FormInput.EventStep1.EventHaveSessions EQ 1>
+					<cfif Session.FormInput.EventStep1.Event_DailySessions CONTAINS 1>
 						<div class="form-group">
-							<label for="EventSession1_StartTime" class="col-lg-5 col-md-5">First Session Begin Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
-							<div class="form-control-static col-lg-7 col-md-7">#TimeFormat(Session.FormInput.EventStep2.EventSession1_StartTime, "hh:mm tt")#</div>
+							<label for="Event_Session1BeginTime" class="col-lg-5 col-md-5">First Session Begin Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+							<div class="form-control-static col-lg-7 col-md-7">#TimeFormat(Session.FormInput.EventStep2.Event_Session1BeginTime, "hh:mm tt")#</div>
 						</div>
 						<div class="form-group">
-							<label for="EventSession1_EndTime" class="col-lg-5 col-md-5">First Session End Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
-							<div class="form-control-static col-lg-7 col-md-7">#TimeFormat(Session.FormInput.EventStep2.EventSession1_EndTime, "hh:mm tt")#</div>
+							<label for="Event_Session1EndTime" class="col-lg-5 col-md-5">First Session End Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+							<div class="form-control-static col-lg-7 col-md-7">#TimeFormat(Session.FormInput.EventStep2.Event_Session1EndTime, "hh:mm tt")#</div>
 						</div>
 						<div class="form-group">
-							<label for="EventSession2_StartTime" class="col-lg-5 col-md-5">Second Session Begin Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
-							<div class="form-control-static col-lg-7 col-md-7">#TimeFormat(Session.FormInput.EventStep2.EventSession2_StartTime, "hh:mm tt")#</div>
+							<label for="Event_Session2BeginTime" class="col-lg-5 col-md-5">Second Session Begin Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+							<div class="form-control-static col-lg-7 col-md-7">#TimeFormat(Session.FormInput.EventStep2.Event_Session2BeginTime, "hh:mm tt")#</div>
 						</div>
 						<div class="form-group">
-							<label for="EventSession2_EndTime" class="col-lg-5 col-md-5">Seocnd Session End Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
-							<div class="form-control-static col-lg-7 col-md-7">#TimeFormat(Session.FormInput.EventStep2.EventSession2_EndTime, "hh:mm tt")#</div>
+							<label for="Event_Session2EndTime" class="col-lg-5 col-md-5">Seocnd Session End Time:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+							<div class="form-control-static col-lg-7 col-md-7">#TimeFormat(Session.FormInput.EventStep2.Event_Session2EndTime, "hh:mm tt")#</div>
 						</div>
 					</cfif>
 					<fieldset>
@@ -224,21 +231,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="EarlyBird_RegistrationAvailable" class="col-lg-5 col-md-5">Earlybird Registration Available:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep1.EarlyBird_RegistrationAvailable#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
-							 <div class=form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Early Bird Registrations for Event)</div>
+							<cfif Session.FormInput.EventStep1.EarlyBird_Available CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class=form-check-label" style="Color: ##CCCCCC;">(Enable Early Bird Registrations for Event)</div>
 						</div>
 					</div>
-					<cfif Session.FormInput.EventStep1.EarlyBird_RegistrationAvailable EQ 1>
+					<cfif Session.FormInput.EventStep1.EarlyBird_Available CONTAINS 1>
 						<div class="form-group">
-							<label for="EarlyBird_RegistrationDeadline" class="col-lg-5 col-md-5">Early Registration Deadline:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+							<label for="EarlyBird_Deadline" class="col-lg-5 col-md-5">Early Registration Deadline:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.EarlyBird_RegistrationDeadline#
+								#Session.FormInput.EventStep2.EarlyBird_Deadline#
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="EarlyBird_Member" class="col-lg-5 col-md-5">Membership Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+							<label for="EarlyBird_MemberCost" class="col-lg-5 col-md-5">Membership Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.EarlyBird_Member#
+								#Session.FormInput.EventStep2.EarlyBird_MemberCost#
 							</div>
 						</div>
 						<div class="form-group">
@@ -254,27 +261,27 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="ViewGroupPricing" class="col-lg-5 col-md-5">Group Pricing Available:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep1.ViewGroupPricing#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Group Pricing for Event)</div>
+							<cfif Session.FormInput.EventStep1.GroupPrice_Available CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Enable Group Pricing for Event)</div>
 						</div>
 					</div>
-					<cfif Session.FormInput.EventStep1.ViewGroupPricing EQ 1>
+					<cfif Session.FormInput.EventStep1.GroupPrice_Available CONTAINS 1>
 						<div class="form-group">
 							<label for="GroupPriceRequirements" class="col-lg-5 col-md-5">Group Requirements:&nbsp;</label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.GroupPriceRequirements#
+								#Session.FormInput.EventStep2.GroupPrice_Requirements#
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="GroupMemberCost" class="col-lg-5 col-md-5">Group Member Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.GroupMemberCost#
+								#Session.FormInput.EventStep2.GroupPrice_MemberCost#
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="GroupNonMemberCost" class="col-lg-5 col-md-5">Group NonMember Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.GroupNonMemberCost#
+								#Session.FormInput.EventStep2.GroupPrice_NonMemberCost#
 							</div>
 						</div>
 					</cfif>
@@ -284,23 +291,23 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="PGPAvailable" class="col-lg-5 col-md-5">PGP Certificate Available:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep1.PGPAvailable#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Professional Growth Points for Event)</div>
+							<cfif Session.FormInput.EventStep1.PGPCertificate_Available CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Enable Professional Growth Points for Event)</div>
 						</div>
 					</div>
-					<cfif Session.FormInput.EventStep1.PGPAvailable EQ 1>
-						<cfif Session.FormInput.EventStep1.EventCostPerDay EQ 1>
+					<cfif Session.FormInput.EventStep1.PGPCertificate_Available CONTAINS 1>
+						<cfif Session.FormInput.EventStep1.EventPricePerDay EQ 1>
 							<div class="form-group">
 								<label for="PGPPoints" class="col-lg-5 col-md-5">Number of PGP Points Per Day:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 								<div class="form-control-static col-lg-7 col-md-7">
-									#Session.FormInput.EventStep2.PGPPoints#
+									#Session.FormInput.EventStep2.PGPCertificate_Points#
 								</div>
 							</div>
 						<cfelse>
 							<div class="form-group">
 								<label for="PGPPoints" class="col-lg-5 col-md-5">Number of PGP Points Per Event:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 								<div class="form-control-static col-lg-7 col-md-7">
-									#Session.FormInput.EventStep2.PGPPoints#
+									#Session.FormInput.EventStep2.PGPCertificate_Points#
 								</div>
 							</div>
 						</cfif>
@@ -311,19 +318,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="MealAvailable" class="col-lg-5 col-md-5">Meal Available:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep1.MealAvailable#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable a Meal to those who attend this event)</div>
+							<cfif Session.FormInput.EventStep1.Meal_Available CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Enable a Meal to those who attend this event)</div>
 						</div>
 					</div>
-					<cfif Session.FormInput.EventStep1.MealAvailable EQ 1>
+					<cfif Session.FormInput.EventStep1.Meal_Available CONTAINS 1>
 						<div class="form-group">
-							<label for="MealIncluded" class="col-lg-5 col-md-5">Meal Included in Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+							<label for="Meal_Included" class="col-lg-5 col-md-5">Meal Included in Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								<cfswitch expression="#Session.FormInput.EventStep2.MealIncluded#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
+								<cfswitch expression="#Session.FormInput.EventStep2.Meal_Included#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="MealProvidedBy" class="col-lg-5 col-md-5">Meal Provided By:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
+							<label for="Meal_ProvidedBy" class="col-lg-5 col-md-5">Meal Provided By:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
 							<div class="form-control-static col-lg-7 col-md-7">
 								#Session.getSelectedCatererInfo.FacilityName#
 							</div>
@@ -331,13 +338,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="form-group">
 							<label for="MealInformation" class="col-lg-5 col-md-5">Meal Information:&nbsp;</label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.MealInformation#
+								#Session.FormInput.EventStep2.Meal_Information#
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="MealCost" class="col-lg-5 col-md-5">Meal Cost:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#DollarFormat(Session.FormInput.EventStep2.MealCost)#
+								#DollarFormat(Session.FormInput.EventStep2.Meal_Cost)#
 							</div>
 						</div>
 					</cfif>
@@ -347,27 +354,27 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="AllowVideoConference" class="col-lg-5 col-md-5">Is Distance Education Available:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep1.AllowVideoConference#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Distance Education for this event)</div>
+							<cfif Session.FormInput.EventStep1.H323_Available CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Enable Distance Education for this event)</div>
 						</div>
 					</div>
-					<cfif Session.FormInput.EventStep1.AllowVideoConference EQ 1>
+					<cfif Session.FormInput.EventStep1.H323_Available CONTAINS 1>
 						<div class="form-group">
 							<label for="H323ConnectionInfo" class="col-lg-5 col-md-5">Connection Information:&nbsp;</label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.H323ConnectionInfo#
+								#Session.FormInput.EventStep2.H323_ConnectInfo#
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="H323ConnectionMemberCost" class="col-lg-5 col-md-5">Member Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.H323ConnectionMemberCost#
+								#DollarFormat(Session.FormInput.EventStep2.H323_MemberCost)#
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="H323ConnectionNonMemberCost" class="col-lg-5 col-md-5">NonMember Pricing:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.H323ConnectionNonMemberCost#
+								#DollarFormat(Session.FormInput.EventStep2.H323_NonMemberCost)#
 							</div>
 						</div>
 					</cfif>
@@ -377,27 +384,27 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="WebinarEvent" class="col-lg-5 col-md-5">Webinar Only Event:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep1.WebinarEvent#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to only allow Webinar Participants to this event)</div>
+							<cfif Session.FormInput.EventStep1.Webinar_Available CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Enable Webinar Participants to this event)</div>
 						</div>
 					</div>
-					<cfif Session.FormInput.EventStep1.WebinarEvent EQ 1>
+					<cfif Session.FormInput.EventStep1.Webinar_Available CONTAINS 1>
 						<div class="form-group">
-							<label for="WebinarConnectWebInfo" class="col-lg-5 col-md-5">Connection Information:&nbsp;</label>
+							<label for="Webinar_ConnectInfo" class="col-lg-5 col-md-5">Connection Information:&nbsp;</label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.WebinarConnectWebInfo#
+								#Session.FormInput.EventStep2.Webinar_ConnectInfo#
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="WebinarMemberCost" class="col-lg-5 col-md-5">Member Cost to Attend via this:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.WebinarMemberCost#
+								#Session.FormInput.EventStep2.Webinar_MemberCost#
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="WebinarNonMemberCost" class="col-lg-5 col-md-5">NonMember Cost to Attend via this:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="form-control-static col-lg-7 col-md-7">
-								#Session.FormInput.EventStep2.WebinarNonMemberCost#
+								#Session.FormInput.EventStep2.Webinar_NonMemberCost#
 							</div>
 						</div>
 					</cfif>
@@ -407,38 +414,35 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<div class="form-group">
 						<label for="EventHasOptionalCosts" class="col-lg-5 col-md-5">Has Optional Costs:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep1.EventHasOptionalCosts#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Add Optional Costs to Registration Fee to Event)</div>
+							<cfif Session.FormInput.EventStep1.Event_OptionalCosts CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Enable Optional Costs to Registration Fee to Event)</div>
 						</div>
 					</div>
-					<cfif Session.FormInput.EventStep1.EventHasOptionalCosts EQ 1>
-
-
-
-
+					<cfif Session.FormInput.EventStep1.Event_OptionalCosts CONTAINS 1>
 
 					</cfif>
+
 					<cfif Session.SiteConfigSettings.Facebook_Enabled EQ 1>
 						<div class="form-group">
 						<label for="PostEventToFB" class="col-lg-5 col-md-5">Post to FB Fan Page:&nbsp;&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep1.PostEventToFB#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Facebook Fan Page)</div></div>
+							<cfif Session.FormInput.EventStep1.PostedTo_Facebook CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Post this Event to Facebook Fan Page)</div></div>
 						</div>
 					</cfif>
 					<cfif Session.SiteConfigSettings.BillForNoShowRegistrations EQ 1>
 						<div class="form-group">
 						<label for="BillForNoSHow" class="col-lg-5 col-md-5">Bill For NoShow:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep1.BillForNoShowRegistrations#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to enable billing participants who do not show to this event)</div></div>
+							<cfif Session.FormInput.EventStep1.BillForNoShow CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Enable billing of participants who do not show to this event)</div></div>
 						</div>
 					</cfif>
 					<fieldset>
 						<legend><h2>Allow Participants Registrations</h2></legend>
 					</fieldset>
 					<div class="form-group">
-						<label for="WebinarEvent" class="col-lg-5 col-md-5">Accept Registrations:&nbsp;</label>
+						<label for="AcceptRegistrations" class="col-lg-5 col-md-5">Accept Registrations:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
 							<cfswitch expression="#Session.FormInput.EventStep3.AcceptRegistrations#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
 						</div>
@@ -449,7 +453,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add Event to System"><br /><br />
 				</div>
 			</cfform>
-			<cfdump var="#Session#">
 		</div>
 	<cfelseif isDefined("URL.FormRetry")>
 		<div class="panel panel-default">

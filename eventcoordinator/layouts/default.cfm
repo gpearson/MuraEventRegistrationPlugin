@@ -61,6 +61,7 @@
 				.dropdown-submenu:hover>a:after { border-left-color: ##fff; }
 				.dropdown-submenu.pull-left { float: none; }
 				.dropdown-submenu.pull-left>.dropdown-menu { left: -100%; margin-left: 10px; -webkit-border-radius: 6px 0 6px 6px; -moz-border-radius: 6px 0 6px 6px; border-radius: 6px 0 6px 6px; } 
+				.BtnSameSize { width: 110px; padding: 2px; margin: 2px; }
 			</style>
 		</head>
 		<body id="EventRegistrationPlugin" class="home" data-spy="scroll" data-target=".subnav" data-offset="50">

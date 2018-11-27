@@ -31,6 +31,7 @@
 		.addColumn(column='Physical_TimeZone',dataType='char',length='10',nullable=true)
 		.addColumn(column='Active',dataType='tinyint',nullable=false,default=0)
 		.addPrimaryKey(column='TContent_ID');
+		.addIndex(column='Site_ID');
 </cfscript>
 
 <cfset dbTableEventEmailLog = application.configbean.getBean('dbUtility').setTable('p_EventRegistration_EventEmailLog')>
@@ -56,8 +57,8 @@
 	dbTableEventExpenses.addColumn(column='TContent_ID',dataType='integer',nullable=false,autoincrement=true)
 		.addColumn(column='Site_ID',dataType='char',length='25',nullable=false)
 		.addColumn(column='Event_ID',dataType='integer',nullable=false)
-		.addColumn(column='Cost_Amount',dataType='double', nullable=false)
 		.addColumn(column='Expense_ID',dataType='integer',nullable=false)
+		.addColumn(column='Cost_Amount',dataType='double', nullable=false)
 		.addColumn(column='dateCreated',dataType='datetime',nullable=false)
 		.addColumn(column='lastUpdated',dataType='datetime',nullable=false)
 		.addColumn(column='lastUpdateBy',dataType='varchar',length='100',nullable=true)
@@ -111,6 +112,7 @@
 		.addColumn(column='EventDate4',dataType='datetime',length='10',nullable=true)
 		.addColumn(column='EventDate5',dataType='datetime',length='10',nullable=true)
 		.addColumn(column='EventDate6',dataType='datetime',length='10',nullable=true)
+		.addColumn(column='Event_HasMultipleDates',dataType='tinyint',nullable=false,default=0)
 		.addColumn(column='LongDescription',dataType='longtext',nullable=true)
 		.addColumn(column='EventAgenda',dataType='longtext',nullable=true)
 		.addColumn(column='EventTargetAudience',dataType='longtext',nullable=true)
@@ -390,6 +392,11 @@
 		.addColumn(column='SmartyStreets_Enabled',dataType='tinyint',nullable=false,default=0)
 		.addColumn(column='SmartyStreets_APIID',dataType='varchar',length='50',nullable=true)
 		.addColumn(column='SmartyStreets_APIToken',dataType='varchar',length='50',nullable=true)
+		.addColumn(column='Twitter_Enabled',dataType='tinyint',nullable=false,default=0)
+		.addColumn(column='Twitter_ConsumerKey',dataType='varchar',length='50',nullable=true)
+		.addColumn(column='Twitter_ConsumerSecret',dataType='varchar',length='50',nullable=true)
+		.addColumn(column='Twitter_AccessToken',dataType='varchar',length='50',nullable=true)
+		.addColumn(column='Twitter_AccessTokenSecret',dataType='varchar',length='50',nullable=true)
 		.addColumn(column='BillForNoShowRegistrations',dataType='tinyint',nullable=false,default=0)
 		.addColumn(column='RequireSurveyToGetCertificate',dataType='tinyint',nullable=false,default=0)
 		.addColumn(column='GitHub_URL',dataType='varchar',length='50',nullable=true)
@@ -501,4 +508,5 @@
 		.addColumn(column='lastUpdateByID',dataType='varchar',length='35',nullable=true)
 		.addPrimaryKey(column='TContent_ID')
 		.addIndex(column='User_ID');
+		.addIndex(column='Site_ID');
 </cfscript>

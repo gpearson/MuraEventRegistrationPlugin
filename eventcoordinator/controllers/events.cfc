@@ -103,6 +103,96 @@
 		<cfinclude template="HelperFiles/signinparticipant.cfm">
 	</cffunction>
 
+	<cffunction name="sendcertificates" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/sendcertificates.cfm">
+	</cffunction>
+
+	<cffunction name="eventrevenue" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/eventrevenue.cfm">
+	</cffunction>
+
+	<cffunction name="viewprofitlossreport" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/viewprofitlossreport.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_dates" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_dates.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_description" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_description.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_pricing" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_pricing.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_location" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_location.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_featured" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_featured.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_earlybird" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_earlybird.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_groupprice" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_groupprice.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_pgp" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_pgp.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_meal" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_meal.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_h323" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_h323.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_webinar" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_webinar.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_presenter" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_presenter.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_options" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_options.cfm">
+	</cffunction>
+
+	<cffunction name="updateevent_registrations" returntype="any" output="true">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfinclude template="HelperFiles/updateevent_registrations.cfm">
+	</cffunction>
+
 	<cffunction name="AddParticipantToDatabase" Access="Remote" returntype="Any" output="true" hint="Add Participant To Database">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 		<cfset requestData = getHttpRequestData()>
