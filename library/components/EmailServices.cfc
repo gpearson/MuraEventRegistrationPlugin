@@ -9,15 +9,142 @@
 
 		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
 
-
-		<cfquery name="getAdminGroup" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select Email
+		<cfquery name="getAdminUserInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select Fname, Lname, Email
 			From tusers
 			Where SiteID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar"> and
 				UserName = <cfqueryparam value="admin" cfsqltype="cf_sql_varchar">
 		</cfquery>
 		<cfinclude template="EmailTemplates/CommentFormInquiryTemplateToAdmin.cfm">
 	</cffunction>
+
+	<cffunction name="SendAccountActivationEmail" returntype="Any" Output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="UserID" type="String" Required="True">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfquery name="getUserAccount" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select Fname, Lname, UserName, Email, created
+			From tusers
+			Where UserID = <cfqueryparam value="#Arguments.UserID#" cfsqltype="cf_sql_varchar"> and
+				InActive = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
+		</cfquery>
+		<cfset ValueToEncrypt = "UserID=" & #Arguments.UserID# & "&" & "Created=" & #getUserAccount.created# & "&DateSent=" & #Now()#>
+		<cfset EncryptedValue = #Tobase64(Variables.ValueToEncrypt)#>
+		<cfset AccountVars = "Key=" & #Variables.EncryptedValue#>
+		<cfset AccountActiveLink = "http://" & #CGI.Server_Name# & "#CGI.Script_name##CGI.path_info#?#rc.pc.getPackage()#action=public:registeraccount.activateaccount&" & #Variables.AccountVars#>
+
+		<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>
+		<cfset ShortenedURL = EventServicesComponent.insertShortURLContent(rc, AccountActiveLink)>
+
+		<cfif LEN(cgi.path_info)>
+			<cfif CGI.server_port EQ "80">
+				<cfset AccountActiveLink = "http://" & #cgi.server_name# & #cgi.script_name# & #cgi.path_info# & "?" & "ShortURL=" & #Variables.ShortenedURL# >
+			<cfelse>
+				<cfset AccountActiveLink = "https://" & #cgi.server_name# & #cgi.script_name# & #cgi.path_info# & "?" & "ShortURL=" & #Variables.ShortenedURL# >
+			</cfif>
+		<cfelse>
+			<cfif CGI.server_port EQ "80">
+				<cfset AccountActiveLink = "http://" & #cgi.server_name# & #cgi.script_name# & "?" & "ShortURL=" & #Variables.ShortenedURL# >
+			<cfelse>
+				<cfset AccountActiveLink = "https://" & #cgi.server_name# & #cgi.script_name# & "?" & "ShortURL=" & #Variables.ShortenedURL# >
+			</cfif>
+		</cfif>
+		<cfinclude template="EmailTemplates/SendAccountActivationEmailToIndividual.cfm">
+	</cffunction>
+
+	<cffunction name="SendAccountActivationEmailConfirmation" returntype="Any" Output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+		<cfargument name="UserID" type="String" Required="True">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfquery name="getUserAccount" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select Fname, Lname, UserName, Email, created
+			From tusers
+			Where UserID = <cfqueryparam value="#Arguments.UserID#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+
+		<cfinclude template="EmailTemplates/AccountActivationConfirmationEmailToIndividual.cfm">
+	</cffunction>
+
+	<cffunction name="SendForgotPasswordRequest" returntype="Any" Output="False">
+		<cfargument name="rc" type="struct" required="true" default="#StructNew()#">
+		<cfargument name="UserID" type="String" Required="True">
+		<cfargument name="ShortURLValue" required="true" type="String">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfquery name="getUserAccount" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select Fname, Lname, UserName, Email, created
+			From tusers
+			Where UserID = <cfqueryparam value="#Arguments.UserID#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+
+		<cfif LEN(cgi.path_info)>
+			<cfif CGI.server_port EQ "80">
+				<cfset AccountVerifyLink = "http://" & #cgi.server_name# & #cgi.script_name# & #cgi.path_info# & "?" & "ShortURL=" & #Arguments.ShortURLValue# >
+			<cfelse>
+				<cfset AccountVerifyLink = "https://" & #cgi.server_name# & #cgi.script_name# & #cgi.path_info# & "?" & "ShortURL=" & #Arguments.ShortURLValue# >
+			</cfif>
+		<cfelse>
+			<cfif CGI.server_port EQ "80">
+				<cfset AccountVerifyLink = "http://" & #cgi.server_name# & #cgi.script_name# & "?" & "ShortURL=" & #Arguments.ShortURLValue# >
+			<cfelse>
+				<cfset AccountVerifyLink = "https://" & #cgi.server_name# & #cgi.script_name# & "?" & "ShortURL=" & #Arguments.ShortURLValue# >
+			</cfif>
+		</cfif>
+
+		<cfinclude template="EmailTemplates/SendLostPasswordVerifyFormToUser.cfm">
+	</cffunction>
+
+	<cffunction name="SendMessageToUserAboutPasswordChanged" returntype="Any" Output="false">
+		<cfargument name="rc" type="struct" required="true" default="#StructNew()#">
+		<cfargument name="UserID" type="String" Required="True">
+		<cfargument name="MailServerHostname" type="string" required="True">
+		<cfargument name="MailServerUsername" type="string" required="False">
+		<cfargument name="MailServerPassword" type="string" required="False">
+		<cfargument name="MailServerSSL" type="boolean" required="False">
+
+		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
+
+		<cfquery name="getUserAccount" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+			Select UserID, Fname, Lname, UserName, Email, created
+			From tusers
+			Where UserID = <cfqueryparam value="#Arguments.UserID#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+
+		<cfinclude template="EmailTemplates/SendAccountPasswordChangedToUser.cfm">
+	</cffunction>
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
 
 	<cffunction name="SendCommentFormToPresenter" ReturnType="Any" Output="True">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
@@ -71,44 +198,14 @@
 		<cfinclude template="EmailTemplates/CommentFormInquiryTemplateToFacilitator.cfm">
 	</cffunction>
 
-	<cffunction name="SendForgotPasswordRequest" returntype="Any" Output="False">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-		<cfargument name="AccountQuery" required="true" type="struct">
-		<cfargument name="PasswordLink" required="true" type="String">
-		<cfargument name="MailServerHostname" type="string" required="True">
-		<cfargument name="MailServerUsername" type="string" required="False">
-		<cfargument name="MailServerPassword" type="string" required="False">
-		<cfargument name="MailServerSSL" type="boolean" required="False">
-		<cfif not isDefined("Arguments.MailServerSSL")><cfset Arguments.MailServerSSL = "False"><cfset Arguments.MailServerPort = 25><cfelse><cfset Arguments.MailServerPort = 465></cfif>
-		<cfinclude template="EmailTemplates/SendLostPasswordVerifyFormToUser.cfm">
-	</cffunction>
+	
 
 
 
 
 	
 
-	<cffunction name="SendAccountActivationEmail" returntype="Any" Output="false">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-		<cfargument name="UserID" type="String" Required="True">
-
-		<cfquery name="getUserAccount" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select Fname, Lname, UserName, Email, created
-			From tusers
-			Where UserID = <cfqueryparam value="#Arguments.UserID#" cfsqltype="cf_sql_varchar"> and
-				InActive = <cfqueryparam value="1" cfsqltype="cf_sql_bit">
-		</cfquery>
-		<cfset ValueToEncrypt = "UserID=" & #Arguments.UserID# & "&" & "Created=" & #getUserAccount.created# & "&DateSent=" & #Now()#>
-		<cfset EncryptedValue = #Tobase64(Variables.ValueToEncrypt)#>
-		<cfset AccountVars = "Key=" & #Variables.EncryptedValue#>
-		<cfset AccountActiveLink = "http://" & #CGI.Server_Name# & "#CGI.Script_name##CGI.path_info#?#rc.pc.getPackage()#action=public:registeruser.activateaccount&" & #Variables.AccountVars#>
-
-		<cfset EventServicesComponent = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/EventServices")>
-		<cfset ShortenedURL = EventServicesComponent.insertShortURLContent(rc, AccountActiveLink)>
-		
-		<cfset AccountActiveLink = "http://" & #CGI.Server_Name# & "?ShortURL=" & #Variables.ShortenedURL#>
-		<cfinclude template="EmailTemplates/SendAccountActivationEmailToIndividual.cfm">
-	</cffunction>
+	
 
 	<cffunction name="SendAccountActivationEmailFromOrganizationPerson" returntype="Any" Output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
@@ -135,18 +232,7 @@
 		<cfinclude template="EmailTemplates/SendAccountActivationEmailToIndividualFromOrganizationPerson.cfm">
 	</cffunction>
 
-	<cffunction name="SendAccountActivationEmailConfirmation" returntype="Any" Output="false">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-		<cfargument name="UserID" type="String" Required="True">
-
-		<cfquery name="getUserAccount" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-			Select Fname, Lname, UserName, Email, created
-			From tusers
-			Where UserID = <cfqueryparam value="#Arguments.UserID#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-
-		<cfinclude template="EmailTemplates/AccountActivationConfirmationEmailToIndividual.cfm">
-	</cffunction>
+	
 
 	
 
@@ -558,36 +644,6 @@
 	</cffunction>
 
 	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	<cffunction name="SendEventInquiryToFacilitator" ReturnType="Any" Output="False">
 		<cfargument name="EmailInfo" type="struct" Required="True">
 
@@ -615,9 +671,6 @@
 	</cffunction>
 
 
-
-
-
 	<cffunction name="SendLostPasswordVerifyFormToUser" returntype="Any" Output="false">
 		<cfargument name="Email" type="String" Required="True">
 
@@ -635,62 +688,7 @@
 
 	</cffunction>
 
-	<cffunction name="SendTemporaryPasswordToUser" returntype="Any" Output="false">
-		<cfargument name="Email" type="String" Required="True">
-
-		<cfquery name="GetAccountUsername" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			Select UserID, Fname, Lname, UserName, Email, created
-			From tusers
-			Where Email = <cfqueryparam value="#Arguments.Email#" cfsqltype="cf_sql_varchar"> and SiteID = <cfqueryparam value="#Session.FormData.PluginInfo.SiteID#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-
-		<!--- Setup Available Alphanumeric Values --->
-		<cfset strLowerCaseAlpha = "abcdefghijlkmnopqrstuvwxyz">
-		<cfset strUpperCaseAlpha = UCase(variables.strLowerCaseAlpha)>
-		<cfset strNumbers = "0123456789">
-		<cfset strOtherCharacters = "~!@$%^&*()-+">
-		<cfset strAllValidCharacters = #variables.strLowerCaseAlpha# & #variables.strUpperCaseAlpha# & #variables.strNumbers#>
-		<cfset arrPassword = ArrayNew(1)>
-		<cfset arrPassword[1] = #Mid(variables.strNumbers, RandRange(1, Len(variables.strNumbers)), 1)#>
-		<cfset arrPassword[2] = #Mid(variables.strLowerCaseAlpha, RandRange(1, Len(variables.strLowerCaseAlpha)), 1)#>
-		<cfset arrPassword[3] = #Mid(variables.strUpperCaseAlpha, RandRange(1, Len(variables.strUpperCaseAlpha)), 1)#>
-		<cfset arrPassword[4] = #Mid(variables.strOtherCharacters, RandRange(1, Len(variables.strOtherCharacters)), 1)#>
-
-		<cfloop index="initChar" from="#(ArrayLen(arrPassword) + 1)#" to="8" step="1">
-			<cfset arrPassword[initChar] = #Mid(variables.strAllValidCharacters, RandRange(1, Len(variables.strAllValidCharacters)), 1)#>
-		</cfloop>
-
-		<!--- Now that we have an array that has the proper number of characters, lets shuffle the array into a random order --->
-		<cfset CreateObject("java", "java.util.Collections").Shuffle(variables.arrPassword)>
-
-		<!--- Now we have a randomly suffled array, we just need to join all the characters into a single string. --->
-		<cfset strPassword = #ArrayToList(variables.arrPassword, "")#>
-
-		<cfquery name="setNewAccountPassword" Datasource="#Session.FormData.PluginInfo.Datasource#" username="#Session.FormData.PluginInfo.DBUsername#" password="#Session.FormData.PluginInfo.DBPassword#">
-			Update tusers
-			Set Password = <cfqueryparam value="#Hash(Variables.strPassword)#" cfsqltype="cf_sql_varchar">
-			Where UserID = <cfqueryparam value="#GetAccountUsername.UserID#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-
-		<!---
-			// Note: The following produced Error of: key [MURA] doesn't exist.
-		<cfset UpdateUser = #Application.userManager.readByUsername(GetAccountUsername.UserName, Session.FormData.PluginInfo.SiteID)#>
-		<cfset UpdateUser.setPassword(Variables.strPassword)>
-		<cfset UpdateUser.setSiteID(Session.FormData.PluginInfo.SiteID)>
-		<cfset UserAccountUpdated = #Application.userManager.save(UpdateUser)#>
-		--->
-
-		<cfinclude template="EmailTemplates/SendTemporaryPasswordToUser.cfm">
-	</cffunction>
-
-
-
-
-
-
-
-
-
+	
 	<cffunction name="SendWorkshopRequestFormToAdmin" ReturnType="Any" Output="True">
 		<cfargument name="EmailInfo" type="struct" Required="True">
 
@@ -702,14 +700,6 @@
 		</cfquery>
 		<cfinclude template="EmailTemplates/SendWorkshopRequestFormToAdmin.cfm">
 	</cffunction>
-
-
-
-
-
-
-
-
 
 
 	<cffunction name="SendEventMessageToAllAttendedParticipants" returntype="Any" Output="false">

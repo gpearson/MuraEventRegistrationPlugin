@@ -20,7 +20,7 @@
 					<fieldset>
 						<legend><h2>Add New Catering Facility</h2></legend>
 					</fieldset>
-					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
+					<div class="alert alert-info">Please complete the following information to add a new catering Facility to the database</div>
 					<div class="form-group">
 						<label for="FacilityName" class="col-lg-5 col-md-5">Facility Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="FacilityName" name="FacilityName" required="no"></div>
@@ -76,8 +76,8 @@
 						<div class="col-sm-7"><textarea class="form-control" name="GuaranteeInformation" id="GuaranteeInformation" height="45"></textarea></div>
 					</div>
 					<div class="form-group">
-						<label for="AdditionalNotes" class="col-lg-5 col-md-5">Additional Notes:&nbsp;</label>
-						<div class="col-sm-7"><textarea class="form-control" name="AdditionalNotes" id="AdditionalNotes" height="45"></textarea></div>
+						<label for="DeliveryInfo" class="col-lg-5 col-md-5">Delivery Information:&nbsp;</label>
+						<div class="col-sm-7"><textarea class="form-control" name="DeliveryInfo" id="DeliveryInfo" height="45"></textarea></div>
 					</div>
 					
 					<div class="form-group">
@@ -201,10 +201,9 @@
 						<div class="col-sm-7"><textarea class="form-control" name="GuaranteeInformation" id="GuaranteeInformation" height="45">#Session.FormInput.GuaranteeInformation#</textarea></div>
 					</div>
 					<div class="form-group">
-						<label for="AdditionalNotes" class="col-lg-5 col-md-5">Additional Notes:&nbsp;</label>
-						<div class="col-sm-7"><textarea class="form-control" name="AdditionalNotes" id="AdditionalNotes" height="45">#Session.FormInput.AdditionalNotes#</textarea></div>
+						<label for="DeliveryInfo" class="col-lg-5 col-md-5">Delivery Information:&nbsp;</label>
+						<div class="col-sm-7"><textarea class="form-control" name="DeliveryInfo" id="DeliveryInfo" height="45">#Session.FormInput.DeliveryInfo#</textarea></div>
 					</div>
-					
 					<div class="form-group">
 						<label for="Active" class="col-lg-5 col-md-5">Caterer Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-sm-7"><cfselect name="Active" class="form-control" Required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.FormInput.Active#" queryposition="below">

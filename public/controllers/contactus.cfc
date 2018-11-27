@@ -4,13 +4,13 @@
 		
 		<cfif not isDefined("FORM.formSubmit")>
 			<cfquery name="SiteConfigSettings" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-				Select TContent_ID, dateCreated, lastUpdated, lastUpdateBy, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL
+				Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 				From p_EventRegistration_SiteConfig
 				Where Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
 			</cfquery>
 			<cfset Session.SiteConfigSettings = StructCopy(SiteConfigSettings)>
 		<cfelse>
-			<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+			<cfif Session.SiteConfigSettings.GoogleReCaptcha_Enabled EQ 1>
 				<cfset GoogleReCaptchaCFC = createObject("component","plugins/#HTMLEditFormat(rc.pc.getPackage())#/library/components/recaptcha")>
 			</cfif>
 			<cflock timeout="60" scope="Session" type="Exclusive">
@@ -27,9 +27,9 @@
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
-			<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+			<cfif Session.SiteConfigSettings.GoogleReCaptcha_Enabled EQ 1>
 				<cfif StructKeyExists(form, 'g-recaptcha-response')>
-					<cfset CheckCaptcha = #GoogleReCaptchaCFC.verifyResponse(secret='#Session.SiteConfigSettings.Google_ReCaptchaSecretKey#',response=form['g-recaptcha-response'], remoteip=cgi.remote_add)#>
+					<cfset CheckCaptcha = #GoogleReCaptchaCFC.verifyResponse(secret='#Session.SiteConfigSettings.GoogleReCaptcha_SecretKey#',response=form['g-recaptcha-response'], remoteip=cgi.remote_add)#>
 					<cfif CheckCaptcha.success EQ "false">
 						<cfscript>
 							InvalidPassword = {property="VerifyPassword",message="We have detected that the form was completed by a Computer Robot. We ask that this form be completed by a human being."};

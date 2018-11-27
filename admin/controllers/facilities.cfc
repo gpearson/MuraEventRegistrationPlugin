@@ -3,13 +3,13 @@
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
 		<cfquery name="getFacilities" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-			Select TContent_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, AdditionalNotes, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, Physical_isAddressVerified, GeoCode_Latitude, GeoCode_Longitude, GeoCode_Township, GeoCode_StateLongName, GeoCode_CountryShortName, GeoCode_Neighborhood, Active
+			Select TContent_ID, Site_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, Physical_isAddressVerified, Physical_Latitude, Physical_Longitude, Physical_USPSDeliveryPoint, Physical_USPSCheckDigit, Physical_USPSCarrierRoute, Physical_DST, Physical_UTCOffset, Physical_TimeZone, MailingAddress, MailingCity, MailingState, MailingZipCode, MailingZip4, Mailing_isAddressVerified, Mailing_USPSDeliveryPoint, Mailing_USPSCheckDigit, Mailing_USPSCarrierRoute, PrimaryVoiceNumber, PrimaryFaxNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, AdditionalNotes, Cost_HaveEventAt, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, Active
 			From p_EventRegistration_Facility
 			Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
 			Order by FacilityName
 		</cfquery>
 		<cfquery name="SiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-			Select TContent_ID, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, BillForNoShowRegistrations, RequireEventSurveyToGetCertificate
+			Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 			From p_EventRegistration_SiteConfig
 			Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
 		</cfquery>
@@ -146,7 +146,7 @@
 
 		<cfif not isDefined("FORM.formSubmit")>
 			<cfquery name="SiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-				Select TContent_ID, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, BillForNoShowRegistrations, RequireEventSurveyToGetCertificate
+				Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 				From p_EventRegistration_SiteConfig
 				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
 			</cfquery>
@@ -330,19 +330,27 @@
 
 		<cfif not isDefined("FORM.formSubmit")>
 			<cfquery name="getSelectedFacility" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-				Select TContent_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, AdditionalNotes, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, Physical_isAddressVerified, GeoCode_Latitude, GeoCode_Longitude, GeoCode_Township, GeoCode_StateLongName, GeoCode_CountryShortName, GeoCode_Neighborhood, Active
+				Select TContent_ID, Site_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, Physical_isAddressVerified, Physical_Latitude, Physical_Longitude, Physical_USPSDeliveryPoint, Physical_USPSCheckDigit, Physical_USPSCarrierRoute, Physical_DST, Physical_UTCOffset, Physical_TimeZone, MailingAddress, MailingCity, MailingState, MailingZipCode, MailingZip4, Mailing_isAddressVerified, Mailing_USPSDeliveryPoint, Mailing_USPSCheckDigit, Mailing_USPSCarrierRoute, PrimaryVoiceNumber, PrimaryFaxNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, AdditionalNotes, Cost_HaveEventAt, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, Active
 				From p_EventRegistration_Facility
 				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> and
 					TContent_ID = <cfqueryparam value="#URL.FacilityID#" cfsqltype="cf_sql_integer">
 				Order by FacilityName
 			</cfquery>
+			<cfquery name="getSelectedFacilityRooms" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
+				Select TContent_ID, RoomName, Capacity, RoomFees, Active, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
+				From p_EventRegistration_FacilityRooms
+				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> and
+					Facility_ID = <cfqueryparam value="#getSelectedFacility.TContent_ID#" cfsqltype="cf_sql_integer">
+				Order by RoomName
+			</cfquery>
 			<cfquery name="SiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-				Select TContent_ID, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, BillForNoShowRegistrations, RequireEventSurveyToGetCertificate
+				Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 				From p_EventRegistration_SiteConfig
 				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
 			</cfquery>
 			<cfset Session.SiteConfigSettings = StructCopy(SiteConfigSettings)>
 			<cfset Session.getSelectedFacility = StructCopy(getSelectedFacility)>
+			<cfset Session.getSelectedFacilityRooms = StructCopy(getSelectedFacilityRooms)>
 			<cfif isDefined("Session.getCaterers")><cfset temp = StructDelete(Session, "getCaterers")></cfif>
 		<cfelseif isDefined("FORM.formSubmit")>
 			<cflock timeout="60" scope="Session" type="Exclusive">
@@ -598,4 +606,248 @@
 
 		</cfif>
 	</cffunction>
+
+	<cffunction name="addfacilityroom" returntype="any" output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif not isDefined("FORM.formSubmit")>
+			<cfquery name="getSelectedFacility" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
+				Select TContent_ID, Site_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, Physical_isAddressVerified, Physical_Latitude, Physical_Longitude, Physical_USPSDeliveryPoint, Physical_USPSCheckDigit, Physical_USPSCarrierRoute, Physical_DST, Physical_UTCOffset, Physical_TimeZone, MailingAddress, MailingCity, MailingState, MailingZipCode, MailingZip4, Mailing_isAddressVerified, Mailing_USPSDeliveryPoint, Mailing_USPSCheckDigit, Mailing_USPSCarrierRoute, PrimaryVoiceNumber, PrimaryFaxNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, AdditionalNotes, Cost_HaveEventAt, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, Active
+				From p_EventRegistration_Facility
+				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> and
+					TContent_ID = <cfqueryparam value="#URL.FacilityID#" cfsqltype="cf_sql_integer">
+				Order by FacilityName
+			</cfquery>
+			<cfquery name="SiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
+				Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
+				From p_EventRegistration_SiteConfig
+				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
+			</cfquery>
+			<cfset Session.SiteConfigSettings = StructCopy(SiteConfigSettings)>
+			<cfset Session.getSelectedFacility = StructCopy(getSelectedFacility)>
+		<cfelseif isDefined("FORM.formSubmit")>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfset Session.FormErrors = #ArrayNew()#>
+				<cfset Session.FormInput = #StructCopy(FORM)#>
+			</cflock>
+			<cfif FORM.UserAction EQ "Back to Facility Listing">
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cfset temp = StructDelete(Session, "FormInput")>
+				<cfset temp = StructDelete(Session, "SiteConfigSettings")>
+				<cfset temp = StructDelete(Session, "getSelectedFacility")>
+				
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.editfacility&FacilityID=#URL.FacilityID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.editfacility&FacilityID=#URL.FacilityID#" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+			<cfif LEN(FORM.RoomName) LT 5>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter the room name participants will goto at facility for the event."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+
+			<cfif FORM.Active EQ "----">
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter if this room is active in the system when entering an event?."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+
+			<cfif not isNumeric(FORM.RoomCapacity)>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter the maximum participant capacity for this room at the facility."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+
+			<cfquery name="InsertFacilityRoomInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				insert into p_EventRegistration_FacilityRooms(Site_ID, Facility_ID, RoomName, Capacity, Active, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID)
+				Values(
+					<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#URL.FacilityID#" cfsqltype="cf_sql_integer">,
+					<cfqueryparam value="#FORM.RoomName#" cfsqltype="cf_sql_varchar" >,
+					<cfqueryparam value="#FORM.RoomCapacity#" cfsqltype="cf_sql_integer">,
+					<cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
+					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+					<cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
+					<cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+				)
+			</cfquery>
+
+			<cfif isDefined("FORM.RoomFees")>
+				<cfif LEN(FORM.RoomFees)>
+					<cfswitch expression="#application.configbean.getDBType()#">
+						<cfcase value="mysql">
+							<cfquery name="updateFacilityRoomInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								update p_EventRegistration_FacilityRooms
+								set RoomFees = <cfqueryparam value="#FORM.RoomFees#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATED_KEY#">
+							</cfquery>
+						</cfcase>
+						<cfcase value="mssql">
+							<cfquery name="updateFacilityRoomInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								update p_EventRegistration_FacilityRooms
+								set RoomFees = <cfqueryparam value="#FORM.RoomFees#" cfsqltype="cf_sql_varchar" >
+								Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATEDKEY#">
+							</cfquery>
+						</cfcase>
+					</cfswitch>
+				</cfif>
+			</cfif>
+			<cfif LEN(cgi.path_info)>
+				<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.editfacility&FacilityID=#URL.FacilityID#&UserAction=FacilityRoomAdded&Successful=True" >
+			<cfelse>
+				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.editfacility&FacilityID=#URL.FacilityID#&UserAction=FacilityRoomAdded&Successful=True" >
+			</cfif>
+			<cflocation url="#variables.newurl#" addtoken="false">
+		</cfif>
+	</cffunction>
+
+	<cffunction name="editfacilityroom" returntype="any" output="false">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfif not isDefined("FORM.formSubmit")>
+			<cfquery name="getSelectedFacility" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
+				Select TContent_ID, Site_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, Physical_isAddressVerified, Physical_Latitude, Physical_Longitude, Physical_USPSDeliveryPoint, Physical_USPSCheckDigit, Physical_USPSCarrierRoute, Physical_DST, Physical_UTCOffset, Physical_TimeZone, MailingAddress, MailingCity, MailingState, MailingZipCode, MailingZip4, Mailing_isAddressVerified, Mailing_USPSDeliveryPoint, Mailing_USPSCheckDigit, Mailing_USPSCarrierRoute, PrimaryVoiceNumber, PrimaryFaxNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, AdditionalNotes, Cost_HaveEventAt, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, Active
+				From p_EventRegistration_Facility
+				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> and
+					TContent_ID = <cfqueryparam value="#URL.FacilityID#" cfsqltype="cf_sql_integer">
+				Order by FacilityName
+			</cfquery>
+			<cfquery name="getSelectedFacilityRoom" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
+				Select TContent_ID, RoomName, Capacity, RoomFees, Active, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
+				From p_EventRegistration_FacilityRooms
+				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> and Facility_ID = <cfqueryparam value="#getSelectedFacility.TContent_ID#" cfsqltype="cf_sql_integer"> and TContent_ID = <cfqueryparam value="#URL.FacilityRoomID#" cfsqltype="cf_sql_integer">
+			</cfquery>
+			<cfquery name="SiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
+				Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
+				From p_EventRegistration_SiteConfig
+				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
+			</cfquery>
+			<cfset Session.SiteConfigSettings = StructCopy(SiteConfigSettings)>
+			<cfset Session.getSelectedFacility = StructCopy(getSelectedFacility)>
+			<cfset Session.getSelectedFacilityRoom = StructCopy(getSelectedFacilityRoom)>
+		<cfelseif isDefined("FORM.formSubmit")>
+			<cflock timeout="60" scope="Session" type="Exclusive">
+				<cfset Session.FormErrors = #ArrayNew()#>
+				<cfset Session.FormInput = #StructCopy(FORM)#>
+			</cflock>
+			<cfif FORM.UserAction EQ "Back to Facility Listing">
+				<cfset temp = StructDelete(Session, "FormErrors")>
+				<cfset temp = StructDelete(Session, "FormInput")>
+				<cfset temp = StructDelete(Session, "SiteConfigSettings")>
+				<cfset temp = StructDelete(Session, "getSelectedFacility")>
+				
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.editfacility&FacilityID=#URL.FacilityID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.editfacility&FacilityID=#URL.FacilityID#" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+
+			<cfif LEN(FORM.RoomName) LT 5>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter the room name participants will goto at facility for the event."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+
+			<cfif FORM.Active EQ "----">
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter if this room is active in the system when entering an event?."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+
+			<cfif not isNumeric(FORM.RoomCapacity)>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please enter the maximum participant capacity for this room at the facility."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.addfacilityroom&FormRetry=True&FacilityID=#URL.FacilityID#" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+
+			<cfquery name="updateFacilityRoomInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+				update p_EventRegistration_FacilityRooms
+				Set RoomName = <cfqueryparam value="#FORM.RoomName#" cfsqltype="cf_sql_varchar">,
+					Capacity = <cfqueryparam cfsqltype="cf_sql_integer" value="#FORM.RoomCapacity#">,
+					Active = <cfqueryparam cfsqltype="cf_sql_bit" value="#FORM.Active#">,
+					lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+					lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
+					lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
+				Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.FacilityRoomID#">
+			</cfquery>	
+
+			<cfif isDefined("FORM.RoomFees")>
+				<cfif LEN(FORM.RoomFees)>
+					<cfswitch expression="#application.configbean.getDBType()#">
+						<cfcase value="mysql">
+							<cfquery name="updateFacilityRoomInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								update p_EventRegistration_FacilityRooms
+								set RoomFees = <cfqueryparam value="#FORM.RoomFees#" cfsqltype="cf_sql_varchar">
+								Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.FacilityRoomID#">
+							</cfquery>
+						</cfcase>
+						<cfcase value="mssql">
+							<cfquery name="updateFacilityRoomInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+								update p_EventRegistration_FacilityRooms
+								set RoomFees = <cfqueryparam value="#FORM.RoomFees#" cfsqltype="cf_sql_varchar" >
+								Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#URL.FacilityRoomID#">
+							</cfquery>
+						</cfcase>
+					</cfswitch>
+				</cfif>
+			</cfif>
+
+			<cfif LEN(cgi.path_info)>
+				<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.editfacility&FacilityID=#URL.FacilityID#&UserAction=FacilityRoomUpdated&Successful=True" >
+			<cfelse>
+				<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:facilities.editfacility&FacilityID=#URL.FacilityID#&UserAction=FacilityRoomUpdated&Successful=True" >
+			</cfif>
+			<cflocation url="#variables.newurl#" addtoken="false">
+
+		</cfif>
+	</cffunction>
+	
 </cfcomponent>

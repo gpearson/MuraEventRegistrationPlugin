@@ -68,7 +68,7 @@
 							<div class="row">
 								<div class="col-md-9">
 									<ul id="navPrimary" class="nav navbar-nav">
-										<li class="active">
+										<li class="<cfif isDefined('URL[Variables.Framework.Action]')><cfif URL[Variables.Framework.Action] CONTAINS 'main'>active</cfif></cfif>">
 											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Main <b class="caret"></b></a>
 											<ul class="dropdown-menu">
 												<cfif Session.Mura.IsLoggedIn EQ True>
@@ -80,10 +80,10 @@
 												</cfif>
 											</ul>
 										</li>
-										<li class="">
+										<li class="<cfif isDefined('URL[Variables.Framework.Action]')><cfif URL[Variables.Framework.Action] CONTAINS 'license'>active</cfif></cfif>">
 											<a href="#buildURL('admin:license.default')#"><i class="icon-book"></i> License</a>
 										</li>
-										<li class="">
+										<li class="<cfif isDefined('URL[Variables.Framework.Action]')><cfif URL[Variables.Framework.Action] CONTAINS 'instructions'>active</cfif></cfif>">
 											<a href="#buildURL('admin:instructions.default')#"><i class="icon-info-sign"></i> Instructions</a>
 										</li>
 										<li class="">

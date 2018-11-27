@@ -297,7 +297,7 @@
           				<cfloop list="#FORM.MemberGroup#" index="i" delimiters=",">
           					<cfquery name="insertUserMemberships" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
           						Insert into tusersmemb(UserID, GroupID)
-          						Values('#NewUser.getUserID()#', '#i#')
+          						Values('#AddNewAccount.getUserID()#', '#i#')
           					</cfquery>
           				</cfloop>
           			</cfif>

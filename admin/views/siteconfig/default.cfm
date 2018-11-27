@@ -13,6 +13,17 @@
 	<cfset temp = QueryAddRow(YesNoQuery, 1)>
 	<cfset temp = #QuerySetCell(YesNoQuery, "ID", 1)#>
 	<cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
+
+	<cfswitch expression="#Server.Coldfusion.ProductName#">
+		<cfcase value="Lucee">
+			<cfset ReportLibraryJars = #this.javaSettings.Loadpaths[1]#>
+			<cfif not isDefined("Session.ReportLibraryJars")><cfset Session.ReportLibraryJars = #Variables.ReportLibraryJars#></cfif>
+		</cfcase>
+	</cfswitch>
+	<cfset FileTest1 = #Variables.ReportLibraryJars# & "/itextpdf-5.3.3.jar">
+	<cfset FileTest2 = #Variables.ReportLibraryJars# & "/itext-pdfa-5.3.3.jar">
+	<cfset FileTest3 = #Variables.ReportLibraryJars# & "/itext-xtra-5.3.3.jar">
+
 </cfsilent>
 <cfoutput>
 	<h2>Site Configuration</h2>
@@ -30,6 +41,20 @@
 						<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 					</div>
+					<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false>
+						<fieldset>
+							<legend><h2>Required JAR Files not installed</h2></legend>
+						</fieldset>
+						<div class="alert alert-info">To Generate various PDF Documents, required library files will need to be installed. If required files are not installed then PDF documents can not be generated</div>
+						<div class="form-group">
+							<label for="CFMLProductName" class="col-lg-3 col-md-3">Coldfusion Product Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="CFMLProductName" name="CFMLProductName" disabled value="#Server.Coldfusion.ProductName#"></div>
+						</div>
+						<div class="form-group">
+							<label for="InstallJarFiles" class="col-lg-3 col-md-3">Install Required JAR Files:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfselect name="InstallJarFiles" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value= "----">Install Required Files?</option></cfselect></div>
+						</div>
+					</cfif>
 					<fieldset>
 						<legend><h2>Stripe Payment Processor Configuration</h2></legend>
 					</fieldset>
@@ -206,6 +231,20 @@
 						<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 					</div>
+					<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false>
+						<fieldset>
+							<legend><h2>Required JAR Files not installed</h2></legend>
+						</fieldset>
+						<div class="alert alert-info">To Generate various PDF Documents, required library files will need to be installed. If required files are not installed then PDF documents can not be generated</div>
+						<div class="form-group">
+							<label for="CFMLProductName" class="col-lg-3 col-md-3">Coldfusion Product Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="CFMLProductName" name="CFMLProductName" disabled value="#Server.Coldfusion.ProductName#"></div>
+						</div>
+						<div class="form-group">
+							<label for="InstallJarFiles" class="col-lg-3 col-md-3">Install Required JAR Files:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfselect name="InstallJarFiles" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value= "----">Install Required Files?</option></cfselect></div>
+						</div>
+					</cfif>
 					<fieldset>
 						<legend><h2>Stripe Payment Processor Configuration</h2></legend>
 					</fieldset>
@@ -339,13 +378,27 @@
 							<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 						</div>
+						<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false>
+							<fieldset>
+								<legend><h2>Required JAR Files not installed</h2></legend>
+							</fieldset>
+							<div class="alert alert-info">To Generate various PDF Documents, required library files will need to be installed. If required files are not installed then PDF documents can not be generated</div>
+							<div class="form-group">
+								<label for="CFMLProductName" class="col-lg-3 col-md-3">Coldfusion Product Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+								<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="CFMLProductName" name="CFMLProductName" disabled value="#Server.Coldfusion.ProductName#"></div>
+							</div>
+							<div class="form-group">
+								<label for="InstallJarFiles" class="col-lg-3 col-md-3">Install Required JAR Files:&nbsp;</label>
+								<div class="col-lg-9 col-md-9"><cfselect name="InstallJarFiles" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value= "----">Install Required Files?</option></cfselect></div>
+							</div>
+						</cfif>
 						<fieldset>
 							<legend><h2>Stripe Payment Processor Configuration</h2></legend>
 						</fieldset>
 						<div class="alert alert-info">Please complete the following information to enable Stripe Payment Processing for this plugin. For more information on the Stripe Processing Service, please visit <a href="http://www.stripe.com" target="_blank">Stripe.com</a></div>
 						<div class="form-group">
 							<label for="ProcessPaymentsStripe" class="col-lg-3 col-md-3">Process Stripe Payments:&nbsp;</label>
-							<div class="col-lg-9 col-md-9"><cfselect name="ProcessPaymentsStripe" class="form-control" required="no" Multiple="No" selected="#Session.SiteConfigSettings.ProcessPayments_Stripe#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Process Online Payments with Stripe?</option></cfselect></div>
+							<div class="col-lg-9 col-md-9"><cfselect name="ProcessPaymentsStripe" class="form-control" required="no" Multiple="No" selected="#Session.SiteConfigSettings.Stripe_ProcessPayments#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Process Online Payments with Stripe?</option></cfselect></div>
 						</div>
 						<div class="form-group">
 							<label for="StripeTestMode" class="col-lg-3 col-md-3">Stripe Test Mode:&nbsp;</label>
@@ -388,15 +441,15 @@
 						<div class="alert alert-info">Please complete the following information to enable Google ReCaptcha Form Protections for this plugin. For more information on Google ReCaptcha Service, please visit <a href="https://www.google.com/recaptcha/" target="_blank">Google ReCaptcha Site</a></div>
 						<div class="form-group">
 							<label for="GoogleReCaptchaEnabled" class="col-lg-3 col-md-3">Google ReCaptcha Enabled:&nbsp;</label>
-							<div class="col-lg-9 col-md-9"><cfselect name="GoogleReCaptchaEnabled" class="form-control" required="no" selected="#Session.SiteConfigSettings.Google_ReCaptchaEnabled#" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Enable Google ReCaptcha Form Protection?</option></cfselect></div>
+							<div class="col-lg-9 col-md-9"><cfselect name="GoogleReCaptchaEnabled" class="form-control" required="no" selected="#Session.SiteConfigSettings.GoogleReCaptcha_Enabled#" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Enable Google ReCaptcha Form Protection?</option></cfselect></div>
 						</div>
 						<div class="form-group">
 							<label for="GoogleReCaptchaSiteKey" class="col-lg-3 col-md-3">Site Key:&nbsp;</label>
-							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="GoogleReCaptchaSiteKey" name="GoogleReCaptchaSiteKey" value="#Session.SiteConfigSettings.Google_ReCaptchaSiteKey#"></div>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="GoogleReCaptchaSiteKey" name="GoogleReCaptchaSiteKey" value="#Session.SiteConfigSettings.GoogleReCaptcha_SiteKey#"></div>
 						</div>
 						<div class="form-group">
 							<label for="GoogleReCaptchaSecretKey" class="col-lg-3 col-md-3">Secret Key:&nbsp;</label>
-							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="GoogleReCaptchaSecretKey" name="GoogleReCaptchaSecretKey" value="#Session.SiteConfigSettings.Google_ReCaptchaSecretKey#"></div>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="GoogleReCaptchaSecretKey" name="GoogleReCaptchaSecretKey" value="#Session.SiteConfigSettings.GoogleReCaptcha_SecretKey#"></div>
 						</div>
 						<fieldset>
 							<legend><h2>Smarty Streets Address Verification Service</h2></legend>
@@ -424,7 +477,7 @@
 						</div>
 						<div class="form-group">
 							<label for="RequireEventSurveyToGetCertificate" class="col-lg-3 col-md-3">Require Survey to Get Certificate:&nbsp;</label>
-							<div class="col-lg-9 col-md-9"><cfselect name="RequireEventSurveyToGetCertificate" class="form-control" required="no" Multiple="No" selected="#Session.SiteConfigSettings.RequireEventSurveyToGetCertificate#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Require Submission of Event Survey to Obtain Completion Certiifcate?</option></cfselect></div>
+							<div class="col-lg-9 col-md-9"><cfselect name="RequireEventSurveyToGetCertificate" class="form-control" required="no" Multiple="No" selected="#Session.SiteConfigSettings.RequireSurveyToGetCertificate#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Require Submission of Event Survey to Obtain Completion Certiifcate?</option></cfselect></div>
 						</div>
 						<fieldset>
 							<legend><h2>Social Media Profiles</h2></legend>
@@ -514,6 +567,20 @@
 							<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 						</div>
+						<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false>
+							<fieldset>
+								<legend><h2>Required JAR Files not installed</h2></legend>
+							</fieldset>
+							<div class="alert alert-info">To Generate various PDF Documents, required library files will need to be installed. If required files are not installed then PDF documents can not be generated</div>
+							<div class="form-group">
+								<label for="CFMLProductName" class="col-lg-3 col-md-3">Coldfusion Product Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
+								<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="CFMLProductName" name="CFMLProductName" disabled value="#Server.Coldfusion.ProductName#"></div>
+							</div>
+							<div class="form-group">
+								<label for="InstallJarFiles" class="col-lg-3 col-md-3">Install Required JAR Files:&nbsp;</label>
+								<div class="col-lg-9 col-md-9"><cfselect name="InstallJarFiles" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value= "----">Install Required Files?</option></cfselect></div>
+							</div>
+						</cfif>
 						<fieldset>
 							<legend><h2>Stripe Payment Processor Configuration</h2></legend>
 						</fieldset>

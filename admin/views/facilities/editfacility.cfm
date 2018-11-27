@@ -16,6 +16,92 @@
 			<cfform action="" method="post" id="AddNewUser" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#$.siteConfig('siteid')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
+				<cfif isDefined("URL.UserAction")>
+					<cfswitch expression="#URL.UserAction#">
+						<cfcase value="FacilityRoomUpdated">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Facility Room Updated</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have made changes to the Facility Room Information for this facility</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						</cfcase>
+						<cfcase value="FacilityRoomAdded">
+							<div id="modelWindowDialog" class="modal fade">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+											<h3>Facility Room Added</h3>
+										</div>
+										<div class="modal-body">
+											<p class="alert alert-success">You have added a new facility room to this facility</p>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<script type='text/javascript'>
+								(function() {
+									'use strict';
+									function remoteModal(idModal){
+										var vm = this;
+										vm.modal = $(idModal);
+										if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+										if( window.location.hash == idModal ){ openModal(); }
+										var services = { open: openModal, close: closeModal };
+										return services;
+										function openModal(){
+											vm.modal.modal('show');
+										}
+										function closeModal(){
+											vm.modal.modal('hide');
+										}
+									}
+									Window.prototype.remoteModal = remoteModal;
+								})();
+								$(function(){
+									window.remoteModal('##modelWindowDialog');
+								});
+							</script>
+						</cfcase>
+					</cfswitch>
+				</cfif>
 				<div class="panel-body">
 					<fieldset>
 						<legend><h2>Update Facility Information</h2></legend>
@@ -80,6 +166,46 @@
 						<div class="col-sm-7"><cfselect name="Active" class="form-control" Required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.getSelectedFacility.Active#" queryposition="below">
 							<option value="----">Facility Active?</option>
 						</cfselect></div>
+					</div>
+					<fieldset>
+						<legend><h2>Facility Room Information</h2></legend>
+					</fieldset>
+					<div class="form-group">
+						<table class="table table-striped table-bordered">
+							<cfif Session.getSelectedFacilityRooms.RecordCount>
+								<thead class="thead-default">
+									<tr>
+										<th width="40%">Room Name</th>
+										<th  width="15%">Room Capacity</th>
+										<th  width="15%">Room Fees</th>
+										<th width="15%">Room Active</th>
+										<th width="15%">Actions</th>
+									</tr>
+								</thead>
+								<tfoot>
+									<tr>
+										<td colspan="5">Add a new meeting room to this Facility by clicking <a href="#buildURL('admin:facilities.addfacilityroom')#&FacilityID=#URL.FacilityID#" class="btn btn-primary btn-small">here</a></td>
+									</tr>
+								</tfoot>
+								<tbody>
+									<cfloop query="Session.getSelectedFacilityRooms">
+										<tr>
+											<td>#Session.getSelectedFacilityRooms.RoomName#</td>
+											<td>#Session.getSelectedFacilityRooms.Capacity#</td>
+											<td>#DollarFormat(Session.getSelectedFacilityRooms.RoomFees)#</td>
+											<td><cfswitch expression="#Session.getSelectedFacilityRooms.Active#"><cfcase value="1">Yes</cfcase><cfdefaultcase>No</cfdefaultcase></cfswitch></td>
+											<td><a href="#buildURL('admin:facilities.editfacilityroom')#&FacilityID=#URL.FacilityID#&FacilityRoomID=#Session.getSelectedFacilityRooms.TContent_ID#" class="btn btn-primary btn-small">Update</a></td>
+										</tr>
+									</cfloop>
+								</tbody>
+							<cfelse>
+								<tfoot>
+									<tr>
+										<td colspan="5">Add a new meeting room to this Facility by clicking <a href="#buildURL('admin:facilities.addfacilityroom')#&FacilityID=#URL.FacilityID#" class="btn btn-primary btn-small">here</a></td>
+									</tr>
+								</tfoot>
+							</cfif>
+						</table>
 					</div>
 					<fieldset>
 						<legend><h2>Facility Location Information</h2></legend>

@@ -3,10 +3,7 @@
 	<cfmailpart type="text/plain">
 #getUserAccount.FName# #getUserAccount.Lname#,
 
-Someone, hopefully you, requested a lost password from the #rc.$.siteConfig('site')#. If this was you, simply click the link below or copy/paste it into a new browser window to enter a new password. If not, simply disregard this message and your password will not be updated.
-
-#Variables.AccountVerifyLink#
-
+Someone, hopefully you, has changed the password to this account on the #rc.$.siteConfig('site')#. If this was you, you can now login with your email address and the password which you have set. If this was not you, then someone has access to your email account and has clicked the link to change your password.
 
 
 Note: Replies to this automated email address are not monitored by staff. If you have questions or issues contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')#
@@ -16,9 +13,8 @@ Note: Replies to this automated email address are not monitored by staff. If you
 		<table border="0" align="center" width="100%" cellspacing="0" cellpadding="0">
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#getUserAccount.FName# #getUserAccount.Lname#,</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Someone, hopefully you, requested a lost password from the #rc.$.siteConfig('site')#. If this was you, simply click the link below or copy/paste it into a new browser window to enter a new password. If not, simply disregard this message and your password will not be updated.</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Someone, hopefully you, has changed the password to this account on the #rc.$.siteConfig('site')#. If this was you, you can now login with your email address and the password which you have set. If this was not you, then someone has access to your email account and has clicked the link to change your password.</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;"><a href="#Variables.AccountVerifyLink#" target=_blank">#Variables.AccountVerifyLink#</a></td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Note: Replies to this automated email address are not monitored by staff. If you have questions or issues contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')#</td></tr>
 		</table>
@@ -30,10 +26,7 @@ Note: Replies to this automated email address are not monitored by staff. If you
 	<cfmailpart type="text/plain">
 #getUserAccount.FName# #getUserAccount.Lname#,
 
-Someone, hopefully you, requested a lost password from the #rc.$.siteConfig('site')#. If this was you, simply click the link below or copy/paste it into a new browser window to enter a new password. If not, simply disregard this message and your password will not be updated.
-
-#Variables.AccountVerifyLink#
-
+Someone, hopefully you, has changed the password to this account on the #rc.$.siteConfig('site')#. If this was you, you can now login with your email address and the password which you have set. If this was not you, then someone has access to your email account and has clicked the link to change your password.
 
 
 Note: Replies to this automated email address are not monitored by staff. If you have questions or issues contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')#
@@ -43,9 +36,8 @@ Note: Replies to this automated email address are not monitored by staff. If you
 		<table border="0" align="center" width="100%" cellspacing="0" cellpadding="0">
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">#getUserAccount.FName# #getUserAccount.Lname#,</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Someone, hopefully you, requested a lost password from the #rc.$.siteConfig('site')#. If this was you, simply click the link below or copy/paste it into a new browser window to enter a new password. If not, simply disregard this message and your password will not be updated.</td></tr>
+			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Someone, hopefully you, has changed the password to this account on the #rc.$.siteConfig('site')#. If this was you, you can now login with your email address and the password which you have set. If this was not you, then someone has access to your email account and has clicked the link to change your password.</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
-			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;"><a href="#Variables.AccountVerifyLink#" target=_blank">#Variables.AccountVerifyLink#</a></td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">&nbsp;</td></tr>
 			<tr><td Style="Font-Family: Arial; Font-Size: 12px; Font-Weight: Normal; Color: Black;">Note: Replies to this automated email address are not monitored by staff. If you have questions or issues contact #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')# or call #rc.$.siteConfig('ContactPhone')#</td></tr>
 		</table>

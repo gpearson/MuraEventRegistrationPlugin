@@ -76,8 +76,8 @@
 						<div class="col-sm-7"><textarea class="form-control" name="GuaranteeInformation" id="GuaranteeInformation" height="45">#Trim(Session.getSelectedCaterer.GuaranteeInformation)#</textarea></div>
 					</div>
 					<div class="form-group">
-						<label for="AdditionalNotes" class="col-lg-5 col-md-5">Additional Notes:&nbsp;</label>
-						<div class="col-sm-7"><textarea class="form-control" name="AdditionalNotes" id="AdditionalNotes" height="45">#Trim(Session.getSelectedCaterer.AdditionalNotes)#</textarea></div>
+						<label for="DeliveryInfo" class="col-lg-5 col-md-5">Delivery Information:&nbsp;</label>
+						<div class="col-sm-7"><textarea class="form-control" name="DeliveryInfo" id="DeliveryInfo" height="45">#Trim(Session.getSelectedCaterer.DeliveryInfo)#</textarea></div>
 					</div>
 					<div class="form-group">
 						<label for="Active" class="col-lg-5 col-md-5">Caterer Active:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
@@ -90,9 +90,9 @@
 					</fieldset>
 					<div class="form-group">
 						<label for="isAddressVerified" class="col-lg-5 col-md-5">Address Verified:&nbsp;</label>
-						<div class="col-sm-7 form-control-static"><cfswitch expression="#Session.getSelectedCaterer.isAddressVerified#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch></div>
+						<div class="col-sm-7 form-control-static"><cfswitch expression="#Session.getSelectedCaterer.Physical_isAddressVerified#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch></div>
 					</div>
-					<cfif Session.getSelectedCaterer.isAddressVerified eq 1>
+					<cfif Session.getSelectedCaterer.Physical_isAddressVerified eq 1>
 						<div class="form-group">
 							<label for="AddressGeocodeLocation" class="col-lg-5 col-md-5">Address GeoCode Location:&nbsp;</label>
 							<div class="col-sm-7 form-control-static">LAT: #Session.getSelectedCaterer.GeoCode_Latitude# / LON: #Session.getSelectedCaterer.GeoCode_Longitude#</div>

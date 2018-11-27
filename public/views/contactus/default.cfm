@@ -13,7 +13,7 @@
 	</cfif>
 </cfsilent>
 <cfoutput>
-	<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+	<cfif Session.SiteConfigSettings.GoogleReCaptcha_Enabled EQ 1>
 		<cfscript>lang = 'en';</cfscript>
 		<cfsavecontent variable="htmlhead"><cfoutput><script src='https://www.google.com/recaptcha/api.js?h1=#lang#'></script></cfoutput></cfsavecontent>
 		<cfhtmlhead text="#htmlhead#" />
@@ -106,13 +106,13 @@
 							<textarea class="form-control" name="InquiryMessage" id="InquiryMessage" height="45"></textarea>
 						</div>
 					</div>
-					<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+					<cfif Session.SiteConfigSettings.GoogleReCaptcha_Enabled EQ 1>
 						<fieldset>
 							<legend><h2>Human Detection</h2></legend>
 						</fieldset>
 						<div class="form-group">
 							<div class="col-sm-12">
-								<div class="g-recaptcha" data-sitekey="#Session.SiteConfigSettings.Google_ReCaptchaSiteKey#"></div>
+								<div class="g-recaptcha" data-sitekey="#Session.SiteConfigSettings.GoogleReCaptcha_SiteKey#"></div>
 							</div>
 						</div>
 					</cfif>
@@ -253,13 +253,13 @@
 							<textarea class="form-control" name="InquiryMessage" id="InquiryMessage" height="45">#Session.FormInput.InquiryMessage#</textarea>
 						</div>
 					</div>
-					<cfif Session.SiteConfigSettings.Google_ReCaptchaEnabled EQ 1>
+					<cfif Session.SiteConfigSettings.GoogleReCaptcha_Enabled EQ 1>
 						<fieldset>
 							<legend><h2>Human Detection</h2></legend>
 						</fieldset>
 						<div class="form-group">
 							<div class="col-sm-12">
-								<div class="g-recaptcha" data-sitekey="#Session.SiteConfigSettings.Google_ReCaptchaSiteKey#"></div>
+								<div class="g-recaptcha" data-sitekey="#Session.SiteConfigSettings.GoogleReCaptcha_SiteKey#"></div>
 							</div>
 						</div>
 					</cfif>

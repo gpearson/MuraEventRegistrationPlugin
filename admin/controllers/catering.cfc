@@ -3,13 +3,13 @@
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
 		<cfquery name="getCaterers" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-			Select TContent_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, DeliveryInfo, GuaranteeInformation, AdditionalNotes, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, isAddressVerified, GeoCode_latitude, GeoCode_Longitude, GeoCode_Township, GeoCode_StateLongName, GeoCode_CountryShortName, GeoCode_Neighborhood, Active
+			Select TContent_ID, Site_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, DeliveryInfo, GuaranteeInformation, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, Physical_isAddressVerified, Physical_Latitude, Physical_Longitude, Physical_USPSDeliveryPoint, Physical_USPSCheckDigit, Physical_USPSCarrierRoute, Physical_DST, Physical_UTCOffset, Physical_TimeZone, Active
 			From p_EventRegistration_Caterers
 			Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
 			Order by FacilityName
 		</cfquery>
 		<cfquery name="SiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-			Select TContent_ID, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, BillForNoShowRegistrations, RequireEventSurveyToGetCertificate
+			Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 			From p_EventRegistration_SiteConfig
 			Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
 		</cfquery>
@@ -146,7 +146,7 @@
 
 		<cfif not isDefined("FORM.formSubmit")>
 			<cfquery name="SiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-				Select TContent_ID, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, BillForNoShowRegistrations, RequireEventSurveyToGetCertificate
+				Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 				From p_EventRegistration_SiteConfig
 				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
 			</cfquery>
@@ -259,7 +259,7 @@
 				</cfif>
 			<cfelse>
 				<cfquery name="InsertCatererInformation" result="InsertNewRecord" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					insert into p_EventRegistration_Caterers(Site_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, Active, isAddressVerified)
+					insert into p_EventRegistration_Caterers(Site_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, Active, Physical_isAddressVerified)
 					Values(
 						<cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">,
 						<cfqueryparam cfsqltype="cf_sql_varchar" value="#FORM.FacilityName#">,
@@ -278,7 +278,7 @@
 				</cfquery>
 			</cfif>
 
-			<cfif LEN(FORM.BusinessWebsite) or LEN(FORM.PrimaryVoiceNumber) or LEN(FORM.ContatName) or LEN(FORM.ContactPhoneNumber) or LEN(FORM.ContactEmail) or LEN(FORM.PaymentTerms) or LEN(FORM.GuaranteeInformation) or LEN(FORM.AdditioanlNotes)>
+			<cfif LEN(FORM.BusinessWebsite) or LEN(FORM.PrimaryVoiceNumber) or LEN(FORM.ContactName) or LEN(FORM.ContactPhoneNumber) or LEN(FORM.ContactEmail) or LEN(FORM.PaymentTerms) or LEN(FORM.GuaranteeInformation) or LEN(FORM.DeliveryInformation)>
 				<cfswitch expression="#application.configbean.getDBType()#">
 					<cfcase value="mysql">
 						<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
@@ -291,7 +291,7 @@
 								<cfif LEN(FORM.ContactPhoneNumber)>ContactPhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.ContactPhoneNumber)#">,</cfif>
 								<cfif LEN(FORM.PaymentTerms)>PaymentTerms = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PaymentTerms)#">,</cfif>
 								<cfif LEN(FORM.GuaranteeInformation)>GuaranteeInformation = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.GuaranteeInformation)#">,</cfif>
-								<cfif LEN(FORM.AdditionalNotes)>AdditionalNotes = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.AdditionalNotes)#">,</cfif>
+								<cfif LEN(FORM.DeliveryInformation)>DeliveryInfo = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.DeliveryInformation)#">,</cfif>
 								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 								lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
 								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">
@@ -309,7 +309,7 @@
 								<cfif LEN(FORM.ContactPhoneNumber)>ContactPhoneNumber = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.ContactPhoneNumber)#">,</cfif>
 								<cfif LEN(FORM.PaymentTerms)>PaymentTerms = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.PaymentTerms)#">,</cfif>
 								<cfif LEN(FORM.GuaranteeInformation)>GuaranteeInformation = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.GuaranteeInformation)#">,</cfif>
-								<cfif LEN(FORM.AdditionalNotes)>AdditionalNotes = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.AdditionalNotes)#">,</cfif>
+								<cfif LEN(FORM.DeliveryInformation)>DeliveryInfo = <cfqueryparam cfsqltype="cf_sql_varchar" value="#TRIM(FORM.DeliveryInformation)#">,</cfif>
 								lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 								lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
 								lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">
@@ -332,14 +332,14 @@
 
 		<cfif not isDefined("FORM.formSubmit")>
 			<cfquery name="getSelectedCaterer" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-				Select TContent_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, DeliveryInfo, GuaranteeInformation, AdditionalNotes, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, isAddressVerified, GeoCode_latitude, GeoCode_Longitude, GeoCode_Township, GeoCode_StateLongName, GeoCode_CountryShortName, GeoCode_Neighborhood, Active
+				Select TContent_ID, Site_ID, FacilityName, PhysicalAddress, PhysicalCity, PhysicalState, PhysicalZipCode, PhysicalZip4, PrimaryVoiceNumber, BusinessWebsite, ContactName, ContactPhoneNumber, ContactEmail, PaymentTerms, DeliveryInfo, GuaranteeInformation, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, Physical_isAddressVerified, Physical_Latitude, Physical_Longitude, Physical_USPSDeliveryPoint, Physical_USPSCheckDigit, Physical_USPSCarrierRoute, Physical_DST, Physical_UTCOffset, Physical_TimeZone, Active
 				From p_EventRegistration_Caterers
 				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> and
 					TContent_ID = <cfqueryparam value="#URL.CatererID#" cfsqltype="cf_sql_integer">
 				Order by FacilityName
 			</cfquery>
 			<cfquery name="SiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-				Select TContent_ID, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, BillForNoShowRegistrations, RequireEventSurveyToGetCertificate
+				Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 				From p_EventRegistration_SiteConfig
 				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
 			</cfquery>
@@ -417,7 +417,7 @@
 			<cfparam name="Variables.UpdateRecord.PaymentTerms" default="0">
 			<cfparam name="Variables.UpdateRecord.DeliveryInfo" default="0">
 			<cfparam name="Variables.UpdateRecord.GuaranteeInformation" default="0">
-			<cfparam name="Variables.UpdateRecord.AdditionalNotes" default="0">
+			<cfparam name="Variables.UpdateRecord.DeliveryInfo" default="0">
 			<cfparam name="Variables.UpdateRecord.Active" default="0">
 
 			<cfif FORM.FacilityName NEQ Session.getSelectedCaterer.FacilityName><cfset Variables.UpdateRecord.FacilityName = 1></cfif>
@@ -432,7 +432,7 @@
 			<cfif FORM.ContactEmail NEQ Session.getSelectedCaterer.ContactEmail><cfset Variables.UpdateRecord.ContactEmail = 1></cfif>
 			<cfif FORM.PaymentTerms NEQ Session.getSelectedCaterer.PaymentTerms><cfset Variables.UpdateRecord.PaymentTerms = 1></cfif>
 			<cfif FORM.GuaranteeInformation NEQ Session.getSelectedCaterer.GuaranteeInformation><cfset Variables.UpdateRecord.GuaranteeInformation = 1></cfif>
-			<cfif FORM.AdditionalNotes NEQ Session.getSelectedCaterer.AdditionalNotes><cfset Variables.UpdateRecord.AdditionalNotes = 1></cfif>
+			<cfif FORM.DeliveryInfo NEQ Session.getSelectedCaterer.DeliveryInfo><cfset Variables.UpdateRecord.DeliveryInfo = 1></cfif>
 			<cfif FORM.Active NEQ Session.getSelectedCaterer.Active><cfset Variables.UpdateRecord.Active = 1></cfif>
 
 			<cfif variables.UpdateRecord.PhysicalAddress EQ 1 OR variables.UpdateRecord.PhysicalCity EQ 1 OR variables.UpdateRecord.PhysicalState EQ 1 OR variables.UpdateRecord.PhysicalZipCode EQ 1>
@@ -463,7 +463,7 @@
 								PhysicalZip4 = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].plus4_code)#">,
 								GeoCode_Latitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].latitude)#">,
 								GeoCode_Longitude = <cfqueryparam cfsqltype="cf_sql_decimal" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].longitude)#">,
-								isAddressVerified = <cfqueryparam cfsqltype="cf_sql_bit" value="1">,
+								Physical_isAddressVerified = <cfqueryparam cfsqltype="cf_sql_bit" value="1">,
 								Physical_USPSDeliveryPoint = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].delivery_point)#">,
 								Physical_USPSCheckDigit = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['components'].delivery_point_check_digit)#">,
 								Physical_USPSCarrierRoute = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(Variables.PhysicalAddressGeoCoded.Data[1]['metadata'].carrier_route)#">,
@@ -483,7 +483,7 @@
 							PhysicalCity = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(FORM.PhysicalCity)#">,
 							PhysicalState = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(FORM.PhysicalState)#">,
 							PhysicalZipCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(FORM.PhysicalZipCode)#">,
-							isAddressVerified = <cfqueryparam cfsqltype="cf_sql_bit" value="0">,
+							Physical_isAddressVerified = <cfqueryparam cfsqltype="cf_sql_bit" value="0">,
 							lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 							lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
 							lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
@@ -584,17 +584,6 @@
 				<cfquery name="UpdateCatererInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 					update p_EventRegistration_Caterers
 					Set GuaranteeInformation = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(FORM.GuaranteeInformation)#">,
-						lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
-						lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
-						lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">
-					Where TContent_ID = <cfqueryparam value="#URL.CatererID#" cfsqltype="cf_sql_integer">
-				</cfquery>
-			</cfif>
-
-			<cfif Variables.UpdateRecord.AdditionalNotes EQ 1>
-				<cfquery name="UpdateCatererInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					update p_EventRegistration_Caterers
-					Set AdditionalNotes = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Trim(FORM.AdditionalNotes)#">,
 						lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
 						lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
 						lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">

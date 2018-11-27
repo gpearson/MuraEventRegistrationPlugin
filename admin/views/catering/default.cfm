@@ -80,10 +80,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 									<div class="modal-content">
 										<div class="modal-header">
 											<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
-											<h3>Catering Facility Added</h3>
+											<h3>Catering Facility Updated</h3>
 										</div>
 										<div class="modal-body">
-											<p class="alert alert-success">You have successfully added a new catering facility to the database.</p>
+											<p class="alert alert-success">You have successfully updated a catering facility to the database.</p>
 										</div>
 										<div class="modal-footer">
 											<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>

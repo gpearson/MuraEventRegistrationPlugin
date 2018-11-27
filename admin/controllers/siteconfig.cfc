@@ -2,9 +2,36 @@
 	<cffunction name="default" returntype="any" output="false">
 		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
 
+		<cfquery name="CheckEventGroups" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
+			Select UserID, GroupName
+			From tusers
+			where GroupName LIKE '%Event%'
+		</cfquery>
+
+		<cfif CheckEventGroups.RecordCount EQ 0>
+			<cfset EventFacilitatorGroup = #$.getBean('group').loadBy(groupname="Event Facilitator")#>
+			<cfif not EventFacilitatorGroup.exists()>
+				<cfset setField = EventFacilitatorGroup.setGroupName('Event Facilitator')>
+				<cfset setField = EventFacilitatorGroup.setSiteID(Session.SiteID)>
+				<cfset setField = EventFacilitatorGroup.setIsPublic(1)>
+				<cfset setField = EventFacilitatorGroup.setType(1)>
+				<cfset saveRecord = EventFacilitatorGroup.save()>
+			</cfif>
+
+			<cfset EventPresenterGroup = #$.getBean('group').loadBy(groupname="Event Presenter")#>
+			<cfif not EventPresenterGroup.exists()>
+				<cfset setField = EventPresenterGroup.setGroupName('Event Presenter')>
+				<cfset setField = EventPresenterGroup.setSiteID(Session.SiteID)>
+				<cfset setField = EventPresenterGroup.setIsPublic(1)>
+				<cfset setField = EventPresenterGroup.setType(1)>
+				<cfset saveRecord = EventPresenterGroup.save()>
+			</cfif>
+		</cfif>
+
+
 		<cfif not isDefined("FORM.formSubmit")>
 			<cfquery name="SiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-				Select TContent_ID, dateCreated, lastUpdated, lastUpdateBy, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, BillForNoShowRegistrations, RequireEventSurveyToGetCertificate
+				Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
 				From p_EventRegistration_SiteConfig
 				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
 			</cfquery>
@@ -113,16 +140,34 @@
 			<cfif FORM.SmartyStreetsEnabled EQ "----">
 				<cfset FORM.SmartyStreetsEnabled = 0>
 			</cfif>
+
+			<cfif isDefined("FORM.InstallJarFiles")>
+				<cfif FORM.InstallJarFiles EQ 1>
+					<cfswitch expression="#Server.Coldfusion.ProductName#">
+						<cfcase value="Lucee">
+							<cfset ReportLibraryJarsLocation = #ExpandPath("*")#>
+							<cfset ReportLibraryJarsLocation = #Left(Variables.ReportLibraryJarsLocation, LEN(Variables.ReportLibraryJarsLocation) - 1)# & "library/Jars">
+						</cfcase>
+					</cfswitch>
+
+					<cfset FileNewLocation1 = #Session.ReportLibraryJars# & "/itextpdf-5.3.3.jar">
+					<cfset FileOldLocation1 = #Variables.ReportLibraryJarsLocation# & "/itextpdf-5.3.3.jar">
+					<cfset FileNewLocation2 = #Session.ReportLibraryJars# & "/itext-pdfa-5.3.3.jar">
+					<cfset FileOldLocation2 = #Variables.ReportLibraryJarsLocation# & "/itext-pdfa-5.3.3.jar">
+					<cfset FileNewLocation3 = #Session.ReportLibraryJars# & "/itext-xtra-5.3.3.jar">
+					<cfset FileOldLocation3 = #Variables.ReportLibraryJarsLocation# & "/itext-xtra-5.3.3.jar">
+					<cffile action="copy" source="#Variables.FileOldLocation1#" destination="#Variables.FileNewLocation1#" attributes="normal" mode="644">
+					<cffile action="copy" source="#Variables.FileOldLocation2#" destination="#Variables.FileNewLocation2#" attributes="normal" mode="644">
+					<cffile action="copy" source="#Variables.FileOldLocation3#" destination="#Variables.FileNewLocation3#" attributes="normal" mode="644">
+				</cfif>
+			</cfif>
+
 			<cfif Session.SiteConfigSettings.recordcount EQ 0>
 				<cftry>
 					<cfquery name="insertSiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-						insert into p_EventRegistration_SiteConfig(Site_ID, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, ProcessPayments_Stripe, Stripe_TestMode, Stripe_testAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, Google_ReCaptchaEnabled, Google_ReCaptchaSiteKey, Google_ReCaptchaSecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, BillForNoShowRegistrations, RequireEventSurveyToGetCertificate)
+						insert into p_EventRegistration_SiteConfig(Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID)
 						values(
 							<cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_date">, 
-							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">, 
-							<cfqueryparam value="#Session.Mura.Fname# #Session.Mura.LName#" cfsqltype="cf_sql_varchar">, 
-							<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="#FORM.ProcessPaymentsStripe#" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#FORM.StripeTestMode#" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#FORM.StripeTestAPIKey#" cfsqltype="cf_sql_varchar">,
@@ -138,14 +183,18 @@
 							<cfqueryparam value="#FORM.SmartyStreetsEnabled#" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#FORM.SmartyStreetsAPIID#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="#FORM.SmartyStreetsAPITOKEN#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#FORM.BillForNoShowRegistration#" cfsqltype="cf_sql_bit">,
+							<cfqueryparam value="#FORM.RequireEventSurveyToGetCertificate#" cfsqltype="cf_sql_bit">,
 							<cfqueryparam value="#FORM.GitHubProfileURL#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="#FORM.TwitterProfileURL#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="#FORM.FacebookProfileURL#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="#FORM.GoogleProfileURL#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="#FORM.LinkedInProfileURL#" cfsqltype="cf_sql_varchar">,
-							<cfqueryparam value="#FORM.BillForNoShowRegistration#" cfsqltype="cf_sql_bit">,
-							<cfqueryparam value="#FORM.RequireEventSurveyToGetCertificate#" cfsqltype="cf_sql_bit">
-							)
+							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_date">, 
+							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">, 
+							<cfqueryparam value="#Session.Mura.Fname# #Session.Mura.LName#" cfsqltype="cf_sql_varchar">, 
+							<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+						)
 					</cfquery>
 					<cfcatch type="Any">
 						<cfscript>
@@ -162,19 +211,35 @@
 					</cfcatch>
 				</cftry>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+					<cfif isDefined("FORM.InstallJarFiles")>
+						<cfif FORM.InstallJarFiles EQ 1>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?appreload&reload=appreload">
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+						</cfif>
+					<cfelse>
+						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+					</cfif>
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+					<cfif isDefined("FORM.InstallJarFiles")>
+						<cfif FORM.InstallJarFiles EQ 1>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?appreload&reload=appreload">
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+						</cfif>
+					<cfelse>
+						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+					</cfif>
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			<cfelse>
 				<cftry>
-					<cfquery name="insertSiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
+					<cfquery name="uppdateSiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
 						Update p_EventRegistration_SiteConfig
 						Set lastUpdated = <cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
 							lastUpdateBy = <cfqueryparam value="#Session.Mura.Fname# #Session.Mura.LName#" cfsqltype="cf_sql_varchar">,
 							lastUpdateByID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
-							ProcessPayments_Stripe = <cfqueryparam value="#FORM.ProcessPaymentsStripe#" cfsqltype="cf_sql_bit">,
+							Stripe_ProcessPayments = <cfqueryparam value="#FORM.ProcessPaymentsStripe#" cfsqltype="cf_sql_bit">,
 							Stripe_TestMode = <cfqueryparam value="#FORM.StripeTestMode#" cfsqltype="cf_sql_bit">,
 							Stripe_testAPIKey = <cfqueryparam value="#FORM.StripeTestAPIKey#" cfsqltype="cf_sql_varchar">,
 							Stripe_LiveAPIKey = <cfqueryparam value="#FORM.StripeLiveAPIKey#" cfsqltype="cf_sql_varchar">,
@@ -183,9 +248,9 @@
 							Facebook_AppSecretKey = <cfqueryparam value="#FORM.FacebookAppSecretKey#" cfsqltype="cf_sql_varchar">,
 							Facebook_PageID = <cfqueryparam value="#FORM.FacebookPageID#" cfsqltype="cf_sql_varchar">,
 							Facebook_AppScope = <cfqueryparam value="#FORM.FacebookAppScope#" cfsqltype="cf_sql_varchar">,
-							Google_ReCaptchaEnabled = <cfqueryparam value="#FORM.GoogleReCaptchaEnabled#" cfsqltype="cf_sql_bit">,
-							Google_ReCaptchaSiteKey = <cfqueryparam value="#FORM.GoogleReCaptchaSiteKey#" cfsqltype="cf_sql_varchar">,
-							Google_ReCaptchaSecretKey = <cfqueryparam value="#FORM.GoogleReCaptchaSecretKey#" cfsqltype="cf_sql_varchar">,
+							GoogleReCaptcha_Enabled = <cfqueryparam value="#FORM.GoogleReCaptchaEnabled#" cfsqltype="cf_sql_bit">,
+							GoogleReCaptcha_SiteKey = <cfqueryparam value="#FORM.GoogleReCaptchaSiteKey#" cfsqltype="cf_sql_varchar">,
+							GoogleReCaptcha_SecretKey = <cfqueryparam value="#FORM.GoogleReCaptchaSecretKey#" cfsqltype="cf_sql_varchar">,
 							SmartyStreets_Enabled = <cfqueryparam value="#FORM.SmartyStreetsEnabled#" cfsqltype="cf_sql_bit">,
 							SmartyStreets_APIID = <cfqueryparam value="#FORM.SmartyStreetsAPIID#" cfsqltype="cf_sql_varchar">,
 							SmartyStreets_APIToken = <cfqueryparam value="#FORM.SmartyStreetsAPITOKEN#" cfsqltype="cf_sql_varchar">,
@@ -195,7 +260,7 @@
 							GoogleProfile_URL = <cfqueryparam value="#FORM.GoogleProfileURL#" cfsqltype="cf_sql_varchar">,
 							LinkedIn_URL = <cfqueryparam value="#FORM.LinkedInProfileURL#" cfsqltype="cf_sql_varchar">,
 							BillForNoShowRegistrations = <cfqueryparam value="#FORM.BillForNoShowRegistration#" cfsqltype="cf_sql_bit">,
-							RequireEventSurveyToGetCertificate = <cfqueryparam value="#FORM.RequireEventSurveyToGetCertificate#" cfsqltype="cf_sql_bit">
+							RequireSurveyToGetCertificate = <cfqueryparam value="#FORM.RequireEventSurveyToGetCertificate#" cfsqltype="cf_sql_bit">
 						Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar">
 					</cfquery>
 					<cfcatch type="Any">
@@ -213,9 +278,25 @@
 					</cfcatch>
 				</cftry>
 				<cfif LEN(cgi.path_info)>
-					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+					<cfif isDefined("FORM.InstallJarFiles")>
+						<cfif FORM.InstallJarFiles EQ 1>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?appreload&reload=appreload">
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+						</cfif>
+					<cfelse>
+						<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+					</cfif>
 				<cfelse>
-					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+					<cfif isDefined("FORM.InstallJarFiles")>
+						<cfif FORM.InstallJarFiles EQ 1>
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?appreload&reload=appreload">
+						<cfelse>
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+						</cfif>
+					<cfelse>
+						<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:main.default&SiteConfigUpdated=True" >
+					</cfif>
 				</cfif>
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
@@ -244,7 +325,6 @@
 			</cfcase>
 		</cfswitch>
 		<cfset Session.getUsers = StructCopy(getUsers)>
-
 	</cffunction>
 
 	<cffunction name="getAllUsers" access="remote" returnformat="json">
@@ -518,7 +598,7 @@
           				<cfloop list="#FORM.MemberGroup#" index="i" delimiters=",">
           					<cfquery name="insertUserMemberships" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
           						Insert into tusersmemb(UserID, GroupID)
-          						Values('#NewUser.getUserID()#', '#i#')
+          						Values('#AddNewAccount.getUserID()#', '#i#')
           					</cfquery>
           				</cfloop>
           			</cfif>
