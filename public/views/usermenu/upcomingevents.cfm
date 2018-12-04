@@ -21,8 +21,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<thead>
 						<tr>
 							<td width="50%">Event Title</td>
-							<td width="15%">Primary Date</td>
-							<td>&nbsp;</td>
+							<td width="20%">Primary Date</td>
+							<td width="30%">&nbsp;</td>
 						</tr>
 					</thead>
 					<tbody>
@@ -31,9 +31,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<tr>
 								<td>#Session.GetRegisteredEvents.ShortTitle#</td>
 								<td>#dateFormat(Session.GetRegisteredEvents.EventDate, "mm/dd/yyyy")# (#DateFormat(Session.GetRegisteredEvents.EventDate, "ddd")#)</td>
-								<td width="15%">
+								<td>
 									<cfif DateDiff("d", Session.GetRegisteredEvents.Registration_Deadline, Now()) LTE 0>
-										<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.cancelregistration&EventID=#Session.GetRegisteredEvents.Event_ID#" class="btn btn-primary btn-small BtnSameSize" alt="Event Information">Cancel</a> | 
+										<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.cancelregistration&EventID=#Session.GetRegisteredEvents.Event_ID#" class="btn btn-primary btn-small BtnSameSize" alt="Event Information">DeRegister</a> | 
 									</cfif> <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.GetRegisteredEvents.Event_ID#" class="btn btn-primary btn-small BtnSameSize" alt="Event Information">View Event Info</a></td>
 								</tr>
 							</cfif>

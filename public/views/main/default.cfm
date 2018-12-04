@@ -226,10 +226,10 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
-								<h3>Invalid Email Address Entered</h3>
+								<h3>Email Address Registered</h3>
 							</div>
 							<div class="modal-body">
-								<p class="alert alert-success">You have successfully created an account on this website. The system is in the process of sending you a special link to activate your account. Please check your 'Spam' or 'Junk' folders if you did not receive this message within 10 minutes. The email message will be from #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')#.</p>
+								<p class="alert alert-success">You have successfully created an account on this website. The system is in the process of sending you a special link to activate your account. Please check your 'Spam' or 'Junk' folders if you did not receive this message within 10 minutes. The email message will be from #rc.$.siteConfig('ContactEmail')#.</p>
 							</div>
 							<div class="modal-footer">
 								<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -270,7 +270,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<h3>Account Activated</h3>
 							</div>
 							<div class="modal-body">
-								<p class="alert alert-success">You have successfully activated your account for this website. The system is in the process of sending you an confirmation of this action to your email address. Please check your 'Spam' or 'Junk' folders if you did not receive this message within 10 minutes. The email message will be from #rc.$.siteConfig('ContactName')# at #rc.$.siteConfig('ContactEmail')#.</p>
+								<p class="alert alert-success">You have successfully activated your account for this website. The system is in the process of sending you a confirmation to your email address. Please check your 'Spam' or 'Junk' folders if you do not receive this message within 10 minutes. The email message will be from #rc.$.siteConfig('ContactEmail')#.</p>
 							</div>
 							<div class="modal-footer">
 								<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -406,9 +406,9 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<thead class="thead-default">
 						<tr>
 							<th width="50%">Event Title</th>
-							<th width="15%">Event Date</th>
-							<th width="20%">Event Actions</th>
-							<th width="15%">Event Attributes</th>
+							<th width="12%">Event Date</th>
+							<th width="26%">Event Actions</th>
+							<th width="12%">Event Attributes</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -462,13 +462,15 @@ http://www.apache.org/licenses/LICENSE-2.0
 									</cfif>
 								</td>
 								<td>
-									<cfif Session.getNonFeaturedEvents.AcceptRegistrations EQ 1>
+									<cfif Session.getNonFeaturedEvents.AcceptRegistrations EQ 1 and Session.getNonFeaturedEvents.EventCancelled EQ 0>
 										<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.getNonFeaturedEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize" alt="Event Information">More Info</a>
 										<cfif Variables.EventSeatsLeft GTE 1 and DateDiff("d", Now(), Session.getNonFeaturedEvents.Registration_Deadline) GTE 0>
 											| <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&EventID=#Session.getNonFeaturedEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize" alt="Register Event">Register</a>
 										</cfif>
-									<CFELSE>
+									<CFELSEif Session.getNonFeaturedEvents.EventCancelled EQ 0>
 										<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.eventinfo&EventID=#Session.getNonFeaturedEvents.TContent_ID#" class="btn btn-primary btn-small BtnSameSize" alt="Event Information">More Info</a>
+									<cfelseif Session.getNonFeaturedEvents.EventCancelled EQ 1>
+										<div style="Color: Red; font-weight: bold;">Event Cancelled</div>
 									</cfif>
 								</td>
 								<td><cfif Session.getNonFeaturedEvents.PGPCertificate_Available EQ 1><a href="##eventPGPCertificate" data-toggle="modal"><img src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/images/award.png" alt="PGP Certificate" border="0"></cfif><cfif Session.getNonFeaturedEvents.H323_Available EQ 1 or Session.getNonFeaturedEvents.Webinar_Available EQ 1><img src="/plugins/#HTMLEditFormat(rc.pc.getPackage())#/includes/assets/images/wifi.png" "Online Learning" border="0"></a></cfif></td>
