@@ -28,10 +28,9 @@
 			</cfif>
 		</cfif>
 
-
 		<cfif not isDefined("FORM.formSubmit")>
 			<cfquery name="SiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-				Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID
+				Select TContent_ID, Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, Twitter_Enabled, Twitter_ConsumerKey, Twitter_ConsumerSecret, Twitter_AccessToken, Twitter_AccessTokenSecret, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, CFServerJarFiles
 				From p_EventRegistration_SiteConfig
 				Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar"> 
 			</cfquery>
@@ -108,6 +107,21 @@
 				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
 
+			<cfif FORM.TwitterEnabled EQ "----">
+				<cfset FORM.TwitterEnabled = 0>
+			<cfelseif FORM.TwitterEnabled EQ 1 and LEN(FORM.TwitterConsumerKey) EQ 0 or FORM.TwitterEnabled EQ 1 and LEN(FORM.TwitterConsumerSecretKey) EQ 0 or FORM.TwitterEnabled EQ 1 and LEN(FORM.TwitterAccessToken) EQ 0 or FORM.TwitterEnabled EQ 1 and LEN(FORM.TwitterAccessTokenSecret) EQ 0>
+				<cfscript>
+					errormsg = {property="EmailMsg",message="Please Enter the Twitter Application Credientials to allow this plugin to post to the companies handle."};
+					arrayAppend(Session.FormErrors, errormsg);
+				</cfscript>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=admin:siteconfig.default&FormRetry=True" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
+			</cfif>
+
 			<cfif FORM.GoogleReCaptchaEnabled EQ "----">
 				<cfset FORM.GoogleReCaptchaEnabled = 0>
 			<cfelseif FORM.GoogleReCaptchaEnabled EQ 1 and LEN(FORM.GoogleReCaptchaSiteKey) EQ 0 or FORM.GoogleReCaptchaEnabled EQ 1 and LEN(FORM.GoogleReCaptchaSecretKey) EQ 0>
@@ -156,16 +170,20 @@
 					<cfset FileOldLocation2 = #Variables.ReportLibraryJarsLocation# & "/itext-pdfa-5.3.3.jar">
 					<cfset FileNewLocation3 = #Session.ReportLibraryJars# & "/itext-xtra-5.3.3.jar">
 					<cfset FileOldLocation3 = #Variables.ReportLibraryJarsLocation# & "/itext-xtra-5.3.3.jar">
+					<cfset FileNewLocation4 = #Session.ReportLibraryJars# & "/twitter4j.jar">
+					<cfset FileOldLocation4 = #Variables.ReportLibraryJarsLocation# & "/twitter4j-core-4.0.7.jar">
+
 					<cffile action="copy" source="#Variables.FileOldLocation1#" destination="#Variables.FileNewLocation1#" attributes="normal" mode="644">
 					<cffile action="copy" source="#Variables.FileOldLocation2#" destination="#Variables.FileNewLocation2#" attributes="normal" mode="644">
 					<cffile action="copy" source="#Variables.FileOldLocation3#" destination="#Variables.FileNewLocation3#" attributes="normal" mode="644">
+					<cffile action="copy" source="#Variables.FileOldLocation4#" destination="#Variables.FileNewLocation4#" attributes="normal" mode="644">
 				</cfif>
 			</cfif>
 
 			<cfif Session.SiteConfigSettings.recordcount EQ 0>
 				<cftry>
 					<cfquery name="insertSiteConfigSettings" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-						insert into p_EventRegistration_SiteConfig(Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID)
+						insert into p_EventRegistration_SiteConfig(Site_ID, Stripe_ProcessPayments, Stripe_TestMode, Stripe_TestAPIKey, Stripe_LiveAPIKey, Facebook_Enabled, Facebook_AppID, Facebook_AppSecretKey, Facebook_PageID, Facebook_AppScope, GoogleReCaptcha_Enabled, GoogleReCaptcha_SiteKey, GoogleReCaptcha_SecretKey, SmartyStreets_Enabled, SmartyStreets_APIID, SmartyStreets_APIToken, BillForNoShowRegistrations, RequireSurveyToGetCertificate, GitHub_URL, Twitter_URL, Facebook_URL, GoogleProfile_URL, LinkedIn_URL, dateCreated, lastUpdated, lastUpdateBy, lastUpdateByID, Twitter_Enabled, Twitter_ConsumerKey, Twitter_ConsumerSecret, Twitter_AccessToken, Twitter_AccessTokenSecret, CFServerJarFiles)
 						values(
 							<cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar">,
 							<cfqueryparam value="#FORM.ProcessPaymentsStripe#" cfsqltype="cf_sql_bit">,
@@ -193,7 +211,13 @@
 							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_date">, 
 							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">, 
 							<cfqueryparam value="#Session.Mura.Fname# #Session.Mura.LName#" cfsqltype="cf_sql_varchar">, 
-							<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">
+							<cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#FORM.TwitterEnabled#" cfsqltype="cf_sql_bit">,
+							<cfqueryparam value="#FORM.TwitterConsumerKey#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#FORM.TwitterConsumerSecretKey#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#FORM.TwitterAccessToken#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#FORM.TwitterAccessTokenSecret#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#FORM.JavaLibraryJars#" cfsqltype="cf_sql_varchar">
 						)
 					</cfquery>
 					<cfcatch type="Any">
@@ -260,7 +284,13 @@
 							GoogleProfile_URL = <cfqueryparam value="#FORM.GoogleProfileURL#" cfsqltype="cf_sql_varchar">,
 							LinkedIn_URL = <cfqueryparam value="#FORM.LinkedInProfileURL#" cfsqltype="cf_sql_varchar">,
 							BillForNoShowRegistrations = <cfqueryparam value="#FORM.BillForNoShowRegistration#" cfsqltype="cf_sql_bit">,
-							RequireSurveyToGetCertificate = <cfqueryparam value="#FORM.RequireEventSurveyToGetCertificate#" cfsqltype="cf_sql_bit">
+							RequireSurveyToGetCertificate = <cfqueryparam value="#FORM.RequireEventSurveyToGetCertificate#" cfsqltype="cf_sql_bit">,
+							Twitter_Enabled = <cfqueryparam value="#FORM.TwitterEnabled#" cfsqltype="cf_sql_bit">,
+							Twitter_ConsumerKey = <cfqueryparam value="#FORM.TwitterConsumerKey#" cfsqltype="cf_sql_varchar">,
+							Twitter_ConsumerSecret = <cfqueryparam value="#FORM.TwitterConsumerSecretKey#" cfsqltype="cf_sql_varchar">,
+							Twitter_AccessToken = <cfqueryparam value="#FORM.TwitterAccessToken#" cfsqltype="cf_sql_varchar">,
+							Twitter_AccessTokenSecret = <cfqueryparam value="#FORM.TwitterAccessTokenSecret#" cfsqltype="cf_sql_varchar">,
+							CFServerJarFiles = <cfqueryparam value="#FORM.JavaLibraryJars#" cfsqltype="cf_sql_varchar">
 						Where Site_ID = <cfqueryparam value="#$.siteConfig('siteid')#" cfsqltype="cf_sql_varchar">
 					</cfquery>
 					<cfcatch type="Any">

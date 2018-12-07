@@ -23,6 +23,7 @@
 	<cfset FileTest1 = #Variables.ReportLibraryJars# & "/itextpdf-5.3.3.jar">
 	<cfset FileTest2 = #Variables.ReportLibraryJars# & "/itext-pdfa-5.3.3.jar">
 	<cfset FileTest3 = #Variables.ReportLibraryJars# & "/itext-xtra-5.3.3.jar">
+	<cfset FileTest4 = #Variables.ReportLibraryJars# & "/twitter4j.jar">
 
 </cfsilent>
 <cfoutput>
@@ -31,6 +32,7 @@
 		<div class="panel panel-default">
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="JavaLibraryJars" value="#Variables.ReportLibraryJars#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
 					<fieldset>
@@ -41,7 +43,7 @@
 						<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 					</div>
-					<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false>
+					<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false or FileExists(Variables.FileTest4) EQ false>
 						<fieldset>
 							<legend><h2>Required JAR Files not installed</h2></legend>
 						</fieldset>
@@ -97,6 +99,29 @@
 					<div class="form-group">
 						<label for="FacebookAppScope" class="col-lg-3 col-md-3">Facebook Application Scope:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FacebookAppScope" name="FacebookAppScope"></div>
+					</div>
+					<fieldset>
+						<legend><h2>Twitter Application Configuration</h2></legend>
+					</fieldset>
+					<div class="form-group">
+						<label for="TwitterEnabled" class="col-lg-3 col-md-3">Send Tweets regarding events:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfselect name="TwitterEnabled" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Publish Events to Companies Twitter Handle?</option></cfselect></div>
+					</div>
+					<div class="form-group">
+						<label for="TwitterConsumerKey" class="col-lg-3 col-md-3">Twitter Consumer Key:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterConsumerKey" name="TwitterConsumerKey"></div>
+					</div>
+					<div class="form-group">
+						<label for="TwitterConsumerSecretKey" class="col-lg-3 col-md-3">Twitter Consumer Secret Key:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterConsumerSecretKey" name="TwitterConsumerSecretKey"></div>
+					</div>
+					<div class="form-group">
+						<label for="TwitterAccessToken" class="col-lg-3 col-md-3">Twitter Access Token:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessToken" name="TwitterAccessToken"></div>
+					</div>
+					<div class="form-group">
+						<label for="TwitterAccessTokenSecret" class="col-lg-3 col-md-3">Twitter Access Token Secret:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessTokenSecret" name="TwitterAccessTokenSecret"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Google ReCaptcha Form Protection</h2></legend>
@@ -178,6 +203,7 @@
 		<div class="panel panel-default">
 			<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#$.siteConfig('siteID')#">
+				<cfinput type="hidden" name="JavaLibraryJars" value="#Variables.ReportLibraryJars#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<cfif isDefined("Session.FormErrors")>
 					<cfif ArrayLen(Session.FormErrors)>
@@ -231,7 +257,7 @@
 						<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 					</div>
-					<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false>
+					<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false or FileExists(Variables.FileTest4) EQ false>
 						<fieldset>
 							<legend><h2>Required JAR Files not installed</h2></legend>
 						</fieldset>
@@ -287,6 +313,29 @@
 					<div class="form-group">
 						<label for="FacebookAppScope" class="col-lg-3 col-md-3">Facebook Application Scope:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FacebookAppScope" name="FacebookAppScope" value="#Session.FormInput.FacebookAppScope#"></div>
+					</div>
+					<fieldset>
+						<legend><h2>Twitter Application Configuration</h2></legend>
+					</fieldset>
+					<div class="form-group">
+						<label for="TwitterEnabled" class="col-lg-3 col-md-3">Send Tweets regarding events:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfselect name="TwitterEnabled" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.FormInput.TwitterEnabled#" queryposition="below"><option value="----">Publish Events to Companies Twitter Handle?</option></cfselect></div>
+					</div>
+					<div class="form-group">
+						<label for="TwitterConsumerKey" class="col-lg-3 col-md-3">Twitter Consumer Key:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterConsumerKey" name="TwitterConsumerKey" value="#Session.FormInput.TwitterConsumerKey#"></div>
+					</div>
+					<div class="form-group">
+						<label for="TwitterConsumerSecretKey" class="col-lg-3 col-md-3">Twitter Consumer Secret Key:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterConsumerSecretKey" name="TwitterConsumerSecretKey" value="#Session.FormInput.TwitterConsumerSecretKey#"></div>
+					</div>
+					<div class="form-group">
+						<label for="TwitterAccessToken" class="col-lg-3 col-md-3">Twitter Access Token:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessToken" name="TwitterAccessToken" value="#Session.FormInput.TwitterAccessToken#"></div>
+					</div>
+					<div class="form-group">
+						<label for="TwitterAccessTokenSecret" class="col-lg-3 col-md-3">Twitter Access Token Secret:&nbsp;</label>
+						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessTokenSecret" name="TwitterAccessTokenSecret" value="#Session.FormInput.TwitterAccessTokenSecret#"></div>
 					</div>
 					<fieldset>
 						<legend><h2>Google ReCaptcha Form Protection</h2></legend>
@@ -368,6 +417,7 @@
 			<div class="panel panel-default">
 				<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 					<cfinput type="hidden" name="SiteID" value="#$.siteConfig('siteID')#">
+					<cfinput type="hidden" name="JavaLibraryJars" value="#Variables.ReportLibraryJars#">
 					<cfinput type="hidden" name="formSubmit" value="true">
 					<div class="panel-body">
 						<fieldset>
@@ -378,7 +428,7 @@
 							<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 						</div>
-						<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false>
+						<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false or FileExists(Variables.FileTest4) EQ false>
 							<fieldset>
 								<legend><h2>Required JAR Files not installed</h2></legend>
 							</fieldset>
@@ -434,6 +484,29 @@
 						<div class="form-group">
 							<label for="FacebookAppScope" class="col-lg-3 col-md-3">Facebook Application Scope:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FacebookAppScope" name="FacebookAppScope" value="#Session.SiteConfigSettings.Facebook_AppScope#"></div>
+						</div>
+						<fieldset>
+							<legend><h2>Twitter Application Configuration</h2></legend>
+						</fieldset>
+						<div class="form-group">
+							<label for="TwitterEnabled" class="col-lg-3 col-md-3">Send Tweets regarding events:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfselect name="TwitterEnabled" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.SiteConfigSettings.Twitter_Enabled#" queryposition="below"><option value="----">Publish Events to Companies Twitter Handle?</option></cfselect></div>
+						</div>
+						<div class="form-group">
+							<label for="TwitterConsumerKey" class="col-lg-3 col-md-3">Twitter Consumer Key:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterConsumerKey" name="TwitterConsumerKey" value="#Session.SiteConfigSettings.Twitter_ConsumerKey#"></div>
+						</div>
+						<div class="form-group">
+							<label for="TwitterConsumerSecretKey" class="col-lg-3 col-md-3">Twitter Consumer Secret Key:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterConsumerSecretKey" name="TwitterConsumerSecretKey" value="#Session.SiteConfigSettings.Twitter_ConsumerSecret#"></div>
+						</div>
+						<div class="form-group">
+							<label for="TwitterAccessToken" class="col-lg-3 col-md-3">Twitter Access Token:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessToken" name="TwitterAccessToken" value="#Session.SiteConfigSettings.Twitter_AccessToken#"></div>
+						</div>
+						<div class="form-group">
+							<label for="TwitterAccessTokenSecret" class="col-lg-3 col-md-3">Twitter Access Token Secret:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessTokenSecret" name="TwitterAccessTokenSecret" value="#Session.SiteConfigSettings.Twitter_AccessTokenSecret#"></div>
 						</div>
 						<fieldset>
 							<legend><h2>Google ReCaptcha Form Protection</h2></legend>
@@ -514,6 +587,7 @@
 			<div class="panel panel-default">
 				<cfform action="" method="post" id="AddEvent" class="form-horizontal">
 					<cfinput type="hidden" name="SiteID" value="#$.siteConfig('siteID')#">
+					<cfinput type="hidden" name="JavaLibraryJars" value="#Variables.ReportLibraryJars#">
 					<cfinput type="hidden" name="formSubmit" value="true">
 					<cfif isDefined("Session.FormErrors")>
 					<cfif ArrayLen(Session.FormErrors)>
@@ -567,7 +641,7 @@
 							<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 						</div>
-						<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false>
+						<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false or FileExists(Variables.FileTest4) EQ false>
 							<fieldset>
 								<legend><h2>Required JAR Files not installed</h2></legend>
 							</fieldset>
@@ -623,6 +697,29 @@
 						<div class="form-group">
 							<label for="FacebookAppScope" class="col-lg-3 col-md-3">Facebook Application Scope:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FacebookAppScope" name="FacebookAppScope" value="#Session.FormInput.FacebookAppScope#"></div>
+						</div>
+						<fieldset>
+							<legend><h2>Twitter Application Configuration</h2></legend>
+						</fieldset>
+						<div class="form-group">
+							<label for="TwitterEnabled" class="col-lg-3 col-md-3">Send Tweets regarding events:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfselect name="TwitterEnabled" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.FormInput.TwitterEnabled#" queryposition="below"><option value="----">Publish Events to Companies Twitter Handle?</option></cfselect></div>
+						</div>
+						<div class="form-group">
+							<label for="TwitterConsumerKey" class="col-lg-3 col-md-3">Twitter Consumer Key:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterConsumerKey" name="TwitterConsumerKey" value="#Session.FormInput.TwitterConsumerKey#"></div>
+						</div>
+						<div class="form-group">
+							<label for="TwitterConsumerSecretKey" class="col-lg-3 col-md-3">Twitter Consumer Secret Key:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterConsumerSecretKey" name="TwitterConsumerSecretKey" value="#Session.FormInput.TwitterConsumerSecretKey#"></div>
+						</div>
+						<div class="form-group">
+							<label for="TwitterAccessToken" class="col-lg-3 col-md-3">Twitter Access Token:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessToken" name="TwitterAccessToken" value="#Session.FormInput.TwitterAccessToken#"></div>
+						</div>
+						<div class="form-group">
+							<label for="TwitterAccessTokenSecret" class="col-lg-3 col-md-3">Twitter Access Token Secret:&nbsp;</label>
+							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessTokenSecret" name="TwitterAccessTokenSecret" value="#Session.FormInput.TwitterAccessTokenSecret#"></div>
 						</div>
 						<fieldset>
 							<legend><h2>Google ReCaptcha Form Protection</h2></legend>

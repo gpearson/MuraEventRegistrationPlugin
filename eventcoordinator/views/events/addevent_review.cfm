@@ -424,10 +424,18 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 					<cfif Session.SiteConfigSettings.Facebook_Enabled EQ 1>
 						<div class="form-group">
-						<label for="PostEventToFB" class="col-lg-5 col-md-5">Post to FB Fan Page:&nbsp;&nbsp;</label>
+						<label for="PostEventToFB" class="col-lg-5 col-md-5">Post to Facebook Fan Page:&nbsp;&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
 							<cfif Session.FormInput.EventStep1.PostedTo_Facebook CONTAINS 1>Yes<cfelse>No</cfif>
 							<div class="form-check-label" style="Color: ##CCCCCC;">(Post this Event to Facebook Fan Page)</div></div>
+						</div>
+					</cfif>
+					<cfif Session.SiteConfigSettings.Twitter_Enabled EQ 1>
+						<div class="form-group">
+						<label for="PostEventToFB" class="col-lg-5 col-md-5">Post to Companies Twitter Account:&nbsp;&nbsp;</label>
+						<div class="form-control-static col-lg-7 col-md-7">
+							<cfif Session.FormInput.EventStep1.PostedTo_Twitter CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Post this Event to Twitter Handle)</div></div>
 						</div>
 					</cfif>
 					<cfif Session.SiteConfigSettings.BillForNoShowRegistrations EQ 1>

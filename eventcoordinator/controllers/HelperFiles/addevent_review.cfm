@@ -543,6 +543,45 @@
 			</cfswitch>
 		</cfif>
 
+		<cfif Session.SiteConfigSettings.Twitter_Enabled EQ 1>
+			<!--- Push this newly created event to Twitter --->
+			<cfset consumerKey = #Session.SiteConfigSettings.Twitter_ConsumerKey#>
+			<cfset consumerSecret = #Session.SiteConfigSettings.Twitter_ConsumerSecret#>
+			<cfset accessToken = #Session.SiteConfigSettings.Twitter_AccessToken#>
+			<cfset accessTokenSecret = #Session.SiteConfigSettings.Twitter_AccessTokenSecret#>
+			<!---Create java instance of twitter4j and set key values--->
+			<cfset JarFileLocation = #Session.SiteConfigSettings.CFServerJarFiles# & "/twitter4j.jar">
+			<cfset TwitterConfig = createObject("Java", "twitter4j.conf.ConfigurationBuilder", "#Variables.JarFileLocation#") />
+			<cfscript>
+				TwitterConfig.setOAuthConsumerKey(Session.SiteConfigSettings.Twitter_ConsumerKey);
+				TwitterConfig.setOAuthConsumerSecret(Session.SiteConfigSettings.Twitter_ConsumerSecret);
+				TwitterConfig.setOAuthAccessToken(Session.SiteConfigSettings.Twitter_AccessToken);
+				TwitterConfig.setOAuthAccessTokenSecret(Session.SiteConfigSettings.Twitter_AccessTokenSecret);
+				TwitterConfiguration = TwitterConfig.build();
+			</cfscript>
+			<cfset TwitterFactory = createObject("Java", "twitter4j.TwitterFactory", "#Variables.JarFileLocation#") />
+			<cfswitch expression="#application.configbean.getDBType()#">
+				<cfcase value="mysql">
+					<cfif LEN(cgi.path_info)>
+						<cfset tweeturl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.eventinfo&EventID=#InsertNewRecord.GENERATED_KEY#">
+					<cfelse>
+						<cfset tweeturl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.eventinfo&EventID=#InsertNewRecord.GENERATED_KEY#">
+					</cfif>
+				</cfcase>
+				<cfcase value="mssql">
+					<cfif LEN(cgi.path_info)>
+						<cfset tweeturl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.eventinfo&EventID=#InsertNewRecord.GENERATEDKEY#">
+					<cfelse>
+						<cfset tweeturl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.eventinfo&EventID=#InsertNewRecord.GENERATEDKEY#">
+					</cfif>
+				</cfcase>
+			</cfswitch>
+			<cfscript>
+				TwitterFactory.init(TwitterConfiguration);
+				TwitterTweet = TwitterFactory.getInstance().updateStatus("Event: #Session.FormInput.EventStep1.ShortTitle# on #Session.FormInput.EventStep1.EventDate#. More Info at #Variables.tweeturl#");
+			</cfscript>
+		</cfif>
+		
 		<cfif Session.FormInput.EventStep1.Event_OptionalCosts EQ 1>
 
 		</cfif>

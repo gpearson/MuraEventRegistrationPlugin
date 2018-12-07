@@ -11,10 +11,6 @@ Minimum Requirements
 * [Adobe ColdFusion](http://www.adobe.com/coldfusion) 2016.0.02.299200
 * [Lucee](http://lucee.org) 5.0.0.254
 
-Note: Upon Installation create an account through the Register Account Section to add your account to the database. A manual entry of the tusersmemb table is needed which maps your account to the Event Facilitator UUID to access the Event Coordinator Subsystem of the Plugin.
-
-Note: After installing plugin the itext*.jar files within the library/jars of the plugin directory will need to be manually copied to your WEB-INF/{railo},{lucee}/lib directory and then restart the service for these jar files to be included.
-
 Note: A new dsp_login.cfm page located in includes/display_objects will need to be placed within the current template folder display_objects of your Mura Installation. This template has buttons for Forgot Password and Create Account that walks a user through these processes if they are having issues getting logged in.
 
 
@@ -28,4 +24,4 @@ This plugin utilizes MuraFW/1 as the base to this plugin and allows website user
 
 Update
 ====================
-If running plugin on Mura Version 6.1, upgrade Mura first to the latest version through updating Mura Core then Mura Sites. 
+If running plugin on Mura Version 6.1, upgrade Mura first to the latest version through updating Mura Core then Mura Sites. When you get a blank white screen while doing the Mura Core Update, restart the coldfusion service then login to mura admin. You might need to clear your cache by pressing <CTRL> + <F5> a few times. Update Mura Core again, then update Mura Site. Once this has been completed, then update the Plugin through the Plugin Manager. Once the plugin has updated, click on the plugin name to view the Super Admin Subsystem and update settings.
