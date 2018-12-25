@@ -421,13 +421,21 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfif Session.FormInput.EventStep1.Event_OptionalCosts CONTAINS 1>
 
 					</cfif>
-
+					
 					<cfif Session.SiteConfigSettings.Facebook_Enabled EQ 1>
 						<div class="form-group">
-						<label for="PostEventToFB" class="col-lg-5 col-md-5">Post to FB Fan Page:&nbsp;&nbsp;</label>
+						<label for="PostEventToFB" class="col-lg-5 col-md-5">Post to Facebook Fan Page:&nbsp;&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
 							<cfif Session.FormInput.EventStep1.PostedTo_Facebook CONTAINS 1>Yes<cfelse>No</cfif>
 							<div class="form-check-label" style="Color: ##CCCCCC;">(Post this Event to Facebook Fan Page)</div></div>
+						</div>
+					</cfif>
+					<cfif Session.SiteConfigSettings.Twitter_Enabled EQ 1>
+						<div class="form-group">
+						<label for="PostEventToFB" class="col-lg-5 col-md-5">Post to Companies Twitter Account:&nbsp;&nbsp;</label>
+						<div class="form-control-static col-lg-7 col-md-7">
+							<cfif Session.FormInput.EventStep1.PostedTo_Twitter CONTAINS 1>Yes<cfelse>No</cfif>
+							<div class="form-check-label" style="Color: ##CCCCCC;">(Post this Event to Twitter Handle)</div></div>
 						</div>
 					</cfif>
 					<cfif Session.SiteConfigSettings.BillForNoShowRegistrations EQ 1>
@@ -439,12 +447,51 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<fieldset>
+						<legend><h2>Estimated Workshop/Event Expenses</h2></legend>
+					</fieldset>
+					<cfset TotalEstimatedExpenses = #Session.FormInput.EventStep1.WhatIf_PresenterCostTotal# + #Session.FormInput.EventStep1.WhatIf_FacilityCostTotal#>
+					<cfset EstimatedNumberMembers = #Variables.TotalEstimatedExpenses# / #Session.FormInput.EventStep1.Event_MemberCost#>
+					<cfset TotalEstimatedExpensesWithMeals = #Variables.TotalEstimatedExpenses# + (#Variables.EstimatedNumberMembers# * #Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee#)>
+					<div class="form-group">
+						<label for="WhatIf_MealCostPerAttendee" class="col-lg-5 col-md-5">Estimated Meal Cost Per Attendee:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee GT 0>
+								#DollarFormat(Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee)#
+							</cfif>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="WhatIf_PresenterCostTotal" class="col-lg-5 col-md-5">Estimated Total Presenter Costs:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							#DollarFormat(Session.FormInput.EventStep1.WhatIf_PresenterCostTotal)#
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="WhatIf_FacilityCostTotal" class="col-lg-5 col-md-5">Estimated Total Facility Costs:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif Session.FormInput.EventStep1.WhatIf_FacilityCostTotal GT 0>
+								#DollarFormat(Session.FormInput.EventStep1.WhatIf_FacilityCostTotal)#
+							</cfif>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="WhatIf_TotalMembers" class="col-lg-5 col-md-5">Total Members To BreakEven:&nbsp;</label>
+						<div class="form-control-static col-lg-7 col-md-7">
+							<cfset NumberOfMembers = #Variables.TotalEstimatedExpensesWithMeals# / #Session.FormInput.EventStep1.Event_MemberCost#>
+							#Ceiling(Variables.NumberOfMembers)#
+						</div>
+					</div>
+					<fieldset>
 						<legend><h2>Allow Participants Registrations</h2></legend>
 					</fieldset>
 					<div class="form-group">
 						<label for="AcceptRegistrations" class="col-lg-5 col-md-5">Accept Registrations:&nbsp;</label>
 						<div class="form-control-static col-lg-7 col-md-7">
-							<cfswitch expression="#Session.FormInput.EventStep3.AcceptRegistrations#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
+							<cfif isDefined("Session.FormInput.EventStep3.AcceptRegistrations")>
+								<cfswitch expression="#Session.FormInput.EventStep3.AcceptRegistrations#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch>
+							<cfelse>
+								No
+							</cfif>
 						</div>
 					</div>
 				</div>

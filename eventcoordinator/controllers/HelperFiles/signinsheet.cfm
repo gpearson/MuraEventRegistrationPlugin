@@ -65,7 +65,7 @@
 					<tr><td colspan="2" align="center">#getSelectedEvent.ShortTitle#</td></tr>
 					<tr><td colspan="2" align="center">#DateFormat(getSelectedEvent.EventDate, "full")#</td></tr>
 					<tr><td colspan="2">&nbsp;</td></tr>
-					<tr><td colspan="2" align="center" style="font-family: Arial; font-size: 10px;">Please check of fthe participant's name when they have signed in to attend this event. If participants need to make changes to Name, Email they must update their account on the website.</td></tr>
+					<tr><td colspan="2" align="center" style="font-family: Arial; font-size: 10px;">Please check off the participant's name when they have signed in to attend this event. If participants need to make changes to Name, Email they must update their account on the website.</td></tr>
 				</table>
 			</cfdocumentitem>
 			<cfdocumentitem type="footer" evalAtPrint="true">

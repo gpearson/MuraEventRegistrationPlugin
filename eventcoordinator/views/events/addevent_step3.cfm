@@ -35,7 +35,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</fieldset>
 					<div class="form-group">
 						<label for="LocationID" class="col-lg-5 col-md-5">Location for Event:&nbsp;</label>
-						<div class="col-sm-7 col-form-label">#Session.getActiveFacilities.FacilityName#</div>
+						<div class="col-sm-7 col-form-label">#Session.getSelectedFacility.FacilityName#</div>
 					</div>
 					<div class="form-group">
 						<label for="LocationRoomID" class="col-lg-5 col-md-5">Room Information:&nbsp;</label>
