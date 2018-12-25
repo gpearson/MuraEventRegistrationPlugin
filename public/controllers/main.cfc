@@ -321,10 +321,4 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="twittertest" returntype="any" output="false">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
-
-		
-	</cffunction>
-
 </cfcomponent>
