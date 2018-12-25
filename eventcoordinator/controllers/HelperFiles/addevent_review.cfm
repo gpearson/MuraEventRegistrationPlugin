@@ -542,7 +542,42 @@
 				</cfcase>
 			</cfswitch>
 		</cfif>
-
+		<cfif isDefined("Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee")>
+			<cfif isNumeric(Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee)>
+				<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					update p_EventRegistration_Events
+					Set lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+						lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
+						lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
+						WhatIf_MealCostPerAttendee = <cfqueryparam cfsqltype="cf_sql_double" value="#Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee#">
+					Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATEDKEY#">
+					</cfquery>
+			</cfif>
+		</cfif>
+		<cfif isDefined("Session.FormInput.EventStep1.WhatIf_FacilityCostTotal")>
+			<cfif isNumeric(Session.FormInput.EventStep1.WhatIf_FacilityCostTotal)>
+				<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					update p_EventRegistration_Events
+					Set lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+						lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
+						lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
+						WhatIf_FacilityCostTotal = <cfqueryparam cfsqltype="cf_sql_double" value="#Session.FormInput.EventStep1.WhatIf_FacilityCostTotal#">
+					Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATEDKEY#">
+					</cfquery>
+			</cfif>
+		</cfif>
+		<cfif isDefined("Session.FormInput.EventStep1.WhatIf_PresenterCostTotal")>
+			<cfif isNumeric(Session.FormInput.EventStep1.WhatIf_PresenterCostTotal)>
+				<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					update p_EventRegistration_Events
+					Set lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+						lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
+						lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
+						WhatIf_PresenterCostTotal = <cfqueryparam cfsqltype="cf_sql_double" value="#Session.FormInput.EventStep1.WhatIf_PresenterCostTotal#">
+					Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATEDKEY#">
+					</cfquery>
+			</cfif>
+		</cfif>
 		<cfif Session.SiteConfigSettings.Twitter_Enabled EQ 1>
 			<!--- Push this newly created event to Twitter --->
 			<cfset consumerKey = #Session.SiteConfigSettings.Twitter_ConsumerKey#>

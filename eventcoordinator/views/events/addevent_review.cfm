@@ -447,6 +447,27 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</cfif>
 					<fieldset>
+						<legend><h2>Estimated Workshop/Event Expenses</h2></legend>
+					</fieldset>
+					<div class="form-group">
+						<label for="WhatIf_MealCostPerAttendee" class="col-lg-5 col-md-5">Estimated Meal Cost Per Attendee:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							#Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee#
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="WhatIf_PresenterCostTotal" class="col-lg-5 col-md-5">Estimated Total Presenter Costs:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							#Session.FormInput.EventStep1.WhatIf_PresenterCostTotal#
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="WhatIf_FacilityCostTotal" class="col-lg-5 col-md-5">Estimated Total Facility Costs:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							#Session.FormInput.EventStep1.WhatIf_FacilityCostTotal#
+						</div>
+					</div>
+					<fieldset>
 						<legend><h2>Allow Participants Registrations</h2></legend>
 					</fieldset>
 					<div class="form-group">

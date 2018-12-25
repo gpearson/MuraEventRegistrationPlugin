@@ -196,6 +196,8 @@
 				<cfset Session.FormInput.RegisterStep2 = #StructCopy(FORM)#>
 			</cflock>
 
+			<cfdump var="#FORM#" abort="True">
+
 			<cfif Session.getSelectedEvent.Meal_Available EQ 1 and Session.getSelectedEvent.Meal_Included EQ 1>
 				<cfif LEN(cgi.path_info)>
 					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=eventcoordinator:events.registeruserforevent&EventID=#URL.EventID#&EventStatus=RegisterParticipants" >
