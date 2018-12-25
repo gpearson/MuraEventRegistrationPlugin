@@ -160,7 +160,7 @@
 					<cfswitch expression="#Server.Coldfusion.ProductName#">
 						<cfcase value="Lucee">
 							<cfset ReportLibraryJarsLocation = #ExpandPath("*")#>
-							<cfset ReportLibraryJarsLocation = #Left(Variables.ReportLibraryJarsLocation, LEN(Variables.ReportLibraryJarsLocation) - 1)# & "library/Jars">
+							<cfset ReportLibraryJarsLocation = #Left(Variables.ReportLibraryJarsLocation, LEN(Variables.ReportLibraryJarsLocation) - 1)# & "library/jars">
 						</cfcase>
 					</cfswitch>
 

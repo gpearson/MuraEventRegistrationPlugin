@@ -1,4 +1,3 @@
-dbstructure-V3ToV4.0.0.2.cfm
 <cfset dbTableCaterers = application.configbean.getBean('dbUtility').setTable('p_EventRegistration_Caterers')>
 <cfscript>
 	dbTableCaterers.renameColumn(column='PhysicalZipPlus4', newcolumn='PhysicalZip4')
