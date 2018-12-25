@@ -22,6 +22,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 </cfif>
 </cfsilent>
 <cfoutput>
+	<script src="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
 	<cfif not isDefined("URL.FormRetry") and not isDefined("URL.EventStatus")>
 		<cfform action="#variables.pageurl#&EventID=#URL.EventID#&EventStatus=ShowCorporations" method="post" id="RegisterUser" class="form-horizontal">
 			<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
@@ -260,7 +261,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfif not isDefined("URL.FormRetry")>
 					
 				</cfif>
-				<cfdump var="#Session#">
 			</cfcase>
 			<cfcase value="ShowCorporations">
 				<cfif not isDefined("URL.FormRetry")>
@@ -380,22 +380,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<table id="NewParticipantRows" class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
 									<thead>
 										<tr>
-											<td>Row</td>
 											<td class="col-sm-3">Participant First Name</td>
-											<td class="col-sm-4">Participant Last Name</td>
+											<td class="col-sm-3">Participant Last Name</td>
 											<td class="col-sm-3">Participant Email</td>
-											<td class="col-sm-3">Actions</td>
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td>1</td>
-											<td><cfinput type="text" class="form-control" id="ParticipantFirstName" name="ParticipantFirstName" required="no"></td>
-											<td><cfinput type="text" class="form-control" id="ParticipantLastName" name="ParticipantLastName" required="no"></td>
-											<td><cfinput type="text" class="form-control" id="ParticipantEmail" name="ParticipantEmail" required="no"></td>
-											<td><input type="button" id="addParticipantRow" class="btn btn-primary btn-sm" value="Add" onclick="AddRow()"></td>
-										</tr>
 									</tbody>
+									<tfoot>
+										<tr>
+											<td colspan="3"><input type="button" class="btn btn-primary" onclick="addRow();" value="Add Row">&nbsp;&nbsp;<input type="button" class="btn btn-primary" onclick="deleteRow();" value="Delete Row">
+									</tfoot>
 								</table>
 							</div>
 							<div class="panel-footer">
@@ -406,57 +401,33 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</cfform>
 				</cfif>
 				<script type="text/javascript">
-					function AddRow() {
-						var msg;
+					var count = 1;
 
-						structvar = {
-							Datasource: "#$.globalConfig('datasource')#",
-							DBUsername: "#$.globalConfig('dbusername')#",
-							DBPassword: "#$.globalConfig('dbpassword')#",
-							PackageName: "#Session.PluginFramework.CFCBase#",
-							CGIScriptName: "#CGI.Script_name#",
-							CGIPathInfo: "#CGI.path_info#",
-							MailServerHostname: "#$.siteConfig('mailserverip')#",
-							MailServerUsername: "#$.siteConfig('mailserverusername')#",
-							MailServerPassword: "#$.siteConfig('mailserverpassword')#",
-							MailServerSSL: "#$.siteConfig('mailserverssl')#",
-							MailServerIP: "#$.siteConfig('mailserverip')#",
-							EmailConfirmations: "#Session.FormInput.RegisterStep1.EmailConfirmations#",
-							FacilityParticipant: "#Session.FormInput.RegisterStep1.FacilityParticipant#",
-							H323Participant: "#Session.FormInput.RegisterStep1.H323Participant#",
-							SendPreviousEmailCommunications: "#Session.FormInput.RegisterStep1.SendPreviousEmailCommunications#",
-							WebinarParticipant: "#Session.FormInput.RegisterStep1.WebinarParticipant#",
-							SiteID: "#$.siteConfig('siteID')#",
-							SiteName: "#$.siteConfig('site')#",
-							ContactName: "#$.siteConfig('ContactName')#",
-							ContactEmail: "#$.siteConfig('ContactEmail')#",
-							ContactPhone: "#$.siteConfig('ContactPhone')#",
-							EventID: "#URL.EventID#"
-						};
-
-						newuser = {
-							Email: document.getElementById("ParticipantEmail").value,
-							Fname: document.getElementById("ParticipantFirstName").value,
-							Lname: document.getElementById("ParticipantLastName").value
-						};
-
-						$.ajax({
-							url: "/plugins/#Session.PluginFramework.CFCBase#/eventcoordinator/controllers/events.cfc?method=AddParticipantToDatabase",
-							type: "POST",
-							dataType: "json",
-							data: {
-								returnFormat: "json",
-								jrStruct: JSON.stringify({"DBInfo": structvar, "UserInfo": newuser})
-							},
-							success: function(data){
-								setTimeout(function(){
-									window.location.reload();
-								},100);
-							},
-							error: function(){
-							}
+					$(document).ready(function() {
+						$('table##NewParticipantRows').dataTable({
+							'bFilter': false,
+							'bInfo': false,
+							'bPaginate': false
 						});
-					};
+						// Add initial row
+						addRow();
+					});
+
+					function addRow() {
+						$('table##NewParticipantRows').dataTable().fnAddData( [
+							'<input type="text" size="10" class="form-control" style="font-size: 8px;" name="ParticipantFirstName' + count + '">',
+							'<input type="text" size="10" class="form-control" style="font-size: 8px;" name="ParticipantLastName' + count + '">',
+							'<input type="text" size="20" class="form-control" style="font-size: 8px;" name="ParticipantEmail' + count + '">'
+						 ] );
+						count++;
+					}
+
+					function deleteRow() {
+						if (count != 1) {
+							$('table##NewParticipantRows').dataTable.fnDeleteRow(count - 1);
+							count--;
+						}
+					}
 				</script>
 			</cfcase>
 		</cfswitch>

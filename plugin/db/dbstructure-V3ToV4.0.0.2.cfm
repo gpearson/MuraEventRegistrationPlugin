@@ -1,4 +1,3 @@
-dbstructure-V3ToV4.0.0.2.cfm
 <cfset dbTableCaterers = application.configbean.getBean('dbUtility').setTable('p_EventRegistration_Caterers')>
 <cfscript>
 	dbTableCaterers.renameColumn(column='PhysicalZipPlus4', newcolumn='PhysicalZip4')
@@ -554,7 +553,8 @@ dbstructure-V3ToV4.0.0.2.cfm
 	.renameColumn(column='IVCParticipant', newcolumn='H323Participant')
 	.alterColumn(column='Site_ID',dataType='char',length='25',nullable=false)
 	.alterColumn(column='User_ID',dataType='char',length='35',nullable=false)
-	.alterColumn(column='Event_ID',dataType='integer',nullable=false,default=0)
+	.alterColumn(column='EventID',dataType='integer',nullable=false,default=0)
+	.renameColumn(column='EventID', newcolumn='Event_ID')
 	.alterColumn(column='RegistrationID',dataType='char',length='35',nullable=false)
 	.alterColumn(column='RegistrationDate',dataType='datetime',nullable=false)
 	.alterColumn(column='OnWaitingList',dataType='tinyint',nullable=false,default=0)

@@ -163,7 +163,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</fieldset>
 					<div class="form-group">
 						<label for="Event_HeldAtFacilityID" class="col-lg-5 col-md-5">Location for Event:&nbsp;</label>
-						<div class="col-lg-7 col-md-7 col-form-label">#Session.getActiveFacilities.FacilityName#</div>
+						<div class="col-lg-7 col-md-7 col-form-label">#Session.getSelectedFacility.FacilityName#</div>
 					</div>
 					<div class="form-group">
 						<label for="Event_FacilityRoomID" class="col-lg-5 col-md-5">Room Location for Event:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>

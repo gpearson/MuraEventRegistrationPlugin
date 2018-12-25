@@ -542,7 +542,81 @@
 				</cfcase>
 			</cfswitch>
 		</cfif>
-
+		<cfif isDefined("Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee")>
+			<cfif isNumeric(Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee)>
+				<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					update p_EventRegistration_Events
+					Set lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+						lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
+						lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
+						WhatIf_MealCostPerAttendee = <cfqueryparam cfsqltype="cf_sql_double" value="#Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee#">
+					Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATEDKEY#">
+					</cfquery>
+			</cfif>
+		</cfif>
+		<cfif isDefined("Session.FormInput.EventStep1.WhatIf_FacilityCostTotal")>
+			<cfif isNumeric(Session.FormInput.EventStep1.WhatIf_FacilityCostTotal)>
+				<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					update p_EventRegistration_Events
+					Set lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+						lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
+						lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
+						WhatIf_FacilityCostTotal = <cfqueryparam cfsqltype="cf_sql_double" value="#Session.FormInput.EventStep1.WhatIf_FacilityCostTotal#">
+					Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATEDKEY#">
+					</cfquery>
+			</cfif>
+		</cfif>
+		<cfif isDefined("Session.FormInput.EventStep1.WhatIf_PresenterCostTotal")>
+			<cfif isNumeric(Session.FormInput.EventStep1.WhatIf_PresenterCostTotal)>
+				<cfquery name="updateMembershipInformation" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+					update p_EventRegistration_Events
+					Set lastUpdated = <cfqueryparam cfsqltype="cf_sql_timestamp" value="#Now()#">,
+						lastUpdateBy = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.Fname# #Session.Mura.LName#">,
+						lastUpdateByID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#Session.Mura.UserID#">,
+						WhatIf_PresenterCostTotal = <cfqueryparam cfsqltype="cf_sql_double" value="#Session.FormInput.EventStep1.WhatIf_PresenterCostTotal#">
+					Where TContent_ID = <cfqueryparam cfsqltype="cf_sql_integer" value="#InsertNewRecord.GENERATEDKEY#">
+					</cfquery>
+			</cfif>
+		</cfif>
+		<cfif Session.SiteConfigSettings.Twitter_Enabled EQ 1>
+			<!--- Push this newly created event to Twitter --->
+			<cfset consumerKey = #Session.SiteConfigSettings.Twitter_ConsumerKey#>
+			<cfset consumerSecret = #Session.SiteConfigSettings.Twitter_ConsumerSecret#>
+			<cfset accessToken = #Session.SiteConfigSettings.Twitter_AccessToken#>
+			<cfset accessTokenSecret = #Session.SiteConfigSettings.Twitter_AccessTokenSecret#>
+			<!---Create java instance of twitter4j and set key values--->
+			<cfset JarFileLocation = #Session.SiteConfigSettings.CFServerJarFiles# & "/twitter4j.jar">
+			<cfset TwitterConfig = createObject("Java", "twitter4j.conf.ConfigurationBuilder", "#Variables.JarFileLocation#") />
+			<cfscript>
+				TwitterConfig.setOAuthConsumerKey(Session.SiteConfigSettings.Twitter_ConsumerKey);
+				TwitterConfig.setOAuthConsumerSecret(Session.SiteConfigSettings.Twitter_ConsumerSecret);
+				TwitterConfig.setOAuthAccessToken(Session.SiteConfigSettings.Twitter_AccessToken);
+				TwitterConfig.setOAuthAccessTokenSecret(Session.SiteConfigSettings.Twitter_AccessTokenSecret);
+				TwitterConfiguration = TwitterConfig.build();
+			</cfscript>
+			<cfset TwitterFactory = createObject("Java", "twitter4j.TwitterFactory", "#Variables.JarFileLocation#") />
+			<cfswitch expression="#application.configbean.getDBType()#">
+				<cfcase value="mysql">
+					<cfif LEN(cgi.path_info)>
+						<cfset tweeturl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.eventinfo&EventID=#InsertNewRecord.GENERATED_KEY#">
+					<cfelse>
+						<cfset tweeturl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.eventinfo&EventID=#InsertNewRecord.GENERATED_KEY#">
+					</cfif>
+				</cfcase>
+				<cfcase value="mssql">
+					<cfif LEN(cgi.path_info)>
+						<cfset tweeturl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.eventinfo&EventID=#InsertNewRecord.GENERATEDKEY#">
+					<cfelse>
+						<cfset tweeturl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.eventinfo&EventID=#InsertNewRecord.GENERATEDKEY#">
+					</cfif>
+				</cfcase>
+			</cfswitch>
+			<cfscript>
+				TwitterFactory.init(TwitterConfiguration);
+				TwitterTweet = TwitterFactory.getInstance().updateStatus("Event: #Session.FormInput.EventStep1.ShortTitle# on #Session.FormInput.EventStep1.EventDate#. More Info at #Variables.tweeturl#");
+			</cfscript>
+		</cfif>
+		
 		<cfif Session.FormInput.EventStep1.Event_OptionalCosts EQ 1>
 
 		</cfif>

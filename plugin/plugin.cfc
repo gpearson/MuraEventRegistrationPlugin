@@ -30,9 +30,24 @@ component persistent="false" accessors="true" output="false" extends="mura.plugi
 		// triggered by the pluginManager when the plugin is UPDATED.
 		application.appInitialized = false;
 
+		PluginConfig = #this.getConfig()#;
+		PluginVersion = #PluginConfig.getVersion()#;
+
 		switch(application.configBean.getDBType()) {
 			case "mysql":
-				include "db/dbstructure-V3ToV4.0.0.2.cfm";
+				if (Variables.PluginVersion CONTAINS "4.0.0") {
+
+					if (Variables.PluginVersion EQ "4.0.0.3") {
+						include "db/dbstructure-V4.0.0.3.cfm";		
+					}
+
+					if (Variables.PluginVersion EQ "4.0.0.4") {
+						include "db/dbstructure-V4.0.0.4.cfm";		
+					}
+
+				} else {
+					include "db/dbstructure-V3ToV4.0.0.2.cfm";	
+				}
 				break;
 		}
 	}

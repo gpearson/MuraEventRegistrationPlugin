@@ -51,6 +51,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="Meal_Available" value="0">
 				<cfinput type="hidden" name="Webinar_Available" value="0">
 				<cfinput type="hidden" name="PostedTo_Facebook" value="0">
+				<cfinput type="hidden" name="PostedTo_Twitter" value="0">
 				<cfinput type="hidden" name="EventPricePerDay" value="0">
 				<div class="panel-body">
 					<fieldset>
@@ -351,6 +352,40 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</div>
 					<fieldset>
+						<legend><h2>Estimated Workshop/Event Expenses</h2></legend>
+					</fieldset>
+					<div class="alert alert-info">Enter the estimated expenses for this event to generate a break even amount for this event.</div>
+					<div class="form-group">
+						<label for="WhatIf_MealCostPerAttendee" class="col-lg-5 col-md-5">Estimated Meal Cost Per Attendee:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee")>
+								<cfinput type="text" class="form-control" id="WhatIf_MealCostPerAttendee" name="WhatIf_MealCostPerAttendee" value="#Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee#" required="no">
+							<cfelse>
+								<cfinput type="text" class="form-control" id="WhatIf_MealCostPerAttendee" name="WhatIf_MealCostPerAttendee" required="no">
+							</cfif>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="WhatIf_PresenterCostTotal" class="col-lg-5 col-md-5">Estimated Total Presenter Costs:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.WhatIf_PresenterCostTotal")>
+								<cfinput type="text" class="form-control" id="WhatIf_PresenterCostTotal" name="WhatIf_PresenterCostTotal" value="#Session.FormInput.EventStep1.WhatIf_PresenterCostTotal#" required="no">
+							<cfelse>
+								<cfinput type="text" class="form-control" id="WhatIf_PresenterCostTotal" name="WhatIf_PresenterCostTotal" required="no">
+							</cfif>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="WhatIf_FacilityCostTotal" class="col-lg-5 col-md-5">Estimated Total Facility Costs:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.WhatIf_FacilityCostTotal")>
+								<cfinput type="text" class="form-control" id="WhatIf_FacilityCostTotal" name="WhatIf_FacilityCostTotal" value="#Session.FormInput.EventStep1.WhatIf_FacilityCostTotal#" required="no">
+							<cfelse>
+								<cfinput type="text" class="form-control" id="WhatIf_FacilityCostTotal" name="WhatIf_FacilityCostTotal" required="no">
+							</cfif>
+						</div>
+					</div>
+					<fieldset>
 						<legend><h2>Event Optional Features</h2></legend>
 					</fieldset>
 					<div class="alert alert-info">The default option for each one of the following is No unless you specifically select Yes on these questions.</div>
@@ -482,7 +517,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<cfif Session.SiteConfigSettings.Facebook_Enabled EQ 1>
 						<div class="form-group">
-						<label for="PostedTo_Facebook" class="col-lg-5 col-md-5">Post to FB Fan Page:&nbsp;&nbsp;</label>
+						<label for="PostedTo_Facebook" class="col-lg-5 col-md-5">Post to Facebook Fan Page:&nbsp;&nbsp;</label>
 						<div class="checkbox col-lg-7 col-md-7">
 							<cfif isDefined("Session.FormInput.EventStep1.PostedTo_Facebook")>
 								<cfif Session.FormInput.EventStep1.PostedTo_Facebook CONTAINS 1>
@@ -492,6 +527,22 @@ http://www.apache.org/licenses/LICENSE-2.0
 								</cfif>
 							<cfelse>
 								<cfinput type="checkbox" class="form-check-input" name="PostedTo_Facebook" id="PostedTo_Facebook" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Facebook Fan Page)</div>
+							</cfif>
+						</div>
+						</div>
+					</cfif>
+					<cfif Session.SiteConfigSettings.Twitter_Enabled EQ 1>
+						<div class="form-group">
+						<label for="PostedTo_Twitter" class="col-lg-5 col-md-5">Post to Twitter Handle:&nbsp;&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.PostedTo_Twitter")>
+								<cfif Session.FormInput.EventStep1.PostedTo_Twitter CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="PostedTo_Twitter" id="PostedTo_Twitter" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Companies Twitter Handle)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="PostedTo_Twitter" id="PostedTo_Twitter" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Companies Twitter Handle)</div>
+								</cfif>
+							<cfelse>
+								<cfinput type="checkbox" class="form-check-input" name="PostedTo_Twitter" id="PostedTo_Twitter" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Companies Twitter Handle)</div>
 							</cfif>
 						</div>
 						</div>
@@ -530,6 +581,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="Event_HasMultipleDates" value="0">
 				<cfinput type="hidden" name="Event_OptionalCosts" value="0">
 				<cfinput type="hidden" name="Event_DailySessions" value="0">
+				<cfinput type="hidden" name="Featured_Event" value="0">
 				<cfinput type="hidden" name="EarlyBird_Available" value="0">
 				<cfinput type="hidden" name="GroupPrice_Available" value="0">
 				<cfinput type="hidden" name="PGPCertificate_Available" value="0">
@@ -537,6 +589,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<cfinput type="hidden" name="Meal_Available" value="0">
 				<cfinput type="hidden" name="Webinar_Available" value="0">
 				<cfinput type="hidden" name="PostedTo_Facebook" value="0">
+				<cfinput type="hidden" name="PostedTo_Twitter" value="0">
 				<cfinput type="hidden" name="EventPricePerDay" value="0">
 				<cfif isDefined("Session.FormErrors")>
 					<cfif ArrayLen(Session.FormErrors)>
@@ -795,6 +848,40 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</div>
 					</div>
 					<fieldset>
+						<legend><h2>Estimated Workshop/Event Expenses</h2></legend>
+					</fieldset>
+					<div class="alert alert-info">Enter the estimated expenses for this event to generate a break even amount for this event.</div>
+					<div class="form-group">
+						<label for="WhatIf_MealCostPerAttendee" class="col-lg-5 col-md-5">Estimated Meal Cost Per Attendee:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee")>
+								<cfinput type="text" class="form-control" id="WhatIf_MealCostPerAttendee" name="WhatIf_MealCostPerAttendee" value="#Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee#" required="no">
+							<cfelse>
+								<cfinput type="text" class="form-control" id="WhatIf_MealCostPerAttendee" name="WhatIf_MealCostPerAttendee" required="no">
+							</cfif>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="WhatIf_PresenterCostTotal" class="col-lg-5 col-md-5">Estimated Total Presenter Costs:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.WhatIf_PresenterCostTotal")>
+								<cfinput type="text" class="form-control" id="WhatIf_PresenterCostTotal" name="WhatIf_PresenterCostTotal" value="#Session.FormInput.EventStep1.WhatIf_PresenterCostTotal#" required="no">
+							<cfelse>
+								<cfinput type="text" class="form-control" id="WhatIf_PresenterCostTotal" name="WhatIf_PresenterCostTotal" required="no">
+							</cfif>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="WhatIf_FacilityCostTotal" class="col-lg-5 col-md-5">Estimated Total Facility Costs:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.WhatIf_FacilityCostTotal")>
+								<cfinput type="text" class="form-control" id="WhatIf_FacilityCostTotal" name="WhatIf_FacilityCostTotal" value="#Session.FormInput.EventStep1.WhatIf_FacilityCostTotal#" required="no">
+							<cfelse>
+								<cfinput type="text" class="form-control" id="WhatIf_FacilityCostTotal" name="WhatIf_FacilityCostTotal" required="no">
+							</cfif>
+						</div>
+					</div>
+					<fieldset>
 						<legend><h2>Event Optional Features</h2></legend>
 					</fieldset>
 					<div class="alert alert-info">The default option for each one of the following is No unless you specifically select Yes on these questions.</div>
@@ -888,7 +975,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</div>
 					<cfif Session.SiteConfigSettings.Facebook_Enabled EQ 1>
 						<div class="form-group">
-						<label for="PostedTo_Facebook" class="col-lg-5 col-md-5">Post to FB Fan Page:&nbsp;&nbsp;</label>
+						<label for="PostedTo_Facebook" class="col-lg-5 col-md-5">Post to Facebook Fan Page:&nbsp;&nbsp;</label>
 						<div class="col-lg-1 col-md-1">&nbsp;</div>
 						<div class="checkbox col-lg-8 col-md-8">
 							<cfif Session.FormInput.EventStep1.PostedTo_Facebook EQ 1>
@@ -897,6 +984,22 @@ http://www.apache.org/licenses/LICENSE-2.0
 								<cfinput type="checkbox" class="form-check-input" name="PostedTo_Facebook" id="PostedTo_Facebook" value="1">
 							</cfif>
 							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Facebook Fan Page)</div></div>
+						</div>
+					</cfif>
+					<cfif Session.SiteConfigSettings.Twitter_Enabled EQ 1>
+						<div class="form-group">
+						<label for="PostedTo_Twitter" class="col-lg-5 col-md-5">Post to Twitter Handle:&nbsp;&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.PostedTo_Twitter")>
+								<cfif Session.FormInput.EventStep1.PostedTo_Twitter CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="PostedTo_Twitter" id="PostedTo_Twitter" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Companies Twitter Handle)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="PostedTo_Twitter" id="PostedTo_Twitter" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Companies Twitter Handle)</div>
+								</cfif>
+							<cfelse>
+								<cfinput type="checkbox" class="form-check-input" name="PostedTo_Twitter" id="PostedTo_Twitter" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Companies Twitter Handle)</div>
+							</cfif>
+						</div>
 						</div>
 					</cfif>
 					<cfif Session.SiteConfigSettings.BillForNoShowRegistrations EQ 1>
