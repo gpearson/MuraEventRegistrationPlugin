@@ -542,11 +542,19 @@ http://www.apache.org/licenses/LICENSE-2.0
 						<tr>
 						<th scope="row">(<a href="http://#cgi.server_name#/?Info=#Session.getAllEvents.TContent_ID#">#Session.getAllEvents.TContent_ID#</a>) / #Session.getAllEvents.ShortTitle#<cfif LEN(Session.getAllEvents.PresenterID)><cfquery name="getPresenter" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">Select FName, LName From tusers where UserID = <cfqueryparam value="#Session.getAllEvents.PresenterID#" cfsqltype="cf_sql_varchar"></cfquery><br><em>Presenter: #getPresenter.FName# #getPresenter.Lname#</em></cfif>
 								<cfif isNumeric(Session.getAllEvents.WhatIf_FacilityCostTotal) and isNumeric(Session.getAllEvents.WhatIf_PresenterCostTotal)>
+									<br>
+									<div align="left">
 									<cfset WhatifExpenses = #Session.getAllEvents.WhatIf_FacilityCostTotal# + #Session.getAllEvents.WhatIf_PresenterCostTotal#>
 									<cfset TotalWhatIfExpenses = #Variables.WhatIfExpenses# + (#getRegisteredParticipantsForEvent.RecordCount# * #Session.getAllEvents.WhatIf_MealCostPerAttendee#)>
 									<cfset TotalRevenue = 0>
 									<cfloop query="getRegisteredParticipantsForEvent"><cfset TotalRevenue = #Variables.TotalRevenue# + #getRegisteredParticipantsForEvent.AttendeePrice#></cfloop>
-									<br>WhatIf Expenses: #DollarFormat(Variables.TotalWhatIfExpenses)# / Estimated Revenue: #DollarFormat(Variables.TotalRevenue)#
+									<cfchart format="png" title="What If Analysis" chartwidth="320" chartheight="240">
+										<cfchartseries type="pie">
+											<cfchartdata item="Event Expenses" value="#Variables.TotalWhatIfExpenses#">
+											<cfchartdata item="Registered Revenue" value="#Variables.TotalRevenue#">
+										</cfchartseries>
+									</cfchart>
+									</div>
 								</cfif>
 								<cfif Session.getAllEvents.PGPCertificatesGenerated EQ 1><br><font color="Green">PGP Certificates Sent</font></cfif>
 								<cfif Session.getAllEvents.EventInvoicesGenerated EQ 1><br><font color="Blue">Invoices Sent</font></cfif>
