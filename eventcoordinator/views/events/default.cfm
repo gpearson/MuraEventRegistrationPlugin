@@ -502,7 +502,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 				<tbody>
 					<cfloop query="Session.getAllEvents">
 						<cfquery name="getRegisteredParticipantsForEvent" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">
-							SELECT p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.H323Participant, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.OnWaitingList, tusers.Fname, tusers.Lname, tusers.Email, SUBSTRING_INDEX(tusers.Email,"@",-1) AS Domain, tusers.Company, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM
+							SELECT p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.AttendeePrice, p_EventRegistration_UserRegistrations.H323Participant, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.OnWaitingList, tusers.Fname, tusers.Lname, tusers.Email, SUBSTRING_INDEX(tusers.Email,"@",-1) AS Domain, tusers.Company, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM
 							FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.Event_ID
 							WHERE
 								( p_EventRegistration_UserRegistrations.Event_ID = <cfqueryparam value="#Session.getAllEvents.TContent_ID#" cfsqltype="cf_sql_integer"> AND p_EventRegistration_UserRegistrations.Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">  AND p_EventRegistration_UserRegistrations.RegisterForEventDate1 = <cfqueryparam value="1" cfsqltype="cf_sql_bit"> ) OR 
@@ -541,8 +541,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 						</cfquery>
 						<tr>
 						<th scope="row">(<a href="http://#cgi.server_name#/?Info=#Session.getAllEvents.TContent_ID#">#Session.getAllEvents.TContent_ID#</a>) / #Session.getAllEvents.ShortTitle#<cfif LEN(Session.getAllEvents.PresenterID)><cfquery name="getPresenter" Datasource="#$.globalConfig('datasource')#" username="#$.globalConfig('dbusername')#" password="#$.globalConfig('dbpassword')#">Select FName, LName From tusers where UserID = <cfqueryparam value="#Session.getAllEvents.PresenterID#" cfsqltype="cf_sql_varchar"></cfquery><br><em>Presenter: #getPresenter.FName# #getPresenter.Lname#</em></cfif>
-									<cfif Session.getAllEvents.PGPCertificatesGenerated EQ 1><br><font color="Green">PGP Certificates Sent</font></cfif>
-									<cfif Session.getAllEvents.EventInvoicesGenerated EQ 1><br><font color="Blue">Invoices Sent</font></cfif></th>
+								<cfif isNumeric(Session.getAllEvents.WhatIf_FacilityCostTotal) and isNumeric(Session.getAllEvents.WhatIf_PresenterCostTotal)>
+									<cfset WhatifExpenses = #Session.getAllEvents.WhatIf_FacilityCostTotal# + #Session.getAllEvents.WhatIf_PresenterCostTotal#>
+									<cfset TotalWhatIfExpenses = #Variables.WhatIfExpenses# + (#getRegisteredParticipantsForEvent.RecordCount# * #Session.getAllEvents.WhatIf_MealCostPerAttendee#)>
+									<cfset TotalRevenue = 0>
+									<cfloop query="getRegisteredParticipantsForEvent"><cfset TotalRevenue = #Variables.TotalRevenue# + #getRegisteredParticipantsForEvent.AttendeePrice#></cfloop>
+									<br>WhatIf Expenses: #DollarFormat(Variables.TotalWhatIfExpenses)# / Estimated Revenue: #DollarFormat(Variables.TotalRevenue)#
+								</cfif>
+								<cfif Session.getAllEvents.PGPCertificatesGenerated EQ 1><br><font color="Green">PGP Certificates Sent</font></cfif>
+								<cfif Session.getAllEvents.EventInvoicesGenerated EQ 1><br><font color="Blue">Invoices Sent</font></cfif>
+
+						</th>
 						<td>
 							<cfset ValidDate = 0>
 							<cfif LEN(Session.getAllEvents.EventDate) and LEN(Session.getAllEvents.EventDate1) or LEN(Session.getAllEvents.EventDate2) or LEN(Session.getAllEvents.EventDate3) or LEN(Session.getAllEvents.EventDate4)>
