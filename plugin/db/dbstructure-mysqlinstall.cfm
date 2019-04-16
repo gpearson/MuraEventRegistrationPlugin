@@ -30,7 +30,7 @@
 		.addColumn(column='Physical_UTCOffset',dataType='char',length='10',nullable=true)
 		.addColumn(column='Physical_TimeZone',dataType='char',length='10',nullable=true)
 		.addColumn(column='Active',dataType='tinyint',nullable=false,default=0)
-		.addPrimaryKey(column='TContent_ID');
+		.addPrimaryKey(column='TContent_ID')
 		.addIndex(column='Site_ID');
 </cfscript>
 
@@ -510,6 +510,6 @@
 		.addColumn(column='lastUpdateBy',dataType='varchar',length='100',nullable=true)
 		.addColumn(column='lastUpdateByID',dataType='varchar',length='35',nullable=true)
 		.addPrimaryKey(column='TContent_ID')
-		.addIndex(column='User_ID');
+		.addIndex(column='User_ID')
 		.addIndex(column='Site_ID');
 </cfscript>
