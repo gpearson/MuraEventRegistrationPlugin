@@ -402,6 +402,7 @@
 		.addColumn(column='Twitter_AccessTokenSecret',dataType='varchar',length='50',nullable=true)
 		.addColumn(column='BillForNoShowRegistrations',dataType='tinyint',nullable=false,default=0)
 		.addColumn(column='RequireSurveyToGetCertificate',dataType='tinyint',nullable=false,default=0)
+		.addColumn(column='CFServerJarFiles',dataType='varchar',length='255',nullable=true)
 		.addColumn(column='GitHub_URL',dataType='varchar',length='50',nullable=true)
 		.addColumn(column='Twitter_URL',dataType='varchar',length='50',nullable=true)
 		.addColumn(column='Facebook_URL',dataType='varchar',length='50',nullable=true)

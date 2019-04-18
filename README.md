@@ -7,7 +7,7 @@ A Mura CMS Plugin to allow website visitors the ability to register for upcoming
 Minimum Requirements
 ====================
 
-* [Mura CMS](http://www.getmura.com) Core Version 7.0+
+* [Mura CMS](http://www.getmura.com) Core Version 7.0.x Only
 * [Adobe ColdFusion](http://www.adobe.com/coldfusion) 2016.0.02.299200
 * [Lucee](http://lucee.org) 5.0.0.254
 
