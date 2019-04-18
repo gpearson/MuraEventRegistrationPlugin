@@ -35,18 +35,14 @@
 				<cfinput type="hidden" name="JavaLibraryJars" value="#Variables.ReportLibraryJars#">
 				<cfinput type="hidden" name="formSubmit" value="true">
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Modify Site Configuration Settings</h2></legend>
-					</fieldset>
+					<legend><h2>Modify Site Configuration Settings</h2></legend>
 					<div class="alert alert-info">Please complete the following information to modify site configuration settings</div>
 					<div class="form-group">
 						<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 					</div>
 					<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false or FileExists(Variables.FileTest4) EQ false>
-						<fieldset>
-							<legend><h2>Required JAR Files not installed</h2></legend>
-						</fieldset>
+						<legend><h2>Required JAR Files not installed</h2></legend>
 						<div class="alert alert-info">To Generate various PDF Documents, required library files will need to be installed. If required files are not installed then PDF documents can not be generated</div>
 						<div class="form-group">
 							<label for="CFMLProductName" class="col-lg-3 col-md-3">Coldfusion Product Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
@@ -57,9 +53,7 @@
 							<div class="col-lg-9 col-md-9"><cfselect name="InstallJarFiles" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value= "----">Install Required Files?</option></cfselect></div>
 						</div>
 					</cfif>
-					<fieldset>
-						<legend><h2>Stripe Payment Processor Configuration</h2></legend>
-					</fieldset>
+					<legend><h2>Stripe Payment Processor Configuration</h2></legend>
 					<div class="alert alert-info">Please complete the following information to enable Stripe Payment Processing for this plugin. For more information on the Stripe Processing Service, please visit <a href="http://www.stripe.com" target="_blank">Stripe.com</a></div>
 					<div class="form-group">
 						<label for="ProcessPaymentsStripe" class="col-lg-3 col-md-3">Process Stripe Payments:&nbsp;</label>
@@ -77,9 +71,7 @@
 						<label for="StripeLiveAPIKey" class="col-lg-3 col-md-3">Stripe Live API Key:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="StripeLiveAPIKey" name="StripeLiveAPIKey"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Facebook Application Configuration</h2></legend>
-					</fieldset>
+					<legend><h2>Facebook Application Configuration</h2></legend>
 					<div class="form-group">
 						<label for="FacebookEnabled" class="col-lg-3 col-md-3">Publish to Facebook Page:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfselect name="FacebookEnabled" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Publish Events to Facebook Company Page?</option></cfselect></div>
@@ -100,9 +92,7 @@
 						<label for="FacebookAppScope" class="col-lg-3 col-md-3">Facebook Application Scope:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FacebookAppScope" name="FacebookAppScope"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Twitter Application Configuration</h2></legend>
-					</fieldset>
+					<legend><h2>Twitter Application Configuration</h2></legend>
 					<div class="form-group">
 						<label for="TwitterEnabled" class="col-lg-3 col-md-3">Send Tweets regarding events:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfselect name="TwitterEnabled" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Publish Events to Companies Twitter Handle?</option></cfselect></div>
@@ -123,9 +113,7 @@
 						<label for="TwitterAccessTokenSecret" class="col-lg-3 col-md-3">Twitter Access Token Secret:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessTokenSecret" name="TwitterAccessTokenSecret"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Google ReCaptcha Form Protection</h2></legend>
-					</fieldset>
+					<legend><h2>Google ReCaptcha Form Protection</h2></legend>
 					<div class="alert alert-info">Please complete the following information to enable Google ReCaptcha Form Protections for this plugin. For more information on Google ReCaptcha Service, please visit <a href="https://www.google.com/recaptcha/" target="_blank">Google ReCaptcha Site</a></div>
 					<div class="form-group">
 						<label for="GoogleReCaptchaEnabled" class="col-lg-3 col-md-3">Google ReCaptcha Enabled:&nbsp;</label>
@@ -139,9 +127,7 @@
 						<label for="GoogleReCaptchaSecretKey" class="col-lg-3 col-md-3">Secret Key:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="GoogleReCaptchaSecretKey" name="GoogleReCaptchaSecretKey"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Smarty Streets Address Verification Service</h2></legend>
-					</fieldset>
+					<legend><h2>Smarty Streets Address Verification Service</h2></legend>
 					<div class="alert alert-info">Please complete the following information to enable Smarty Streets Processing for this plugin. For more information on the Smarty Streets Service, please visit <a href="http://www.smartystreets.com" target="_blank">SmartyStreets.com</a></div>
 					<div class="form-group">
 						<label for="SmartyStreetsEnabled" class="col-lg-3 col-md-3">Smarty Streets Enabled:&nbsp;</label>
@@ -155,9 +141,7 @@
 						<label for="SmartyStreetsAPITOKEN" class="col-lg-3 col-md-3">API Token:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SmartyStreetsAPITOKEN" name="SmartyStreetsAPITOKEN"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Company Specific Plugin Features</h2></legend>
-					</fieldset>
+					<legend><h2>Company Specific Plugin Features</h2></legend>
 					<div class="alert alert-info">Does your company have policies in place for the following procedures?</div>
 					<div class="form-group">
 						<label for="BillForNoShowRegistration" class="col-lg-3 col-md-3">Bill Participant For NoShow:&nbsp;</label>
@@ -167,9 +151,7 @@
 						<label for="RequireEventSurveyToGetCertificate" class="col-lg-3 col-md-3">Require Survey to Get Certificate:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfselect name="RequireEventSurveyToGetCertificate" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Require Submission of Event Survey to Obtain Completion Certiifcate?</option></cfselect></div>
 					</div>
-					<fieldset>
-						<legend><h2>Social Media Profiles</h2></legend>
-					</fieldset>
+					<legend><h2>Social Media Profiles</h2></legend>
 					<div class="alert alert-info">Please complete the following information to display social media profile icons to visitors of this plugin</div>
 					<div class="form-group">
 						<label for="GitHubProfileURL" class="col-lg-3 col-md-3">GitHub Profile URL:&nbsp;</label>
@@ -193,8 +175,8 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Insert Site Configuration"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Insert Site Configuration"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -249,18 +231,14 @@
 					</cfif>
 				</cfif>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Modify Site Configuration Settings</h2></legend>
-					</fieldset>
+					<legend><h2>Modify Site Configuration Settings</h2></legend>
 					<div class="alert alert-info">Please complete the following information to modify site configuration settings</div>
 					<div class="form-group">
 						<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 					</div>
 					<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false or FileExists(Variables.FileTest4) EQ false>
-						<fieldset>
-							<legend><h2>Required JAR Files not installed</h2></legend>
-						</fieldset>
+						<legend><h2>Required JAR Files not installed</h2></legend>
 						<div class="alert alert-info">To Generate various PDF Documents, required library files will need to be installed. If required files are not installed then PDF documents can not be generated</div>
 						<div class="form-group">
 							<label for="CFMLProductName" class="col-lg-3 col-md-3">Coldfusion Product Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
@@ -271,9 +249,7 @@
 							<div class="col-lg-9 col-md-9"><cfselect name="InstallJarFiles" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value= "----">Install Required Files?</option></cfselect></div>
 						</div>
 					</cfif>
-					<fieldset>
-						<legend><h2>Stripe Payment Processor Configuration</h2></legend>
-					</fieldset>
+					<legend><h2>Stripe Payment Processor Configuration</h2></legend>
 					<div class="alert alert-info">Please complete the following information to enable Stripe Payment Processing for this plugin. For more information on the Stripe Processing Service, please visit <a href="http://www.stripe.com" target="_blank">Stripe.com</a></div>
 					<div class="form-group">
 						<label for="ProcessPaymentsStripe" class="col-lg-3 col-md-3">Process Stripe Payments:&nbsp;</label>
@@ -291,9 +267,7 @@
 						<label for="StripeLiveAPIKey" class="col-lg-3 col-md-3">Stripe Live API Key:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="StripeLiveAPIKey" name="StripeLiveAPIKey" value="#Session.FormInput.StripeLiveAPIKey#"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Facebook Application Configuration</h2></legend>
-					</fieldset>
+					<legend><h2>Facebook Application Configuration</h2></legend>
 					<div class="form-group">
 						<label for="FacebookEnabled" class="col-lg-3 col-md-3">Publish to Facebook Page:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfselect name="FacebookEnabled" class="form-control" required="no" Multiple="No" selected="#Session.FormInput.FacebookEnabled#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Publish Events to Facebook Company Page?</option></cfselect></div>
@@ -314,9 +288,7 @@
 						<label for="FacebookAppScope" class="col-lg-3 col-md-3">Facebook Application Scope:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FacebookAppScope" name="FacebookAppScope" value="#Session.FormInput.FacebookAppScope#"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Twitter Application Configuration</h2></legend>
-					</fieldset>
+					<legend><h2>Twitter Application Configuration</h2></legend>
 					<div class="form-group">
 						<label for="TwitterEnabled" class="col-lg-3 col-md-3">Send Tweets regarding events:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfselect name="TwitterEnabled" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.FormInput.TwitterEnabled#" queryposition="below"><option value="----">Publish Events to Companies Twitter Handle?</option></cfselect></div>
@@ -337,9 +309,7 @@
 						<label for="TwitterAccessTokenSecret" class="col-lg-3 col-md-3">Twitter Access Token Secret:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessTokenSecret" name="TwitterAccessTokenSecret" value="#Session.FormInput.TwitterAccessTokenSecret#"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Google ReCaptcha Form Protection</h2></legend>
-					</fieldset>
+					<legend><h2>Google ReCaptcha Form Protection</h2></legend>
 					<div class="alert alert-info">Please complete the following information to enable Google ReCaptcha Form Protections for this plugin. For more information on Google ReCaptcha Service, please visit <a href="https://www.google.com/recaptcha/" target="_blank">Google ReCaptcha Site</a></div>
 					<div class="form-group">
 						<label for="GoogleReCaptchaEnabled" class="col-lg-3 col-md-3">Google ReCaptcha Enabled:&nbsp;</label>
@@ -353,9 +323,7 @@
 						<label for="GoogleReCaptchaSecretKey" class="col-lg-3 col-md-3">Secret Key:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="GoogleReCaptchaSecretKey" name="GoogleReCaptchaSecretKey" value="#Session.FormInput.GoogleReCaptchaSecretKey#"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Smarty Streets Address Verification Service</h2></legend>
-					</fieldset>
+					<legend><h2>Smarty Streets Address Verification Service</h2></legend>
 					<div class="alert alert-info">Please complete the following information to enable Smarty Streets Processing for this plugin. For more information on the Smarty Streets Service, please visit <a href="http://www.smartystreets.com" target="_blank">SmartyStreets.com</a></div>
 					<div class="form-group">
 						<label for="SmartyStreetsEnabled" class="col-lg-3 col-md-3">Smarty Streets Enabled:&nbsp;</label>
@@ -369,9 +337,7 @@
 						<label for="SmartyStreetsAPITOKEN" class="col-lg-3 col-md-3">API Token:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SmartyStreetsAPITOKEN" name="SmartyStreetsAPITOKEN" value="#Session.FormInput.SmartyStreetsAPITOKEN#"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Company Specific Plugin Features</h2></legend>
-					</fieldset>
+					<legend><h2>Company Specific Plugin Features</h2></legend>
 					<div class="alert alert-info">Does your company have policies in place for the following procedures?</div>
 					<div class="form-group">
 						<label for="BillForNoShowRegistration" class="col-lg-3 col-md-3">Bill Participant For NoShow:&nbsp;</label>
@@ -381,9 +347,7 @@
 						<label for="RequireEventSurveyToGetCertificate" class="col-lg-3 col-md-3">Require Survey to Get Certificate:&nbsp;</label>
 						<div class="col-lg-9 col-md-9"><cfselect name="RequireEventSurveyToGetCertificate" class="form-control" required="no" Multiple="No" query="YesNoQuery" selected="#Session.FormInput.RequireEventSurveyToGetCertificate#" value="ID" Display="OptionName" queryposition="below"><option value="----">Require Submission of Event Survey to Obtain Completion Certiifcate?</option></cfselect></div>
 					</div>
-					<fieldset>
-						<legend><h2>Social Media Profiles</h2></legend>
-					</fieldset>
+					<legend><h2>Social Media Profiles</h2></legend>
 					<div class="alert alert-info">Please complete the following information to display social media profile icons to visitors of this plugin</div>
 					<div class="form-group">
 						<label for="GitHubProfileURL" class="col-lg-3 col-md-3">GitHub Profile URL:&nbsp;</label>
@@ -407,8 +371,8 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Insert Site Configuration"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Main Menu">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Insert Site Configuration"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -420,18 +384,14 @@
 					<cfinput type="hidden" name="JavaLibraryJars" value="#Variables.ReportLibraryJars#">
 					<cfinput type="hidden" name="formSubmit" value="true">
 					<div class="panel-body">
-						<fieldset>
-							<legend><h2>Modify Site Configuration Settings</h2></legend>
-						</fieldset>
+						<legend><h2>Modify Site Configuration Settings</h2></legend>
 						<div class="alert alert-info">Please complete the following information to modify site configuration settings</div>
 						<div class="form-group">
 							<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 						</div>
 						<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false or FileExists(Variables.FileTest4) EQ false>
-							<fieldset>
-								<legend><h2>Required JAR Files not installed</h2></legend>
-							</fieldset>
+							<legend><h2>Required JAR Files not installed</h2></legend>
 							<div class="alert alert-info">To Generate various PDF Documents, required library files will need to be installed. If required files are not installed then PDF documents can not be generated</div>
 							<div class="form-group">
 								<label for="CFMLProductName" class="col-lg-3 col-md-3">Coldfusion Product Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
@@ -442,9 +402,7 @@
 								<div class="col-lg-9 col-md-9"><cfselect name="InstallJarFiles" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value= "----">Install Required Files?</option></cfselect></div>
 							</div>
 						</cfif>
-						<fieldset>
-							<legend><h2>Stripe Payment Processor Configuration</h2></legend>
-						</fieldset>
+						<legend><h2>Stripe Payment Processor Configuration</h2></legend>
 						<div class="alert alert-info">Please complete the following information to enable Stripe Payment Processing for this plugin. For more information on the Stripe Processing Service, please visit <a href="http://www.stripe.com" target="_blank">Stripe.com</a></div>
 						<div class="form-group">
 							<label for="ProcessPaymentsStripe" class="col-lg-3 col-md-3">Process Stripe Payments:&nbsp;</label>
@@ -462,9 +420,7 @@
 							<label for="StripeLiveAPIKey" class="col-lg-3 col-md-3">Stripe Live API Key:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="StripeLiveAPIKey" name="StripeLiveAPIKey" value="#Session.SiteConfigSettings.Stripe_LiveAPIKey#"></div>
 						</div>
-						<fieldset>
-							<legend><h2>Facebook Application Configuration</h2></legend>
-						</fieldset>
+						<legend><h2>Facebook Application Configuration</h2></legend>
 						<div class="form-group">
 							<label for="FacebookEnabled" class="col-lg-3 col-md-3">Publish to Facebook Page:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfselect name="FacebookEnabled" class="form-control" required="no" Multiple="No" selected="#Session.SiteConfigSettings.Facebook_Enabled#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Publish Events to Facebook Company Page?</option></cfselect></div>
@@ -485,9 +441,7 @@
 							<label for="FacebookAppScope" class="col-lg-3 col-md-3">Facebook Application Scope:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FacebookAppScope" name="FacebookAppScope" value="#Session.SiteConfigSettings.Facebook_AppScope#"></div>
 						</div>
-						<fieldset>
-							<legend><h2>Twitter Application Configuration</h2></legend>
-						</fieldset>
+						<legend><h2>Twitter Application Configuration</h2></legend>
 						<div class="form-group">
 							<label for="TwitterEnabled" class="col-lg-3 col-md-3">Send Tweets regarding events:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfselect name="TwitterEnabled" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.SiteConfigSettings.Twitter_Enabled#" queryposition="below"><option value="----">Publish Events to Companies Twitter Handle?</option></cfselect></div>
@@ -508,9 +462,7 @@
 							<label for="TwitterAccessTokenSecret" class="col-lg-3 col-md-3">Twitter Access Token Secret:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessTokenSecret" name="TwitterAccessTokenSecret" value="#Session.SiteConfigSettings.Twitter_AccessTokenSecret#"></div>
 						</div>
-						<fieldset>
-							<legend><h2>Google ReCaptcha Form Protection</h2></legend>
-						</fieldset>
+						<legend><h2>Google ReCaptcha Form Protection</h2></legend>
 						<div class="alert alert-info">Please complete the following information to enable Google ReCaptcha Form Protections for this plugin. For more information on Google ReCaptcha Service, please visit <a href="https://www.google.com/recaptcha/" target="_blank">Google ReCaptcha Site</a></div>
 						<div class="form-group">
 							<label for="GoogleReCaptchaEnabled" class="col-lg-3 col-md-3">Google ReCaptcha Enabled:&nbsp;</label>
@@ -524,9 +476,7 @@
 							<label for="GoogleReCaptchaSecretKey" class="col-lg-3 col-md-3">Secret Key:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="GoogleReCaptchaSecretKey" name="GoogleReCaptchaSecretKey" value="#Session.SiteConfigSettings.GoogleReCaptcha_SecretKey#"></div>
 						</div>
-						<fieldset>
-							<legend><h2>Smarty Streets Address Verification Service</h2></legend>
-						</fieldset>
+						<legend><h2>Smarty Streets Address Verification Service</h2></legend>
 						<div class="alert alert-info">Please complete the following information to enable Smarty Streets Processing for this plugin. For more information on the Smarty Streets Service, please visit <a href="http://www.smartystreets.com" target="_blank">SmartyStreets.com</a></div>
 						<div class="form-group">
 							<label for="SmartyStreetsEnabled" class="col-lg-3 col-md-3">Smarty Streets Enabled:&nbsp;</label>
@@ -540,9 +490,7 @@
 							<label for="SmartyStreetsAPITOKEN" class="col-lg-3 col-md-3">API Token:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SmartyStreetsAPITOKEN" name="SmartyStreetsAPITOKEN" value="#Session.SiteConfigSettings.SmartyStreets_APIToken#"></div>
 						</div>
-						<fieldset>
-							<legend><h2>Company Specific Plugin Features</h2></legend>
-						</fieldset>
+						<legend><h2>Company Specific Plugin Features</h2></legend>
 						<div class="alert alert-info">Does your company have policies in place for the following procedures?</div>
 						<div class="form-group">
 							<label for="BillForNoShowRegistration" class="col-lg-3 col-md-3">Bill Participant For NoShow:&nbsp;</label>
@@ -552,9 +500,7 @@
 							<label for="RequireEventSurveyToGetCertificate" class="col-lg-3 col-md-3">Require Survey to Get Certificate:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfselect name="RequireEventSurveyToGetCertificate" class="form-control" required="no" Multiple="No" selected="#Session.SiteConfigSettings.RequireSurveyToGetCertificate#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Require Submission of Event Survey to Obtain Completion Certiifcate?</option></cfselect></div>
 						</div>
-						<fieldset>
-							<legend><h2>Social Media Profiles</h2></legend>
-						</fieldset>
+						<legend><h2>Social Media Profiles</h2></legend>
 						<div class="alert alert-info">Please complete the following information to display social media profile icons to visitors of this plugin</div>
 						<div class="form-group">
 							<label for="GitHubProfileURL" class="col-lg-3 col-md-3">GitHub Profile URL:&nbsp;</label>
@@ -578,8 +524,8 @@
 						</div>
 					</div>
 					<div class="panel-footer">
-						<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-						<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Site Configuration"><br /><br />
+						<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Main Menu">
+						<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Update Site Configuration"><br /><br />
 					</div>
 				</cfform>
 			</div>
@@ -633,18 +579,14 @@
 					</cfif>
 				</cfif>
 					<div class="panel-body">
-						<fieldset>
-							<legend><h2>Modify Site Configuration Settings</h2></legend>
-						</fieldset>
+						<legend><h2>Modify Site Configuration Settings</h2></legend>
 						<div class="alert alert-info">Please complete the following information to modify site configuration settings</div>
 						<div class="form-group">
 							<label for="SiteID" class="col-lg-3 col-md-3">Site ID:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SiteID" name="SiteID" disabled value="#$.siteConfig('siteid')#"></div>
 						</div>
 						<cfif FileExists(Variables.FileTest1) EQ false or FileExists(Variables.FileTest2) EQ false or FileExists(Variables.FileTest3) EQ false or FileExists(Variables.FileTest4) EQ false>
-							<fieldset>
-								<legend><h2>Required JAR Files not installed</h2></legend>
-							</fieldset>
+							<legend><h2>Required JAR Files not installed</h2></legend>
 							<div class="alert alert-info">To Generate various PDF Documents, required library files will need to be installed. If required files are not installed then PDF documents can not be generated</div>
 							<div class="form-group">
 								<label for="CFMLProductName" class="col-lg-3 col-md-3">Coldfusion Product Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
@@ -655,9 +597,7 @@
 								<div class="col-lg-9 col-md-9"><cfselect name="InstallJarFiles" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value= "----">Install Required Files?</option></cfselect></div>
 							</div>
 						</cfif>
-						<fieldset>
-							<legend><h2>Stripe Payment Processor Configuration</h2></legend>
-						</fieldset>
+						<legend><h2>Stripe Payment Processor Configuration</h2></legend>
 						<div class="alert alert-info">Please complete the following information to enable Stripe Payment Processing for this plugin. For more information on the Stripe Processing Service, please visit <a href="http://www.stripe.com" target="_blank">Stripe.com</a></div>
 						<div class="form-group">
 							<label for="ProcessPaymentsStripe" class="col-lg-3 col-md-3">Process Stripe Payments:&nbsp;</label>
@@ -675,9 +615,7 @@
 							<label for="StripeLiveAPIKey" class="col-lg-3 col-md-3">Stripe Live API Key:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="StripeLiveAPIKey" name="StripeLiveAPIKey" value="#Session.FormInput.StripeLiveAPIKey#"></div>
 						</div>
-						<fieldset>
-							<legend><h2>Facebook Application Configuration</h2></legend>
-						</fieldset>
+						<legend><h2>Facebook Application Configuration</h2></legend>
 						<div class="form-group">
 							<label for="FacebookEnabled" class="col-lg-3 col-md-3">Publish to Facebook Page:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfselect name="FacebookEnabled" class="form-control" required="no" Multiple="No" selected="#Session.FormInput.FacebookEnabled#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Publish Events to Facebook Company Page?</option></cfselect></div>
@@ -698,9 +636,7 @@
 							<label for="FacebookAppScope" class="col-lg-3 col-md-3">Facebook Application Scope:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="FacebookAppScope" name="FacebookAppScope" value="#Session.FormInput.FacebookAppScope#"></div>
 						</div>
-						<fieldset>
-							<legend><h2>Twitter Application Configuration</h2></legend>
-						</fieldset>
+						<legend><h2>Twitter Application Configuration</h2></legend>
 						<div class="form-group">
 							<label for="TwitterEnabled" class="col-lg-3 col-md-3">Send Tweets regarding events:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfselect name="TwitterEnabled" class="form-control" required="no" Multiple="No" query="YesNoQuery" value="ID" Display="OptionName" selected="#Session.FormInput.TwitterEnabled#" queryposition="below"><option value="----">Publish Events to Companies Twitter Handle?</option></cfselect></div>
@@ -721,9 +657,7 @@
 							<label for="TwitterAccessTokenSecret" class="col-lg-3 col-md-3">Twitter Access Token Secret:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="TwitterAccessTokenSecret" name="TwitterAccessTokenSecret" value="#Session.FormInput.TwitterAccessTokenSecret#"></div>
 						</div>
-						<fieldset>
-							<legend><h2>Google ReCaptcha Form Protection</h2></legend>
-						</fieldset>
+						<legend><h2>Google ReCaptcha Form Protection</h2></legend>
 						<div class="alert alert-info">Please complete the following information to enable Google ReCaptcha Form Protections for this plugin. For more information on Google ReCaptcha Service, please visit <a href="https://www.google.com/recaptcha/" target="_blank">Google ReCaptcha Site</a></div>
 						<div class="form-group">
 							<label for="GoogleReCaptchaEnabled" class="col-lg-3 col-md-3">Google ReCaptcha Enabled:&nbsp;</label>
@@ -737,9 +671,7 @@
 							<label for="GoogleReCaptchaSecretKey" class="col-lg-3 col-md-3">Secret Key:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="GoogleReCaptchaSecretKey" name="GoogleReCaptchaSecretKey" value="#Session.FormInput.GoogleReCaptchaSecretKey#"></div>
 						</div>
-						<fieldset>
-							<legend><h2>Smarty Streets Address Verification Service</h2></legend>
-						</fieldset>
+						<legend><h2>Smarty Streets Address Verification Service</h2></legend>
 						<div class="alert alert-info">Please complete the following information to enable Smarty Streets Processing for this plugin. For more information on the Smarty Streets Service, please visit <a href="http://www.smartystreets.com" target="_blank">SmartyStreets.com</a></div>
 						<div class="form-group">
 							<label for="SmartyStreetsEnabled" class="col-lg-3 col-md-3">Smarty Streets Enabled:&nbsp;</label>
@@ -753,9 +685,7 @@
 							<label for="SmartyStreetsAPITOKEN" class="col-lg-3 col-md-3">API Token:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfinput type="text" class="form-control" id="SmartyStreetsAPITOKEN" name="SmartyStreetsAPITOKEN" value="#Session.FormInput.SmartyStreetsAPITOKEN#"></div>
 						</div>
-						<fieldset>
-							<legend><h2>Company Specific Plugin Features</h2></legend>
-						</fieldset>
+						<legend><h2>Company Specific Plugin Features</h2></legend>
 						<div class="alert alert-info">Does your company have policies in place for the following procedures?</div>
 						<div class="form-group">
 							<label for="BillForNoShowRegistration" class="col-lg-3 col-md-3">Bill Participant For NoShow:&nbsp;</label>
@@ -765,9 +695,7 @@
 							<label for="RequireEventSurveyToGetCertificate" class="col-lg-3 col-md-3">Require Survey to Get Certificate:&nbsp;</label>
 							<div class="col-lg-9 col-md-9"><cfselect name="RequireEventSurveyToGetCertificate" class="form-control" required="no" Multiple="No" selected="#Session.FormInput.RequireEventSurveyToGetCertificate#" query="YesNoQuery" value="ID" Display="OptionName" queryposition="below"><option value="----">Require Submission of Event Survey to Obtain Completion Certiifcate?</option></cfselect></div>
 						</div>
-						<fieldset>
-							<legend><h2>Social Media Profiles</h2></legend>
-						</fieldset>
+						<legend><h2>Social Media Profiles</h2></legend>
 						<div class="alert alert-info">Please complete the following information to display social media profile icons to visitors of this plugin</div>
 						<div class="form-group">
 							<label for="GitHubProfileURL" class="col-lg-3 col-md-3">GitHub Profile URL:&nbsp;</label>
@@ -791,8 +719,8 @@
 						</div>
 					</div>
 					<div class="panel-footer">
-						<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-						<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Site Configuration"><br /><br />
+						<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Main Menu">
+						<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Update Site Configuration"><br /><br />
 					</div>
 				</cfform>
 			</div>

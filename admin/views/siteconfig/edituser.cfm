@@ -114,10 +114,8 @@
 						</cfcase>
 					</cfswitch>
 				</cfif>
+				<div class="panel-heading"><h2>Edit User Account Holder Information</h2></div>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Edit User Account Holder Information</h2></legend>
-					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
 						<label for="FirstName" class="col-lg-3 col-md-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
@@ -187,11 +185,11 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to User Management">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Change Password">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Activate Account">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Login As User">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Edit Account Information"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to User Management">&nbsp;
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary BtnSameSize" value="Change Password">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary BtnSameSize" value="Activate Account">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary BtnSameSize" value="Login As User">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Edit Account Information"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -245,10 +243,8 @@
 						</script>
 					</cfif>
 				</cfif>
+				<div class="panel-heading"><h2>Edit User Account Holder Information</h2></div>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Edit User Account Holder Information</h2></legend>
-					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
 						<label for="FirstName" class="col-lg-3 col-md-3">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
@@ -318,11 +314,11 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Change Password">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Activate Account">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary" value="Login As User">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Edit Account Information"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Main Menu">&nbsp;
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary BtnSameSize" value="Change Password">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary BtnSameSize" value="Activate Account">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary BtnSameSize" value="Login As User">
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Edit Account Information"><br /><br />
 				</div>
 			</cfform>
 		</div>

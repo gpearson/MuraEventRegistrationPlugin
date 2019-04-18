@@ -16,10 +16,8 @@
 			<cfform action="" method="post" id="AddNewUser" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#$.siteConfig('siteid')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
+				<div class="panel-heading"><h2>Add New Facility Room</h2></div>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Add New Facility Room</h2></legend>
-					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Facility</div>
 					<div class="form-group">
 						<label for="FacilityName" class="col-lg-5 col-md-5">Facility Name:&nbsp;</label>
@@ -41,9 +39,7 @@
 						<label for="PhysicalZipCode" class="col-lg-5 col-md-5">Address ZipCode:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" value="#Session.getSelectedFacility.PhysicalZipCode#" disabled="yes"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Room Information</h2></legend>
-					</fieldset>
+					<legend><h2>Room Information</h2></legend>
 					<div class="form-group">
 						<label for="RoomName" class="col-lg-5 col-md-5">Room Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="RoomName" name="RoomName" Required="Yes"></div>
@@ -64,8 +60,8 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Facility Listing">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add Facility Room Information"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Facility Listing">&nbsp;
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Add Facility Room Information"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -117,10 +113,8 @@
 						</script>
 					</cfif>
 				</cfif>
+				<div class="panel-heading"><h2>Add New Facility Room</h2></div>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Add New Facility Room</h2></legend>
-					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Facility</div>
 					<div class="form-group">
 						<label for="FacilityName" class="col-lg-5 col-md-5">Facility Name:&nbsp;</label>
@@ -142,9 +136,7 @@
 						<label for="PhysicalZipCode" class="col-lg-5 col-md-5">Address ZipCode:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="PhysicalZipCode" name="PhysicalZipCode" value="#Session.getSelectedFacility.PhysicalZipCode#" disabled="yes"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Room Information</h2></legend>
-					</fieldset>
+					<legend><h2>Room Information</h2></legend>
 					<div class="form-group">
 						<label for="RoomName" class="col-lg-5 col-md-5">Room Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="RoomName" name="RoomName" value="#Session.FormInput.RoomName#" Required="Yes"></div>
@@ -165,8 +157,8 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Facility Listing">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add Facility Room Information"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Facility Listing">&nbsp;
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Add Facility Room Information"><br /><br />
 				</div>
 			</cfform>
 		</div>

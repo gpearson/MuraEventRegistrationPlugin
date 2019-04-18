@@ -16,10 +16,8 @@
 			<cfform action="" method="post" id="AddNewUser" class="form-horizontal">
 				<cfinput type="hidden" name="SiteID" value="#$.siteConfig('siteid')#">
 				<cfinput type="hidden" name="formSubmit" value="true">
+				<div class="panel-heading"><h2>Add New Catering Facility</h2></div>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Add New Catering Facility</h2></legend>
-					</fieldset>
 					<div class="alert alert-info">Please complete the following information to add a new catering Facility to the database</div>
 					<div class="form-group">
 						<label for="FacilityName" class="col-lg-5 col-md-5">Facility Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
@@ -49,9 +47,7 @@
 						<label for="BusinessWebsite" class="col-lg-5 col-md-5">Website:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="BusinessWebsite" name="BusinessWebsite" required="no"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Contact Person's Information</h2></legend>
-					</fieldset>
+					<legend><h2>Contact Person's Information</h2></legend>
 					<div class="form-group">
 						<label for="ContactName" class="col-lg-5 col-md-5">Contact Person:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="ContactName" name="ContactName" Required="No"></div>
@@ -64,9 +60,7 @@
 						<label for="ContactEmail" class="col-lg-5 col-md-5">Contact Email:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="ContactEmail" name="ContactEmail" required="no"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Catering Facility Notes</h2></legend>
-					</fieldset>
+					<legend><h2>Catering Facility Notes</h2></legend>
 					<div class="form-group">
 						<label for="PaymentTerms" class="col-lg-5 col-md-5">Payment Terms:&nbsp;</label>
 						<div class="col-sm-7"><textarea class="form-control" name="PaymentTerms" id="PaymentTerms" height="45"></textarea></div>
@@ -88,8 +82,8 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Catering Listing">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add New Caterer"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Catering Listing">&nbsp;
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Add New Caterer"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -141,10 +135,8 @@
 						</script>
 					</cfif>
 				</cfif>
+				<div class="panel-heading"><h2>Add New Catering Facility</h2></div>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Add New Catering Facility</h2></legend>
-					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
 						<label for="FacilityName" class="col-lg-5 col-md-5">Facility Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
@@ -174,9 +166,7 @@
 						<label for="BusinessWebsite" class="col-lg-5 col-md-5">Website:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="BusinessWebsite" name="BusinessWebsite" value="#Session.FormInput.BusinessWebsite#" required="no"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Contact Person's Information</h2></legend>
-					</fieldset>
+					<legend><h2>Contact Person's Information</h2></legend>
 					<div class="form-group">
 						<label for="ContactName" class="col-lg-5 col-md-5">Contact Person:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="ContactName" name="ContactName" value="#Session.FormInput.ContactName#" Required="No"></div>
@@ -189,9 +179,7 @@
 						<label for="ContactEmail" class="col-lg-5 col-md-5">Contact Email:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="ContactEmail" name="ContactEmail" value="#Session.FormInput.ContactEmail#" required="no"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Catering Facility Notes</h2></legend>
-					</fieldset>
+					<legend><h2>Catering Facility Notes</h2></legend>
 					<div class="form-group">
 						<label for="PaymentTerms" class="col-lg-5 col-md-5">Payment Terms:&nbsp;</label>
 						<div class="col-sm-7"><textarea class="form-control" name="PaymentTerms" id="PaymentTerms" height="45">#Session.FormInput.PaymentTerms#</textarea></div>
@@ -212,8 +200,8 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Catering Listing">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add New Caterer"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Catering Listing">&nbsp;
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Add New Caterer"><br /><br />
 				</div>
 			</cfform>
 		</div>

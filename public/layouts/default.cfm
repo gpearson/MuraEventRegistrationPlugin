@@ -5,13 +5,17 @@
 		</cflock>
 	</cfif>
 </cfsilent>
-<cfhtmlhead><style>.BtnSameSize { width: 110px; padding: 2px; margin: 2px; }</style></cfhtmlhead>
+<cfsavecontent variable="htmlhead"><cfoutput>
+	<style>.BtnSameSize { width: 175px; padding: 2px; margin: 2px; }</style>
+</cfoutput></cfsavecontent>
+<cfhtmlhead text="#htmlhead#" />
+<cfhtmlhead></cfhtmlhead>
 <cfif Session.Mura.IsLoggedIn EQ True>
 	<cfset userBean = rc.$.getBean('user').loadBy(username='#Session.Mura.Username#', siteid='#rc.$.siteConfig('siteID')#')>
 </cfif>
 <cfoutput>
 	<div class="row-fluid">
-		<div class="col-md-12">
+		<div class="col-12">
 			<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
 				<div class="collapse navbar-collapse navbar-ex1-collapse">
 					<ul id="navPrimary" class="nav navbar-nav">
@@ -20,22 +24,22 @@
 							<ul class="dropdown-menu">
 								<cfif Session.Mura.IsLoggedIn EQ True>
 									<li class="">
-										<a href="http://#CGI.server_name#/index.cfm?doaction=logout"><i class="icon-home"></i> Account Logout</a>
+										<a href="http://#CGI.server_name#/index.cfm?doaction=logout" class="BtnSameSize"><i class="icon-home"></i> Account Logout</a>
 									</li>
 									<cfif not userBean.isInGroup("Event Facilitator") and not userBean.isInGroup("Event Presenter")>
 										<li class="">
-											<a href="#buildURL('public:usermenu.editprofile')#"><i class="icon-home"></i> Manage Profile</a>
+											<a href="#buildURL('public:usermenu.editprofile')#" class="BtnSameSize"><i class="icon-home"></i> Manage Profile</a>
 										</li>
 									</cfif>
 								<cfelse>
 									<li class="<cfif rc.action eq 'public:main.login'>active</cfif>">
-										<a href="#CGI.Script_name##CGI.path_info#?display=login"><i class="icon-home"></i> Account Login</a>
+										<a href="#CGI.Script_name##CGI.path_info#?display=login" class="BtnSameSize"><i class="icon-home"></i> Account Login</a>
 									</li>
 									<li class="<cfif rc.action eq 'public:register.account'>active</cfif>">
-										<a href="#buildURL('public:registeraccount.default')#"><i class="icon-home"></i> Register Account</a>
+										<a href="#buildURL('public:registeraccount.default')#" class="BtnSameSize"><i class="icon-home"></i> Register Account</a>
 									</li>
 									<li class="<cfif rc.action eq 'public:main.forgotpassword'>active</cfif>">
-										<a href="#buildURL('public:usermenu.forgotpassword')#"><i class="icon-leaf"></i> Forgot Password</a>
+										<a href="#buildURL('public:usermenu.forgotpassword')#" class="BtnSameSize"><i class="icon-leaf"></i> Forgot Password</a>
 									</li>
 								</cfif>
 							</ul>
@@ -45,10 +49,10 @@
 										<a href="#buildURL('public:main.default')#">All Events</a>
 									</li>
 									<li class="<cfif rc.action eq 'public:usermenu.default'>active</cfif>">
-										<a href="##" class="dropdown-toggle" data-toggle="dropdown">My Events <b class="caret"></b></a>
+										<a href="##" class="dropdown-toggle" data-toggle="dropdown" class="BtnSameSize">My Events <b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li class=""><a href="#buildURL('public:usermenu.upcomingevents')#">Upcoming Events</a></li>
-											<li class=""><a href="#buildURL('public:usermenu.eventhistory')#">Event History & Certificates</a></li>
+											<li class=""><a href="#buildURL('public:usermenu.upcomingevents')#" class="BtnSameSize">Upcoming Events</a></li>
+											<li class=""><a href="#buildURL('public:usermenu.eventhistory')#" class="BtnSameSize">Event History & Certificates</a></li>
 										</ul>
 									</li>
 								</cfif>
@@ -94,7 +98,7 @@
 		</div>
 	</div>
 	<div class="row-fluid">
-		<div class="col-md-12">
+		<div class="col-12">
 			<cfif StructKeyExists(session, "MuraPreviousUser")>
 				<div class="text-left">
 					<div class="alert alert-info">
@@ -116,7 +120,7 @@
 		</div>
 	</div>
 	<div class="row-fluid">
-		<div class="col-md-12">
+		<div class="col-12">
 			#body#
 		</div>
 	</div>

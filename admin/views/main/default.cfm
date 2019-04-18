@@ -13,12 +13,45 @@ http://www.apache.org/licenses/LICENSE-2.0
 	<cfif isDefined("URL.SiteConfigUpdated")>
 		<cfswitch expression="#URL.SiteConfigUpdated#">
 			<cfcase value="True">
-				<div class="panel panel-default">
-					<div class="panel-heading"><h3>Site Configuration Updated</h3></div>
-					<div class="panel-body alert alert-success">
-						<p>You have successfully updated site configuration settings of this plugin</p>
+				<div id="modelWindowDialog" class="modal fade">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+								<h3>Site Configuration Updated</h3>
+							</div>
+							<div class="modal-body">
+								<p class="alert alert-success">You have successfully updated site configuration settings of this plugin</p>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+							</div>
+						</div>
 					</div>
 				</div>
+				<script type='text/javascript'>
+					(function() {
+						'use strict';
+						function remoteModal(idModal){
+							var vm = this;
+							vm.modal = $(idModal);
+							if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+							if( window.location.hash == idModal ){ openModal(); }
+							var services = { open: openModal, close: closeModal };
+							return services;
+							function openModal(){
+								vm.modal.modal('show');
+							}
+							function closeModal(){
+								vm.modal.modal('hide');
+							}
+						}
+						Window.prototype.remoteModal = remoteModal;
+					})();
+					$(function(){
+						window.remoteModal('##modelWindowDialog');
+					});
+				</script>
 			</cfcase>
 			<cfcase value="False">
 

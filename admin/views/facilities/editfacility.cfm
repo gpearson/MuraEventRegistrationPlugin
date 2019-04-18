@@ -102,10 +102,8 @@
 						</cfcase>
 					</cfswitch>
 				</cfif>
+				<div class="panel-heading"><h2>Update Facility</h2></div>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Update Facility Information</h2></legend>
-					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Facility</div>
 					<div class="form-group">
 						<label for="FacilityName" class="col-lg-5 col-md-5">Facility Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
@@ -135,9 +133,7 @@
 						<label for="BusinessWebsite" class="col-lg-5 col-md-5">Website:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="BusinessWebsite" name="BusinessWebsite" value="#Session.getSelectedFacility.BusinessWebsite#" required="no"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Contact Person's Information</h2></legend>
-					</fieldset>
+					<legend><h2>Contact Person's Information</h2></legend>
 					<div class="form-group">
 						<label for="ContactName" class="col-lg-5 col-md-5">Contact Person:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="ContactName" name="ContactName" value="#Session.getSelectedFacility.ContactName#" Required="No"></div>
@@ -150,9 +146,7 @@
 						<label for="ContactEmail" class="col-lg-5 col-md-5">Contact Email:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="ContactEmail" name="ContactEmail" value="#Session.getSelectedFacility.ContactEmail#" required="no"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Facility Notes</h2></legend>
-					</fieldset>
+					<legend><h2>Facility Notes</h2></legend>
 					<div class="form-group">
 						<label for="PaymentTerms" class="col-lg-5 col-md-5">Payment Terms:&nbsp;</label>
 						<div class="col-sm-7"><textarea class="form-control" name="PaymentTerms" id="PaymentTerms" height="45">#Trim(Session.getSelectedFacility.PaymentTerms)#</textarea></div>
@@ -167,9 +161,7 @@
 							<option value="----">Facility Active?</option>
 						</cfselect></div>
 					</div>
-					<fieldset>
-						<legend><h2>Facility Room Information</h2></legend>
-					</fieldset>
+					<legend><h2>Facility Room Information</h2></legend>
 					<div class="form-group">
 						<table class="table table-striped table-bordered">
 							<cfif Session.getSelectedFacilityRooms.RecordCount>
@@ -207,9 +199,7 @@
 							</cfif>
 						</table>
 					</div>
-					<fieldset>
-						<legend><h2>Facility Location Information</h2></legend>
-					</fieldset>
+					<legend><h2>Facility Location Information</h2></legend>
 					<div class="form-group">
 						<label for="isAddressVerified" class="col-lg-5 col-md-5">Address Verified:&nbsp;</label>
 						<div class="col-sm-7 form-control-static"><cfswitch expression="#Session.getSelectedFacility.Physical_isAddressVerified#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch></div>
@@ -244,9 +234,7 @@
 							<div class="col-sm-7 form-control-static">#Session.getSelectedFacility.Physical_TimeZone# (GMT Offset: #Session.getSelectedFacility.Physical_UTCOffset#)</div>
 						</div>
 					</cfif>
-					<fieldset>
-						<legend><h2>Facility Record Information</h2></legend>
-					</fieldset>
+					<legend><h2>Facility Record Information</h2></legend>
 					<div class="form-group">
 						<label for="dateCreated" class="col-lg-5 col-md-5">Date Created:&nbsp;</label>
 						<div class="col-sm-7 form-control-static">#DateFormat(Session.getSelectedFacility.dateCreated, "Full")#</div>
@@ -261,8 +249,8 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Facility Listing">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Facility Information"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Facility Listing">&nbsp;
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Update Facility Information"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -314,10 +302,8 @@
 						</script>
 					</cfif>
 				</cfif>
+				<div class="panel-heading"><h2>Update Facility</h2></div>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Update Facility</h2></legend>
-					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Facility</div>
 					<div class="form-group">
 						<label for="FacilityName" class="col-lg-5 col-md-5">Facility Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
@@ -347,9 +333,7 @@
 						<label for="BusinessWebsite" class="col-lg-5 col-md-5">Website:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="BusinessWebsite" name="BusinessWebsite" value="#Session.FormInput.BusinessWebsite#" required="no"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Contact Person's Information</h2></legend>
-					</fieldset>
+					<legend><h2>Contact Person's Information</h2></legend>
 					<div class="form-group">
 						<label for="ContactName" class="col-lg-5 col-md-5">Contact Person:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="ContactName" name="ContactName" value="#Session.FormInput.ContactName#" Required="No"></div>
@@ -362,9 +346,7 @@
 						<label for="ContactEmail" class="col-lg-5 col-md-5">Contact Email:&nbsp;</label>
 						<div class="col-sm-7"><cfinput type="text" class="form-control" id="ContactEmail" name="ContactEmail" value="#Session.FormInput.ContactEmail#" required="no"></div>
 					</div>
-					<fieldset>
-						<legend><h2>Facility Notes</h2></legend>
-					</fieldset>
+					<legend><h2>Facility Notes</h2></legend>
 					<div class="form-group">
 						<label for="PaymentTerms" class="col-lg-5 col-md-5">Payment Terms:&nbsp;</label>
 						<div class="col-sm-7"><textarea class="form-control" name="PaymentTerms" id="PaymentTerms" height="45">#Trim(Session.FormInput.PaymentTerms)#</textarea></div>
@@ -379,9 +361,7 @@
 							<option value="----">Facility Active?</option>
 						</cfselect></div>
 					</div>
-					<fieldset>
-						<legend><h2>Facility Location Information</h2></legend>
-					</fieldset>
+					<legend><h2>Facility Location Information</h2></legend>
 					<div class="form-group">
 						<label for="isAddressVerified" class="col-lg-5 col-md-5">Address Verified:&nbsp;</label>
 						<div class="col-sm-7 form-control-static"><cfswitch expression="#Session.getSelectedFacility.Physical_isAddressVerified#"><cfcase value="1">Yes</cfcase><cfcase value="0">No</cfcase></cfswitch></div>
@@ -416,9 +396,7 @@
 							<div class="col-sm-7 form-control-static">#Session.getSelectedFacility.Physical_TimeZone# (GMT Offset: #Session.getSelectedFacility.Physical_UTCOffset#)</div>
 						</div>
 					</cfif>
-					<fieldset>
-						<legend><h2>Facility Record Information</h2></legend>
-					</fieldset>
+					<legend><h2>Facility Record Information</h2></legend>
 					<div class="form-group">
 						<label for="dateCreated" class="col-lg-5 col-md-5">Date Created:&nbsp;</label>
 						<div class="col-sm-7 form-control-static">#DateFormat(Session.getSelectedFacility.dateCreated, "Full")#</div>
@@ -433,8 +411,8 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Facility Listing">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Update Facility Information"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to Facility Listing">&nbsp;
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Update Facility Information"><br /><br />
 				</div>
 			</cfform>
 		</div>

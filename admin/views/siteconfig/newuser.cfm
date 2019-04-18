@@ -66,10 +66,8 @@
 					</cfcase>
 				</cfswitch>
 				</cfif>
+				<div class="panel-heading"><h2>Add User Account Holder</h2></div>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Add User Account Holder</h2></legend>
-					</fieldset>
 					<div class="alert alert-info">Please complete the following information to edit information regarding this Account Holder</div>
 					<div class="form-group">
 						<label for="FirstName" class="col-lg-5 col-md-5">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star" /></label>
@@ -132,8 +130,8 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to User Management">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add Account Information"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to User Management">&nbsp;
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Add Account Information"><br /><br />
 				</div>
 			</cfform>
 		</div>
@@ -185,10 +183,8 @@
 						</script>
 					</cfif>
 				</cfif>
+				<div class="panel-heading"><h2>Add User Account Holder</h2></div>
 				<div class="panel-body">
-					<fieldset>
-						<legend><h2>Add User Account Holder</h2></legend>
-					</fieldset>
 					<div class="alert alert-info">Please complete the following information to insert a new user account into this application</div>
 					<div class="form-group">
 						<label for="FirstName" class="col-lg-5 col-md-5">First Name:&nbsp;<span style="Color: Red;" class="glyphicon glyphicon-star"></label>
@@ -262,8 +258,8 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to User Management">&nbsp;
-					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Add Account Information"><br /><br />
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left BtnSameSize" value="Back to User Management">&nbsp;
+					<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right BtnSameSize" value="Add Account Information"><br /><br />
 				</div>
 			</cfform>
 		</div>
