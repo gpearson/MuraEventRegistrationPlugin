@@ -5,21 +5,22 @@
 		</cflock>
 	</cfif>
 </cfsilent>
+<cfinclude template="#$.siteConfig('themeAssetPath')#/templates/inc/html2_head.cfm">
 <cfsavecontent variable="htmlhead"><cfoutput>
-	<style>.BtnSameSize { width: 200px; padding: 2px; margin: 2px; }</style>
+	<style>.BtnSameSize { width: 175px; padding: 2px; margin: 2px; }</style>
 </cfoutput></cfsavecontent>
 <cfhtmlhead text="#htmlhead#" />
 <cfoutput>
-	<cfinclude template="#$.siteConfig('themeAssetPath')#/templates/inc/html_head.cfm" />
-	<body id="homePage" class="sysHome">
+	<body id="" class="" data-spy="scroll" data-target=".subnav" data-offset="50">
 		<div class="off-canvas-wrap">
 			<div class="inner-wrap">
 				<header>
 					<div class="row">
 						<img src="#$.siteConfig('AssetPath')#/images/NWIESC_Logo.jpg">
+						<h4 class="hide-for-small">#$.siteConfig('tagline')#</h4>
 					</div>
 				</header>
-				<div class="row">
+				<div class="row-fluid">
 					<div class="col-12">
 						<nav class="navbar navbar-default">
 							<div class="container-fluid">
@@ -74,10 +75,16 @@
 								</div>
 							</div>
 						</nav>
-						<br>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="col-12">&nbsp;</div>
+				</div>
+				<div class="row-fluid">
+					<div class="col-12">
 						#body#
 					</div>
 				</div>
-			<cfinclude template="#$.siteConfig('themeAssetPath')#/templates/inc/footer.cfm" />
-		<cfinclude template="#$.siteConfig('themeAssetPath')#/templates/inc/html_foot.cfm" />
+				<cfinclude template="#$.siteConfig('themeAssetPath')#/templates/inc/footer.cfm" />
+				<cfinclude template="#$.siteConfig('themeAssetPath')#/templates/inc/html_foot.cfm" />
 </cfoutput>

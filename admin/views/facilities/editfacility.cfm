@@ -207,11 +207,7 @@
 					<cfif Session.getSelectedFacility.Physical_isAddressVerified eq 1>
 						<div class="form-group">
 							<label for="AddressGeocodeLocation" class="col-lg-5 col-md-5">Address GeoCode Location:&nbsp;</label>
-							<div class="col-sm-7 form-control-static">LAT: #Session.getSelectedFacility.GeoCode_Latitude# / LON: #Session.getSelectedFacility.GeoCode_Longitude#</div>
-						</div>
-						<div class="form-group">
-							<label for="AddressTownship" class="col-lg-5 col-md-5">Address Township:&nbsp;</label>
-							<div class="col-sm-7 form-control-static">#Session.getSelectedFacility.GeoCode_Township#</div>
+							<div class="col-sm-7 form-control-static">LAT: #Session.getSelectedFacility.Physical_Latitude# / LON: #Session.getSelectedFacility.Physical_Longitude#</div>
 						</div>
 						<div class="form-group">
 							<label for="USPSDeliveryPoint" class="col-lg-5 col-md-5">USPS DeliveryPoint:&nbsp;</label>
@@ -369,11 +365,7 @@
 					<cfif Session.getSelectedFacility.Physical_isAddressVerified eq 1>
 						<div class="form-group">
 							<label for="AddressGeocodeLocation" class="col-lg-5 col-md-5">Address GeoCode Location:&nbsp;</label>
-							<div class="col-sm-7 form-control-static">LAT: #Session.getSelectedFacility.GeoCode_Latitude# / LON: #Session.getSelectedFacility.GeoCode_Longitude#</div>
-						</div>
-						<div class="form-group">
-							<label for="AddressTownship" class="col-lg-5 col-md-5">Address Township:&nbsp;</label>
-							<div class="col-sm-7 form-control-static">#Session.getSelectedFacility.GeoCode_Township#</div>
+							<div class="col-sm-7 form-control-static">LAT: #Session.getSelectedFacility.Physical_Latitude# / LON: #Session.getSelectedFacility.Physical_Longitude#</div>
 						</div>
 						<div class="form-group">
 							<label for="USPSDeliveryPoint" class="col-lg-5 col-md-5">USPS DeliveryPoint:&nbsp;</label>
