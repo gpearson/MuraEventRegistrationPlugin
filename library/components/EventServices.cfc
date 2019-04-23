@@ -138,34 +138,34 @@
 
 		<cfquery name="getRegistrationInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 			SELECT
-				tusers.Fname, tusers.Lname, tusers.Email, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.RegistrationID,p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_UserRegistrations.OnWaitingList, p_EventRegistration_UserRegistrations.AttendeePrice, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.H323Participant, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM, p_EventRegistration_UserRegistrations.RegistrationIPAddr, p_EventRegistration_UserRegistrations.RegisteredByUserID, p_EventRegistration_UserRegistrations.dateCreated, p_EventRegistration_UserRegistrations.lastUpdated, p_EventRegistration_UserRegistrations.lastUpdateBy, p_EventRegistration_UserRegistrations.lastUpdateByID, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5, p_EventRegistration_Events.EventDate6, p_EventRegistration_Events.LongDescription, p_EventRegistration_Events.Event_StartTime, p_EventRegistration_Events.Event_EndTime, p_EventRegistration_Events.PresenterID, p_EventRegistration_Events.FacilitatorID, p_EventRegistration_Facility.FacilityName, p_EventRegistration_Facility.PhysicalAddress, p_EventRegistration_Facility.PhysicalCity, p_EventRegistration_Facility.PhysicalState, p_EventRegistration_Facility.PhysicalZipCode, p_EventRegistration_Facility.PhysicalZip4, p_EventRegistration_Facility.Physical_isAddressVerified, p_EventRegistration_Facility.Physical_Latitude, p_EventRegistration_Facility.Physical_Longitude, p_EventRegistration_FacilityRooms.RoomName, p_EventRegistration_Events.Event_MemberCost, p_EventRegistration_Events.Event_MaxParticipants, p_EventRegistration_Events.EventAgenda, p_EventRegistration_Events.EventTargetAudience, p_EventRegistration_Events.EventStrategies, p_EventRegistration_Events.EventSpecialInstructions, p_EventRegistration_Events.PGPCertificate_Available, p_EventRegistration_Events.PGPCertificate_Points, p_EventRegistration_Events.Webinar_Available, p_EventRegistration_Events.Event_DailySessions, p_EventRegistration_Events.H323_Available, p_EventRegistration_Events.BillForNoShow
-			FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.Event_ID INNER JOIN p_EventRegistration_Facility ON p_EventRegistration_Facility.TContent_ID = p_EventRegistration_Events.Event_HeldAtFacilityID INNER JOIN p_EventRegistration_FacilityRooms ON p_EventRegistration_FacilityRooms.TContent_ID = p_EventRegistration_Events.Event_FacilityRoomID
+				tusers.Fname, tusers.Lname, tusers.Email, p_EventRegistration_UserRegistrations.User_ID, p_EventRegistration_UserRegistrations.RegistrationID,p_EventRegistration_UserRegistrations.RegistrationDate, p_EventRegistration_UserRegistrations.OnWaitingList, p_EventRegistration_UserRegistrations.AttendeePrice, p_EventRegistration_UserRegistrations.RequestsMeal, p_EventRegistration_UserRegistrations.WebinarParticipant, p_EventRegistration_UserRegistrations.IVCParticipant, p_EventRegistration_UserRegistrations.RegisterForEventDate1, p_EventRegistration_UserRegistrations.RegisterForEventDate2, p_EventRegistration_UserRegistrations.RegisterForEventDate3, p_EventRegistration_UserRegistrations.RegisterForEventDate4, p_EventRegistration_UserRegistrations.RegisterForEventDate6, p_EventRegistration_UserRegistrations.RegisterForEventDate5, p_EventRegistration_UserRegistrations.RegisterForEventSessionAM, p_EventRegistration_UserRegistrations.RegisterForEventSessionPM, p_EventRegistration_UserRegistrations.RegistrationIPAddr, p_EventRegistration_UserRegistrations.RegisterByUserID, p_EventRegistration_Events.ShortTitle, p_EventRegistration_Events.EventDate, p_EventRegistration_Events.EventDate1, p_EventRegistration_Events.EventDate2, p_EventRegistration_Events.EventDate3, p_EventRegistration_Events.EventDate4, p_EventRegistration_Events.EventDate5, p_EventRegistration_Events.LongDescription, p_EventRegistration_Events.Event_StartTime, p_EventRegistration_Events.Event_EndTime, p_EventRegistration_Events.Presenters, p_EventRegistration_Events.Facilitator, p_EventRegistration_Facility.FacilityName, p_EventRegistration_Facility.PhysicalAddress, p_EventRegistration_Facility.PhysicalCity, p_EventRegistration_Facility.PhysicalState, p_EventRegistration_Facility.PhysicalZipCode, p_EventRegistration_Facility.PhysicalZip4, p_EventRegistration_Facility.GeoCode_Latitude, p_EventRegistration_Facility.GeoCode_Longitude, p_EventRegistration_FacilityRooms.RoomName, p_EventRegistration_Events.MemberCost, p_EventRegistration_Events.MaxParticipants, p_EventRegistration_Events.EventAgenda, p_EventRegistration_Events.EventTargetAudience, p_EventRegistration_Events.EventStrategies, p_EventRegistration_Events.EventSpecialInstructions, p_EventRegistration_Events.PGPAvailable, p_EventRegistration_Events.PGPPoints, p_EventRegistration_Events.WebinarAvailable, p_EventRegistration_Events.EventHasDailySessions, p_EventRegistration_Events.AllowVideoConference, p_EventRegistration_Events.BillForNoShow
+			FROM p_EventRegistration_UserRegistrations INNER JOIN tusers ON tusers.UserID = p_EventRegistration_UserRegistrations.User_ID INNER JOIN p_EventRegistration_Events ON p_EventRegistration_Events.TContent_ID = p_EventRegistration_UserRegistrations.EventID INNER JOIN p_EventRegistration_Facility ON p_EventRegistration_Facility.TContent_ID = p_EventRegistration_Events.LocationID INNER JOIN p_EventRegistration_FacilityRooms ON p_EventRegistration_FacilityRooms.TContent_ID = p_EventRegistration_Events.LocationRoomID
 			WHERE p_EventRegistration_UserRegistrations.TContent_ID = <cfqueryparam value="#Arguments.RegistrationRecordID#" cfsqltype="cf_sql_integer">
 		</cfquery>
 
-		<cfif getRegistrationInfo.User_ID NEQ getRegistrationInfo.RegisteredByUserID>
+		<cfif getRegistrationInfo.User_ID NEQ getRegistrationInfo.RegisterByUserID>
 			<cfquery name="getRegisteredByUserInfo" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select Fname, Lname, Email
 				From tusers
-				Where UserID = <cfqueryparam value="#getRegistrationInfo.RegisteredByUserID#" cfsqltype="cf_sql_varchar">
+				Where UserID = <cfqueryparam value="#getRegistrationInfo.RegisterByUserID#" cfsqltype="cf_sql_varchar">
 			</cfquery>
 			<cfset RegisteredBy = #getRegisteredByUserInfo.Lname# & ", " & #getRegisteredByUserInfo.Fname# & " (" & #getRegisteredByUserInfo.Email# & ")">
 		<cfelse>
 			<cfset RegisteredBy = "self">
 		</cfif>
 
-		<cfif LEN(getRegistrationInfo.PresenterID)>
+		<cfif LEN(getRegistrationInfo.Presenters)>
 			<cfquery name="getEventPresenter" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 				Select Fname, Lname, Email
 				From tusers
-				Where UserID = <cfqueryparam value="#getRegistrationInfo.PresenterID#" cfsqltype="cf_sql_varchar">
+				Where UserID = <cfqueryparam value="#getRegistrationInfo.Presenters#" cfsqltype="cf_sql_varchar">
 			</cfquery>
 		</cfif>
 
 		<cfquery name="getEventFacilitator" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
 			Select Fname, Lname, Email
 			From tusers
-			Where UserID = <cfqueryparam value="#getRegistrationInfo.FacilitatorID#" cfsqltype="cf_sql_varchar">
+			Where UserID = <cfqueryparam value="#getRegistrationInfo.Facilitator#" cfsqltype="cf_sql_varchar">
 		</cfquery>
 
 		<cfset CRLF = #chr(13)# & #chr(10)#>
@@ -284,4 +284,136 @@
 		</cfif>
 	</cffunction>
 
+	<cffunction name="RegisterFormAddParticipantToDatabase" access="remote" returntype="any" output="true" hint="Registration From for Event to Add participant to event">
+		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+
+		<cfset requestData = getHttpRequestData()>
+		<cfset requestContent = #variables.requestData.content#>
+		<cfset requestContent = #Replace(variables.requestContent, "%7B", "{", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%22", '"', "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%3A", ":", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%2C", ",", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%2F", "/", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%7D", "}", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%40", "@", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%20", " ", "ALL")#>
+		<cfset requestContent = #Replace(variables.requestContent, "%2B", " ", "ALL")#>
+		<cfset Info = #ListLast(ListLast(variables.requestContent, "&"), "=")#>
+		<cfset requestinfo = #DeserializeJSON(Info)#>
+
+		<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(requestinfo.DBInfo.PackageName)#/library/components/EmailServices")>
+
+		<cfquery name="CheckAccount" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
+			Select UserID, Fname, Lname, Email
+			From tusers
+			Where UserName = <cfqueryparam value="#requestinfo.UserInfo.Email#" cfsqltype="cf_sql_varchar">
+			Order by Lname, Fname
+		</cfquery>
+
+		<cfset RegistrationID = #CreateUUID()#>
+		<cfset UserEmailDomain = #Right(requestinfo.UserInfo.Email, Len(requestinfo.UserInfo.Email) - Find("@", requestinfo.UserInfo.Email))#>
+
+		<cfquery name="getActiveMembership" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
+			Select TContent_ID, OrganizationName, OrganizationDomainName, Active
+			From p_EventRegistration_Membership
+			Where Site_ID = <cfqueryparam value="#requestinfo.DBInfo.SiteID#" cfsqltype="cf_sql_varchar"> and
+				OrganizationDomainName = <cfqueryparam value="#Variables.UserEmailDomain#" cfsqltype="cf_sql_varchar">
+		</cfquery>
+
+		<cfif getActiveMembership.Active EQ 1>
+			<cfset UserEventPrice = #NumberFormat(requestinfo.UserInfo.ESCMemberPrice, "99.99")#>
+		<cfelse>
+			<cfset UserEventPrice = #NumberFormat(requestinfo.UserInfo.ESCNonMemberPrice, "99.99")#>
+		</cfif>
+
+		<cfif CheckAccount.RecordCount EQ 0>
+			<cfset NewUser = #Application.userManager.readByUsername(requestinfo.UserInfo.Email, requestinfo.DBInfo.SiteID)#>
+			<cfset NewUser.setInActive(1)>
+			<cfset NewUser.setSiteID('#requestInfo.DBInfo.SiteID#')>
+			<cfset NewUser.setFname(Replace(requestinfo.UserInfo.Fname, "+", " ", "ALL"))>
+			<cfset NewUser.setLname(Replace(requestinfo.UserInfo.Lname, "+", " ", "ALL"))>
+			<cfset NewUser.setUsername(requestinfo.UserInfo.Email)>
+			<cfset NewUser.setEmail(requestinfo.UserInfo.Email)>
+			<cfset AddNewAccount = #Application.userManager.save(NewUser)#>
+			<cfset NewUserAccountID = #Variables.AddNewAccount.GetUserID()#>
+
+			<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
+				insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RequestsMeal)
+				Values(
+					<cfqueryparam value="#requestinfo.DBInfo.SiteID#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+					<cfqueryparam value="1" cfsqltype="cf_sql_bit">,
+					<cfqueryparam value="#Variables.NewUserAccountID#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#requestinfo.DBInfo.EventID#" cfsqltype="cf_sql_integer">,
+					<cfqueryparam value="#Variables.UserEventPrice#" cfsqltype="cf_sql_money">,
+					<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#Variables.NewUserAccountID#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="1" cfsqltype="cf_sql_bit">
+				)
+			</cfquery>
+			<cfreturn SerializeJSON(True)>
+		<cfelse>
+			<cfquery name="CheckUserAlreadyRegistered" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
+				Select TContent_ID, RegistrationID, RegistrationDate, User_ID, EventID
+				From p_EventRegistration_UserRegistrations
+				Where User_ID = <cfqueryparam value="#CheckAccount.UserID#" cfsqltype="cf_sql_varchar"> and EventID = <cfqueryparam value="#requestinfo.DBInfo.EventID#" cfsqltype="cf_sql_varchar">
+			</cfquery>
+
+			<cfif CheckUserAlreadyRegistered.RecordCount EQ 0>
+				<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
+					insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RequestsMeal)
+					Values(
+						<cfqueryparam value="#requestinfo.DBInfo.SiteID#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+						<cfqueryparam value="1" cfsqltype="cf_sql_bit">,
+						<cfqueryparam value="#CheckAccount.UserID#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#requestinfo.DBInfo.EventID#" cfsqltype="cf_sql_integer">,
+						<cfqueryparam value="#Variables.UserEventPrice#" cfsqltype="cf_sql_money">,
+						<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#CheckAccount.UserID#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="1" cfsqltype="cf_sql_bit">
+					)
+				</cfquery>
+			</cfif>
+			<cfreturn SerializeJSON(True)>	
+		</cfif>
+		<cfreturn SerializeJSON(False)>
+	</cffunction>
+
+	<cffunction name="UpcomingEvents" ReturnType="xml" Access="Remote" Output="False"  hint="Returns Upcoming Events">
+		<cfargument name="DaysInFuture" required="true" type="Number">
+		<cfargument name="SiteID" required="true" type="String">
+
+		<cfset DateInFuture = #DateFormat(DateAdd("d", Now(), Arguments.DaysInFuture), "yyyy-mm-dd")#>
+		<cfset TodayDate = #DateFormat(Now(), "yyyy-mm-dd")#>
+
+		<cfquery name="getEvent" Datasource="NIESCEventRegistration" username="CFAppsMySQL" password="CFAppsMySQL">
+			Select TContent_ID, ShortTitle, EventDate
+			From p_EventRegistration_Events
+			Where EventDate > <cfqueryparam value="#Variables.TodayDate#" cfsqltype="cf_sql_date"> and
+				EventDate < <cfqueryparam value="#Variables.DateInFuture#" cfsqltype="cf_sql_date"> and
+				Site_ID = <cfqueryparam value="#Arguments.SiteID#" cfsqltype="cf_sql_varchar"> and
+				Active = 1
+			Order by EventDate ASC
+			Limit 3 
+		</cfquery>
+
+		<cfif getEvent.RecordCount>
+			<cfsavecontent variable="xmlData">
+				<cfoutput><?xml version='1.0' encoding='UTF-8'?><Events CF_TYPE='array'><cfloop query="getEvent"><Event ID='#getEvent.TContent_ID#' CF_TYPE='query'><DateOfEvent>#DateFormat(getEvent.EventDate, "mm-dd-yyyy")#</DateOfEvent><EventTitle>#getEvent.ShortTitle#</EventTitle><EventID>#getEvent.TContent_ID#</EventID></Event></cfloop></Events></cfoutput>
+			</cfsavecontent>
+			<cfreturn RTrim(LTrim(Variables.xmlData))>
+		<cfelse>
+			<cfsavecontent variable="xmlData">
+			<?xml version='1.0' encoding='UTF-8'?>
+			<cfoutput><UpComingEvents>
+				<NumberEvents>0</NumberEvents>
+				<EventInfo></EventInfo>
+			</UpComingEvents></cfoutput>
+			</cfsavecontent>
+			<cfreturn RTrim(LTrim(Variables.xmlData))>
+		</cfif>
+	</cffunction>
 </cfcomponent>

@@ -221,45 +221,26 @@ http://www.apache.org/licenses/LICENSE-2.0
 				</script>
 			</cfcase>
 			<cfcase value="VerifyAccount">
-				<div id="modelWindowDialog" class="modal fade">
-					<div class="modal-dialog">
+				<div class="modal" id="myModal">
+					<div class="modal-dialog modal-lg modal-dialog-centered">
 						<div class="modal-content">
+							<!-- Modal Header -->
 							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
-								<h3>Email Address Registered</h3>
+								<h4 class="modal-title">Email Sent To Verify Account</h4>
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
 							</div>
+							<!-- Modal body -->
 							<div class="modal-body">
-								<p class="alert alert-success">You have successfully created an account on this website. The system is in the process of sending you a special link to activate your account. Please check your 'Spam' or 'Junk' folders if you did not receive this message within 10 minutes. The email message will be from #rc.$.siteConfig('ContactEmail')#.</p>
+								<div class="alrt alert-warning"><p style="font-family: Arial; font-size: 14px; font-weight: bold;">We are in the process of dispatching an email with a special link as part of the body of the message for you to click on that will verify your account to allow you to login so a grant can be processed.</p></div>
 							</div>
+							<!-- Modal footer -->
 							<div class="modal-footer">
-								<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+								<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
 							</div>
 						</div>
 					</div>
-				</div>
-				<script type='text/javascript'>
-					(function() {
-						'use strict';
-						function remoteModal(idModal){
-							var vm = this;
-							vm.modal = $(idModal);
-							if( vm.modal.length == 0 ) { return false; } else { openModal(); }
-							if( window.location.hash == idModal ){ openModal(); }
-							var services = { open: openModal, close: closeModal };
-							return services;
-							function openModal(){
-								vm.modal.modal('show');
-							}
-							function closeModal(){
-								vm.modal.modal('hide');
-							}
-						}
-						Window.prototype.remoteModal = remoteModal;
-					})();
-					$(function(){
-						window.remoteModal('##modelWindowDialog');
-					});
-				</script>
+				</div>		
+				<script>$("##myModal").modal();</script>
 			</cfcase>
 			<cfcase value="UserActivated">
 				<div id="modelWindowDialog" class="modal fade">

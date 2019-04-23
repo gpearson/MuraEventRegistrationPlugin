@@ -3,7 +3,7 @@
 		<div class="panel-body">
 			<fieldset>
 				<legend>
-					<h3 align="center">#Session.EventInfo.SelectedEvent.ShortTitle# <cfif Len(Session.EventInfo.SelectedEvent.PresenterID)><br>(#Session.EventInfo.EventPresenter.FName# #Session.EventInfo.EventPresenter.Lname#)</cfif></h3>
+					<h3 align="center">#Session.EventInfo.SelectedEvent.ShortTitle# <cfif Len(Session.EventInfo.SelectedEvent.Presenters)><br>(#Session.EventInfo.EventPresenter.FName# #Session.EventInfo.EventPresenter.Lname#)</cfif></h3>
 				</legend>
 			</fieldset>
 			<cfif isDefined("URL.SentInquiry")>
@@ -296,19 +296,110 @@
 							</tr>
 						</cfif>
 					</cfif>
-					<tr>
-						<td colspan="4"><big><big><span style="font-weight: bold;">Contact Information</span></big></big></td>
-					</tr>
-					<cfif Len(Session.EventInfo.SelectedEvent.PresenterID)>
+					<cfif not isDefined("URL.RegisterForm")>
 						<tr>
-							<td style="width: 155px;"><span style="font-weight: bold;">Presenter(s)</span></td>
-							<td colspan="3" style="width: 740px;">#Session.EventInfo.EventPresenter.Fname# #Session.EventInfo.EventPresenter.Lname# &nbsp;&nbsp;&nbsp; <a href="#buildURL('public:contactus.sendfeedback')#&EventID=#URL.EventID#&SendTo=Presenter" class="btn btn-primary btn-sm BtnSameSize">Have Questions</a></td>
+							<td colspan="4"><big><big><span style="font-weight: bold;">Contact Information</span></big></big></td>
 						</tr>
+						<cfif Len(Session.EventInfo.SelectedEvent.PresenterID)>
+							<tr>
+								<td style="width: 155px;"><span style="font-weight: bold;">Presenter(s)</span></td>
+								<td colspan="3" style="width: 740px;">#Session.EventInfo.EventPresenter.Fname# #Session.EventInfo.EventPresenter.Lname# &nbsp;&nbsp;&nbsp; <a href="#buildURL('public:contactus.sendfeedback')#&EventID=#URL.EventID#&SendTo=Presenter" class="btn btn-primary btn-sm BtnSameSize">Have Questions</a></td>
+							</tr>
+						</cfif>
+						<tr>
+							<td style="width: 155px;"><span style="font-weight: bold;">Facilitator:</span></td>
+							<td colspan="3" style="width: 740px;">#Session.EventInfo.EventFacilitator.FName# #Session.EventInfo.EventFacilitator.LName# &nbsp;&nbsp;&nbsp; <a href="#buildURL('public:contactus.sendfeedback')#&EventID=#URL.EventID#&SendTo=Facilitator" class="btn btn-primary btn-sm BtnSameSize">Have Questions</a></td>
+						</tr>
+					<cfelseif isDefined("URL.RegisterForm")>
+						<cfif DateDiff("d", Now(), Session.EventInfo.SelectedEvent.Registration_Deadline) GTE 0>
+							<tr>
+								<td colspan="4"><big><big><span style="font-weight: bold;">Register For Eveent</span></big></big></td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<div class="panel panel-default">
+										<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
+											<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
+											<cfinput type="hidden" name="formSubmit" value="true">
+											<cfinput type="hidden" name="EventID" value="#Session.UserRegistrationInfo.EventID#">
+											<div class="panel-body">
+												<table id="NewParticipantRows" class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
+													<thead>
+														<tr>
+															<td>Row</td>
+															<td class="col-sm-3">Participant First Name</td>
+															<td class="col-sm-4">Participant Last Name</td>
+															<td class="col-sm-3">Participant Email</td>
+															<td class="col-sm-3">Actions</td>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>1</td>
+															<td><cfinput type="text" class="form-control" id="ParticipantFirstName" name="ParticipantFirstName" required="no"></td>
+															<td><cfinput type="text" class="form-control" id="ParticipantLastName" name="ParticipantLastName" required="no"></td>
+															<td><cfinput type="text" class="form-control" id="ParticipantEmail" name="ParticipantEmail" required="no"></td>
+															<td><input type="button" id="addParticipantRow" class="btn btn-primary btn-sm" value="Add" onclick="AddRow()"></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="panel-footer">
+												<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
+												<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Register For Event"><br /><br />
+											</div>
+										</cfform>
+									</div>
+								</td>
+							</tr>
+						</cfif>
+						<script type="text/javascript">
+							function AddRow() {
+								var msg;
+
+								structvar = {
+									Datasource: "#rc.$.globalConfig('datasource')#",
+									DBUsername: "#rc.$.globalConfig('dbusername')#",
+									DBPassword: "#rc.$.globalConfig('dbpassword')#",
+									MailServerIP: "#rc.$.siteConfig('mailserverip')#",
+									MailServerUsername: "#rc.$.siteConfig('mailserverusername')#",
+									MailServerPassword: "#rc.$.siteConfig('mailserverpassword')#",
+									MailServerSSL: "#rc.$.siteConfig('mailserverssl')#",
+									PackageName: "#rc.pc.getPackage()#",
+									CGIScriptName: "#CGI.Script_name#",
+									CGIPathInfo: "#CGI.path_info#",
+									SiteID: "#rc.$.siteConfig('siteID')#",
+									SiteName: "#rc.$.siteConfig('site')#",
+									ContactName: "#rc.$.siteConfig('ContactName')#",
+									ContactEmail: "#rc.$.siteConfig('ContactEmail')#",
+									ContactPhone: "#rc.$.siteConfig('ContactPhone')#",
+									EventID: "#Session.FormInput.EventID#"
+								};
+								newuser = {
+									Email: document.getElementById("ParticipantEmail").value,
+									Fname: document.getElementById("ParticipantFirstName").value,
+									Lname: document.getElementById("ParticipantLastName").value
+								};
+
+								$.ajax({
+									url: "/plugins/#rc.pc.getPackage()#/library/components/EventServices.cfc?method=AddParticipantToDatabase",
+									type: "POST",
+									dataType: "json",
+									data: {
+										returnFormat: "json",
+										jrStruct: JSON.stringify({"DBInfo": structvar, "UserInfo": newuser})
+									},
+									success: function(data){
+										setTimeout(function(){
+											window.location.reload();
+										},100);
+									},
+									error: function(){
+									}
+								});
+							};
+						</script>
 					</cfif>
-					<tr>
-						<td style="width: 155px;"><span style="font-weight: bold;">Facilitator:</span></td>
-						<td colspan="3" style="width: 740px;">#Session.EventInfo.EventFacilitator.FName# #Session.EventInfo.EventFacilitator.LName# &nbsp;&nbsp;&nbsp; <a href="#buildURL('public:contactus.sendfeedback')#&EventID=#URL.EventID#&SendTo=Facilitator" class="btn btn-primary btn-sm BtnSameSize">Have Questions</a></td>
-					</tr>
 				</tbody>
 			</table>
 		</div>

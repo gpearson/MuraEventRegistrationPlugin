@@ -20,7 +20,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 		$.jgrid.defaults.responsive = true;
 		$.jgrid.defaults.styleUI = 'Bootstrap';
 	</script>
-	<div class="panel panel-default">
+	<div class="panel panel-info">
 		<div class="panel-heading"><h2>Available Catering Facilities</h2></div>
 		<div class="panel-body">
 			<cfif isDefined("URL.UserAction")>

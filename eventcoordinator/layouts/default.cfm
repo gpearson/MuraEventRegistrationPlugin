@@ -26,7 +26,7 @@
 								<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 									<ul id="navPrimary" class="nav navbar-nav">
 										<li class="">
-											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Main <b class="caret"></b></a>
+											<a href="#buildURL('eventcoordinator:main.default')#" class="dropdown-toggle" data-toggle="dropdown">Main <b class="caret"></b></a>
 											<ul class="dropdown-menu">
 												<cfif Session.Mura.IsLoggedIn EQ True>
 													<li class="">
@@ -38,7 +38,7 @@
 											</ul>
 										</li>
 										<li class="">
-											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Catering <b class="caret"></b></a>
+											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Caterers<b class="caret"></b></a>
 											<ul class="dropdown-menu">
 												<li class=""><a href="#buildURL('eventcoordinator:catering.addcaterer')#">Add New Caterer</a></li>
 												<li class=""><a href="#buildURL('eventcoordinator:catering.default')#">List All Caterers</a></li>
@@ -68,7 +68,7 @@
 										</li>
 										
 										<li class="">
-											<a href="##" class="dropdown-toggle" data-toggle="dropdown">User Management <b class="caret"></b></a>
+											<a href="##" class="dropdown-toggle" data-toggle="dropdown">Users <b class="caret"></b></a>
 											<ul class="dropdown-menu">
 												<li class=""><a href="#buildURL('eventcoordinator:users.newuser')#">Add New User</a></li>
 												<li class=""><a href="#buildURL('eventcoordinator:users.default')#">List All Users</a></li>

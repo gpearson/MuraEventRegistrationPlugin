@@ -26,6 +26,13 @@ http://www.apache.org/licenses/LICENSE-2.0
 		</cfswitch>
 	</cfif>
 	<h2>Event Coordinator's Administration Menu</h2>
-	<p>Hello there! Welcome to the Home view of the FW/1's Main section.</p>
-	<p>This is just a FW/1 sub-application. You could create your own admin interface here, or simply provide instructions on how to use your plugin. It's entirely up to you.</p>
+	<p>This is where all of the management of this site as an event facilitor handles the day to day activities of this system.
+		<ul>
+			<li><strong>Caterers</strong> is where information is entered for the locations where an event would acquire meals from</li>
+			<li><strong>Facilities</strong> is where an event will be held at</li>
+			<li><strong>Membership</strong> is a listing of organizations who belong to this organization and would receive special 'Member' pricing based on the email address / domain name of the member organization</li>
+			<li><strong>Users</strong> is where you can add/update user account information</li>
+			<li><strong>Events</strong> is where you can manage your specific events</li>
+		</ul>
+	</p>
 </cfoutput>
