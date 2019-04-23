@@ -90,10 +90,6 @@
 							<div class="col-sm-7 form-control-static">LAT: #Session.getSelectedCaterer.Physical_Latitude# / LON: #Session.getSelectedCaterer.Physical_Longitude#</div>
 						</div>
 						<div class="form-group">
-							<label for="AddressTownship" class="col-lg-5 col-md-5">Address Township:&nbsp;</label>
-							<div class="col-sm-7 form-control-static">#Session.getSelectedCaterer.GeoCode_Township#</div>
-						</div>
-						<div class="form-group">
 							<label for="USPSDeliveryPoint" class="col-lg-5 col-md-5">USPS DeliveryPoint:&nbsp;</label>
 							<div class="col-sm-7 form-control-static">#Session.getSelectedCaterer.Physical_USPSDeliveryPoint#</div>
 						</div>
@@ -254,10 +250,6 @@
 						<div class="form-group">
 							<label for="AddressGeocodeLocation" class="col-lg-5 col-md-5">Address GeoCode Location:&nbsp;</label>
 							<div class="col-sm-7 form-control-static">LAT: #Session.getSelectedCaterer.GeoCode_Latitude# / LON: #Session.getSelectedCaterer.GeoCode_Longitude#</div>
-						</div>
-						<div class="form-group">
-							<label for="AddressTownship" class="col-lg-5 col-md-5">Address Township:&nbsp;</label>
-							<div class="col-sm-7 form-control-static">#Session.getSelectedCaterer.GeoCode_Township#</div>
 						</div>
 						<div class="form-group">
 							<label for="USPSDeliveryPoint" class="col-lg-5 col-md-5">USPS DeliveryPoint:&nbsp;</label>

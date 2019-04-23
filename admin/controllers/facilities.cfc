@@ -565,8 +565,6 @@
 							</cfquery>
 						</cfif>
 					</cfif>
-				
-
 				</cfif>
 
 			</cfif>

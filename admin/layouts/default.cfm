@@ -20,6 +20,7 @@
 						<h4 class="hide-for-small">#$.siteConfig('tagline')#</h4>
 					</div>
 				</header>
+				<div class="container">
 				<div class="row-fluid">
 					<div class="col-12">
 						<nav class="navbar navbar-default">
@@ -85,6 +86,7 @@
 						#body#
 					</div>
 				</div>
+			</div>
 				<cfinclude template="#$.siteConfig('themeAssetPath')#/templates/inc/footer.cfm" />
 				<cfinclude template="#$.siteConfig('themeAssetPath')#/templates/inc/html_foot.cfm" />
 </cfoutput>
