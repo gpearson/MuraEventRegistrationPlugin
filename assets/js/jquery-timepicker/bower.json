@@ -1,16 +1,39 @@
 {
-  "name": "jt.timepicker",
-  "version": "1.11.14",
-  "description": "A jQuery timepicker plugin inspired by Google Calendar.",
-  "homepage": "http://jonthornton.github.com/jquery-timepicker",
-  "main": ["./jquery.timepicker.js", "./jquery.timepicker.css"],
+  "name": "jquery-timepicker-wvega",
+  "description": "Enhances standard form input fields helping users to select (or type) times.",
+  "authors": [
+    "Willington Vega <wvega@wvega.com>",
+    "Brian Link <cpsubrian@gmail.com>",
+    "Ian Enders <ian.enders@gmail.com>"
+  ],
+  "license": "(GPL-2.0 OR MIT)",
+  "keywords": [
+    "timepicker",
+    "time",
+    "picker",
+    "calendar",
+    "dropdown",
+    "input",
+    "form"
+  ],
+  "homepage": "https://timepicker.co",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:wvega/timepicker.git"
+  },
+  "main": [
+    "jquery.timepicker.js",
+    "jquery.timepicker.css"
+  ],
+  "moduleType": "globals",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
   "dependencies": {
-    "jquery": ">= 1.7"
-  },
-  "keywords": ["time", "picker", "google calendar"],
-  "author": {
-    "name": "Jon Thornton",
-    "web": "https://github.com/jonthornton"
-  },
-  "license": "http://opensource.org/licenses/MIT"
+    "jquery": ">= 1.4.3"
+  }
 }

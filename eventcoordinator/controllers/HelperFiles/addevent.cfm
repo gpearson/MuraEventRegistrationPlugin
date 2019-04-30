@@ -21,7 +21,11 @@
 	<cflock timeout="60" scope="Session" type="Exclusive">
 		<cfif not isDefined("Session.FormInput")>
 			<cfset Session.FormInput = #StructNew()#>
+		</cfif>
+		<cfif not StructKeyExists(Session.FormInput, "EventIDConfig")>
 			<cfset Session.FormInput.EventIDConfig = #CreateUUID()# & ".cfg">
+		</cfif>
+		<cfif not StructKeyExists(Session.FormInput, "FilePath")>
 			<cfset Session.FormInput.FilePath = #ExpandPath("/plugins/#Session.PluginFramework.CFCBASE#/")# & "temp/">
 		</cfif>
 		<cfif FORM.PresenterID EQ "----"><cfset FORM.PresenterID = "0"></cfif>
@@ -72,8 +76,8 @@
 		</cfif>
 		<cflocation url="#variables.newurl#" addtoken="false">
 	</cfif>
-
-	<cfif LEN(FORM.Registration_BeginTime) LT 6 or LEN(FORM.Registration_BeginTime) GT 7>
+	
+	<cfif LEN(FORM.Registration_BeginTime) LT 7>
 		<cfscript>
 			errormsg = {property="EmailMsg",message="Please enter a valid time on when participants are able to register onsite for the event or workshop."};
 			arrayAppend(Session.FormErrors, errormsg);
@@ -86,7 +90,7 @@
 		<cflocation url="#variables.newurl#" addtoken="false">
 	</cfif>
 
-	<cfif LEN(FORM.Event_StartTime) LT 6  or LEN(FORM.Event_StartTime) GT 7>
+	<cfif LEN(FORM.Event_StartTime) LT 7>
 		<cfscript>
 			errormsg = {property="EmailMsg",message="Please enter a valid time on when the event or workshop will start"};
 			arrayAppend(Session.FormErrors, errormsg);
@@ -99,7 +103,7 @@
 		<cflocation url="#variables.newurl#" addtoken="false">
 	</cfif>
 
-	<cfif LEN(FORM.Event_EndTime) LT 6  or LEN(FORM.Event_EndTime) GT 7>
+	<cfif LEN(FORM.Event_EndTime) LT 7>
 		<cfscript>
 			errormsg = {property="EmailMsg",message="Please enter a valid time on when the event or workshop will end"};
 			arrayAppend(Session.FormErrors, errormsg);

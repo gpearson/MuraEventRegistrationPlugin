@@ -449,38 +449,40 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<fieldset>
 						<legend><h2>Estimated Workshop/Event Expenses</h2></legend>
 					</fieldset>
-					<cfset TotalEstimatedExpenses = #Session.FormInput.EventStep1.WhatIf_PresenterCostTotal# + #Session.FormInput.EventStep1.WhatIf_FacilityCostTotal#>
-					<cfset EstimatedNumberMembers = #Variables.TotalEstimatedExpenses# / #Session.FormInput.EventStep1.Event_MemberCost#>
-					<cfset TotalEstimatedExpensesWithMeals = #Variables.TotalEstimatedExpenses# + (#Variables.EstimatedNumberMembers# * #Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee#)>
-					<div class="form-group">
-						<label for="WhatIf_MealCostPerAttendee" class="col-lg-5 col-md-5">Estimated Meal Cost Per Attendee:&nbsp;</label>
-						<div class="checkbox col-lg-7 col-md-7">
-							<cfif Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee GT 0>
-								#DollarFormat(Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee)#
-							</cfif>
+					<cfif Session.FormInput.EventStep1.WhatIf_PresenterCostTotal GT 0 and FormInput.EventStep1.WhatIf_FacilityCostTotal GT 0>
+						<cfset TotalEstimatedExpenses = #Session.FormInput.EventStep1.WhatIf_PresenterCostTotal# + #Session.FormInput.EventStep1.WhatIf_FacilityCostTotal#>
+						<cfset EstimatedNumberMembers = #Variables.TotalEstimatedExpenses# / #Session.FormInput.EventStep1.Event_MemberCost#>
+						<cfset TotalEstimatedExpensesWithMeals = #Variables.TotalEstimatedExpenses# + (#Variables.EstimatedNumberMembers# * #Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee#)>
+						<div class="form-group">
+							<label for="WhatIf_MealCostPerAttendee" class="col-lg-5 col-md-5">Estimated Meal Cost Per Attendee:&nbsp;</label>
+							<div class="checkbox col-lg-7 col-md-7">
+								<cfif Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee GT 0>
+									#DollarFormat(Session.FormInput.EventStep1.WhatIf_MealCostPerAttendee)#
+								</cfif>
+							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<label for="WhatIf_PresenterCostTotal" class="col-lg-5 col-md-5">Estimated Total Presenter Costs:&nbsp;</label>
-						<div class="checkbox col-lg-7 col-md-7">
-							#DollarFormat(Session.FormInput.EventStep1.WhatIf_PresenterCostTotal)#
+						<div class="form-group">
+							<label for="WhatIf_PresenterCostTotal" class="col-lg-5 col-md-5">Estimated Total Presenter Costs:&nbsp;</label>
+							<div class="checkbox col-lg-7 col-md-7">
+								#DollarFormat(Session.FormInput.EventStep1.WhatIf_PresenterCostTotal)#
+							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<label for="WhatIf_FacilityCostTotal" class="col-lg-5 col-md-5">Estimated Total Facility Costs:&nbsp;</label>
-						<div class="checkbox col-lg-7 col-md-7">
-							<cfif Session.FormInput.EventStep1.WhatIf_FacilityCostTotal GT 0>
-								#DollarFormat(Session.FormInput.EventStep1.WhatIf_FacilityCostTotal)#
-							</cfif>
+						<div class="form-group">
+							<label for="WhatIf_FacilityCostTotal" class="col-lg-5 col-md-5">Estimated Total Facility Costs:&nbsp;</label>
+							<div class="checkbox col-lg-7 col-md-7">
+								<cfif Session.FormInput.EventStep1.WhatIf_FacilityCostTotal GT 0>
+									#DollarFormat(Session.FormInput.EventStep1.WhatIf_FacilityCostTotal)#
+								</cfif>
+							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<label for="WhatIf_TotalMembers" class="col-lg-5 col-md-5">Total Members To BreakEven:&nbsp;</label>
-						<div class="form-control-static col-lg-7 col-md-7">
-							<cfset NumberOfMembers = #Variables.TotalEstimatedExpensesWithMeals# / #Session.FormInput.EventStep1.Event_MemberCost#>
-							#Ceiling(Variables.NumberOfMembers)#
+						<div class="form-group">
+							<label for="WhatIf_TotalMembers" class="col-lg-5 col-md-5">Total Members To BreakEven:&nbsp;</label>
+							<div class="form-control-static col-lg-7 col-md-7">
+								<cfset NumberOfMembers = #Variables.TotalEstimatedExpensesWithMeals# / #Session.FormInput.EventStep1.Event_MemberCost#>
+								#Ceiling(Variables.NumberOfMembers)#
+							</div>
 						</div>
-					</div>
+					</cfif>
 					<fieldset>
 						<legend><h2>Allow Participants Registrations</h2></legend>
 					</fieldset>

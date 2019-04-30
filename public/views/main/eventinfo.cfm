@@ -3,7 +3,7 @@
 		<div class="panel-body">
 			<fieldset>
 				<legend>
-					<h3 align="center">#Session.EventInfo.SelectedEvent.ShortTitle# <cfif Len(Session.EventInfo.SelectedEvent.Presenters)><br>(#Session.EventInfo.EventPresenter.FName# #Session.EventInfo.EventPresenter.Lname#)</cfif></h3>
+					<h3 align="center">#Session.EventInfo.SelectedEvent.ShortTitle# <cfif Len(Session.EventInfo.SelectedEvent.PresenterID)><br>(#Session.EventInfo.EventPresenter.FName# #Session.EventInfo.EventPresenter.Lname#)</cfif></h3>
 				</legend>
 			</fieldset>
 			<cfif isDefined("URL.SentInquiry")>

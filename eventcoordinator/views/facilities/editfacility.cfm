@@ -81,6 +81,44 @@
 							<option value="----">Facility Active?</option>
 						</cfselect></div>
 					</div>
+					<legend><h2>Facility Room Information</h2></legend>
+					<div class="form-group">
+						<table class="table table-striped table-bordered">
+							<cfif Session.getSelectedFacilityRooms.RecordCount>
+								<thead class="thead-default">
+									<tr>
+										<th width="40%">Room Name</th>
+										<th  width="15%">Room Capacity</th>
+										<th  width="15%">Room Fees</th>
+										<th width="15%">Room Active</th>
+										<th width="15%">Actions</th>
+									</tr>
+								</thead>
+								<tfoot>
+									<tr>
+										<td colspan="5">Add a new meeting room to this Facility by clicking <a href="#buildURL('eventcoordinator:facilities.addfacilityroom')#&FacilityID=#URL.FacilityID#" class="btn btn-primary btn-small">here</a></td>
+									</tr>
+								</tfoot>
+								<tbody>
+									<cfloop query="Session.getSelectedFacilityRooms">
+										<tr>
+											<td>#Session.getSelectedFacilityRooms.RoomName#</td>
+											<td>#Session.getSelectedFacilityRooms.Capacity#</td>
+											<td>#DollarFormat(Session.getSelectedFacilityRooms.RoomFees)#</td>
+											<td><cfswitch expression="#Session.getSelectedFacilityRooms.Active#"><cfcase value="1">Yes</cfcase><cfdefaultcase>No</cfdefaultcase></cfswitch></td>
+											<td><a href="#buildURL('eventcoordinator:facilities.editfacilityroom')#&FacilityID=#URL.FacilityID#&FacilityRoomID=#Session.getSelectedFacilityRooms.TContent_ID#" class="btn btn-primary btn-small">Update</a></td>
+										</tr>
+									</cfloop>
+								</tbody>
+							<cfelse>
+								<tfoot>
+									<tr>
+										<td colspan="5">Add a new meeting room to this Facility by clicking <a href="#buildURL('eventcoordinator:facilities.addfacilityroom')#&FacilityID=#URL.FacilityID#" class="btn btn-primary btn-small">here</a></td>
+									</tr>
+								</tfoot>
+							</cfif>
+						</table>
+					</div>
 					<fieldset>
 						<legend><h2>Facility Location Information</h2></legend>
 					</fieldset>

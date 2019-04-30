@@ -16,20 +16,23 @@ http://www.apache.org/licenses/LICENSE-2.0
 <cfset temp = #QuerySetCell(YesNoQuery, "ID", 1)#>
 <cfset temp = #QuerySetCell(YesNoQuery, "OptionName", "Yes")#>
 </cfsilent>
-<cfscript>
-	timeConfig = structNew();
-	timeConfig['show24Hours'] = false;
-	timeConfig['showSeconds'] = false;
-</cfscript>
-<cfoutput>
+<cfsavecontent variable="htmlhead"><cfoutput>
+	<link rel="stylesheet" href="/plugins/#Session.PluginFramework.Package#/assets/js/jquery-ui/jquery-ui.min.css" />
+	<link rel="stylesheet" href="/plugins/#Session.PluginFramework.Package#/assets/js/jquery-timepicker/jquery.timepicker.css" />
+	<script type="text/ecmascript" src="/plugins/#Session.PluginFramework.Package#/assets/js/jquery-ui/jquery-ui.min.js"></script>
+	<script type="text/ecmascript" src="/plugins/#Session.PluginFramework.Package#/assets/js/jquery-timepicker/jquery.timepicker.js"></script>
 	<script src="/requirements/ckeditor/ckeditor.js"></script>
+</cfoutput></cfsavecontent>
+<cfhtmlhead text="#htmlhead#" />
+
+<cfoutput>
 	<script>
 		$(function() {
-			$("##EventDate").datepick();
-			$("##Registration_Deadline").datepick();
-			$('##Registration_BeginTime').timepicker({ 'scrollDefault': 'now' });
-			$('##Event_StartTime').timepicker({ 'scrollDefault': 'now' });
-			$('##Event_EndTime').timepicker({ 'scrollDefault': 'now' });
+			$("##EventDate").datepicker();
+			$("##Registration_Deadline").datepicker();
+			$('##Registration_BeginTime').timepicker({ timeFormat: 'h:mm p', interval: 60, dynamic: false, dropdown: true, scrollbar: true});
+			$('##Event_StartTime').timepicker({ timeFormat: 'h:mm p', interval: 60, dynamic: false, dropdown: true, scrollbar: true});
+			$('##Event_EndTime').timepicker({ timeFormat: 'h:mm p', interval: 60, dynamic: false, dropdown: true, scrollbar: true});
 		});
 	</script>
 	<cfif not isDefined("URL.FormRetry")>
@@ -886,104 +889,145 @@ http://www.apache.org/licenses/LICENSE-2.0
 					</fieldset>
 					<div class="alert alert-info">The default option for each one of the following is No unless you specifically select Yes on these questions.</div>
 					<div class="form-group">
-						<label for="Featured_Event" class="col-lg-5 col-md-5">Event is Featured:&nbsp;</label>
-						<div class="col-lg-1 col-md-1">&nbsp;</div>
-						<div class="checkbox col-lg-8 col-md-8">
-							<cfif Session.FormInput.EventStep1.Featured_Event EQ 1>
-								<cfinput type="checkbox" class="form-check-input" name="Featured_Event" id="Featured_Event" checked value="1">
+						<label for="Event_OptionalCosts" class="col-lg-5 col-md-5">Event Has Optional Costs:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.Event_OptionalCosts")>
+								<cfif Session.FormInput.EventStep1.Event_OptionalCosts CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="Event_OptionalCosts" id="Event_OptionalCosts" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Add Optional Costs to Registration Fee to Event)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="Event_OptionalCosts" id="Event_OptionalCosts" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Add Optional Costs to Registration Fee to Event)</div>
+								</cfif>
 							<cfelse>
-								<cfinput type="checkbox" class="form-check-input" name="Featured_Event" id="Featured_Event" value="1">
+								<cfinput type="checkbox" class="form-check-input" name="Event_OptionalCosts" id="Event_OptionalCosts" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Add Optional Costs to Registration Fee to Event)</div>
 							</cfif>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="Featured_Event" class="col-lg-5 col-md-5">Event is Featured:&nbsp;</label>
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.Featured_Event")>
+								<cfif Session.FormInput.EventStep1.Featured_Event CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="Featured_Event" id="Featured_Event" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="Featured_Event" id="Featured_Event" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div>
+								</cfif>
+							<cfelse>
+								<cfinput type="checkbox" class="form-check-input" name="Featured_Event" id="Featured_Event" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Feature Event at top of Current Events Page)</div>
+							</cfif>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="Event_DailySessions" class="col-lg-5 col-md-5">Event has Daily Sessions:&nbsp;</label>
-						<div class="col-lg-1 col-md-1">&nbsp;</div>
-						<div class="checkbox col-lg-8 col-md-8">
-							<cfif Session.FormInput.EventStep1.Event_DailySessions EQ 1>
-								<cfinput type="checkbox" class="form-check-input" name="Event_DailySessions" id="Event_DailySessions" checked value="1">
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.Event_DailySessions")>
+								<cfif Session.FormInput.EventStep1.Event_DailySessions CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="Event_DailySessions" id="Event_DailySessions" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Allow Event to have AM and PM Sessions)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="Event_DailySessions" id="Event_DailySessions" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Allow Event to have AM and PM Sessions)</div>
+								</cfif>
 							<cfelse>
-								<cfinput type="checkbox" class="form-check-input" name="Event_DailySessions" id="Event_DailySessions" value="1">
+								<cfinput type="checkbox" class="form-check-input" name="Event_DailySessions" id="Event_DailySessions" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Allow Event to have AM and PM Sessions)</div>
 							</cfif>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Allow Event to have AM and PM Sessions)</div></div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="EarlyBird_Available" class="col-lg-5 col-md-5">Earlybird Registration Available:&nbsp;</label>
-						<div class="col-lg-1 col-md-1">&nbsp;</div>
-						<div class="checkbox col-lg-8 col-md-8">
-							<cfif Session.FormInput.EventStep1.EarlyBird_Available EQ 1>
-								<cfinput type="checkbox" class="form-check-input" name="EarlyBird_Available" id="EarlyBird_Available" checked value="1">
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.EarlyBird_Available")>
+								<cfif Session.FormInput.EventStep1.EarlyBird_Available CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="EarlyBird_Available" id="EarlyBird_Available" checked value="1"> <div class=form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Early Bird Registrations for Event)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="EarlyBird_Available" id="EarlyBird_Available" value="1"> <div class=form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Early Bird Registrations for Event)</div>
+								</cfif>
 							<cfelse>
-								<cfinput type="checkbox" class="form-check-input" name="EarlyBird_Available" id="EarlyBird_Available" value="1">
+								<cfinput type="checkbox" class="form-check-input" name="EarlyBird_Available" id="EarlyBird_Available" value="1"> <div class=form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Early Bird Registrations for Event)</div>
 							</cfif>
-							 <div class=form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Early Bird Registrations for Event)</div></div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="GroupPrice_Available" class="col-lg-5 col-md-5">Group Pricing Available:&nbsp;</label>
-						<div class="col-lg-1 col-md-1">&nbsp;</div>
-						<div class="checkbox col-lg-8 col-md-8">
-							<cfif Session.FormInput.EventStep1.GroupPrice_Available EQ 1>
-								<cfinput type="checkbox" class="form-check-input" name="GroupPrice_Available" id="GroupPrice_Available" checked value="1">
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.GroupPrice_Available")>
+								<cfif Session.FormInput.EventStep1.GroupPrice_Available CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="GroupPrice_Available" id="GroupPrice_Available" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Group Pricing for Event)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="GroupPrice_Available" id="GroupPrice_Available" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Group Pricing for Event)</div>
+								</cfif>
 							<cfelse>
-								<cfinput type="checkbox" class="form-check-input" name="GroupPrice_Available" id="GroupPrice_Available" value="1">
+								<cfinput type="checkbox" class="form-check-input" name="GroupPrice_Available" id="GroupPrice_Available" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Group Pricing for Event)</div>
 							</cfif>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Group Pricing for Event)</div></div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="PGPCertificate_Available" class="col-lg-5 col-md-5">PGP Certificate Available:&nbsp;</label>
-						<div class="col-lg-1 col-md-1">&nbsp;</div>
-						<div class="checkbox col-lg-8 col-md-8">
-							<cfif Session.FormInput.EventStep1.PGPCertificate_Available EQ 1>
-								<cfinput type="checkbox" class="form-check-input" name="PGPCertificate_Available" id="PGPCertificate_Available" checked value="1">
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.PGPCertificate_Available")>
+								<cfif Session.FormInput.EventStep1.PGPCertificate_Available CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="PGPCertificate_Available" id="PGPCertificate_Available" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Professional Growth Points for Event)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="PGPCertificate_Available" id="PGPCertificate_Available" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Professional Growth Points for Event)</div>
+								</cfif>
 							<cfelse>
-								<cfinput type="checkbox" class="form-check-input" name="PGPCertificate_Available" id="PGPCertificate_Available" value="1">
+								<cfinput type="checkbox" class="form-check-input" name="PGPCertificate_Available" id="PGPCertificate_Available" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Professional Growth Points for Event)</div>
 							</cfif>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Professional Growth Points for Event)</div></div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="Meal_Available" class="col-lg-5 col-md-5">Meal Available:&nbsp;</label>
-						<div class="col-lg-1 col-md-1">&nbsp;</div>
-						<div class="checkbox col-lg-8 col-md-8">
-							<cfif Session.FormInput.EventStep1.Meal_Available EQ 1>
-								<cfinput type="checkbox" class="form-check-input" name="Meal_Available" id="Meal_Available" checked value="1">
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.Meal_Available")>
+								<cfif Session.FormInput.EventStep1.Meal_Available CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="Meal_Available" id="Meal_Available" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable a Meal to those who attend this event)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="Meal_Available" id="Meal_Available" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable a Meal to those who attend this event)</div>
+								</cfif>
 							<cfelse>
-								<cfinput type="checkbox" class="form-check-input" name="Meal_Available" id="Meal_Available" value="1">
+								<cfinput type="checkbox" class="form-check-input" name="Meal_Available" id="Meal_Available" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable a Meal to those who attend this event)</div>
 							</cfif>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable a Meal to those who attend this event)</div></div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="H323_Available" class="col-lg-5 col-md-5">Is Distance Education Available:&nbsp;</label>
-						<div class="col-lg-1 col-md-1">&nbsp;</div>
-						<div class="checkbox col-lg-8 col-md-8">
-							<cfif Session.FormInput.EventStep1.H323_Available EQ 1>
-								<cfinput type="checkbox" class="form-check-input" name="H323_Available" id="H323_Available" checked value="1">
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.H323_Available")>
+								<cfif Session.FormInput.EventStep1.H323_Available CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="H323_Available" id="H323_Available" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Distance Education for this event)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="H323_Available" id="H323_Available" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Distance Education for this event)</div>
+								</cfif>
 							<cfelse>
-								<cfinput type="checkbox" class="form-check-input" name="H323_Available" id="H323_Available" value="1">
+								<cfinput type="checkbox" class="form-check-input" name="H323_Available" id="H323_Available" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Distance Education for this event)</div>
 							</cfif>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Enable Distance Education for this event)</div></div>
+						</div>
 					</div>
 					<div class="form-group">
 						<label for="Webinar_Available" class="col-lg-5 col-md-5">Webinar Only Event:&nbsp;</label>
-						<div class="col-lg-1 col-md-1">&nbsp;</div>
-						<div class="checkbox col-lg-8 col-md-8">
-							<cfif Session.FormInput.EventStep1.Webinar_Available EQ 1>
-								<cfinput type="checkbox" class="form-check-input" name="Webinar_Available" id="Webinar_Available" checked value="1">
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.Webinar_Available")>
+								<cfif Session.FormInput.EventStep1.Webinar_Available CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="Webinar_Available" id="Webinar_Available" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to only allow Webinar Participants to this event)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="Webinar_Available" id="Webinar_Available" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to only allow Webinar Participants to this event)</div>
+								</cfif>
 							<cfelse>
-								<cfinput type="checkbox" class="form-check-input" name="Webinar_Available" id="Webinar_Available" value="1">
+								<cfinput type="checkbox" class="form-check-input" name="Webinar_Available" id="Webinar_Available" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to only allow Webinar Participants to this event)</div>
 							</cfif>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to only allow Webinar Participants to this event)</div></div>
+						</div>
 					</div>
 					<cfif Session.SiteConfigSettings.Facebook_Enabled EQ 1>
 						<div class="form-group">
 						<label for="PostedTo_Facebook" class="col-lg-5 col-md-5">Post to Facebook Fan Page:&nbsp;&nbsp;</label>
-						<div class="col-lg-1 col-md-1">&nbsp;</div>
-						<div class="checkbox col-lg-8 col-md-8">
-							<cfif Session.FormInput.EventStep1.PostedTo_Facebook EQ 1>
-								<cfinput type="checkbox" class="form-check-input" name="PostedTo_Facebook" id="PostedTo_Facebook" checked value="1">
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.PostedTo_Facebook")>
+								<cfif Session.FormInput.EventStep1.PostedTo_Facebook CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="PostedTo_Facebook" id="PostedTo_Facebook" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Facebook Fan Page)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="PostedTo_Facebook" id="PostedTo_Facebook" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Facebook Fan Page)</div>
+								</cfif>
 							<cfelse>
-								<cfinput type="checkbox" class="form-check-input" name="PostedTo_Facebook" id="PostedTo_Facebook" value="1">
+								<cfinput type="checkbox" class="form-check-input" name="PostedTo_Facebook" id="PostedTo_Facebook" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Facebook Fan Page)</div>
 							</cfif>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to Post this Event to Facebook Fan Page)</div></div>
+						</div>
 						</div>
 					</cfif>
 					<cfif Session.SiteConfigSettings.Twitter_Enabled EQ 1>
@@ -1005,14 +1049,17 @@ http://www.apache.org/licenses/LICENSE-2.0
 					<cfif Session.SiteConfigSettings.BillForNoShowRegistrations EQ 1>
 						<div class="form-group">
 						<label for="BillForNoShow" class="col-lg-5 col-md-5">Bill For NoShow:&nbsp;</label>
-						<div class="col-lg-1 col-md-1">&nbsp;</div>
-						<div class="checkbox col-lg-8 col-md-8">
-							<cfif Session.FormInput.EventStep1.BillForNoShow EQ 1>
-								<cfinput type="checkbox" class="form-check-input" name="BillForNoShow" id="BillForNoShow" checked value="1">
+						<div class="checkbox col-lg-7 col-md-7">
+							<cfif isDefined("Session.FormInput.EventStep1.BillForNoShow")>
+								<cfif Session.FormInput.EventStep1.BillForNoShow CONTAINS 1>
+									<cfinput type="checkbox" class="form-check-input" name="BillForNoShow" id="BillForNoShow" checked value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to enable billing participants who do not show to this event)</div>
+								<cfelse>
+									<cfinput type="checkbox" class="form-check-input" name="BillForNoShow" id="BillForNoShow" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to enable billing participants who do not show to this event)</div>
+								</cfif>
 							<cfelse>
-								<cfinput type="checkbox" class="form-check-input" name="BillForNoShow" id="BillForNoShow" value="1">
+								<cfinput type="checkbox" class="form-check-input" name="BillForNoShow" id="BillForNoShow" value="1"> <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to enable billing participants who do not show to this event)</div>
 							</cfif>
-							 <div class="form-check-label" style="Color: ##CCCCCC;">(Check Box to enable billing participants who do not show to this event)</div></div>
+						</div>
 						</div>
 					</cfif>
 				</div>
