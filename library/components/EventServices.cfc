@@ -244,7 +244,7 @@
 		<cfset requestContent = #Replace(variables.requestContent, "%2B", " ", "ALL")#>
 		<cfset Info = #ListLast(ListLast(variables.requestContent, "&"), "=")#>
 		<cfset requestinfo = #DeserializeJSON(Info)#>
-			
+
 		<cfquery name="CheckAccount" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
 			Select UserID, Fname, Lname, Email
 			From tusers
@@ -265,102 +265,37 @@
 
 			<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(requestinfo.DBInfo.PackageName)#/library/components/EmailServices")>
 
-			<cfif LEN(requestinfo.DBInfo.MailServerIP) EQ 0>
-				<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, "127.0.0.1")#>
-			<cfelse>
-				<cfif LEN(requestinfo.DBInfo.MailServerUsername) and LEN(requestinfo.DBInfo.MailServerPassword)>
-					<cfif requestinfo.DBInfo.mailServerSSL EQ "True">
-						<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, requestinfo.DBInfo.MailServerIP, requestinfo.DBInfo.MailServerUsername, requestinfo.DBInfo.MailServerPassword, "True")#>
-					<cfelse>
-						<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, requestinfo.DBInfo.MailServerIP, requestinfo.DBInfo.MailServerUsername, requestinfo.DBInfo.MailServerPassword)#>
-					</cfif>
+			<cfif RequestInfo.DBInfo.RegisterForm EQ "False">
+				<cfif LEN(requestinfo.DBInfo.MailServerIP) EQ 0>
+					<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, "127.0.0.1")#>
 				<cfelse>
-					<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, requestinfo.DBInfo.MailServerIP)#>
+					<cfif LEN(requestinfo.DBInfo.MailServerUsername) and LEN(requestinfo.DBInfo.MailServerPassword)>
+						<cfif requestinfo.DBInfo.mailServerSSL EQ "True">
+							<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, requestinfo.DBInfo.MailServerIP, requestinfo.DBInfo.MailServerUsername, requestinfo.DBInfo.MailServerPassword, "True")#>
+						<cfelse>
+							<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, requestinfo.DBInfo.MailServerIP, requestinfo.DBInfo.MailServerUsername, requestinfo.DBInfo.MailServerPassword)#>
+						</cfif>
+					<cfelse>
+						<cfset temp = #Variables.SendEmailCFC.SendAccountActivationEmailFromOrganizationPerson(requestinfo, NewUserAccountID, requestinfo.DBInfo.MailServerIP)#>
+					</cfif>
 				</cfif>
-			</cfif>
-			<cfreturn SerializeJSON(True)>
-		<cfelse>
-			<cfreturn SerializeJSON(FALSE)>
-		</cfif>
-	</cffunction>
+				<cfreturn SerializeJSON(True)>
+			<cfelse>
+				<cfset RegistrationID = #CreateUUID()#>
+				<cfset UserEmailDomain = #Right(requestinfo.UserInfo.Email, Len(requestinfo.UserInfo.Email) - Find("@", requestinfo.UserInfo.Email))#>
 
-	<cffunction name="RegisterFormAddParticipantToDatabase" access="remote" returntype="any" output="true" hint="Registration From for Event to Add participant to event">
-		<cfargument name="rc" required="true" type="struct" default="#StructNew()#">
+				<cfquery name="getActiveMembership" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
+					Select TContent_ID, OrganizationName, OrganizationDomainName, Active
+					From p_EventRegistration_Membership
+					Where Site_ID = <cfqueryparam value="#requestinfo.DBInfo.SiteID#" cfsqltype="cf_sql_varchar"> and OrganizationDomainName = <cfqueryparam value="#Variables.UserEmailDomain#" cfsqltype="cf_sql_varchar">
+				</cfquery>
 
-		<cfset requestData = getHttpRequestData()>
-		<cfset requestContent = #variables.requestData.content#>
-		<cfset requestContent = #Replace(variables.requestContent, "%7B", "{", "ALL")#>
-		<cfset requestContent = #Replace(variables.requestContent, "%22", '"', "ALL")#>
-		<cfset requestContent = #Replace(variables.requestContent, "%3A", ":", "ALL")#>
-		<cfset requestContent = #Replace(variables.requestContent, "%2C", ",", "ALL")#>
-		<cfset requestContent = #Replace(variables.requestContent, "%2F", "/", "ALL")#>
-		<cfset requestContent = #Replace(variables.requestContent, "%7D", "}", "ALL")#>
-		<cfset requestContent = #Replace(variables.requestContent, "%40", "@", "ALL")#>
-		<cfset requestContent = #Replace(variables.requestContent, "%20", " ", "ALL")#>
-		<cfset requestContent = #Replace(variables.requestContent, "%2B", " ", "ALL")#>
-		<cfset Info = #ListLast(ListLast(variables.requestContent, "&"), "=")#>
-		<cfset requestinfo = #DeserializeJSON(Info)#>
+				<cfif getActiveMembership.Active EQ 1>
+					<cfset UserEventPrice = #NumberFormat(Session.EventInfo.SelectedEvent.Event_MemberCost, "99.99")#>
+				<cfelse>
+					<cfset UserEventPrice = #NumberFormat(Session.EventInfo.SelectedEvent.Event_NonMemberCost, "99.99")#>
+				</cfif>
 
-		<cfset SendEmailCFC = createObject("component","plugins/#HTMLEditFormat(requestinfo.DBInfo.PackageName)#/library/components/EmailServices")>
-
-		<cfquery name="CheckAccount" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
-			Select UserID, Fname, Lname, Email
-			From tusers
-			Where UserName = <cfqueryparam value="#requestinfo.UserInfo.Email#" cfsqltype="cf_sql_varchar">
-			Order by Lname, Fname
-		</cfquery>
-
-		<cfset RegistrationID = #CreateUUID()#>
-		<cfset UserEmailDomain = #Right(requestinfo.UserInfo.Email, Len(requestinfo.UserInfo.Email) - Find("@", requestinfo.UserInfo.Email))#>
-
-		<cfquery name="getActiveMembership" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
-			Select TContent_ID, OrganizationName, OrganizationDomainName, Active
-			From p_EventRegistration_Membership
-			Where Site_ID = <cfqueryparam value="#requestinfo.DBInfo.SiteID#" cfsqltype="cf_sql_varchar"> and
-				OrganizationDomainName = <cfqueryparam value="#Variables.UserEmailDomain#" cfsqltype="cf_sql_varchar">
-		</cfquery>
-
-		<cfif getActiveMembership.Active EQ 1>
-			<cfset UserEventPrice = #NumberFormat(requestinfo.UserInfo.ESCMemberPrice, "99.99")#>
-		<cfelse>
-			<cfset UserEventPrice = #NumberFormat(requestinfo.UserInfo.ESCNonMemberPrice, "99.99")#>
-		</cfif>
-
-		<cfif CheckAccount.RecordCount EQ 0>
-			<cfset NewUser = #Application.userManager.readByUsername(requestinfo.UserInfo.Email, requestinfo.DBInfo.SiteID)#>
-			<cfset NewUser.setInActive(1)>
-			<cfset NewUser.setSiteID('#requestInfo.DBInfo.SiteID#')>
-			<cfset NewUser.setFname(Replace(requestinfo.UserInfo.Fname, "+", " ", "ALL"))>
-			<cfset NewUser.setLname(Replace(requestinfo.UserInfo.Lname, "+", " ", "ALL"))>
-			<cfset NewUser.setUsername(requestinfo.UserInfo.Email)>
-			<cfset NewUser.setEmail(requestinfo.UserInfo.Email)>
-			<cfset AddNewAccount = #Application.userManager.save(NewUser)#>
-			<cfset NewUserAccountID = #Variables.AddNewAccount.GetUserID()#>
-
-			<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
-				insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RequestsMeal)
-				Values(
-					<cfqueryparam value="#requestinfo.DBInfo.SiteID#" cfsqltype="cf_sql_varchar">,
-					<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
-					<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
-					<cfqueryparam value="1" cfsqltype="cf_sql_bit">,
-					<cfqueryparam value="#Variables.NewUserAccountID#" cfsqltype="cf_sql_varchar">,
-					<cfqueryparam value="#requestinfo.DBInfo.EventID#" cfsqltype="cf_sql_integer">,
-					<cfqueryparam value="#Variables.UserEventPrice#" cfsqltype="cf_sql_money">,
-					<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
-					<cfqueryparam value="#Variables.NewUserAccountID#" cfsqltype="cf_sql_varchar">,
-					<cfqueryparam value="1" cfsqltype="cf_sql_bit">
-				)
-			</cfquery>
-			<cfreturn SerializeJSON(True)>
-		<cfelse>
-			<cfquery name="CheckUserAlreadyRegistered" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
-				Select TContent_ID, RegistrationID, RegistrationDate, User_ID, EventID
-				From p_EventRegistration_UserRegistrations
-				Where User_ID = <cfqueryparam value="#CheckAccount.UserID#" cfsqltype="cf_sql_varchar"> and EventID = <cfqueryparam value="#requestinfo.DBInfo.EventID#" cfsqltype="cf_sql_varchar">
-			</cfquery>
-
-			<cfif CheckUserAlreadyRegistered.RecordCount EQ 0>
 				<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
 					insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, EventID, AttendeePrice, RegistrationIPAddr, RegisterByUserID, RequestsMeal)
 					Values(
@@ -368,18 +303,82 @@
 						<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
 						<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
 						<cfqueryparam value="1" cfsqltype="cf_sql_bit">,
-						<cfqueryparam value="#CheckAccount.UserID#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#Variables.NewUserAccountID#" cfsqltype="cf_sql_varchar">,
 						<cfqueryparam value="#requestinfo.DBInfo.EventID#" cfsqltype="cf_sql_integer">,
 						<cfqueryparam value="#Variables.UserEventPrice#" cfsqltype="cf_sql_money">,
 						<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
-						<cfqueryparam value="#CheckAccount.UserID#" cfsqltype="cf_sql_varchar">,
+						<cfqueryparam value="#Variables.NewUserAccountID#" cfsqltype="cf_sql_varchar">,
 						<cfqueryparam value="1" cfsqltype="cf_sql_bit">
 					)
 				</cfquery>
+				<cfif LEN(cgi.path_info)>
+					<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=RegisteredForEvent" >
+				<cfelse>
+					<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:main.default&UserAction=RegisteredForEvent" >
+				</cfif>
+				<cflocation url="#variables.newurl#" addtoken="false">
 			</cfif>
-			<cfreturn SerializeJSON(True)>	
+		<cfelse>
+			<cfif RequestInfo.DBInfo.RegisterForm EQ "False">
+				<cfreturn SerializeJSON(FALSE)>
+			<cfelse>
+				<cfset RegistrationID = #CreateUUID()#>
+				<cfset UserEmailDomain = #Right(requestinfo.UserInfo.Email, Len(requestinfo.UserInfo.Email) - Find("@", requestinfo.UserInfo.Email))#>
+
+				<cfquery name="getActiveMembership" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
+					Select TContent_ID, OrganizationName, OrganizationDomainName, Active
+					From p_EventRegistration_Membership
+					Where Site_ID = <cfqueryparam value="#requestinfo.DBInfo.SiteID#" cfsqltype="cf_sql_varchar"> and OrganizationDomainName = <cfqueryparam value="#Variables.UserEmailDomain#" cfsqltype="cf_sql_varchar">
+				</cfquery>
+
+				<cfif getActiveMembership.Active EQ 1>
+					<cfset UserEventPrice = #NumberFormat(Session.EventInfo.SelectedEvent.Event_MemberCost, "99.99")#>
+				<cfelse>
+					<cfset UserEventPrice = #NumberFormat(Session.EventInfo.SelectedEvent.Event_NonMemberCost, "99.99")#>
+				</cfif>
+
+				<cfquery name="CheckUserAlreadyRegistered" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
+					Select TContent_ID, RegistrationID, RegistrationDate, User_ID, Event_ID
+					From p_EventRegistration_UserRegistrations
+					Where User_ID = <cfqueryparam value="#CheckAccount.UserID#" cfsqltype="cf_sql_varchar"> and Event_ID = <cfqueryparam value="#requestinfo.DBInfo.EventID#" cfsqltype="cf_sql_varchar">
+				</cfquery>
+
+				<cfif CheckUserAlreadyRegistered.RecordCount EQ 0>
+					<cfquery name="insertNewRegistration" result="insertNewRegistration" Datasource="#requestinfo.DBInfo.Datasource#" username="#requestinfo.DBInfo.DBUsername#" password="#requestinfo.DBInfo.DBPassword#">
+						insert into p_EventRegistration_UserRegistrations(Site_ID, RegistrationID, RegistrationDate, RegisterForEventDate1, User_ID, Event_ID, AttendeePrice, RegistrationIPAddr, RegisteredByUserID, RequestsMeal, dateCreated, lastUpdated, lastUpdateByID)
+						Values(
+							<cfqueryparam value="#requestinfo.DBInfo.SiteID#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#Variables.RegistrationID#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+							<cfqueryparam value="1" cfsqltype="cf_sql_bit">,
+							<cfqueryparam value="#CheckAccount.UserID#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#requestinfo.DBInfo.EventID#" cfsqltype="cf_sql_integer">,
+							<cfqueryparam value="#Variables.UserEventPrice#" cfsqltype="cf_sql_money">,
+							<cfqueryparam value="#CGI.Remote_ADDR#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="#CheckAccount.UserID#" cfsqltype="cf_sql_varchar">,
+							<cfqueryparam value="1" cfsqltype="cf_sql_bit">,
+							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+							<cfqueryparam value="#Now()#" cfsqltype="cf_sql_timestamp">,
+							<cfqueryparam value="#CheckAccount.UserID#" cfsqltype="cf_sql_varchar">
+						)
+					</cfquery>
+					<cfif LEN(cgi.path_info)>
+						<cfset newurl = "index.cfm?" & #requestinfo.DBInfo.PackageName# & "=public:main.default&UserAction=RegisteredForEvent" >
+					<cfelse>
+						<cfset newurl = "index.cfm?" & #requestinfo.DBInfo.PackageName# & "=public:main.default&UserAction=RegisteredForEvent" >
+					</cfif>
+					<cfreturn SerializeJSON(Variables.newurl)>
+				<cfelse>
+					<cfif LEN(cgi.path_info)>
+						<cfset newurl = "index.cfm?" & #requestinfo.DBInfo.PackageName# & "=public:main.default&UserAction=AlreadyRegisteredForEvent" >
+					<cfelse>
+						<cfset newurl = "index.cfm?" & #requestinfo.DBInfo.PackageName# & "=public:main.default&UserAction=AlreadyRegisteredForEvent" >
+					</cfif>
+					<cfreturn SerializeJSON(Variables.newurl)>
+				</cfif>
+				
+			</cfif>
 		</cfif>
-		<cfreturn SerializeJSON(False)>
 	</cffunction>
 
 	<cffunction name="UpcomingEvents" ReturnType="xml" Access="Remote" Output="False"  hint="Returns Upcoming Events">

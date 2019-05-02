@@ -56,6 +56,89 @@ http://www.apache.org/licenses/LICENSE-2.0
 	</cfif>
 	<cfif isDefined("URL.UserAction")>
 		<cfswitch expression="#URL.UserAction#">
+			<cfcase value="RegisteredForEvent">
+				<div id="modelWindowDialog" class="modal fade">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+								<h3>Registered for Event/Workshop</h3>
+							</div>
+							<div class="modal-body">
+								<p class="alert alert-success">Registration for the Event/Workshop was successful. Within the next few minutes those registered will be receiving an email confirmation at the email address on file. If user has not received it, please check the Spam/Junk Folders.</p>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script type='text/javascript'>
+					(function() {
+						'use strict';
+						function remoteModal(idModal){
+							var vm = this;
+							vm.modal = $(idModal);
+							if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+							if( window.location.hash == idModal ){ openModal(); }
+							var services = { open: openModal, close: closeModal };
+							return services;
+							function openModal(){
+								vm.modal.modal('show');
+							}
+							function closeModal(){
+								vm.modal.modal('hide');
+							}
+						}
+						Window.prototype.remoteModal = remoteModal;
+					})();
+					$(function(){
+						window.remoteModal('##modelWindowDialog');
+					});
+				</script>
+			</cfcase>
+			<cfcase value="AlreadyRegisteredForEvent">
+				<div id="modelWindowDialog" class="modal fade">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i></button>
+								<h3>Already Registered for the event/workshop</h3>
+							</div>
+							<div class="modal-body">
+								<p class="alert alert-success">You were already registered for the event you tried to register for. Any communications regarding this event will be sent to the email address associated with your account.</p>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script type='text/javascript'>
+					(function() {
+						'use strict';
+						function remoteModal(idModal){
+							var vm = this;
+							vm.modal = $(idModal);
+							if( vm.modal.length == 0 ) { return false; } else { openModal(); }
+							if( window.location.hash == idModal ){ openModal(); }
+							var services = { open: openModal, close: closeModal };
+							return services;
+							function openModal(){
+								vm.modal.modal('show');
+							}
+							function closeModal(){
+								vm.modal.modal('hide');
+							}
+						}
+						Window.prototype.remoteModal = remoteModal;
+					})();
+					$(function(){
+						window.remoteModal('##modelWindowDialog');
+					});
+				</script>
+
+			</cfcase>
 			<cfcase value="UserRegistered">
 				<div id="modelWindowDialog" class="modal fade">
 					<div class="modal-dialog">

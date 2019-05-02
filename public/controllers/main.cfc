@@ -292,30 +292,32 @@
 				Where UserID = <cfqueryparam value="#getSelectedEvent.PresenterID#" cfsqltype="cf_sql_varchar">
 			</cfquery>
 			<cfset Session.EventInfo = StructNew()>
-
-			<cfif Session.Mura.isLoggedIn EQ true>
-				<cfquery name="checkRegisteredForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
-					Select TContent_ID, RegistrationID, RegistrationDate
-					From p_EventRegistration_UserRegistrations
-					Where Event_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and
-						User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and
-						Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
-				</cfquery>
-				<cfif checkRegisteredForEvent.RecordCount>
-					<cfset Session.EventInfo.ParticipantRegistered = true>
-				<cfelse>
-					<cfset Session.EventInfo.ParticipantRegistered = false>
-				</cfif>
-			<cfelse>
-				<cfset Session.EventInfo.ParticipantRegistered = false>
-			</cfif>
-
 			<cfset Session.EventInfo.SelectedEvent = #StructCopy(getSelectedEvent)#>
 			<cfset Session.EventInfo.EventRegistrations = #StructCopy(getCurrentRegistrationsbyEvent)#>
 			<cfset Session.EventInfo.EventFacility = #StructCopy(getEventFacility)#>
 			<cfset Session.EventInfo.EventFacilityRoom = #StructCopy(getEventFacilityRoom)#>
 			<cfset Session.EventInfo.EventFacilitator = #StructCopy(getFacilitator)#>
 			<cfset Session.EventInfo.EventPresenter = #StructCopy(getPresenter)#>
+
+			<cfif not isDefined("URL.RegisterForm")>
+				<cfif Session.Mura.isLoggedIn EQ true>
+					<cfquery name="checkRegisteredForEvent" Datasource="#rc.$.globalConfig('datasource')#" username="#rc.$.globalConfig('dbusername')#" password="#rc.$.globalConfig('dbpassword')#">
+						Select TContent_ID, RegistrationID, RegistrationDate
+						From p_EventRegistration_UserRegistrations
+						Where Event_ID = <cfqueryparam value="#URL.EventID#" cfsqltype="cf_sql_integer"> and User_ID = <cfqueryparam value="#Session.Mura.UserID#" cfsqltype="cf_sql_varchar"> and Site_ID = <cfqueryparam value="#rc.$.siteConfig('siteID')#" cfsqltype="cf_sql_varchar">
+					</cfquery>
+					<cfif checkRegisteredForEvent.RecordCount>
+						<cfset Session.EventInfo.ParticipantRegistered = true>
+					<cfelse>
+						<cfset Session.EventInfo.ParticipantRegistered = false>
+					</cfif>
+				<cfelse>
+					<cfset Session.EventInfo.ParticipantRegistered = false>
+				</cfif>
+			<cfelse>
+				
+
+			</cfif>			
 		<cfelse>
 
 		</cfif>

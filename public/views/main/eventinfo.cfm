@@ -317,11 +317,12 @@
 							</tr>
 							<tr>
 								<td colspan="4">
+									<div class="alert alert-info">Please verify the entered information before clicking the Add Button to register yourself to this event. Any communications related to this event will be sent to the email address that you entered</div>
 									<div class="panel panel-default">
 										<cfform action="" method="post" id="RegisterAccountForm" class="form-horizontal">
 											<cfinput type="hidden" name="SiteID" value="#rc.$.siteConfig('siteID')#">
 											<cfinput type="hidden" name="formSubmit" value="true">
-											<cfinput type="hidden" name="EventID" value="#Session.UserRegistrationInfo.EventID#">
+											<cfinput type="hidden" name="EventID" value="#Session.EventInfo.SelectedEvent.TContent_ID#">
 											<div class="panel-body">
 												<table id="NewParticipantRows" class="table table-striped" width="100%" cellspacing="0" cellpadding="0">
 													<thead>
@@ -330,7 +331,6 @@
 															<td class="col-sm-3">Participant First Name</td>
 															<td class="col-sm-4">Participant Last Name</td>
 															<td class="col-sm-3">Participant Email</td>
-															<td class="col-sm-3">Actions</td>
 														</tr>
 													</thead>
 													<tbody>
@@ -339,21 +339,20 @@
 															<td><cfinput type="text" class="form-control" id="ParticipantFirstName" name="ParticipantFirstName" required="no"></td>
 															<td><cfinput type="text" class="form-control" id="ParticipantLastName" name="ParticipantLastName" required="no"></td>
 															<td><cfinput type="text" class="form-control" id="ParticipantEmail" name="ParticipantEmail" required="no"></td>
-															<td><input type="button" id="addParticipantRow" class="btn btn-primary btn-sm" value="Add" onclick="AddRow()"></td>
 														</tr>
 													</tbody>
 												</table>
 											</div>
 											<div class="panel-footer">
-												<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-left" value="Back to Main Menu">
-												<cfinput type="Submit" name="UserAction" class="btn btn-primary pull-right" value="Register For Event"><br /><br />
+												<cfinput type="button" id="UserAction" name="UserAction" onclick="AddRow()" class="btn btn-primary pull-right" value="Register For Event"><br /><br />
 											</div>
 										</cfform>
 									</div>
 								</td>
 							</tr>
 						</cfif>
-						<script type="text/javascript">
+						<cfif isDefined("URL.RegisterForm")>
+							<script type="text/javascript">
 							function AddRow() {
 								var msg;
 
@@ -364,6 +363,7 @@
 									MailServerIP: "#rc.$.siteConfig('mailserverip')#",
 									MailServerUsername: "#rc.$.siteConfig('mailserverusername')#",
 									MailServerPassword: "#rc.$.siteConfig('mailserverpassword')#",
+									RegisterForm: "True",
 									MailServerSSL: "#rc.$.siteConfig('mailserverssl')#",
 									PackageName: "#rc.pc.getPackage()#",
 									CGIScriptName: "#CGI.Script_name#",
@@ -373,7 +373,7 @@
 									ContactName: "#rc.$.siteConfig('ContactName')#",
 									ContactEmail: "#rc.$.siteConfig('ContactEmail')#",
 									ContactPhone: "#rc.$.siteConfig('ContactPhone')#",
-									EventID: "#Session.FormInput.EventID#"
+									EventID: "#URL.EventID#"
 								};
 								newuser = {
 									Email: document.getElementById("ParticipantEmail").value,
@@ -390,48 +390,100 @@
 										jrStruct: JSON.stringify({"DBInfo": structvar, "UserInfo": newuser})
 									},
 									success: function(data){
+										console.log(eval(data));
 										setTimeout(function(){
-											window.location.reload();
+											window.location.assign(eval(data));
 										},100);
 									},
 									error: function(){
 									}
 								});
 							};
-						</script>
+							</script>
+						<cfelse>
+							<script type="text/javascript">
+							function AddRow() {
+								var msg;
+
+								structvar = {
+									Datasource: "#rc.$.globalConfig('datasource')#",
+									DBUsername: "#rc.$.globalConfig('dbusername')#",
+									DBPassword: "#rc.$.globalConfig('dbpassword')#",
+									MailServerIP: "#rc.$.siteConfig('mailserverip')#",
+									MailServerUsername: "#rc.$.siteConfig('mailserverusername')#",
+									MailServerPassword: "#rc.$.siteConfig('mailserverpassword')#",
+									MailServerSSL: "#rc.$.siteConfig('mailserverssl')#",
+									RegisterForm: "False",
+									PackageName: "#rc.pc.getPackage()#",
+									CGIScriptName: "#CGI.Script_name#",
+									CGIPathInfo: "#CGI.path_info#",
+									SiteID: "#rc.$.siteConfig('siteID')#",
+									SiteName: "#rc.$.siteConfig('site')#",
+									ContactName: "#rc.$.siteConfig('ContactName')#",
+									ContactEmail: "#rc.$.siteConfig('ContactEmail')#",
+									ContactPhone: "#rc.$.siteConfig('ContactPhone')#",
+									EventID: "#URL.EventID#"
+								};
+								newuser = {
+									Email: document.getElementById("ParticipantEmail").value,
+									Fname: document.getElementById("ParticipantFirstName").value,
+									Lname: document.getElementById("ParticipantLastName").value
+								};
+
+								$.ajax({
+									url: "/plugins/#rc.pc.getPackage()#/library/components/EventServices.cfc?method=AddParticipantToDatabase",
+									type: "POST",
+									dataType: "json",
+									data: {
+										returnFormat: "json",
+										jrStruct: JSON.stringify({"DBInfo": structvar, "UserInfo": newuser})
+									},
+									success: function(data){
+										console.log(eval(data));
+										setTimeout(function(){
+											window.location.assign(eval(data));
+										},100);
+									},
+									error: function(){
+									}
+								});
+							};
+							</script>
+						</cfif>
 					</cfif>
 				</tbody>
 			</table>
 		</div>
 		<div class="panel-footer">
-			<cfif Session.EventInfo.SelectedEvent.AcceptRegistrations EQ 1>
-				<cfswitch expression="#ListLast(CGI.HTTP_REFERER, '=')#">
-					<cfcase value="public:usermenu.eventhistory">
-						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.eventhistory" class="btn btn-primary">Past Events</a>
-					</cfcase>
-					<cfcase value="public:usermenu.upcomingevents">
-						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.upcomingevents" class="btn btn-primary">Upcoming Events</a>
-					</cfcase>
-					<cfdefaultcase>
-						<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary">Back to Events</a>
-					</cfdefaultcase>
-				</cfswitch>
-				<cfif DateDiff("d", Now(), Session.EventInfo.SelectedEvent.Registration_Deadline) GTE 0>
-					<cfif Variables.SeatsLeft GT 0>
-						<cfif Session.EventInfo.ParticipantRegistered EQ false>
-							| <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&EventID=#URL.EventID#" class="btn btn-primary">Register</a>
+			<cfif not isDefined("URL.RegisterForm")>
+				<cfif Session.EventInfo.SelectedEvent.AcceptRegistrations EQ 1>
+					<cfswitch expression="#ListLast(CGI.HTTP_REFERER, '=')#">
+						<cfcase value="public:usermenu.eventhistory">
+							<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.eventhistory" class="btn btn-primary">Past Events</a>
+						</cfcase>
+						<cfcase value="public:usermenu.upcomingevents">
+							<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:usermenu.upcomingevents" class="btn btn-primary">Upcoming Events</a>
+						</cfcase>
+						<cfdefaultcase>
+							<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary">Back to Events</a>
+						</cfdefaultcase>
+					</cfswitch>
+					<cfif DateDiff("d", Now(), Session.EventInfo.SelectedEvent.Registration_Deadline) GTE 0>
+						<cfif Variables.SeatsLeft GT 0>
+							<cfif Session.EventInfo.ParticipantRegistered EQ false>
+								| <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&EventID=#URL.EventID#" class="btn btn-primary">Register</a>
+							<cfelse>
+								| <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&EventID=#URL.EventID#" class="btn btn-primary">Register Additional Participants</a>
+							</cfif>
 						<cfelse>
-							| <a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:registerevent.default&EventID=#URL.EventID#" class="btn btn-primary">Register Additional Participants</a>
 						</cfif>
-
 					<cfelse>
 					</cfif>
+					<br /><br />
 				<cfelse>
+					<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary pull-left">Back to Events</a><br /><br />
+					<br /><br />
 				</cfif>
-				<br /><br />
-			<cfelse>
-				<a href="#CGI.Script_name##CGI.path_info#?#HTMLEditFormat(rc.pc.getPackage())#action=public:main.default" class="btn btn-primary pull-left">Back to Events</a><br /><br />
-				<br /><br />
 			</cfif>
 		</div>
 	</div>
