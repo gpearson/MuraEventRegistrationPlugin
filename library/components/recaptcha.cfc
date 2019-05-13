@@ -46,7 +46,7 @@ component accessors=true output=false {
     };
 
     var httpSvc = new http(method='post', charset='utf-8', url=this._siteVerifyUrl);
-    httpSvc.addParam(type='formfield', name='secret', value="6Le6hw0UAAAAAMfQXFE5H3AJ4PnGmADX9v468d93");
+    httpSvc.addParam(type='formfield', name='secret', value=arguments.secret);
     httpSvc.addParam(type='formfield', name='remoteip', value=arguments.remoteip);
     httpSvc.addParam(type='formfield', name='response', value=arguments.response);
 

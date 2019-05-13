@@ -45,16 +45,16 @@
 			</cfif>
 			<cfif Session.SiteConfigSettings.GoogleReCaptcha_Enabled EQ 1>
 				<cfif StructKeyExists(form, 'g-recaptcha-response')>
-					<cfset CheckCaptcha = #GoogleReCaptchaCFC.verifyResponse(secret='#Session.SiteConfigSettings.GoogleReCaptcha_SecretKey#',response=form['g-recaptcha-response'], remoteip=cgi.remote_add)#>
+					<cfset CheckCaptcha = #GoogleReCaptchaCFC.verifyResponse(secret='#Session.SiteConfigSettings.GoogleReCaptcha_SecretKey#',response=form['g-recaptcha-response'], remoteip=cgi.remote_addr)#>
 					<cfif CheckCaptcha.success EQ "false">
 						<cfscript>
 							InvalidPassword = {property="VerifyPassword",message="We have detected that the form was completed by a Computer Robot. We ask that this form be completed by a human being."};
 							arrayAppend(Session.FormErrors, InvalidPassword);
 						</cfscript>
 						<cfif LEN(cgi.path_info)>
-							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:registeraccount.default&UserAction=CaptchaWrong&FormRetry=True" >
+							<cfset newurl = #cgi.script_name# & #cgi.path_info# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&UserAction=CaptchaWrong&FormRetry=True" >
 						<cfelse>
-							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:registeraccount.default&UserAction=CaptchaWrong&FormRetry=True" >
+							<cfset newurl = #cgi.script_name# & "?" & #Session.PluginFramework.Action# & "=public:usermenu.forgotpassword&UserAction=CaptchaWrong&FormRetry=True" >
 						</cfif>
 						<cflocation url="#variables.newurl#" addtoken="false">
 					</cfif>
